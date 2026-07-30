@@ -1,6 +1,6 @@
 # PRD (Product Requirements Document)
 
-## AI Agent Phân loại & Xử lý Ticket IT Help Desk (ITSM Triage Agent)
+## AI Agent Phân loại & Xử lý Ticket IT Help Desk
 
 **Phiên bản:** 1.0 | **Ngày:** 30/07/2026
 
