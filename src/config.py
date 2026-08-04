@@ -13,23 +13,56 @@ class Settings(BaseSettings):
     )
 
     # App
-    app_name: str = "AI20K Agent"
+    app_name: str = "Help Desk AI Agent"
     app_env: Literal["development", "production", "test"] = "development"
     app_port: int = Field(default=8000, ge=1, le=65535)
     app_host: str = "0.0.0.0"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = "http://localhost:3000,http://localhost:5173"
 
-    # LLM
+    # LLM — Mistral (primary)
+    mistral_api_key: str = ""
+    mistral_classifier_model: str = "mistral-small-2506"
+    mistral_rag_model: str = "mistral-small-2506"
+    mistral_runbook_model: str = "codestral-2508"
+    mistral_fast_classifier_model: str = "ministral-3b-2512"
+
+
+    # LLM — OpenAI (optional fallback)
     openai_api_key: str = ""
     model_name: str = "gpt-4o-mini"
-    llm_temperature: float = Field(default=0.7, ge=0.0, le=2.0)
+    llm_temperature: float = Field(default=0.1, ge=0.0, le=2.0)
 
     # Database
-    database_url: str = "sqlite:///./data/app.db"
+    database_url: str = "sqlite+aiosqlite:///./data/helpdesk.db"
 
     # Vector Store
     chroma_persist_dir: str = "./data/chroma"
+    chroma_collection_name: str = "helpdesk_kb"
+
+    # Auth / Security
+    jwt_secret: str = "change-me-in-production"
+    jwt_algorithm: str = "HS256"
+    jwt_expire_minutes: int = 480
+
+    # SLA
+    sla_warning_hours: int = 4
+    sla_critical_hours: int = 8
+
+    # Classifier Thresholds
+    confidence_threshold_auto_close: float = 0.85
+    confidence_threshold_hitl: float = 0.70
+
+
+    # LangSmith
+    langchain_api_key: str = ""
+    langchain_project: str = "helpdesk-ai-agent"
+    langchain_tracing_v2: bool = True
+
+    # AI Hook Logging
+    ai_log_server: str = ""
+    ai_log_api_key: str = ""
+    ai_log_dir: str = ".ai-log"
 
 
 @lru_cache

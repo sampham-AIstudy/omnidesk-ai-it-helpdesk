@@ -62,13 +62,15 @@ Hooks tự động log mọi AI prompt khi dùng Claude Code, Cursor, Codex, Gem
 
 ### Bước 4: Chạy server
 
-```bash
-# Chạy FastAPI backend
-uvicorn src.main:app --reload --port 8000
+# Backend
+.venv\Scripts\activate
+python run.py
 
-# Mở Swagger UI
-# http://localhost:8000/docs
-```
+
+# Frontend
+cd frontend
+npm run dev
+
 
 ### Bước 5: Đọc hướng dẫn
 
@@ -81,36 +83,44 @@ uvicorn src.main:app --reload --port 8000
 │   ├── agents/           # 🧠 LangGraph Agent
 │   │   ├── graph.py      #    State graph (nodes + edges)
 │   │   ├── state.py      #    State schema (TypedDict)
-│   │   ├── nodes/        #    Node functions
+│   │   ├── nodes/        #    Node functions (classifier, RAG, HITL, router, auto_close)
 │   │   └── tools/        #    Agent tools (@tool)
 │   ├── api/              # 🌐 FastAPI Backend
-│   │   └── routes.py     #    API endpoints
-│   ├── models/           # 📋 Pydantic schemas
-│   ├── services/         # 🔧 Business logic (LLM, etc.)
+│   │   ├── auth.py       #    JWT Auth (/login, /me)
+│   │   ├── tickets.py    #    Ticket CRUD + HITL approve/reject
+│   │   ├── analytics.py  #    Dashboard metrics, SLA alerts, Audit log
+│   │   ├── admin.py      #    User & Knowledge Base management
+│   │   └── routes.py     #    API routes aggregator
+│   ├── models/           # 📋 SQLAlchemy & Pydantic schemas
+│   ├── services/         # 🔧 Business logic (Auth, Ticket, RAG, LLM)
+│   ├── data/             # 💾 Knowledge base seed (35 KB entries)
 │   ├── config.py         # ⚙️ Pydantic Settings
-│   └── main.py           # 🚀 App entry point
+│   └── main.py           # 🚀 FastAPI app entry point
+├── frontend/             # ⚛️ Next.js 16 Web Application (Dark Glassmorphism)
+│   ├── src/app/          #    App Router (Employee, Technician, Manager, Admin portals)
+│   ├── src/components/   #    UI Components (Sidebar, HITLModal, TicketCard, ui.tsx)
+│   └── src/lib/          #    API client, Zustand authStore, utils
+├── data/                 # 💾 Database & Datasets
+│   ├── helpdesk_tickets.csv # 📊 Kaggle Dataset (1M tickets)
+│   ├── helpdesk.db       #    SQLite database
+│   └── chroma/           #    Vector DB persistence
 ├── tests/                # 🧪 pytest suite
-│   ├── test_agents/      #    Agent/graph tests
+│   ├── test_agents/      #    Agent/graph unit tests
 │   └── test_api/         #    API endpoint tests
-├── scripts/              # 🔌 AI Logging Hooks
+├── scripts/              # 🔌 Utility & AI Logging Hooks
+│   ├── import_kaggle_dataset.py # Script import Kaggle CSV vào DB
 │   ├── log_hook.py       #    Auto-log cho Claude/Cursor/Codex/Gemini/Copilot
 │   ├── log_antigravity.py#    Antigravity IDE prompt scanner
-│   ├── log_manual.py     #    Manual log cho ChatGPT / web tools
-│   ├── submit_log.py     #    Submit logs on git push
 │   └── setup_hooks.sh    #    One-time hook installer
-├── .claude/ .codex/ .cursor/ .gemini/  # Per-tool hook configs
-├── .agents/              # Antigravity rules + workflows
-├── .ai-log/              # 📊 AI usage logs (auto-generated)
 ├── docs/
 │   ├── guide/            # 📖 Technical Guidebook (10 chapters)
 │   └── architecture_diagram.md
-├── eval/                 # 📊 Evaluation results
+├── eval/                 # 📊 Evaluation results & benchmark
+│   └── classification_eval.py
 ├── presentation/         # 🎤 Demo Day slides
-├── .github/workflows/    # ⚡ CI/CD (GitHub Actions)
-├── .github/hooks/        # 🪝 Copilot hook config
-├── Dockerfile            # 🐳 Multi-stage build
-├── docker-compose.yml    # 🐙 Full stack orchestration
-└── README_boilerplate.md # 📝 README template cho đội của bạn
+├── Dockerfile            # 🐳 Multi-stage backend build
+├── docker-compose.yml    # 🐙 Full stack orchestration (Backend + Frontend)
+└── pyproject.toml        # ⚙️ Python project configuration
 ```
 
 ## 📚 Technical Guidebook — 10 Chương
