@@ -22,6 +22,23 @@ def _git_output(cmd: str) -> str:
         return ""
 
 
+from functools import lru_cache
+
+@lru_cache(maxsize=1)
+def _get_cached_git_info() -> dict:
+    """Cache Git metadata once to avoid spawning 4 subprocesses on every AI log event."""
+    origin = _git_output("git remote get-url origin")
+    repo = origin.rstrip("/").split("/")[-1] if origin else "P-236"
+    if repo.endswith(".git"):
+        repo = repo[:-4]
+    return {
+        "repo": repo,
+        "branch": _git_output("git rev-parse --abbrev-ref HEAD") or "main",
+        "commit": _git_output("git rev-parse --short HEAD") or "local",
+        "student": _git_output("git config user.email") or "student@corp.example.com",
+    }
+
+
 def log_web_app_ai_event(
     event_name: str,
     prompt: str,
@@ -32,24 +49,21 @@ def log_web_app_ai_event(
 ):
     """Ghi nhận 1 sự kiện AI của Web App vào .ai-log/session.jsonl."""
     try:
-        origin = _git_output("git remote get-url origin")
-        repo = origin.rstrip("/").split("/")[-1] if origin else "P-236"
-        if repo.endswith(".git"):
-            repo = repo[:-4]
-
+        git_info = _get_cached_git_info()
         entry = {
             "ts": datetime.now(VN_TZ).isoformat(),
             "tool": tool,
             "event": event_name,
             "session_id": session_id or "web-session",
             "model": model,
-            "repo": repo,
-            "branch": _git_output("git rev-parse --abbrev-ref HEAD") or "main",
-            "commit": _git_output("git rev-parse --short HEAD") or "local",
-            "student": _git_output("git config user.email") or "student@corp.example.com",
+            "repo": git_info["repo"],
+            "branch": git_info["branch"],
+            "commit": git_info["commit"],
+            "student": git_info["student"],
             "prompt": prompt[:1000] if prompt else "",
             "response_summary": response_summary[:500] if response_summary else "",
         }
+
 
         log_dir = Path(os.environ.get("AI_LOG_DIR", ".ai-log"))
         log_dir.mkdir(exist_ok=True)

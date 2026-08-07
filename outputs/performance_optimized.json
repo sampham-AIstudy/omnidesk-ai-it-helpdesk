@@ -1,0 +1,14 @@
+{
+  "benchmark_timestamp": "2026-08-07T11:40:37Z",
+  "cold_start_latency_ms": 665.65,
+  "queries_count": 8,
+  "total_latency_p50_ms": 672.01,
+  "total_latency_p90_ms": 3905.11,
+  "total_latency_p95_ms": 7502.23,
+  "total_latency_p99_ms": 10379.91,
+  "total_latency_avg_ms": 1896.03,
+  "retrieval_recall_at_5": 0.5,
+  "groundedness": 0.95,
+  "citation_accuracy": 0.96,
+  "security_test_pass_rate": 0.62
+}

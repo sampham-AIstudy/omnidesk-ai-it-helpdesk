@@ -10,8 +10,8 @@ export type TicketCategory =
 export type TicketPriority = 'low' | 'medium' | 'high' | 'critical';
 export type TicketUrgency  = 'low' | 'medium' | 'high' | 'emergency';
 export type TicketStatus =
-  | 'open' | 'classifying' | 'pending_hitl' | 'in_progress'
-  | 'pending_closure' | 'resolved' | 'closed' | 'escalated' | 'rejected';
+  | 'open' | 'classifying' | 'pending_hitl' | 'in_progress' | 'waiting_for_agent' | 'human_active'
+  | 'pending_closure' | 'resolved' | 'closed' | 'reopened' | 'escalated' | 'rejected';
 
 export interface User {
   id: number;
@@ -40,26 +40,53 @@ export interface Ticket {
   agent_reasoning: string | null;
   routing_target: string | null;
   is_production_impact: boolean;
+  support_mode?: 'ai' | 'human';
+  closed_by?: string | null;
+  resolution_summary?: string | null;
+  rating?: number | null;
+  rating_feedback?: string | null;
   status: TicketStatus;
   hitl_required: boolean;
   hitl_note: string | null;
   hitl_decided_at: string | null;
   submitter_id: number;
   assignee_id: number | null;
+  assignee?: User | null;
   sla_deadline: string | null;
   sla_warning_sent: boolean;
   sla_escalated: boolean;
   first_response_at: string | null;
   resolved_at: string | null;
+  closed_at?: string | null;
+  reopened_at?: string | null;
   created_at: string;
   updated_at: string;
 }
+
 
 export interface TicketListResponse {
   items: Ticket[];
   total: number;
   page: number;
   page_size: number;
+}
+
+export type TicketMessageSender = 'user' | 'agent' | 'technician' | 'system';
+
+export interface TicketMessage {
+  id: number;
+  ticket_id: number;
+  sender_id: number | null;
+  sender_type: TicketMessageSender;
+  content: string;
+  sources_json: string | null;
+  confidence_score: number | null;
+  routing_hint: string | null;
+  created_at: string;
+}
+
+export interface TicketConversationResponse {
+  items: TicketMessage[];
 }
 
 export interface AgentProcessResponse {

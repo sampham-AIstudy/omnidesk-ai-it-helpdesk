@@ -1,0 +1,160 @@
+"""
+Business Invariants Automated Test Suite
+Verifies strict Enterprise Help Desk Invariants:
+1. Ambiguous user responses ("ok để tôi thử", "có vẻ được") NEVER trigger AI auto-closure.
+2. Dissatisfaction user responses ("vẫn lỗi", "chưa được", "không đúng") MUST trigger Human Handoff.
+3. Explicit Agent Takeover (POST /tickets/{id}/takeover) assigns technician and transitions state.
+4. Empty reopen reason is rejected with HTTP 400.
+5. Invalid rating (< 1 or > 5) is rejected with HTTP 422.
+"""
+
+import pytest
+from httpx import AsyncClient
+
+
+@pytest.mark.asyncio
+async def test_ambiguous_response_does_not_close_ticket(
+    client: AsyncClient,
+    auth_employee: str,
+):
+    """Test that ambiguous user phrases ('ok để tôi thử', 'có vẻ được') do NOT auto-close ticket."""
+    headers = {"Authorization": f"Bearer {auth_employee}"}
+
+    # Create ticket
+    create_res = await client.post(
+        "/api/v1/tickets",
+        json={"title": "Lỗi kết nối Wi-Fi", "description": "Không thể kết nối Wi-Fi văn phòng"},
+        headers=headers,
+    )
+    assert create_res.status_code == 201
+    ticket_id = create_res.json()["ticket_id"]
+
+    # Send ambiguous message
+    msg_res = await client.post(
+        f"/api/v1/tickets/{ticket_id}/messages",
+        json={"message": "ok để tôi thử cách này xem sao"},
+        headers=headers,
+    )
+    assert msg_res.status_code == 200
+
+    # Verify ticket is NOT closed
+    ticket_res = await client.get(f"/api/v1/tickets/{ticket_id}", headers=headers)
+    assert ticket_res.status_code == 200
+    status = ticket_res.json()["status"]
+    assert status not in ("closed", "resolved")
+
+
+@pytest.mark.asyncio
+async def test_dissatisfaction_triggers_human_handoff(
+    client: AsyncClient,
+    auth_employee: str,
+):
+    """Test that dissatisfaction ('vẫn lỗi', 'chưa được', 'không đúng') triggers Human Handoff."""
+    headers = {"Authorization": f"Bearer {auth_employee}"}
+
+    create_res = await client.post(
+        "/api/v1/tickets",
+        json={"title": "Lỗi ứng dụng Outlook", "description": "Outlook bị đơ khi gửi email"},
+        headers=headers,
+    )
+    assert create_res.status_code == 201
+    ticket_id = create_res.json()["ticket_id"]
+
+    # User expresses dissatisfaction
+    msg_res = await client.post(
+        f"/api/v1/tickets/{ticket_id}/messages",
+        json={"message": "Tôi đã làm theo nhưng vẫn lỗi không gửi được"},
+        headers=headers,
+    )
+    assert msg_res.status_code == 200
+
+    # Verify status changed to waiting_for_agent or escalated
+    ticket_res = await client.get(f"/api/v1/tickets/{ticket_id}", headers=headers)
+    assert ticket_res.status_code == 200
+    t_data = ticket_res.json()
+    assert t_data["status"] in ("waiting_for_agent", "escalated")
+    assert t_data["support_mode"] == "human"
+
+
+@pytest.mark.asyncio
+async def test_technician_takeover_api(
+    client: AsyncClient,
+    auth_employee: str,
+    auth_manager: str,
+):
+    """Test explicit technician takeover (POST /tickets/{id}/takeover)."""
+    emp_headers = {"Authorization": f"Bearer {auth_employee}"}
+    mgr_headers = {"Authorization": f"Bearer {auth_manager}"}
+
+    create_res = await client.post(
+        "/api/v1/tickets",
+        json={"title": "Màn hình xanh BSOD", "description": "Lỗi 0x80070005 khẩn cấp"},
+        headers=emp_headers,
+    )
+    assert create_res.status_code == 201
+    ticket_id = create_res.json()["ticket_id"]
+
+    # Technician / Manager claims takeover
+    takeover_res = await client.post(
+        f"/api/v1/tickets/{ticket_id}/takeover",
+        headers=mgr_headers,
+    )
+    assert takeover_res.status_code == 200
+    t_data = takeover_res.json()
+    assert t_data["status"] in ("in_progress", "human_active")
+    assert t_data["support_mode"] == "human"
+    assert t_data["assignee_id"] is not None
+
+
+@pytest.mark.asyncio
+async def test_empty_reopen_reason_rejected(
+    client: AsyncClient,
+    auth_employee: str,
+):
+    """Test that empty reopen reason returns HTTP 400 or 422."""
+    headers = {"Authorization": f"Bearer {auth_employee}"}
+
+    create_res = await client.post(
+        "/api/v1/tickets",
+        json={"title": "Hỗ trợ phần mềm ERP", "description": "Không mở được báo cáo SAP"},
+        headers=headers,
+    )
+    ticket_id = create_res.json()["ticket_id"]
+
+    # Close ticket first
+    await client.post(f"/api/v1/tickets/{ticket_id}/close", headers=headers)
+
+    # Attempt to reopen with empty reason
+    reopen_res = await client.post(
+        f"/api/v1/tickets/{ticket_id}/reopen",
+        json={"reason": "   "},
+        headers=headers,
+    )
+    assert reopen_res.status_code in (400, 422)
+
+
+@pytest.mark.asyncio
+async def test_invalid_rating_rejected(
+    client: AsyncClient,
+    auth_employee: str,
+):
+    """Test that rating outside 1-5 range returns HTTP 422."""
+    headers = {"Authorization": f"Bearer {auth_employee}"}
+
+    create_res = await client.post(
+        "/api/v1/tickets",
+        json={"title": "Hỗ trợ tài khoản M365", "description": "Cần mở khóa SSPR"},
+        headers=headers,
+    )
+    ticket_id = create_res.json()["ticket_id"]
+
+    # Close ticket
+    await client.post(f"/api/v1/tickets/{ticket_id}/close", headers=headers)
+
+    # Attempt rating 10
+    rating_res = await client.post(
+        f"/api/v1/tickets/{ticket_id}/rating",
+        json={"rating": 10, "feedback": "Tuyệt vời"},
+        headers=headers,
+    )
+    assert rating_res.status_code == 422

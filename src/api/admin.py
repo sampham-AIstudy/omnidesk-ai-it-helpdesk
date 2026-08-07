@@ -60,7 +60,7 @@ async def create_user(
 @router.get("/kb", response_model=list[KBEntryResponse])
 async def list_kb(
     db: AsyncSession = Depends(get_db),
-    _user: User = Depends(require_manager_or_admin),
+    _user: User = Depends(get_current_active_user),
 ):
     result = await db.execute(
         select(KnowledgeBaseEntry)
@@ -69,6 +69,24 @@ async def list_kb(
     )
     entries = result.scalars().all()
     return [KBEntryResponse.model_validate(e) for e in entries]
+
+
+@router.post("/kb/{entry_id}/vote", response_model=KBEntryResponse)
+async def vote_kb_entry(
+    entry_id: int,
+    db: AsyncSession = Depends(get_db),
+    _user: User = Depends(get_current_active_user),
+):
+    """Bấm Hữu Ích cho bài viết Knowledge Base."""
+    entry = await db.get(KnowledgeBaseEntry, entry_id)
+    if not entry or not entry.is_active:
+        raise HTTPException(status_code=404, detail="KB entry không tồn tại")
+
+    entry.helpful_votes = (entry.helpful_votes or 0) + 1
+    entry.usage_count = (entry.usage_count or 0) + 1
+    await db.commit()
+    await db.refresh(entry)
+    return KBEntryResponse.model_validate(entry)
 
 
 @router.post("/kb", response_model=KBEntryResponse, status_code=201)
@@ -189,4 +207,71 @@ async def kb_stats(_user: User = Depends(require_manager_or_admin)):
     return {
         "chroma_documents": get_collection_count(),
         "status": "healthy",
+    }
+
+
+@router.get("/ai-metrics")
+async def get_ai_metrics(
+    db: AsyncSession = Depends(get_db),
+    _user: User = Depends(require_manager_or_admin),
+):
+    """AI Observability & Performance Analytics Endpoint."""
+    from sqlalchemy import func
+    from src.models.ai_run import AIRun
+
+    total_runs_res = await db.execute(select(func.count(AIRun.id)))
+    total_runs = total_runs_res.scalar() or 0
+
+    if total_runs == 0:
+        return {
+            "total_ai_runs": 0,
+            "avg_latency_ms": 0,
+            "avg_groundedness": 0.0,
+            "avg_confidence": 0.0,
+            "hitl_trigger_rate": 0.0,
+            "total_estimated_cost_usd": 0.0,
+            "recent_runs": [],
+        }
+
+    stats_res = await db.execute(
+        select(
+            func.avg(AIRun.latency_ms),
+            func.avg(AIRun.groundedness_score),
+            func.avg(AIRun.confidence_score),
+            func.sum(AIRun.estimated_cost_usd),
+        )
+    )
+    avg_latency, avg_ground, avg_conf, total_cost = stats_res.fetchone() or (0, 0, 0, 0)
+
+    hitl_count_res = await db.execute(
+        select(func.count(AIRun.id)).where(AIRun.hitl_triggered == True)
+    )
+    hitl_count = hitl_count_res.scalar() or 0
+
+    recent_runs_res = await db.execute(
+        select(AIRun).order_by(AIRun.created_at.desc()).limit(10)
+    )
+    recent_runs = recent_runs_res.scalars().all()
+
+    return {
+        "total_ai_runs": total_runs,
+        "avg_latency_ms": round(float(avg_latency or 0), 2),
+        "avg_groundedness": round(float(avg_ground or 0), 3),
+        "avg_confidence": round(float(avg_conf or 0), 3),
+        "hitl_trigger_rate": round(float(hitl_count / total_runs), 3) if total_runs > 0 else 0.0,
+        "total_estimated_cost_usd": round(float(total_cost or 0), 4),
+        "recent_runs": [
+            {
+                "id": r.id,
+                "ticket_id": r.ticket_id,
+                "trace_id": r.trace_id,
+                "node_name": r.node_name,
+                "model_name": r.model_name,
+                "latency_ms": r.latency_ms,
+                "groundedness_score": r.groundedness_score,
+                "hitl_triggered": r.hitl_triggered,
+                "created_at": r.created_at.isoformat() if r.created_at else None,
+            }
+            for r in recent_runs
+        ],
     }

@@ -1,7 +1,7 @@
 """TicketAgentState — State schema cho LangGraph Help Desk workflow."""
 from __future__ import annotations
 
-from typing import Any, TypedDict
+from typing import TypedDict
 
 
 class TicketAgentState(TypedDict, total=False):
@@ -37,8 +37,14 @@ class TicketAgentState(TypedDict, total=False):
     hitl_reason: str           # Lý do cần HITL
 
     # ── Action taken ──────────────────────────────────────────────────────────
-    action_taken: str          # "auto_closed" | "routed" | "hitl_pending" | "escalated"
+    action_taken: str          # "auto_closed" | "routed" | "hitl_pending" | "escalated" | "blocked_by_guardrail"
     auto_close_eligible: bool  # Có thể tự đóng không?
+
+    # ── Guardrail Evaluation ──────────────────────────────────────────────────
+    is_blocked: bool           # Guardrail early exit flag
+    block_reason: str          # Lý do bị chặn
+    block_type: str            # "PROMPT_INJECTION" | "OFF_TOPIC" | "TURNSTILE_FAILED" | "PII_LEAK"
+    safe_response: str         # Thông điệp phản hồi an toàn khi bị chặn
 
     # ── Error handling ────────────────────────────────────────────────────────
     error: str | None
@@ -48,3 +54,4 @@ class TicketAgentState(TypedDict, total=False):
     model_used: str
     processing_start: str      # ISO timestamp
     token_count: int
+

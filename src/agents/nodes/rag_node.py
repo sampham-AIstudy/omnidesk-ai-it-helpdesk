@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from src.agents.state import TicketAgentState
 from src.services.llm import get_rag_llm
-from src.services.rag_service import search_similar
+from src.services.rag_service import search_similar_async
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +17,28 @@ hãy đưa ra giải pháp cụ thể và actionable cho ticket IT của nhân v
 
 Yêu cầu:
 - Trả lời bằng tiếng Việt, rõ ràng và dễ hiểu
-- Liệt kê các bước cụ thể (đánh số)
+- Liệt kê các bước cụ thể (đánh số: 1. 2. 3.)
 - Nếu cần leo thang hoặc liên hệ team khác, ghi rõ
 - Nếu KB không có thông tin phù hợp, thừa nhận và đề xuất hướng xử lý chung
 - Nếu có runbook, trích xuất các steps
-- Giữ ngắn gọn (tối đa 300 words)"""
+- Chỉ dùng thông tin có trong context; không tự tạo lệnh, URL hoặc chính sách nội bộ
+- Khi context có SOURCE_URL, thêm mục "Nguon tham khao" ở cuối câu trả lời
+- Giữ ngắn gọn (tối đa 300 words)
+- QUAN TRỌNG: Không dùng Markdown formatting. Không dùng **, *, #, ---, backtick hay bất kỳ ký hiệu định dạng nào. Chỉ viết văn bản thuần túy."""
+RAG_SYNTHESIS_PROMPT_V2 = """Ban la chuyen gia IT Support. Dua tren knowledge base context duoc cung cap,
+hay dua ra giai phap cu the va actionable cho ticket IT cua nhan vien.
+
+Yeu cau:
+- Tra loi bang tieng Viet, ro rang va de hieu
+- Liet ke cac buoc cu the bang so thu tu 1. 2. 3.
+- Chi dung thong tin co trong context; khong tu tao lenh, URL, mat khau, workaround bao mat, hoac chinh sach noi bo
+- Neu context khong du thong tin, noi ro Knowledge Base khong co thong tin phu hop va de xuat tao ticket hoac leo thang IT Support
+- Neu nguoi dung yeu cau bo qua quy trinh, bypass bao mat, tiet lo bi mat, hoac gian lan, tu choi phan do va huong ve quy trinh an toan
+- Neu can approval hoac lien he team khac, ghi ro dieu kien approval/team can leo thang
+- Neu co runbook, trich xuat cac steps co trong context
+- Khi dung tai lieu nao, them muc "Nguon tham khao" o cuoi cau tra loi voi title/SOURCE_URL tu context
+- Giu ngan gon toi da 300 words
+- QUAN TRONG: Khong dung Markdown formatting. Khong dung **, *, #, ---, backtick hay ky hieu dinh dang. Chi viet van ban thuan tuy."""
 
 
 async def rag_node(state: TicketAgentState) -> TicketAgentState:
@@ -35,8 +52,8 @@ async def rag_node(state: TicketAgentState) -> TicketAgentState:
     department = state.get("department")
     query = f"{title}. {description}"
 
-    # Tìm kiếm ChromaDB
-    docs = search_similar(
+    # Tìm kiếm ChromaDB (Non-blocking async)
+    docs = await search_similar_async(
         query=query,
         n_results=5,
         category_filter=category if category != "other" else None,
@@ -60,10 +77,16 @@ async def rag_node(state: TicketAgentState) -> TicketAgentState:
         relevant_docs = docs[:2]  # Fallback lấy 2 docs tốt nhất
 
     # Chuẩn bị context cho LLM
-    kb_context = "\n\n".join([
-        f"--- Tài liệu {i+1}: {d['metadata'].get('title', 'N/A')} ---\n{d['content']}"
-        for i, d in enumerate(relevant_docs[:3])
-    ])
+    context_parts = []
+    for i, doc in enumerate(relevant_docs[:3]):
+        metadata = doc.get("metadata", {})
+        source_url = metadata.get("source_url", "")
+        source_line = f"\nSOURCE_URL: {source_url}" if source_url else ""
+        context_parts.append(
+            f"--- Tài liệu {i + 1}: {metadata.get('title', 'N/A')} ---"
+            f"{source_line}\n{doc['content']}"
+        )
+    kb_context = "\n\n".join(context_parts)
 
     # Trích xuất runbook nếu có
     runbook_steps = []
@@ -83,7 +106,7 @@ async def rag_node(state: TicketAgentState) -> TicketAgentState:
     llm = get_rag_llm()
     try:
         response = await llm.ainvoke([
-            SystemMessage(content=RAG_SYNTHESIS_PROMPT),
+            SystemMessage(content=RAG_SYNTHESIS_PROMPT_V2),
             HumanMessage(content=f"""TICKET:
 Tiêu đề: {title}
 Mô tả: {description}
@@ -96,7 +119,14 @@ Hãy đưa ra giải pháp step-by-step cho ticket này."""),
         ])
 
         solution = response.content.strip()
-        sources = [d.get("metadata", {}).get("title", "KB Entry") for d in relevant_docs[:3]]
+        sources = []
+        for doc in relevant_docs[:3]:
+            metadata = doc.get("metadata", {})
+            title_or_default = metadata.get("title", "KB Entry")
+            source_url = metadata.get("source_url")
+            source_label = f"{title_or_default} — {source_url}" if source_url else title_or_default
+            if source_label not in sources:
+                sources.append(source_label)
 
         logger.info(f"[RAG] Found {len(relevant_docs)} relevant docs, synthesized solution")
 

@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
 import { RefreshCw } from 'lucide-react';
 import TicketCard from '@/components/TicketCard';
-import { EmptyState, PageHeader, Spinner } from '@/components/ui';
+import { EmptyState, PageHeader, QueryError, Skeleton } from '@/components/ui';
 import { Ticket, TicketStatus } from '@/types';
+import { getErrorMessage } from '@/lib/utils';
 import api from '@/lib/api';
 
 const FILTERS: { value: TicketStatus | 'all'; label: string }[] = [
@@ -21,14 +23,31 @@ const FILTERS: { value: TicketStatus | 'all'; label: string }[] = [
 export default function MyTicketsPage() {
   const [filter, setFilter] = useState<TicketStatus | 'all'>('all');
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ['my-tickets', filter],
     queryFn: async () => {
       const params = filter !== 'all' ? `&status=${filter}` : '';
       return (await api.get(`/tickets?page=1&page_size=50${params}`)).data as { items: Ticket[]; total: number };
     },
-    refetchInterval: 15000,
+    staleTime: 30000,
+    refetchOnWindowFocus: false,
   });
+
+
+  const queryClient = useQueryClient();
+
+  const handlePrefetch = (ticketId: number) => {
+    queryClient.prefetchQuery({
+      queryKey: ['ticket', String(ticketId)],
+      queryFn: async () => (await api.get(`/tickets/${ticketId}`)).data,
+      staleTime: 30000,
+    });
+    queryClient.prefetchQuery({
+      queryKey: ['ticket-messages', String(ticketId)],
+      queryFn: async () => (await api.get(`/tickets/${ticketId}/messages`)).data,
+      staleTime: 15000,
+    });
+  };
 
   const tickets = data?.items ?? [];
 
@@ -59,7 +78,11 @@ export default function MyTicketsPage() {
       </div>
 
       {isLoading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: 54 }}><Spinner size={32} /></div>
+        <div style={{ display: 'grid', gap: 12 }} aria-label="Đang tải ticket">
+          {[0, 1, 2].map((item) => <Skeleton key={item} height={126} />)}
+        </div>
+      ) : isError ? (
+        <QueryError message={getErrorMessage(error)} onRetry={() => refetch()} />
       ) : tickets.length === 0 ? (
         <div className="card">
           <EmptyState
@@ -72,10 +95,13 @@ export default function MyTicketsPage() {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {tickets.map((ticket) => (
-            <TicketCard key={ticket.id} ticket={ticket} linkTo={`/employee/tickets/${ticket.id}`} />
+            <div key={ticket.id} onMouseEnter={() => handlePrefetch(ticket.id)}>
+              <TicketCard ticket={ticket} linkTo={`/employee/tickets/${ticket.id}`} />
+            </div>
           ))}
         </div>
       )}
     </div>
   );
+
 }

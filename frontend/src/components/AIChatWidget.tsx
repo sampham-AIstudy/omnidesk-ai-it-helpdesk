@@ -143,8 +143,8 @@ export default function AIChatWidget() {
                   {message.sources && message.sources.length > 0 && (
                     <div style={{ marginTop: 8, paddingTop: 7, borderTop: '1px solid rgba(82,96,113,0.22)' }}>
                       <div style={{ fontSize: 10, fontWeight: 800, color: message.sender === 'user' ? '#dbeafe' : 'var(--cyan)', marginBottom: 4 }}>Nguồn KB</div>
-                      {message.sources.slice(0, 3).map((source) => (
-                        <div key={source} style={{ fontSize: 10, color: message.sender === 'user' ? '#eaf1ff' : 'var(--text-secondary)' }}>{source}</div>
+                      {Array.from(new Set(message.sources)).slice(0, 3).map((source, sIdx) => (
+                        <div key={`${source}-${sIdx}`} style={{ fontSize: 10, color: message.sender === 'user' ? '#eaf1ff' : 'var(--text-secondary)' }}>{source}</div>
                       ))}
                     </div>
                   )}

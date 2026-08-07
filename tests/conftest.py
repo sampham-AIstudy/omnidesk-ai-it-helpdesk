@@ -1,15 +1,17 @@
 """Shared test fixtures cho toàn bộ test suite."""
 import os
+from unittest.mock import AsyncMock, patch
+
 import pytest
 import pytest_asyncio
-from unittest.mock import AsyncMock
 from httpx import ASGITransport, AsyncClient
 
 # Set test DB before importing app
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///./data/test.db"
 
-from src.main import app, _seed_demo_users, _seed_knowledge_base
-from src.database import engine, Base, AsyncSessionLocal
+from src.data.knowledge_base import get_all_kb_entries
+from src.database import AsyncSessionLocal, Base, engine
+from src.main import _seed_demo_users, _seed_knowledge_base, app
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
@@ -21,7 +23,12 @@ async def prepare_database():
 
     async with AsyncSessionLocal() as db:
         await _seed_demo_users(db)
-        await _seed_knowledge_base(db)
+        indexed_ids = {entry["id"] for entry in get_all_kb_entries()}
+        with patch(
+            "src.services.rag_service.get_indexed_document_ids",
+            return_value=indexed_ids,
+        ):
+            await _seed_knowledge_base(db)
 
 
 @pytest_asyncio.fixture

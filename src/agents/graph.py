@@ -1,12 +1,21 @@
 """
-LangGraph Help Desk Agent Workflow.
+LangGraph Help Desk Agent Workflow with Multi-Stage Guardrail Short-Circuiting.
 
 Flow:
-  START → classify → rag_suggest → hitl_check
-    → [if hitl_required] → PAUSE (pending_hitl status in DB)
-    → [if not hitl_required] → auto_close_check
-        → [if auto_close] → END (closed)
-        → [if not auto_close] → router → END (in_progress)
+  START ──► input_guardrail (Step 1)
+               │
+               ├─── [if is_blocked == True] ──► END (SHORT-CIRCUIT EARLY EXIT!)
+               │
+               └─── [if safe] ──► classify ──► rag ──► output_guardrail (Step 2)
+                                                             │
+                                                             ▼
+                                                        hitl_check
+                                                             │
+                                                             ├─── [if hitl] ──► END (pending_hitl)
+                                                             └─── [if not hitl] ──► auto_close_check
+                                                                                         │
+                                                                                         ├─── [if auto_close] ──► END (closed)
+                                                                                         └─── [if not auto_close] ──► router ──► END
 """
 from __future__ import annotations
 
@@ -17,6 +26,8 @@ from langgraph.graph import END, START, StateGraph
 from src.agents.nodes.auto_close_node import auto_close_check_node
 from src.agents.nodes.classifier import classify_node
 from src.agents.nodes.hitl_node import hitl_check_node
+from src.agents.nodes.input_guardrail_node import input_guardrail_node
+from src.agents.nodes.output_guardrail_node import output_guardrail_node
 from src.agents.nodes.rag_node import rag_node
 from src.agents.nodes.router_node import router_node
 from src.agents.state import TicketAgentState
@@ -25,6 +36,22 @@ logger = logging.getLogger(__name__)
 
 
 # ─── Edge Routing Functions ───────────────────────────────────────────────────
+
+def after_input_guardrail(state: TicketAgentState) -> str:
+    """Step 1 Input Guardrail Edge: Short-circuit to END if blocked."""
+    if state.get("is_blocked", False):
+        logger.warning(f"[Graph] → SHORT-CIRCUIT BLOCK for ticket #{state.get('ticket_number')}. Stopping pipeline!")
+        return "end_blocked"
+    return "classify"
+
+
+def after_classify(state: TicketAgentState) -> str:
+    """Sau classify: nếu lỗi → dừng."""
+    if state.get("error"):
+        logger.error(f"[Graph] Classify error: {state.get('error')}")
+        return "end_error"
+    return "rag"
+
 
 def after_hitl_check(state: TicketAgentState) -> str:
     """Sau HITL check: nếu cần HITL → dừng (DB cập nhật status pending_hitl)."""
@@ -42,28 +69,32 @@ def after_auto_close(state: TicketAgentState) -> str:
     return "router"
 
 
-def after_classify(state: TicketAgentState) -> str:
-    """Sau classify: nếu lỗi → dừng."""
-    if state.get("error"):
-        logger.error(f"[Graph] Classify error: {state.get('error')}")
-        return "end_error"
-    return "rag"
-
-
 # ─── Build Graph ─────────────────────────────────────────────────────────────
 
 def build_graph() -> StateGraph:
     graph = StateGraph(TicketAgentState)
 
     # Add nodes
+    graph.add_node("input_guardrail", input_guardrail_node)
     graph.add_node("classify", classify_node)
     graph.add_node("rag", rag_node)
+    graph.add_node("output_guardrail", output_guardrail_node)
     graph.add_node("hitl_check", hitl_check_node)
     graph.add_node("auto_close_check", auto_close_check_node)
     graph.add_node("router", router_node)
 
     # Edges
-    graph.add_edge(START, "classify")
+    graph.add_edge(START, "input_guardrail")
+
+    # Step 1 Early Exit Short-Circuit
+    graph.add_conditional_edges(
+        "input_guardrail",
+        after_input_guardrail,
+        {
+            "end_blocked": END,  # SHORT-CIRCUIT EARLY EXIT!
+            "classify": "classify",
+        },
+    )
 
     graph.add_conditional_edges(
         "classify",
@@ -74,7 +105,8 @@ def build_graph() -> StateGraph:
         },
     )
 
-    graph.add_edge("rag", "hitl_check")
+    graph.add_edge("rag", "output_guardrail")
+    graph.add_edge("output_guardrail", "hitl_check")
 
     graph.add_conditional_edges(
         "hitl_check",
@@ -130,6 +162,7 @@ async def process_ticket(
         "department": department,
         "hitl_required": False,
         "auto_close_eligible": False,
+        "is_blocked": False,
         "error": None,
     }
 
@@ -138,6 +171,7 @@ async def process_ticket(
     logger.info(
         f"[Graph] Finished ticket #{ticket_number}: "
         f"action={final_state.get('action_taken')} "
+        f"is_blocked={final_state.get('is_blocked')} "
         f"hitl={final_state.get('hitl_required')}"
     )
     return final_state

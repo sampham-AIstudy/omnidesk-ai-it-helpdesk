@@ -7,7 +7,15 @@ from typing import Any
 from pydantic import BaseModel, EmailStr, Field
 
 from src.models.audit_log import AuditAction
-from src.models.ticket import TicketCategory, TicketPriority, TicketStatus, TicketUrgency
+from src.models.ticket import (
+    TicketCategory,
+    TicketPriority,
+    TicketStatus,
+    TicketSupportMode,
+    TicketUrgency,
+)
+
+from src.models.ticket_message import TicketMessageSender
 from src.models.user import CompanyUnit, UserRole
 
 
@@ -76,6 +84,11 @@ class TicketResponse(BaseModel):
     hitl_required: bool
     hitl_note: str | None
     hitl_decided_at: datetime | None
+    support_mode: TicketSupportMode = TicketSupportMode.AI
+    closed_by: str | None = None
+    resolution_summary: str | None = None
+    rating: int | None = None
+    rating_feedback: str | None = None
     submitter_id: int
     assignee_id: int | None
     sla_deadline: datetime | None
@@ -83,6 +96,8 @@ class TicketResponse(BaseModel):
     sla_escalated: bool
     first_response_at: datetime | None
     resolved_at: datetime | None
+    closed_at: datetime | None = None
+    reopened_at: datetime | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -104,6 +119,38 @@ class HITLDecisionRequest(BaseModel):
 class TicketStatusUpdate(BaseModel):
     status: TicketStatus
     note: str | None = None
+
+
+class TicketReopenRequest(BaseModel):
+    reason: str = Field(min_length=3, max_length=2000)
+
+
+class TicketRatingRequest(BaseModel):
+    rating: int = Field(ge=1, le=5)
+    feedback: str | None = Field(None, max_length=2000)
+
+
+class TicketMessageCreate(BaseModel):
+    message: str = Field(min_length=1, max_length=4000)
+
+
+
+class TicketMessageResponse(BaseModel):
+    id: int
+    ticket_id: int
+    sender_id: int | None
+    sender_type: TicketMessageSender
+    content: str
+    sources_json: str | None
+    confidence_score: float | None
+    routing_hint: str | None
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class TicketConversationResponse(BaseModel):
+    items: list[TicketMessageResponse]
 
 
 # ─── Audit Log Schemas ────────────────────────────────────────────────────────

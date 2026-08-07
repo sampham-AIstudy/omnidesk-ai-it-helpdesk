@@ -7,7 +7,7 @@ graph TB
     User([User]) --> UI[Frontend<br/>React/Next.js]
     UI -->|REST API| API[FastAPI Backend]
     API --> Agent[LangGraph Agent]
-    Agent --> LLM[LLM Service<br/>GPT-4o / Gemini]
+    Agent --> LLM[LLM Service<br/>Mistral Small / Codestral]
     Agent --> Tools[Agent Tools]
     Tools --> DB[(Database)]
     Agent --> VS[Vector Store<br/>ChromaDB]
@@ -33,6 +33,6 @@ graph LR
 | Frontend | React/Next.js | User interface |
 | Backend | FastAPI | API server |
 | Agent | LangGraph | AI agent orchestration |
-| LLM | OpenAI/Gemini | Language model |
+| LLM | Mistral | Classification and grounded response generation |
 | Database | PostgreSQL/SQLite | Data persistence |
 | Vector Store | ChromaDB | RAG / embeddings |

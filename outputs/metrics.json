@@ -1,0 +1,27 @@
+{
+  "raw_metrics": {
+    "total_requests": 5,
+    "allowed_requests": 1,
+    "blocked_requests": 4,
+    "sanitized_requests": 0,
+    "prompt_injection_count": 4,
+    "PII_leak_count": 0,
+    "secret_leak_count": 0,
+    "rate_limit_hits": 0,
+    "RAG_injection_count": 0,
+    "tool_denials": 0,
+    "HITL_count": 0,
+    "auto_close_count": 0,
+    "routing_review_count": 0,
+    "security_incident_count": 0,
+    "judge_failure_count": 0,
+    "groundedness_failure_count": 0,
+    "SLA_escalation_count": 0
+  },
+  "block_rate": 0.8,
+  "hitl_rate": 0.0,
+  "judge_fail_rate": 0.0,
+  "alerts": [
+    "HIGH BLOCK RATE ALERT: 0.80 > 0.5"
+  ]
+}

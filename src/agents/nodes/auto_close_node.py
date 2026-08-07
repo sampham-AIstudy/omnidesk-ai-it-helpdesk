@@ -13,7 +13,7 @@ settings = get_settings()
 def _is_auto_close_eligible(state: TicketAgentState) -> bool:
     """
     Điều kiện auto-close:
-    - Confidence >= threshold (default 0.85)
+    - Confidence >= threshold (mặc định 0.75 theo PRD FR-09)
     - Không phải production impact
     - Không phải VIP (hoặc là VIP nhưng category đơn giản)
     - Category cho phép auto-close
@@ -26,7 +26,6 @@ def _is_auto_close_eligible(state: TicketAgentState) -> bool:
     category = state.get("category", "other")
     priority = state.get("priority", "medium")
     has_solution = bool(state.get("suggested_solution"))
-    has_rag = bool(state.get("rag_context"))
 
     # Không auto-close các category nguy hiểm
     no_auto_close_categories = {"security", "infrastructure", "erp_sap"}

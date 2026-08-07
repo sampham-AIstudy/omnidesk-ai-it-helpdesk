@@ -16,8 +16,14 @@ from sqlalchemy import (
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import TYPE_CHECKING
 
 from src.database import Base
+
+if TYPE_CHECKING:
+    from src.models.ai_run import AIRun
+    from src.models.hitl_approval import HITLApproval
+    from src.models.user import User
 
 
 class TicketCategory(str, enum.Enum):
@@ -47,16 +53,58 @@ class TicketUrgency(str, enum.Enum):
     EMERGENCY = "emergency"
 
 
+class TicketSupportMode(str, enum.Enum):
+    AI = "ai"
+    HUMAN = "human"
+
+
 class TicketStatus(str, enum.Enum):
     OPEN = "open"                           # Mới tạo
     CLASSIFYING = "classifying"             # Agent đang phân loại
+    NEEDS_CLARIFICATION = "needs_clarification" # AI cần thêm thông tin
     PENDING_HITL = "pending_hitl"           # Chờ HITL approval
     IN_PROGRESS = "in_progress"            # Đang xử lý
+    WAITING_FOR_AGENT = "waiting_for_agent" # Chờ chuyên viên tiếp nhận
+    HUMAN_ACTIVE = "human_active"           # Chuyên viên đang hỗ trợ
     PENDING_CLOSURE = "pending_closure"    # Chờ auto-close confirmation
     RESOLVED = "resolved"                  # Đã giải quyết
     CLOSED = "closed"                      # Đã đóng
+    REOPENED = "reopened"                  # Mở lại
     ESCALATED = "escalated"               # Đã leo thang
     REJECTED = "rejected"                  # Bị từ chối
+    SECURITY_REVIEW = "security_review"    # Nghi vấn bảo mật / Forensic audit
+    CANCELLED = "cancelled"                # Đã hủy
+
+
+ALLOWED_TICKET_TRANSITIONS: dict[TicketStatus, set[TicketStatus]] = {
+    TicketStatus.OPEN: {TicketStatus.CLASSIFYING, TicketStatus.NEEDS_CLARIFICATION, TicketStatus.PENDING_HITL, TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.REJECTED, TicketStatus.SECURITY_REVIEW, TicketStatus.CANCELLED},
+    TicketStatus.CLASSIFYING: {TicketStatus.NEEDS_CLARIFICATION, TicketStatus.PENDING_HITL, TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.REJECTED, TicketStatus.SECURITY_REVIEW, TicketStatus.CANCELLED},
+    TicketStatus.NEEDS_CLARIFICATION: {TicketStatus.CLASSIFYING, TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.CANCELLED},
+    TicketStatus.PENDING_HITL: {TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.REJECTED, TicketStatus.CLOSED, TicketStatus.CANCELLED},
+    TicketStatus.IN_PROGRESS: {TicketStatus.NEEDS_CLARIFICATION, TicketStatus.WAITING_FOR_AGENT, TicketStatus.HUMAN_ACTIVE, TicketStatus.ESCALATED, TicketStatus.PENDING_CLOSURE, TicketStatus.RESOLVED, TicketStatus.CLOSED, TicketStatus.CANCELLED},
+    TicketStatus.WAITING_FOR_AGENT: {TicketStatus.HUMAN_ACTIVE, TicketStatus.ESCALATED, TicketStatus.CLOSED, TicketStatus.CANCELLED},
+    TicketStatus.HUMAN_ACTIVE: {TicketStatus.ESCALATED, TicketStatus.PENDING_CLOSURE, TicketStatus.RESOLVED, TicketStatus.CLOSED, TicketStatus.CANCELLED},
+    TicketStatus.ESCALATED: {TicketStatus.HUMAN_ACTIVE, TicketStatus.RESOLVED, TicketStatus.CLOSED, TicketStatus.CANCELLED},
+    TicketStatus.PENDING_CLOSURE: {TicketStatus.RESOLVED, TicketStatus.CLOSED, TicketStatus.REOPENED, TicketStatus.WAITING_FOR_AGENT},
+    TicketStatus.RESOLVED: {TicketStatus.CLOSED, TicketStatus.REOPENED},
+    TicketStatus.CLOSED: {TicketStatus.REOPENED},
+    TicketStatus.REOPENED: {TicketStatus.CLASSIFYING, TicketStatus.WAITING_FOR_AGENT, TicketStatus.HUMAN_ACTIVE, TicketStatus.IN_PROGRESS},
+    TicketStatus.REJECTED: set(),
+    TicketStatus.SECURITY_REVIEW: {TicketStatus.CLASSIFYING, TicketStatus.REJECTED, TicketStatus.CLOSED},
+    TicketStatus.CANCELLED: set(),
+}
+
+
+def can_transition_ticket(current_status: TicketStatus | str, new_status: TicketStatus | str) -> bool:
+    """Validate if transitioning from current_status to new_status is allowed under State Machine rules."""
+    try:
+        curr_enum = TicketStatus(current_status)
+        new_enum = TicketStatus(new_status)
+    except ValueError:
+        return False
+    if curr_enum == new_enum:
+        return True
+    return new_enum in ALLOWED_TICKET_TRANSITIONS.get(curr_enum, set())
 
 
 class Ticket(Base):
@@ -80,14 +128,23 @@ class Ticket(Base):
     rag_sources: Mapped[str | None] = mapped_column(Text, nullable=True)  # JSON string
     agent_reasoning: Mapped[str | None] = mapped_column(Text, nullable=True)
 
-    # Routing
+    # Routing & Support Mode
     routing_target: Mapped[str | None] = mapped_column(String(100), nullable=True)
     is_production_impact: Mapped[bool] = mapped_column(Boolean, default=False)
+    support_mode: Mapped[TicketSupportMode] = mapped_column(
+        Enum(TicketSupportMode), default=TicketSupportMode.AI, nullable=False
+    )
 
     # Status
     status: Mapped[TicketStatus] = mapped_column(
         Enum(TicketStatus), default=TicketStatus.OPEN, nullable=False, index=True
     )
+
+    # Closure & Rating
+    closed_by: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    resolution_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
+    rating: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    rating_feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # HITL
     hitl_required: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -102,12 +159,15 @@ class Ticket(Base):
     submitter_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     assignee_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
 
-    # SLA
+    # SLA & Activity
     sla_deadline: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     sla_warning_sent: Mapped[bool] = mapped_column(Boolean, default=False)
     sla_escalated: Mapped[bool] = mapped_column(Boolean, default=False)
     first_response_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    closed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    reopened_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
 
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(
@@ -121,6 +181,9 @@ class Ticket(Base):
     submitter: Mapped["User"] = relationship("User", back_populates="tickets", foreign_keys=[submitter_id])
     assignee: Mapped["User | None"] = relationship("User", back_populates="assigned_tickets", foreign_keys=[assignee_id])
     audit_logs: Mapped[list] = relationship("AuditLog", back_populates="ticket")
+    messages: Mapped[list] = relationship("TicketMessage", back_populates="ticket")
+    hitl_approvals: Mapped[list] = relationship("HITLApproval", back_populates="ticket", cascade="all, delete-orphan")
+    ai_runs: Mapped[list] = relationship("AIRun", back_populates="ticket", cascade="all, delete-orphan")
 
     def __repr__(self) -> str:
         return f"<Ticket #{self.ticket_number} [{self.status}]>"

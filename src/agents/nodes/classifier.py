@@ -3,14 +3,16 @@ from __future__ import annotations
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from src.agents.state import TicketAgentState
+from src.config import get_settings
 from src.services.llm import get_classifier_llm
 
 logger = logging.getLogger(__name__)
+settings = get_settings()
 
 CLASSIFIER_SYSTEM_PROMPT = """Bạn là AI phân loại ticket IT Help Desk cho tập đoàn lớn.
 Nhiệm vụ: Phân tích mô tả ticket và trả về JSON phân loại chính xác.
@@ -129,7 +131,7 @@ Trả về JSON phân loại."""
             "routing_target": routing,
             "is_production_impact": is_prod,
             "model_used": f"mistral:{llm.model}",
-            "processing_start": datetime.now(timezone.utc).isoformat(),
+            "processing_start": datetime.now(UTC).isoformat(),
             "token_count": getattr(response, "usage_metadata", {}).get("total_tokens", 0),
             "error": None,
         }
@@ -186,8 +188,8 @@ Trả về JSON phân loại."""
             "category": category,
             "priority": priority,
             "urgency": urgency,
-            "confidence_score": 0.85,
-            "agent_reasoning": f"[Heuristic Fallback Engine] Phân loại dựa trên luật từ khóa vì LLM bận/lỗi API key",
+            "confidence_score": settings.confidence_threshold_auto_close,
+            "agent_reasoning": "[Heuristic Fallback Engine] Phân loại dựa trên luật từ khóa vì LLM bận/lỗi API key",
             "routing_target": routing,
             "model_used": "rule-heuristic-fallback",
             "error": None,

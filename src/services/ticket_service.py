@@ -2,19 +2,21 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timedelta, timezone
-from typing import Any
+import logging
+from datetime import UTC, datetime, timedelta
 
-from sqlalchemy import func, select
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from src.config import get_settings
 from src.models.audit_log import AuditAction, AuditLog
-from src.models.ticket import Ticket, TicketPriority, TicketStatus, TicketUrgency
+from src.models.ticket import Ticket, TicketPriority, TicketStatus
 from src.models.user import User
 
+logger = logging.getLogger(__name__)
 settings = get_settings()
+
 
 # SLA hours by priority
 SLA_HOURS: dict[TicketPriority, int] = {
@@ -27,7 +29,7 @@ SLA_HOURS: dict[TicketPriority, int] = {
 
 def _gen_ticket_number() -> str:
     """Generate INC-YYYYMMDD-XXXX style ticket number."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     import random
     return f"INC-{now.strftime('%Y%m%d')}-{random.randint(1000, 9999)}"
 
@@ -65,10 +67,11 @@ async def create_ticket(
 async def get_ticket(db: AsyncSession, ticket_id: int) -> Ticket | None:
     result = await db.execute(
         select(Ticket)
-        .options(selectinload(Ticket.submitter))
+        .options(selectinload(Ticket.submitter), selectinload(Ticket.assignee))
         .where(Ticket.id == ticket_id)
     )
     return result.scalar_one_or_none()
+
 
 
 async def get_tickets(
@@ -76,6 +79,10 @@ async def get_tickets(
     status: TicketStatus | None = None,
     submitter_id: int | None = None,
     submitter_company_unit: str | None = None,
+    search: str | None = None,
+    priority: TicketPriority | None = None,
+    sort_by: str = "created_at",
+    sort_order: str = "desc",
     page: int = 1,
     page_size: int = 20,
 ) -> tuple[list[Ticket], int]:
@@ -84,6 +91,15 @@ async def get_tickets(
         query = query.where(Ticket.status == status)
     if submitter_id:
         query = query.where(Ticket.submitter_id == submitter_id)
+    if priority:
+        query = query.where(Ticket.priority == priority)
+    if search:
+        pattern = f"%{search.strip()}%"
+        query = query.where(or_(
+            Ticket.ticket_number.ilike(pattern),
+            Ticket.title.ilike(pattern),
+            Ticket.description.ilike(pattern),
+        ))
     if submitter_company_unit:
         query = query.join(User, Ticket.submitter_id == User.id).where(
             User.company_unit == submitter_company_unit
@@ -92,7 +108,15 @@ async def get_tickets(
     count_result = await db.execute(select(func.count()).select_from(query.subquery()))
     total = count_result.scalar() or 0
 
-    query = query.order_by(Ticket.created_at.desc())
+    sort_columns = {
+        "created_at": Ticket.created_at,
+        "updated_at": Ticket.updated_at,
+        "priority": Ticket.priority,
+        "sla_deadline": Ticket.sla_deadline,
+        "confidence_score": Ticket.confidence_score,
+    }
+    sort_column = sort_columns.get(sort_by, Ticket.created_at)
+    query = query.order_by(sort_column.asc() if sort_order == "asc" else sort_column.desc())
     query = query.offset((page - 1) * page_size).limit(page_size)
     result = await db.execute(query)
     return result.scalars().all(), total
@@ -139,7 +163,7 @@ async def update_ticket_classification(
 
     # Set SLA deadline
     sla_hours = SLA_HOURS.get(TicketPriority(priority), 8)
-    ticket.sla_deadline = datetime.now(timezone.utc) + timedelta(hours=sla_hours)
+    ticket.sla_deadline = datetime.now(UTC) + timedelta(hours=sla_hours)
 
     if hitl_required:
         ticket.status = TicketStatus.PENDING_HITL
@@ -177,12 +201,12 @@ async def apply_hitl_decision(
 
     ticket.hitl_approved_by_id = manager_id
     ticket.hitl_note = note
-    ticket.hitl_decided_at = datetime.now(timezone.utc)
+    ticket.hitl_decided_at = datetime.now(UTC)
 
     action = AuditAction.HITL_APPROVED if approved else AuditAction.HITL_REJECTED
     if approved:
         ticket.status = TicketStatus.IN_PROGRESS
-        ticket.first_response_at = datetime.now(timezone.utc)
+        ticket.first_response_at = datetime.now(UTC)
     else:
         ticket.status = TicketStatus.OPEN
         ticket.hitl_required = False
@@ -212,8 +236,32 @@ async def close_ticket(
         return None
 
     ticket.status = TicketStatus.CLOSED
-    ticket.resolved_at = datetime.now(timezone.utc)
+    ticket.resolved_at = datetime.now(UTC)
     await db.flush()
+
+    # ── Auto Knowledge Capture for RAG Vector Store ──────────────────────
+    solution_text = ticket.suggested_solution or note
+    if solution_text and len(solution_text.strip()) > 15:
+        try:
+            from src.services.rag_service import index_document
+
+            kb_doc_id = f"auto-kb-ticket-{ticket.id}"
+            kb_content = (
+                f"Sự cố: {ticket.title}. "
+                f"Mô tả chi tiết: {ticket.description}. "
+                f"Giải pháp xử lý chuẩn: {solution_text.strip()}"
+            )
+            kb_metadata = {
+                "title": f"KB bài học từ Ticket #{ticket.ticket_number}",
+                "category": ticket.category.value if ticket.category else "other",
+                "solution": solution_text.strip(),
+                "company_unit": "all",
+                "applicable_to_all": True,
+            }
+            index_document(doc_id=kb_doc_id, content=kb_content, metadata=kb_metadata)
+            logger.info("Auto Knowledge Capture: Đã lưu bài học từ Ticket #%s vào RAG Vector DB", ticket.ticket_number)
+        except Exception as exc:
+            logger.warning("Auto Knowledge Capture thất bại cho Ticket #%s: %s", ticket.ticket_number, exc)
 
     action = (
         AuditAction.TICKET_AUTO_CLOSED if actor_type == "agent"
@@ -227,7 +275,9 @@ async def close_ticket(
         action=action,
         description=f"Ticket đóng bởi {actor_type}. {note}",
     )
+    await db.refresh(ticket)
     return ticket
+
 
 
 async def escalate_ticket(
@@ -253,6 +303,51 @@ async def escalate_ticket(
     return ticket
 
 
+async def takeover_ticket(
+    db: AsyncSession,
+    ticket_id: int,
+    technician_id: int,
+) -> Ticket | None:
+    """Explicit Agent Takeover: Technician claims ticket and transitions state to IN_PROGRESS + HUMAN."""
+    ticket = await get_ticket(db, ticket_id)
+    if not ticket:
+        return None
+
+    old_status = ticket.status.value if hasattr(ticket.status, 'value') else str(ticket.status)
+    from src.models.ticket import TicketSupportMode
+    ticket.assignee_id = technician_id
+    ticket.status = TicketStatus.IN_PROGRESS
+    ticket.support_mode = TicketSupportMode.HUMAN
+    await db.flush()
+
+    tech_user = await db.get(User, technician_id)
+    tech_name = tech_user.full_name if tech_user else f"Chuyên viên #{technician_id}"
+
+    from src.services.ticket_conversation_service import add_message
+    from src.models.ticket_message import TicketMessageSender
+    await add_message(
+        db,
+        ticket_id=ticket.id,
+        sender_type=TicketMessageSender.SYSTEM,
+        sender_id=technician_id,
+        content=f"👨‍💻 Chuyên viên {tech_name} đã tiếp nhận ticket và tham gia cuộc trò chuyện.",
+    )
+
+    await write_audit_log(
+        db=db,
+        ticket_id=ticket_id,
+        actor_id=technician_id,
+        actor_type="technician",
+        action=AuditAction.TICKET_ASSIGNED,
+        description=f"Chuyên viên {tech_name} tiếp nhận ticket #{ticket.ticket_number}",
+        metadata={"old_status": old_status, "new_status": TicketStatus.IN_PROGRESS.value, "support_mode": "human"},
+    )
+
+    await db.refresh(ticket)
+    return ticket
+
+
+
 async def write_audit_log(
     db: AsyncSession,
     action: AuditAction,
@@ -270,10 +365,11 @@ async def write_audit_log(
         actor_type=actor_type,
         action=action,
         description=description,
-        metadata_json=json.dumps(metadata) if metadata else None,
+        metadata_json=json.dumps(metadata or {}, ensure_ascii=False),
         confidence_score=confidence_score,
         model_used=model_used,
     )
     db.add(log)
     await db.flush()
     return log
+

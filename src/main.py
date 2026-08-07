@@ -108,36 +108,43 @@ async def _seed_demo_users(db):
 
 
 async def _seed_knowledge_base(db):
-    """Index KB entries vào ChromaDB nếu chưa có."""
-    from src.data.knowledge_base import get_all_kb_entries
-    from src.models.knowledge_base import KnowledgeBaseEntry
-    from src.services.rag_service import get_collection_count, index_document
+    """Đồng bộ các KB entry còn thiếu vào SQLite và ChromaDB."""
     from sqlalchemy import select
 
-    existing_count = get_collection_count()
-    if existing_count > 0:
-        logger.info(f"KB already indexed: {existing_count} documents in ChromaDB")
-        return
-
+    from src.data.knowledge_base import get_all_kb_entries
+    from src.models.knowledge_base import KnowledgeBaseEntry
+    from src.services.rag_service import (
+        get_collection_count,
+        get_indexed_document_ids,
+        index_document,
+    )
     entries = get_all_kb_entries()
-    logger.info(f"Seeding {len(entries)} KB entries into ChromaDB...")
+    indexed_ids = get_indexed_document_ids([entry["id"] for entry in entries])
+    logger.info("Syncing %d KB entries; %d already indexed", len(entries), len(indexed_ids))
 
     for entry_data in entries:
-        # Save to SQLite
         kb_id = entry_data["id"]
-        db_entry = KnowledgeBaseEntry(
-            chroma_id=kb_id,
-            title=entry_data["title"],
-            content=entry_data["content"],
-            solution=entry_data.get("solution"),
-            runbook=entry_data.get("runbook"),
-            category=entry_data["category"],
-            tags=entry_data.get("tags", ""),
-            company_unit=entry_data.get("company_unit"),
-            department=entry_data.get("department"),
-            applicable_to_all=entry_data.get("applicable_to_all", True),
+        result = await db.execute(
+            select(KnowledgeBaseEntry).where(KnowledgeBaseEntry.chroma_id == kb_id)
         )
-        db.add(db_entry)
+        if result.scalar_one_or_none() is None:
+            db.add(
+                KnowledgeBaseEntry(
+                    chroma_id=kb_id,
+                    title=entry_data["title"],
+                    content=entry_data["content"],
+                    solution=entry_data.get("solution"),
+                    runbook=entry_data.get("runbook"),
+                    category=entry_data["category"],
+                    tags=entry_data.get("tags", ""),
+                    company_unit=entry_data.get("company_unit"),
+                    department=entry_data.get("department"),
+                    applicable_to_all=entry_data.get("applicable_to_all", True),
+                )
+            )
+
+        if kb_id in indexed_ids:
+            continue
 
         # Index vào ChromaDB
         content_for_embedding = f"{entry_data['title']}. {entry_data['content']}"
@@ -165,14 +172,18 @@ async def _seed_knowledge_base(db):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Startup: init DB + seed data. Shutdown: cleanup."""
+    """Startup: init DB + seed data + LLM cache. Shutdown: cleanup."""
     logger.info(f"🚀 Starting {settings.app_name} [{settings.app_env}]")
 
     # Ensure data dir
     Path("./data").mkdir(exist_ok=True)
 
+    # Init Redis LLM cache (trước khi init DB để cache sẵn sàng)
+    from src.services.cache_service import init_llm_cache
+    init_llm_cache()
+
     # Init DB tables
-    from src.database import init_db, AsyncSessionLocal
+    from src.database import AsyncSessionLocal, init_db
     await init_db()
     logger.info("✅ Database initialized")
 
@@ -204,17 +215,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Trace ID Middleware
+import uuid
+from starlette.requests import Request
+from starlette.responses import Response
+
+@app.middleware("http")
+async def trace_id_middleware(request: Request, call_next):
+    trace_id = request.headers.get("X-Trace-ID") or str(uuid.uuid4())[:8]
+    request.state.trace_id = trace_id
+    response: Response = await call_next(request)
+    response.headers["X-Trace-ID"] = trace_id
+    return response
+
 # Routes
 app.include_router(router, prefix="/api/v1")
 
 
 @app.get("/health")
 async def health():
+    from src.services.cache_service import get_cache_status
     from src.services.rag_service import get_collection_count
     return {
         "status": "ok",
         "env": settings.app_env,
         "kb_documents": get_collection_count(),
+        "cache": get_cache_status(),
         "version": "1.0.0",
     }
 

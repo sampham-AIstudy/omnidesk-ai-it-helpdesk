@@ -75,11 +75,53 @@ export function formatRelative(date: string): string {
   return formatDistanceToNow(new Date(date), { addSuffix: true, locale: vi });
 }
 
+export const CONFIDENCE_AUTO_MIN = 0.75;
+export const CONFIDENCE_WARNING_MIN = 0.60;
+
+export type ConfidenceBand = 'unavailable' | 'normal' | 'warning' | 'manual';
+
+export interface ConfidencePresentation {
+  band: ConfidenceBand;
+  label: string;
+  description: string;
+  color: string;
+}
+
+export function getConfidencePresentation(score: number | null | undefined): ConfidencePresentation {
+  if (score === null || score === undefined) {
+    return {
+      band: 'unavailable',
+      label: 'Chưa có',
+      description: 'Agent chưa hoàn tất phân loại.',
+      color: 'var(--text-muted)',
+    };
+  }
+  if (score >= CONFIDENCE_AUTO_MIN) {
+    return {
+      band: 'normal',
+      label: 'Đủ tin cậy',
+      description: 'Agent có thể xử lý bình thường nếu không có điều kiện HITL độc lập.',
+      color: 'var(--green)',
+    };
+  }
+  if (score >= CONFIDENCE_WARNING_MIN) {
+    return {
+      band: 'warning',
+      label: 'Cần lưu ý',
+      description: 'Bạn có thể thử giải pháp hoặc yêu cầu người hỗ trợ trực tiếp.',
+      color: 'var(--amber)',
+    };
+  }
+  return {
+    band: 'manual',
+    label: 'Xử lý thủ công',
+    description: 'Ticket bắt buộc được chuyển cho đội IT Support.',
+    color: 'var(--red)',
+  };
+}
+
 export function getConfidenceColor(score: number | null): string {
-  if (!score) return 'var(--text-muted)';
-  if (score >= 0.85) return 'var(--green)';
-  if (score >= 0.6) return 'var(--amber)';
-  return 'var(--red)';
+  return getConfidencePresentation(score).color;
 }
 
 export function getErrorMessage(err: unknown): string {
