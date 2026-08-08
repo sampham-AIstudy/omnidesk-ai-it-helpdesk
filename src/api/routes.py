@@ -1,25 +1,16 @@
-from fastapi import APIRouter, HTTPException
+"""API routes — Aggregate all routers."""
+from fastapi import APIRouter
 
-from src.agents.graph import agent
-from src.models.schemas import ChatRequest, ChatResponse
+from src.api.admin import router as admin_router
+from src.api.analytics import router as analytics_router
+from src.api.auth import router as auth_router
+from src.api.chat import router as chat_router
+from src.api.tickets import router as tickets_router
 
 router = APIRouter()
 
-
-@router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest) -> ChatResponse:
-    """Chat với AI agent."""
-    try:
-        result = await agent.ainvoke({"query": request.message})
-        return ChatResponse(
-            response=result.get("response", ""),
-            analysis=result.get("analysis", ""),
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@router.get("/status")
-async def agent_status():
-    """Kiểm tra trạng thái agent."""
-    return {"status": "ready", "agent": "LangGraph Agent v1.0"}
+router.include_router(auth_router)
+router.include_router(tickets_router)
+router.include_router(analytics_router)
+router.include_router(admin_router)
+router.include_router(chat_router)

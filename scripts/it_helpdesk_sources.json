@@ -1,0 +1,226 @@
+[
+  {
+    "key": "windows-wifi",
+    "title": "Khắc phục sự cố Wi-Fi trên Windows",
+    "url": "https://support.microsoft.com/en-us/windows/fix-wi-fi-connection-issues-in-windows-9424a1f7-6a3b-65a6-4d78-7f07eee84d2c",
+    "category": "network",
+    "tags": ["wifi", "windows", "network", "no internet"]
+  },
+  {
+    "key": "windows-vpn",
+    "title": "Kết nối VPN trên Windows",
+    "url": "https://support.microsoft.com/en-us/windows/experience/connectivity-networking/connect-to-a-vpn-in-windows",
+    "category": "network",
+    "tags": ["vpn", "windows", "remote access"]
+  },
+  {
+    "key": "outlook-send-receive",
+    "title": "Sự cố gửi và nhận email trong Outlook",
+    "url": "https://support.microsoft.com/en-us/outlook/issues-sending-and-receiving-email",
+    "category": "email",
+    "tags": ["outlook", "email", "send", "receive", "sync"]
+  },
+  {
+    "key": "onedrive-sync",
+    "title": "Khắc phục sự cố đồng bộ OneDrive",
+    "url": "https://support.microsoft.com/en-us/onedrive/fix-onedrive-sync-problems",
+    "category": "software",
+    "tags": ["onedrive", "sync", "microsoft 365", "file"]
+  },
+  {
+    "key": "windows-printer",
+    "title": "Khắc phục lỗi máy in trên Windows",
+    "url": "https://support.microsoft.com/en-us/windows/hardware/printer/fix-printer-connection-and-printing-problems-in-windows",
+    "category": "hardware",
+    "tags": ["printer", "print queue", "spooler", "windows"]
+  },
+  {
+    "key": "windows-blue-screen",
+    "title": "Khắc phục lỗi màn hình xanh Windows",
+    "url": "https://support.microsoft.com/en-us/windows/resolving-blue-screen-errors-in-windows-60b01860-58f2-be66-7516-5c45a66ae3c6",
+    "category": "hardware",
+    "tags": ["bsod", "blue screen", "stop code", "driver", "memory"]
+  },
+  {
+    "key": "windows-update",
+    "title": "Khắc phục sự cố Windows Update",
+    "url": "https://support.microsoft.com/en-us/windows/deployment/updates-lifecycle/troubleshoot-problems-updating-windows",
+    "category": "software",
+    "tags": ["windows update", "error code", "driver", "disk space"]
+  },
+  {
+    "key": "teams-camera",
+    "title": "Camera không hoạt động trong Microsoft Teams",
+    "url": "https://support.microsoft.com/en-US/teams/meetings/my-camera-isn-t-working-in-microsoft-teams",
+    "category": "software",
+    "tags": ["teams", "camera", "meeting", "permission", "driver"]
+  },
+  {
+    "key": "bitlocker-recovery",
+    "title": "Tìm khóa khôi phục BitLocker",
+    "url": "https://support.microsoft.com/en-us/windows/finding-your-bitlocker-recovery-key-in-windows-6b71ad27-0b89-ea08-f143-056f5ab347d6",
+    "category": "security",
+    "tags": ["bitlocker", "recovery key", "encryption", "windows"]
+  },
+  {
+    "key": "entra-sspr",
+    "title": "Xử lý lỗi tự đặt lại mật khẩu Microsoft Entra",
+    "url": "https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr",
+    "category": "access_permission",
+    "tags": ["entra", "sspr", "password reset", "mfa", "account"]
+  },
+  {
+    "key": "m365-authenticator-troubleshoot",
+    "title": "Khắc phục sự cố Microsoft Authenticator và MFA",
+    "url": "https://learn.microsoft.com/en-us/entra/identity/authentication/concept-mfa-howitworks",
+    "category": "access_permission",
+    "tags": ["mfa", "authenticator", "2fa", "login", "verification"]
+  },
+  {
+    "key": "m365-compromised-mailbox",
+    "title": "Ứng phó tài khoản email Microsoft 365 bị xâm nhập",
+    "url": "https://learn.microsoft.com/en-us/defender-office-365/responding-to-a-compromised-email-account",
+    "category": "security",
+    "tags": ["compromised account", "mailbox", "incident response", "microsoft 365"]
+  },
+  {
+    "key": "defender-device-isolation",
+    "title": "Cô lập thiết bị bị xâm nhập bằng Microsoft Defender",
+    "url": "https://learn.microsoft.com/en-us/defender-endpoint/respond-machine-alerts",
+    "category": "security",
+    "tags": ["malware", "device isolation", "incident response", "defender"]
+  },
+  {
+    "key": "windows-rdp-troubleshoot",
+    "title": "Khắc phục lỗi kết nối Remote Desktop (RDP)",
+    "url": "https://learn.microsoft.com/en-us/troubleshoot/windows-server/remote/rdp-error-general-troubleshooting",
+    "category": "network",
+    "tags": ["rdp", "remote desktop", "connection", "windows server", "network"]
+  },
+  {
+    "key": "windows-audio-fix",
+    "title": "Khắc phục sự cố âm thanh và tai nghe trên Windows",
+    "url": "https://support.microsoft.com/en-us/windows/fix-sound-or-audio-problems-in-windows-73025246-b61c-40fb-671a-2535c7cd56c8",
+    "category": "hardware",
+    "tags": ["audio", "sound", "headset", "speaker", "driver"]
+  },
+  {
+    "key": "outlook-repair-datafile",
+    "title": "Sửa lỗi tệp dữ liệu Outlook PST và OST",
+    "url": "https://support.microsoft.com/en-us/office/repair-outlook-data-files-pst-and-ost-25663bc3-11ec-4412-86c4-60458afc5253",
+    "category": "email",
+    "tags": ["outlook", "pst", "ost", "repair", "data file"]
+  },
+  {
+    "key": "phishing-suspicious-email",
+    "title": "Nhận diện và xử lý email lừa đảo Phishing trong Outlook",
+    "url": "https://learn.microsoft.com/en-us/defender-office-365/anti-phishing-protection-about",
+    "category": "security",
+    "tags": ["phishing", "email security", "spam", "outlook", "malicious"]
+  },
+  {
+    "key": "m365-password-policy",
+    "title": "Chính sách mật khẩu và thời hạn mật khẩu Microsoft 365",
+    "url": "https://learn.microsoft.com/en-us/microsoft-365/admin/manage/set-password-expiration-policy",
+    "category": "access_permission",
+    "tags": ["password", "policy", "expiration", "m365", "account"]
+  },
+  {
+    "key": "office-activation-error",
+    "title": "Khắc phục lỗi kích hoạt bản quyền Microsoft Office",
+    "url": "https://support.microsoft.com/en-us/office/unlicensed-product-and-activation-errors-in-office-0d23d3c0-c19c-4b2f-9845-5344fedc4380",
+    "category": "software",
+    "tags": ["office", "license", "activation", "unlicensed", "word"]
+  },
+  {
+    "key": "windows-bluetooth",
+    "title": "Khắc phục sự cố Bluetooth trên Windows",
+    "url": "https://support.microsoft.com/en-us/windows/fix-bluetooth-problems-in-windows-723e092f-03fa-858b-5c80-131ec3fba75c",
+    "category": "hardware",
+    "tags": ["bluetooth", "pairing", "driver", "windows", "wireless"]
+  },
+  {
+    "key": "windows-disk-space",
+    "title": "Giải phóng dung lượng ổ đĩa trên Windows",
+    "url": "https://support.microsoft.com/en-us/windows/free-up-drive-space-in-windows-85529ccb-c365-490d-b548-831022bc9b32",
+    "category": "performance",
+    "tags": ["disk space", "storage sense", "disk cleanup", "low storage", "windows"]
+  },
+  {
+    "key": "windows-slow-performance",
+    "title": "Cải thiện hiệu năng máy tính Windows chạy chậm",
+    "url": "https://support.microsoft.com/en-us/windows/tips-to-improve-pc-performance-in-windows-b3b3ef5b-5953-fb6a-2528-4bbed82fba96",
+    "category": "performance",
+    "tags": ["slow computer", "performance", "startup apps", "ram", "cpu"]
+  },
+  {
+    "key": "windows-defender-malware",
+    "title": "Quét và loại bỏ virus, mã độc bằng Windows Security",
+    "url": "https://support.microsoft.com/en-us/windows/virus-and-threat-protection-in-the-windows-security-app-1362f4cd-d71a-b52a-0b66-c2820032b65e",
+    "category": "security",
+    "tags": ["malware", "virus", "windows defender", "scan", "threat protection"]
+  },
+  {
+    "key": "sharepoint-onedrive-access-denied",
+    "title": "Xử lý lỗi Access Denied khi truy cập SharePoint/OneDrive",
+    "url": "https://learn.microsoft.com/en-us/troubleshoot/sharepoint/administration/access-denied-or-need-permission-error-sharepoint-online-or-onedrive-for-business",
+    "category": "access_permission",
+    "tags": ["sharepoint", "onedrive", "access denied", "permission", "file sharing"]
+  },
+  {
+    "key": "windows-activation-errors",
+    "title": "Khắc phục lỗi kích hoạt bản quyền Windows",
+    "url": "https://support.microsoft.com/en-us/windows/activation/get-help-with-windows-activation-errors",
+    "category": "software",
+    "tags": ["windows", "activation", "license", "product key", "error code"]
+  },
+  {
+    "key": "microsoft-account-locked",
+    "title": "Mở khóa tài khoản Microsoft bị khóa",
+    "url": "https://support.microsoft.com/en-us/accounts-billing/manage/if-your-account-has-been-locked",
+    "category": "access_permission",
+    "tags": ["microsoft account", "locked", "sign in", "unlock", "security"]
+  },
+  {
+    "key": "windows-external-monitor",
+    "title": "Khắc phục sự cố kết nối màn hình ngoài trên Windows",
+    "url": "https://support.microsoft.com/en-us/windows/hardware/display-graphics/troubleshoot-external-monitor-connections-in-windows",
+    "category": "hardware",
+    "tags": ["monitor", "display", "external monitor", "hdmi", "driver"]
+  },
+  {
+    "key": "usb-device-not-recognized",
+    "title": "Sửa lỗi 'USB Device Not Recognized' trên Windows",
+    "url": "https://learn.microsoft.com/en-us/previous-versions/troubleshoot/windows-server/usb-device-not-recognized-error",
+    "category": "hardware",
+    "tags": ["usb", "device manager", "driver", "external drive", "not recognized"]
+  },
+  {
+    "key": "windows-backup-restore",
+    "title": "Sao lưu và khôi phục dữ liệu với Windows Backup",
+    "url": "https://support.microsoft.com/en-us/windows/back-up-and-restore-with-windows-backup-87a81f8a-78fa-456e-b521-ac0560e32338",
+    "category": "software",
+    "tags": ["backup", "restore", "file history", "windows backup", "data protection"]
+  },
+  {
+    "key": "windows-firewall-allow-app",
+    "title": "Cho phép hoặc chặn ứng dụng qua Windows Defender Firewall",
+    "url": "https://support.microsoft.com/en-us/windows/security/windows-security/firewall-and-network-protection-in-the-windows-security-app",
+    "category": "security",
+    "tags": ["firewall", "windows defender", "blocked app", "network protection", "port"]
+  },
+  {
+    "key": "office-repair-application",
+    "title": "Sửa lỗi ứng dụng Office bị treo hoặc không phản hồi",
+    "url": "https://support.microsoft.com/en-us/office/repair-an-office-application-7821d4b6-7c1d-4205-aa0e-a6b40c5bb88b",
+    "category": "software",
+    "tags": ["office", "word", "excel", "repair", "not responding", "crash"]
+  },
+  {
+    "key": "teams-microphone-audio",
+    "title": "Khắc phục sự cố âm thanh, micro trong Microsoft Teams",
+    "url": "https://support.microsoft.com/en-us/teams/meetings/my-microphone-isn-t-working-in-microsoft-teams",
+    "category": "software",
+    "tags": ["teams", "microphone", "audio", "no sound", "meeting"]
+  }
+]

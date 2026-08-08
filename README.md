@@ -43,7 +43,7 @@ pip install -e ".[dev]"
 
 # Cấu hình API keys
 cp .env.example .env
-# Mở .env và thêm OPENAI_API_KEY của bạn
+# Mở .env và thêm MISTRAL_API_KEY của bạn
 # Đồng thời cập nhật AI_LOG_API_KEY bằng key riêng từ link mời của BTC
 # (giá trị trong .env.example chỉ là placeholder)
 ```
@@ -62,13 +62,15 @@ Hooks tự động log mọi AI prompt khi dùng Claude Code, Cursor, Codex, Gem
 
 ### Bước 4: Chạy server
 
-```bash
-# Chạy FastAPI backend
-uvicorn src.main:app --reload --port 8000
+# Backend
+.venv\Scripts\activate
+python run.py
 
-# Mở Swagger UI
-# http://localhost:8000/docs
-```
+
+# Frontend
+cd frontend
+npm run dev
+
 
 ### Bước 5: Đọc hướng dẫn
 
@@ -81,37 +83,58 @@ uvicorn src.main:app --reload --port 8000
 │   ├── agents/           # 🧠 LangGraph Agent
 │   │   ├── graph.py      #    State graph (nodes + edges)
 │   │   ├── state.py      #    State schema (TypedDict)
-│   │   ├── nodes/        #    Node functions
+│   │   ├── nodes/        #    Node functions (classifier, RAG, HITL, router, auto_close)
 │   │   └── tools/        #    Agent tools (@tool)
 │   ├── api/              # 🌐 FastAPI Backend
-│   │   └── routes.py     #    API endpoints
-│   ├── models/           # 📋 Pydantic schemas
-│   ├── services/         # 🔧 Business logic (LLM, etc.)
+│   │   ├── auth.py       #    JWT Auth (/login, /me)
+│   │   ├── tickets.py    #    Ticket CRUD + HITL approve/reject
+│   │   ├── analytics.py  #    Dashboard metrics, SLA alerts, Audit log
+│   │   ├── admin.py      #    User & Knowledge Base management
+│   │   └── routes.py     #    API routes aggregator
+│   ├── models/           # 📋 SQLAlchemy & Pydantic schemas
+│   ├── services/         # 🔧 Business logic (Auth, Ticket, RAG, LLM)
+│   ├── data/             # 💾 Knowledge base seed (35 KB entries)
 │   ├── config.py         # ⚙️ Pydantic Settings
-│   └── main.py           # 🚀 App entry point
+│   └── main.py           # 🚀 FastAPI app entry point
+├── frontend/             # ⚛️ Next.js 16 Web Application (Enterprise light UI)
+│   ├── src/app/          #    App Router (Employee, Technician, Manager, Admin portals)
+│   ├── src/components/   #    UI primitives + Sidebar, HITL, TicketCard, AI processing
+│   └── src/lib/          #    API client, Zustand authStore, labels/confidence utilities
+├── data/                 # 💾 Database & Datasets
+│   ├── helpdesk_tickets.csv # 📊 Kaggle Dataset (1M tickets)
+│   ├── helpdesk.db       #    SQLite database
+│   └── chroma/           #    Vector DB persistence
 ├── tests/                # 🧪 pytest suite
-│   ├── test_agents/      #    Agent/graph tests
+│   ├── test_agents/      #    Agent/graph unit tests
 │   └── test_api/         #    API endpoint tests
-├── scripts/              # 🔌 AI Logging Hooks
+├── scripts/              # 🔌 Utility & AI Logging Hooks
+│   ├── import_kaggle_dataset.py # Script import Kaggle CSV vào DB
 │   ├── log_hook.py       #    Auto-log cho Claude/Cursor/Codex/Gemini/Copilot
 │   ├── log_antigravity.py#    Antigravity IDE prompt scanner
-│   ├── log_manual.py     #    Manual log cho ChatGPT / web tools
-│   ├── submit_log.py     #    Submit logs on git push
 │   └── setup_hooks.sh    #    One-time hook installer
-├── .claude/ .codex/ .cursor/ .gemini/  # Per-tool hook configs
-├── .agents/              # Antigravity rules + workflows
-├── .ai-log/              # 📊 AI usage logs (auto-generated)
 ├── docs/
 │   ├── guide/            # 📖 Technical Guidebook (10 chapters)
 │   └── architecture_diagram.md
-├── eval/                 # 📊 Evaluation results
+├── eval/                 # 📊 Evaluation results & benchmark
+│   └── classification_eval.py
 ├── presentation/         # 🎤 Demo Day slides
-├── .github/workflows/    # ⚡ CI/CD (GitHub Actions)
-├── .github/hooks/        # 🪝 Copilot hook config
-├── Dockerfile            # 🐳 Multi-stage build
-├── docker-compose.yml    # 🐙 Full stack orchestration
-└── README_boilerplate.md # 📝 README template cho đội của bạn
+├── Dockerfile            # 🐳 Multi-stage backend build
+├── docker-compose.yml    # 🐙 Full stack orchestration (Backend + Frontend)
+└── pyproject.toml        # ⚙️ Python project configuration
 ```
+
+## 🧭 Quy ước trải nghiệm IT Help Desk
+
+- Giao diện dùng phong cách enterprise sáng, tiếng Việt, responsive cho bốn cổng Nhân viên, Kỹ thuật viên, Quản lý và Quản trị.
+- Ba dải độ tin cậy AI theo PRD FR-09 được dùng thống nhất ở backend và frontend:
+  - `>= 75%`: đủ điều kiện xử lý bình thường hoặc tự đóng nếu mọi rule an toàn khác đều cho phép.
+  - `60–74%`: cảnh báo; người dùng có thể thử giải pháp hoặc yêu cầu IT Support trực tiếp.
+  - `< 60%`: bắt buộc HITL/xử lý thủ công.
+- Production, VIP và category nhạy cảm là điều kiện HITL độc lập, không bị bỏ qua khi confidence cao.
+- Modal “AI đang xử lý” lấy trạng thái thật từ `GET /tickets/{id}`; không mô phỏng tiến trình bằng timer.
+- Màn hình client có skeleton, error/retry và route-level loading/error theo quy ước Next.js 16.
+
+Có thể override các ngưỡng qua `.env`, nhưng phải giữ `HITL <= WARNING <= AUTO_CLOSE`; cấu hình mặc định nằm trong `.env.example`.
 
 ## 📚 Technical Guidebook — 10 Chương
 
@@ -151,11 +174,72 @@ uvicorn src.main:app --reload --port 8000
 |-------|-----------|---------|
 | AI Agent | LangGraph + LangChain | Latest |
 | Backend | FastAPI + Uvicorn | 0.100+ |
-| LLM | OpenAI GPT-4o-mini | API |
+| LLM | Mistral Small / Codestral | API |
 | Frontend | Next.js / Streamlit | 14+ / 1.30+ |
 | Database | SQLite (dev) / PostgreSQL (prod) | — |
 | DevOps | Docker + GitHub Actions | — |
 | Testing | pytest + pytest-asyncio | 8+ |
+
+## Cấu hình provider và cache
+
+Ứng dụng dùng Mistral làm provider LLM duy nhất và embedding multilingual chạy local.
+Các key Gemini, Cohere, Voyage và Tavily không được tích hợp vì chúng trùng chức năng,
+trong khi benchmark retrieval 12 tình huống hiện tại đạt Hit@1/Hit@3 100%. Việc không
+gửi ticket và KB qua thêm provider cũng giảm dependency, chi phí và bề mặt rò rỉ dữ liệu.
+
+`REDIS_URL` được dùng làm LLM cache chính vì tương thích với Redis managed hoặc Redis
+tự host. Nếu kết nối này lỗi, ứng dụng thử `UPSTASH_REDIS_REST_URL` cùng
+`UPSTASH_REDIS_REST_TOKEN`; nếu cả hai không dùng được, hệ thống vẫn chạy và bỏ qua
+cache. Endpoint `/health` chỉ trả hostname, không trả username, password hay token.
+
+```env
+REDIS_URL=rediss://user:password@redis-host:6380/0
+REDIS_CACHE_TTL=3600
+```
+
+## Làm giàu Knowledge Base từ tài liệu chính thức
+
+Danh mục nguồn được allow-list tại `scripts/it_helpdesk_sources.json`. Crawler kiểm tra
+`robots.txt`, không tự đi theo liên kết, giới hạn dung lượng, khử trùng lặp và lưu URL,
+thời điểm thu thập cùng SHA-256 cho từng đoạn tài liệu.
+
+```bash
+# Chỉ crawl và lưu data/enriched_helpdesk_kb.json
+python scripts/crawl_helpdesk_kb.py
+
+# Crawl và upsert trực tiếp các đoạn đã chuẩn hóa vào ChromaDB
+python scripts/crawl_helpdesk_kb.py --index
+
+# Hoặc chỉ index lại file đã crawl, không truy cập Internet
+python scripts/crawl_helpdesk_kb.py --index-only
+
+# Rebuild toàn bộ KB + historical memory + tài liệu crawl
+python scripts/rebuild_rag_index.py
+
+# Đánh giá retrieval tiếng Việt (Hit@1, Hit@3, MRR)
+python eval/rag_retrieval_eval.py
+
+# Đánh giá RAGAS-style trên golden dataset đa dạng
+python eval/ragas_assessment_eval.py
+
+# Đánh giá đủ context coverage + faithfulness + answer focus bằng câu trả lời sinh từ LLM
+# Lưu ý: lệnh này gửi câu hỏi golden + context KB đã retrieve tới provider LLM trong .env
+python eval/ragas_assessment_eval.py --generate-answers
+
+# Nếu đã cấu hình evaluator LLM cho RAGAS, chạy thêm official RAGAS metrics
+python eval/ragas_assessment_eval.py --generate-answers --use-ragas
+```
+
+Golden dataset nằm ở `eval/ragas_golden_dataset.json`, gồm câu hỏi trực tiếp, mơ hồ, đánh đố,
+ngoài phạm vi tài liệu, prompt injection, yêu cầu bypass security/approval và case phân quyền.
+Report sinh ra tại `eval/results/ragas_assessment_report.json`, `eval/results/ragas_assessment_report.md`
+và `eval/results/ragas_dataset.json` theo schema `question/answer/contexts/ground_truth` để đưa vào RAGAS.
+
+Hệ thống dùng `paraphrase-multilingual-MiniLM-L12-v2` và collection riêng
+`helpdesk_kb_multilingual_v1`. Khi đổi embedding model phải dùng collection mới,
+không trộn vector được tạo bởi các model khác nhau.
+
+Nên chạy lại định kỳ và review các mục trong `failures` trước khi dùng cho production.
 
 ## 📊 AI Usage Logging
 
@@ -199,3 +283,5 @@ bất kỳ markdown viewer/editor nào (VS Code, Obsidian, GitHub UI, …).
 ## 📄 License
 
 MIT — Sử dụng tự do cho mục đích giáo dục.
+
+
