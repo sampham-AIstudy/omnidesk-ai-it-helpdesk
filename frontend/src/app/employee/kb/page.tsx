@@ -52,14 +52,32 @@ export default function EndUserHelpCenterPage() {
     onError: () => toast.error('Không thể lưu lượt bình chọn'),
   });
 
+  const unvoteMutation = useMutation({
+    mutationFn: async (articleId: number) =>
+      (await api.post(`/admin/kb/${articleId}/unvote`)).data,
+    onSuccess: (updatedArticle: KBEntry) => {
+      toast.success('Đã gỡ lượt đánh giá hữu ích!');
+      refetch();
+      if (activeArticle && activeArticle.id === updatedArticle.id) {
+        setActiveArticle(updatedArticle);
+      }
+    },
+    onError: () => toast.error('Không thể gỡ lượt bình chọn'),
+  });
+
   const handleVote = (e: React.MouseEvent, artId: number) => {
     e.stopPropagation();
     if (votedIds.has(artId)) {
-      toast.error('Bạn đã bình chọn cho bài viết này rồi!');
-      return;
+      setVotedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(artId);
+        return next;
+      });
+      unvoteMutation.mutate(artId);
+    } else {
+      setVotedIds((prev) => new Set(prev).add(artId));
+      voteMutation.mutate(artId);
     }
-    setVotedIds((prev) => new Set(prev).add(artId));
-    voteMutation.mutate(artId);
   };
 
   const categories = useMemo(() => {
@@ -166,7 +184,7 @@ export default function EndUserHelpCenterPage() {
                     }`}
                   >
                     <ThumbsUp size={13} className={votedIds.has(art.id) ? 'fill-blue-600 text-blue-600' : ''} />
-                    <span>Hữu ích ({(art.helpful_votes || 0) + (votedIds.has(art.id) ? 1 : 0)})</span>
+                    <span>Hữu ích ({art.helpful_votes || 0})</span>
                   </button>
 
                   <button
@@ -274,7 +292,7 @@ export default function EndUserHelpCenterPage() {
               >
                 <ThumbsUp size={14} className={activeArticle && votedIds.has(activeArticle.id) ? 'fill-blue-600 text-blue-600' : ''} />
                 <span>
-                  Bài viết này hữu ích ({((activeArticle?.helpful_votes || 0) + (activeArticle && votedIds.has(activeArticle.id) ? 1 : 0))})
+                  Bài viết này hữu ích ({activeArticle?.helpful_votes || 0})
                 </span>
               </button>
 

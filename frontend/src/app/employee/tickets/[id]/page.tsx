@@ -108,7 +108,7 @@ export default function RiotStyleTicketDetailPage() {
   const [optimisticMessages, setOptimisticMessages] = useState<TicketMessage[]>([]);
   const [lightboxImage, setLightboxImage] = useState<{ name: string; url: string } | null>(null);
 
-  // 1. Fetch Ticket Data (Optimized with staleTime & parallel fetch)
+  // 1. Fetch Ticket Data (Optimized with staleTime & parallel fetch + auto-refetch when classifying)
   const { data: ticket, isLoading: isTicketLoading, refetch: refetchTicket } = useQuery({
     queryKey: ['ticket', id],
     queryFn: async () => (await api.get(`/tickets/${id}`)).data as Ticket,
@@ -116,9 +116,13 @@ export default function RiotStyleTicketDetailPage() {
     staleTime: 30000,
     gcTime: 300000,
     refetchOnWindowFocus: false,
+    refetchInterval: (query) => {
+      const t = query.state.data;
+      return !t || t.status === 'classifying' || t.status === 'open' ? 2000 : false;
+    },
   });
 
-  // 2. Fetch Conversation Messages (Runs in PARALLEL with ticket query)
+  // 2. Fetch Conversation Messages (Runs in PARALLEL with ticket query + auto-refetch while AI is reading)
   const { data: conversationData, refetch: refetchMessages } = useQuery({
     queryKey: ['ticket-messages', id],
     queryFn: async () => (await api.get(`/tickets/${id}/messages`)).data as TicketConversationResponse,
@@ -126,6 +130,9 @@ export default function RiotStyleTicketDetailPage() {
     staleTime: 15000,
     gcTime: 300000,
     refetchOnWindowFocus: false,
+    refetchInterval: () => {
+      return !ticket || ticket.status === 'classifying' || ticket.status === 'open' ? 2000 : false;
+    },
   });
 
   const isLoading = isTicketLoading && !ticket;
@@ -736,9 +743,9 @@ function ParsedDescriptionCard({
       </div>
 
       {/* Cleaned Description Text */}
-      <p className="text-xs sm:text-sm text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">
-        {cleanText}
-      </p>
+      <div className="text-xs sm:text-sm text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">
+        {renderFormattedContent(cleanText)}
+      </div>
 
       {/* Image Attachments Gallery */}
       {imageAttachments.length > 0 && (
@@ -775,6 +782,23 @@ function ParsedDescriptionCard({
       )}
     </div>
   );
+}
+
+// Helper to parse **bold text** into bold HTML elements without raw ** asterisks
+function renderFormattedContent(content: string) {
+  if (!content) return null;
+  const parts = content.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      const innerText = part.slice(2, -2);
+      return (
+        <strong key={index} className="font-extrabold text-slate-900">
+          {innerText}
+        </strong>
+      );
+    }
+    return part;
+  });
 }
 
 // Individual Message Card Component
@@ -845,7 +869,7 @@ function ConversationMessageItem({ msg }: { msg: TicketMessage }) {
                 : 'bg-emerald-50/90 text-emerald-950 border-emerald-200/90 rounded-tl-none'
           }`}
         >
-          {msg.content}
+          {renderFormattedContent(msg.content)}
 
           {/* RAG Sources Chips */}
           {sources.length > 0 && (

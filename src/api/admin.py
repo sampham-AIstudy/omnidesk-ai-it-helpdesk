@@ -89,6 +89,23 @@ async def vote_kb_entry(
     return KBEntryResponse.model_validate(entry)
 
 
+@router.post("/kb/{entry_id}/unvote", response_model=KBEntryResponse)
+async def unvote_kb_entry(
+    entry_id: int,
+    db: AsyncSession = Depends(get_db),
+    _user: User = Depends(get_current_active_user),
+):
+    """Gỡ bình chọn Hữu Ích cho bài viết Knowledge Base."""
+    entry = await db.get(KnowledgeBaseEntry, entry_id)
+    if not entry or not entry.is_active:
+        raise HTTPException(status_code=404, detail="KB entry không tồn tại")
+
+    entry.helpful_votes = max(0, (entry.helpful_votes or 0) - 1)
+    await db.commit()
+    await db.refresh(entry)
+    return KBEntryResponse.model_validate(entry)
+
+
 @router.post("/kb", response_model=KBEntryResponse, status_code=201)
 async def create_kb_entry(
     payload: KBEntryCreate,

@@ -32,11 +32,11 @@ export default function AIProcessingModal({ ticketId, ticketNumber, onViewTicket
     queryFn: async () => (await api.get(`/tickets/${ticketId}`)).data as Ticket,
     refetchInterval: (query) => {
       const ticket = query.state.data;
-      if (query.state.isError) return 2000;
-      return !ticket || PROCESSING_STATUSES.has(ticket.status) ? 2500 : false;
+      if (query.state.isError) return 1500;
+      return !ticket || PROCESSING_STATUSES.has(ticket.status) ? 1200 : false;
     },
     retry: 5,
-    retryDelay: 1500,
+    retryDelay: 1000,
   });
 
   const ticket = ticketQuery.data;

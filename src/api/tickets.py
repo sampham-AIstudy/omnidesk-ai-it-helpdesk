@@ -189,10 +189,8 @@ async def _run_agent_workflow(
                     from src.models.hitl_approval import HITLApproval
                     hitl_record = HITLApproval(
                         ticket_id=ticket_id,
-                        action_type="EXECUTE_HIGH_RISK",
-                        action_payload=final_state.get("suggested_solution"),
-                        risk_score=final_state.get("risk_score", 0.70),
-                        reason=final_state.get("hitl_reason", "Policy Engine Decision"),
+                        approval_type="manager_approval",
+                        reason=f"[HIGH_RISK] {final_state.get('hitl_reason', 'Policy Engine Decision')} | Risk Score: {final_state.get('risk_score', 0.70)}",
                     )
                     db.add(hitl_record)
                 elif final_state.get("action_taken") == "ask_clarification":

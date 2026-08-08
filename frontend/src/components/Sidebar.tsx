@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   BarChart3,
   BookOpen,
@@ -29,6 +29,15 @@ import {
   Cpu,
   Bot,
   HelpCircle,
+  PackageCheck,
+  Bell,
+  Network,
+  Calendar,
+  Building2,
+  Activity,
+  UserCheck,
+  Search,
+  Package,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/authStore';
 import { ROLE_LABELS } from '@/lib/utils';
@@ -44,15 +53,20 @@ interface NavItem {
 // 1. END-USER PORTAL NAV
 const END_USER_NAV: NavItem[] = [
   { href: '/employee/dashboard', label: 'Cổng Tự Phục Vụ', icon: LayoutDashboard },
+  { href: '/employee/catalog', label: 'IT Service Catalog (Yêu Cầu)', icon: Package },
+  { href: '/employee/requests', label: 'Yêu Cầu Dịch Vụ Của Tôi', icon: ClipboardList },
+  { href: '/employee/tickets', label: 'Sự Cố Của Tôi & CSAT', icon: TicketCheck },
+  { href: '/employee/new-ticket', label: 'Gửi Sự Cố Hỗ Trợ', icon: FilePlus2 },
   { href: '/employee/sspr', label: 'Tự Reset Mật Khẩu & Access', icon: KeyRound },
   { href: '/employee/kb', label: 'Trung Tâm Tri Thức (KB)', icon: HelpCircle },
-  { href: '/employee/new-ticket', label: 'Gửi Yêu Cầu Hỗ Trợ', icon: FilePlus2 },
-  { href: '/employee/tickets', label: 'Yêu Cầu Của Tôi & CSAT', icon: ClipboardList },
 ];
 
 // 2. IT AGENT / TECHNICIAN NAV
 const TECH_AGENT_NAV: NavItem[] = [
-  { href: '/technician/queue', label: 'Hàng Đợi Ticket (Queue)', icon: Inbox },
+  { href: '/technician/queue', label: 'Hàng Đợi Incident Queue', icon: Inbox },
+  { href: '/technician/requests', label: 'Fulfillment Workbench (REQ)', icon: PackageCheck },
+  { href: '/technician/alerts', label: 'Alert / Event Console (Monitoring)', icon: Bell },
+  { href: '/technician/on-call', label: 'Lịch Trực On-Call & Escalation', icon: Clock },
   { href: '/manager/changes', label: 'Quản Lý Thay Đổi (Changes)', icon: GitBranch },
   { href: '/manager/problems', label: 'Kho Lỗi Đã Biết (KEDB)', icon: Layers },
   { href: '/employee/tickets', label: 'Tra Cứu Ticket Cá Nhân', icon: TicketCheck },
@@ -61,6 +75,8 @@ const TECH_AGENT_NAV: NavItem[] = [
 // 3. IT MANAGER / TEAM LEAD NAV
 const IT_MANAGER_NAV: NavItem[] = [
   { href: '/manager/dashboard', label: 'Bảng Điều Khiển Quản Lý', icon: Gauge },
+  { href: '/manager/services', label: 'Service Portfolio & Sức Khỏe', icon: Activity },
+  { href: '/manager/change-calendar', label: 'Change Calendar & CAB', icon: Calendar },
   { href: '/manager/major-incidents', label: 'War Room Sự Cố P1', icon: Siren },
   { href: '/manager/changes', label: 'Quản Lý Thay Đổi ITIL', icon: GitBranch },
   { href: '/manager/problems', label: 'Quản Lý Vấn Đề (KEDB)', icon: Layers },
@@ -72,17 +88,22 @@ const IT_MANAGER_NAV: NavItem[] = [
 
 // 4. SYSTEM ADMINISTRATOR (SUPER ADMIN) NAV
 const SYSTEM_ADMIN_NAV: NavItem[] = [
+  { href: '/admin/ai-review', label: 'AI Review Queue (HITL)', icon: UserCheck },
+  { href: '/admin/ai-evaluation', label: 'AI Evaluation & Benchmarks', icon: BarChart3 },
+  { href: '/admin/rag', label: 'RAG Pipeline & Retrieval Test', icon: BookOpen },
   { href: '/admin/ai-console', label: 'AI Agentic Console', icon: Cpu },
+  { href: '/admin/cmdb/map', label: 'CMDB Topology Map', icon: Network },
+  { href: '/admin/cmdb', label: 'Kho Cấu Hình CMDB List', icon: Laptop },
+  { href: '/admin/organizations', label: 'Quản Lý Tập Đoàn & Tenant', icon: Building2 },
+  { href: '/admin/system-health', label: 'System Health & Jobs', icon: Activity },
   { href: '/admin/users', label: 'Quản Lý Phân Quyền RBAC', icon: Users },
-  { href: '/admin/cmdb', label: 'Kho Cấu Hình Hạ Tầng CMDB', icon: Laptop },
   { href: '/admin/integrations', label: 'Tích Hợp SSO / Mail / Bot', icon: KeyRound },
-  { href: '/admin/kb', label: 'Quản Lý Tri Thức (KB)', icon: BookOpen },
-  { href: '/manager/analytics', label: 'Báo Cáo Bảng Giám Sát', icon: BarChart3 },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuthStore();
+  const router = useRouter();
+  const { user, loginAsRole, logout } = useAuthStore();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
@@ -104,6 +125,19 @@ export default function Sidebar() {
       ? SYSTEM_ADMIN_NAV
       : IT_MANAGER_NAV;
 
+  const handleRoleSwitch = (role: 'employee' | 'technician' | 'manager' | 'admin') => {
+    loginAsRole(role);
+    const targetRoute =
+      role === 'employee'
+        ? '/employee/dashboard'
+        : role === 'technician'
+        ? '/technician/queue'
+        : role === 'manager'
+        ? '/manager/dashboard'
+        : '/admin/ai-review';
+    router.push(targetRoute);
+  };
+
   return (
     <>
       <header className="mobile-app-header">
@@ -121,7 +155,7 @@ export default function Sidebar() {
           <X size={20} aria-hidden="true" />
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyBetween: 'space-between', width: '100%', padding: '4px 8px 18px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyBetween: 'space-between', width: '100%', padding: '4px 8px 14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 38, height: 38, borderRadius: 12, background: 'linear-gradient(135deg, #2563eb, #06b6d4)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
               AI
@@ -139,7 +173,23 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+        {/* Global Command Palette Hint */}
+        <button
+          type="button"
+          onClick={() => {
+            const event = new KeyboardEvent('keydown', { key: 'k', ctrlKey: true });
+            window.dispatchEvent(event);
+          }}
+          className="mx-2 mb-3 rounded-xl border border-cyan-400/30 bg-cyan-400/10 px-3 py-2 text-xs text-cyan-300 flex items-center justify-between font-mono hover:bg-cyan-400/20 transition cursor-pointer"
+        >
+          <span className="flex items-center gap-1.5">
+            <Search size={13} />
+            <span>Search...</span>
+          </span>
+          <span className="rounded bg-black/40 px-1.5 py-0.5 text-[10px]">Ctrl + K</span>
+        </button>
+
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1, overflowY: 'auto' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}`));
@@ -152,20 +202,45 @@ export default function Sidebar() {
           })}
         </nav>
 
-        <div className="sidebar-status" style={{ border: '1px solid #263247', background: '#152033', borderRadius: 12, padding: 12, marginBottom: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-            <span className="pulse-dot" />
-            <span style={{ color: '#dbeafe', fontSize: 12, fontWeight: 800 }}>Agentic AI Online</span>
-          </div>
-          <div style={{ color: '#91a1b7', fontSize: 11, lineHeight: 1.45 }}>
-            392+ KB Docs • Auto-SSPR Active
+        {/* Demo Role Switcher Bar */}
+        <div className="mt-3 mb-2 p-2 rounded-xl border border-white/10 bg-black/40">
+          <span className="font-mono text-[9px] text-white/40 uppercase block mb-1 px-1">DEMO ROLE SWITCHER</span>
+          <div className="grid grid-cols-4 gap-1 text-[10px] font-mono">
+            <button
+              type="button"
+              onClick={() => handleRoleSwitch('employee')}
+              className={`py-1 rounded text-center cursor-pointer transition ${user?.role === 'employee' ? 'bg-cyan-500 text-black font-bold' : 'text-white/60 hover:text-white bg-white/5'}`}
+            >
+              User
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleSwitch('technician')}
+              className={`py-1 rounded text-center cursor-pointer transition ${user?.role === 'technician' ? 'bg-cyan-500 text-black font-bold' : 'text-white/60 hover:text-white bg-white/5'}`}
+            >
+              Tech
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleSwitch('manager')}
+              className={`py-1 rounded text-center cursor-pointer transition ${user?.role === 'manager' ? 'bg-cyan-500 text-black font-bold' : 'text-white/60 hover:text-white bg-white/5'}`}
+            >
+              Mgr
+            </button>
+            <button
+              type="button"
+              onClick={() => handleRoleSwitch('admin')}
+              className={`py-1 rounded text-center cursor-pointer transition ${user?.role === 'admin' ? 'bg-cyan-500 text-black font-bold' : 'text-white/60 hover:text-white bg-white/5'}`}
+            >
+              Admin
+            </button>
           </div>
         </div>
 
         {user && (
-          <div className="sidebar-footer" style={{ borderTop: '1px solid #263247', paddingTop: 12 }}>
-            <div className="sidebar-user-card" style={{ display: 'flex', gap: 10, alignItems: 'center', padding: 10, borderRadius: 12, background: '#152033', marginBottom: 10 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 8, background: '#2563eb', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
+          <div className="sidebar-footer" style={{ borderTop: '1px solid #263247', paddingTop: 8 }}>
+            <div className="sidebar-user-card" style={{ display: 'flex', gap: 10, alignItems: 'center', padding: 8, borderRadius: 12, background: '#152033', marginBottom: 8 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: '#2563eb', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
                 {user.full_name.slice(0, 1)}
               </div>
               <div style={{ minWidth: 0 }}>
@@ -188,5 +263,3 @@ export default function Sidebar() {
     </>
   );
 }
-
-

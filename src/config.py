@@ -20,12 +20,18 @@ class Settings(BaseSettings):
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     cors_origins: str = "http://localhost:3000,http://localhost:5173"
 
-    # LLM — Mistral (primary)
+    # LLM — Multi-Provider Config (Mistral / OpenAI / Local Ollama)
     mistral_api_key: str = ""
     mistral_classifier_model: str = "mistral-small-2506"
     mistral_rag_model: str = "mistral-small-2506"
     mistral_runbook_model: str = "codestral-2508"
     mistral_fast_classifier_model: str = "ministral-3b-2512"
+
+    openai_api_key: str = ""
+    openai_model: str = "gpt-4o-mini"
+
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "mistral"
 
     # Database
     database_url: str = "sqlite+aiosqlite:///./data/helpdesk.db"

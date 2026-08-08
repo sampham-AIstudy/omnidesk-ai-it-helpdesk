@@ -20,6 +20,7 @@ const PRODUCTS = [
   { id: 'HARDWARE_PC', name: 'Máy Tính Cá Nhân & Thiết Bị Phần Cứng (Workstation / Laptop)', icon: '💻' },
   { id: 'ACCESS_AUTH', name: 'Quản Lý Tài Khoản & Phân Quyền Truy Cập (Active Directory / IAM)', icon: '🔑' },
   { id: 'INFRA_SERVER', name: 'Hạ Tầng Máy Chủ & Cơ Sở Dữ Liệu (Server / Database / Storage)', icon: '🖥️' },
+  { id: 'OTHER_PRODUCT', name: 'Khác (Ứng dụng / Dịch vụ chưa có trong danh sách trên)', icon: '⚙️' },
 ];
 
 const CATEGORIES = [
@@ -27,6 +28,7 @@ const CATEGORIES = [
   { id: 'REQUEST_ACCESS_PERMISSION', name: 'Yêu Cầu Dịch Vụ & Phân Quyền (Service Request)' },
   { id: 'SOFTWARE_SUPPORT', name: 'Hỗ Trợ Ứng Dụng Phần Mềm (Software Support)' },
   { id: 'HARDWARE_REQUEST', name: 'Yêu Cầu Trang Thiết Bị Phần Cứng (Hardware Provisioning)' },
+  { id: 'OTHER_CATEGORY', name: 'Khác (Phân loại dịch vụ mới / Yêu cầu chưa có trong danh sách)' },
 ];
 
 const URGENCY_LEVELS = [
@@ -60,23 +62,30 @@ const SUB_ISSUES: Record<string, string[]> = {
     'Lỗi xác thực domain / Hết hạn phiên làm việc',
     'Mất kết nối mạng nội bộ / Gián đoạn VPN',
     'Tốc độ xử lý hệ thống rất chậm / Quá tải tài nguyên',
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
   ],
   REQUEST_ACCESS_PERMISSION: [
     'Yêu cầu đặt lại mật khẩu / Mở khóa tài khoản AD',
     'Cấp quyền truy cập thư mục dùng chung / Sharepoint',
     'Gia hạn / Khởi tạo Token SSL VPN',
     'Mở khóa tài khoản SAP bị giới hạn phiên',
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
   ],
   SOFTWARE_SUPPORT: [
     'Email không gửi/nhận được từ đối tác ngoài',
     'Cần cài đặt / Nâng cấp phần mềm làm việc',
     'Lỗi kích hoạt / Hết hạn bản quyền phần mềm',
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
   ],
   HARDWARE_REQUEST: [
     'Lỗi kết nối máy in / Máy quét văn phòng',
     'Lỗi màn hình / Cáp chuyển đổi tín hiệu',
     'Hỏng phím, chuột, thiết bị ngoại vi',
     'Đề xuất trang bị máy tính / Màn hình phụ mới',
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
+  ],
+  OTHER_CATEGORY: [
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
   ],
 };
 
@@ -88,8 +97,9 @@ const getProductTag = (prodId: string) => {
     HARDWARE_PC: 'Phần Cứng & Laptop',
     ACCESS_AUTH: 'Tài Khoản & Quyền',
     INFRA_SERVER: 'Máy Chủ & Hạ Tầng',
+    OTHER_PRODUCT: 'Yêu Cầu Khác',
   };
-  return map[prodId] || 'ITSM';
+  return map[prodId] || 'Yêu Cầu Khác';
 };
 
 const OS_OPTIONS = [
