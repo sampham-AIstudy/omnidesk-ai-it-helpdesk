@@ -28,7 +28,7 @@ class TicketAgentState(TypedDict, total=False):
     # ── RAG (output từ rag_node) ──────────────────────────────────────────────
     rag_context: list[dict]    # [{content, metadata, relevance_score}]
     suggested_solution: str    # Synthesized answer từ RAG + LLM
-    rag_sources: list[str]     # KB entry titles used
+    rag_sources: list[str | dict]  # Persisted provenance links for KB/web sources
     runbook_steps: list[str]   # Extracted runbook steps nếu có
 
     # ── Routing ───────────────────────────────────────────────────────────────
@@ -45,6 +45,8 @@ class TicketAgentState(TypedDict, total=False):
     block_reason: str          # Lý do bị chặn
     block_type: str            # "PROMPT_INJECTION" | "OFF_TOPIC" | "TURNSTILE_FAILED" | "PII_LEAK"
     safe_response: str         # Thông điệp phản hồi an toàn khi bị chặn
+    needs_clarification: bool  # Thiếu ngữ cảnh tối thiểu để phân loại/RAG an toàn
+    clarification_response: str
 
     # ── Error handling ────────────────────────────────────────────────────────
     error: str | None
@@ -54,4 +56,3 @@ class TicketAgentState(TypedDict, total=False):
     model_used: str
     processing_start: str      # ISO timestamp
     token_count: int
-

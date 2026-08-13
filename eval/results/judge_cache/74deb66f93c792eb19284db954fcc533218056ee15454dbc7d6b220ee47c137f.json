@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "HALLUCINATION|UNSUPPORTED_CLAIM|INCOMPLETE_ANSWER|INCORRECT_REFUSAL|BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER|OVER_QUESTIONING"
+    ],
+    "unsupported_claims": [
+      "Xin chào! Tôi có thể giúp gì cho bạn về các vấn đề liên quan đến IT không?"
+    ],
+    "missing_points": [
+      "answer to Xin chào"
+    ],
+    "brief_rationale": "Generated answer is unrelated to the question.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

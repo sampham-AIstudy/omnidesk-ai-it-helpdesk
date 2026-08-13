@@ -6,7 +6,8 @@ OpenAI Moderation API, Gemini Safety Judge, and Groundedness evaluation.
 
 import logging
 import re
-from typing import Any, Dict, List, Optional
+from importlib.util import find_spec
+from typing import Any, Dict, List
 
 import requests
 
@@ -23,9 +24,17 @@ try:
     from presidio_analyzer import AnalyzerEngine
     from presidio_anonymizer import AnonymizerEngine
 
-    _presidio_analyzer = AnalyzerEngine()
-    _presidio_anonymizer = AnonymizerEngine()
-    logger.info("Microsoft Presidio Analyzer & Anonymizer initialized successfully")
+    # Presidio's default NLP engine can spawn a large spaCy model download at
+    # import time. Startup must stay deterministic; use the existing regex
+    # redaction fallback until an administrator installs the model explicitly.
+    if find_spec("en_core_web_lg"):
+        _presidio_analyzer = AnalyzerEngine()
+        _presidio_anonymizer = AnonymizerEngine()
+        logger.info("Microsoft Presidio Analyzer & Anonymizer initialized successfully")
+    else:
+        logger.info(
+            "Presidio spaCy model en_core_web_lg is not installed; using regex PII fallback."
+        )
 except Exception as e:
     logger.warning(f"Microsoft Presidio not initialized: {e}. Falling back to custom regex redaction.")
 
@@ -45,6 +54,27 @@ SECRET_PATTERNS = [
     (r"\b\d{9}\b|\b\d{12}\b", "[REDACTED_ID_NUMBER]"),
     (r"\b(?:[0-9]{1,3}\.){3}[0-9]{1,3}\b", "[REDACTED_IP_ADDRESS]"),
 ]
+
+
+def format_plain_text_response(text: str) -> str:
+    """Remove Markdown presentation tokens while preserving validated citation labels like [1].
+
+    Models can ignore prompt-only formatting instructions.  This deterministic
+    finalizer is intentionally applied after security redaction and does not
+    invent URLs or citations.
+    """
+    if not text:
+        return ""
+    formatted = text.replace("\r\n", "\n")
+    # Markdown links remain readable plain text; numeric [1] citations do not match this pattern.
+    formatted = re.sub(r"\[([^\]]+)\]\((https?://[^\s)]+)\)", r"\1 (\2)", formatted)
+    formatted = re.sub(r"(?m)^\s{0,3}#{1,6}\s+", "", formatted)
+    formatted = re.sub(r"(?m)^\s*>\s?", "", formatted)
+    formatted = re.sub(r"(?m)^\s*[-*+]\s+", "• ", formatted)
+    formatted = formatted.replace("**", "").replace("__", "").replace("`", "")
+    # Only remove underscore emphasis around natural-language words, preserving error codes such as ERR_AUTH_42.
+    formatted = re.sub(r"(?<!\w)_([^_\n]+)_(?!\w)", r"\1", formatted)
+    return re.sub(r"\n{3,}", "\n\n", formatted).strip()
 
 
 def redact_secrets_and_pii(text: str) -> Dict[str, Any]:
@@ -138,7 +168,7 @@ Respond in JSON format:
 {{"safe": true/false, "verdict": "SAFE" / "UNSAFE", "reason": "explanation"}}
 """
         result = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.5-flash-lite",
             contents=judge_prompt,
         )
         text_out = result.text.strip()
@@ -205,10 +235,12 @@ def content_filter(text: str) -> Dict[str, Any]:
 
     safe = redaction_res["safe"] and not mod_res.get("flagged", False)
 
+    formatted = format_plain_text_response(redaction_res["redacted"])
     return {
         "safe": safe,
         "issues": redaction_res["issues"] + mod_res.get("categories", []),
-        "redacted": redaction_res["redacted"],
+        "redacted": formatted,
+        "formatted": formatted,
         "severity": redaction_res["severity"],
     }
 

@@ -12,10 +12,7 @@ Flow:
                                                         hitl_check
                                                              │
                                                              ├─── [if hitl] ──► END (pending_hitl)
-                                                             └─── [if not hitl] ──► auto_close_check
-                                                                                         │
-                                                                                         ├─── [if auto_close] ──► END (closed)
-                                                                                         └─── [if not auto_close] ──► router ──► END
+                                                             └─── [if not hitl] ──► router ──► END
 """
 from __future__ import annotations
 
@@ -23,7 +20,6 @@ import logging
 
 from langgraph.graph import END, START, StateGraph
 
-from src.agents.nodes.auto_close_node import auto_close_check_node
 from src.agents.nodes.classifier import classify_node
 from src.agents.nodes.hitl_node import hitl_check_node
 from src.agents.nodes.input_guardrail_node import input_guardrail_node
@@ -42,6 +38,9 @@ def after_input_guardrail(state: TicketAgentState) -> str:
     if state.get("is_blocked", False):
         logger.warning(f"[Graph] → SHORT-CIRCUIT BLOCK for ticket #{state.get('ticket_number')}. Stopping pipeline!")
         return "end_blocked"
+    if state.get("needs_clarification", False):
+        logger.info("[Graph] → CLARIFICATION_REQUIRED for ticket #%s. Skipping LLM and RAG.", state.get("ticket_number"))
+        return "end_clarification"
     return "classify"
 
 
@@ -58,14 +57,6 @@ def after_hitl_check(state: TicketAgentState) -> str:
     if state.get("hitl_required", False):
         logger.info(f"[Graph] → HITL_PAUSE for ticket #{state.get('ticket_number')}")
         return "end_hitl_pending"
-    return "auto_close_check"
-
-
-def after_auto_close(state: TicketAgentState) -> str:
-    """Sau auto-close check: nếu eligible → đóng; không → route."""
-    if state.get("auto_close_eligible", False):
-        logger.info(f"[Graph] → AUTO_CLOSE for ticket #{state.get('ticket_number')}")
-        return "end_auto_close"
     return "router"
 
 
@@ -80,7 +71,6 @@ def build_graph() -> StateGraph:
     graph.add_node("rag", rag_node)
     graph.add_node("output_guardrail", output_guardrail_node)
     graph.add_node("hitl_check", hitl_check_node)
-    graph.add_node("auto_close_check", auto_close_check_node)
     graph.add_node("router", router_node)
 
     # Edges
@@ -92,6 +82,7 @@ def build_graph() -> StateGraph:
         after_input_guardrail,
         {
             "end_blocked": END,  # SHORT-CIRCUIT EARLY EXIT!
+            "end_clarification": END,
             "classify": "classify",
         },
     )
@@ -113,15 +104,6 @@ def build_graph() -> StateGraph:
         after_hitl_check,
         {
             "end_hitl_pending": END,   # Pause: ticket status = pending_hitl in DB
-            "auto_close_check": "auto_close_check",
-        },
-    )
-
-    graph.add_conditional_edges(
-        "auto_close_check",
-        after_auto_close,
-        {
-            "end_auto_close": END,   # Auto-close: caller updates DB to closed
             "router": "router",
         },
     )
@@ -161,8 +143,8 @@ async def process_ticket(
         "company_unit": company_unit,
         "department": department,
         "hitl_required": False,
-        "auto_close_eligible": False,
         "is_blocked": False,
+        "needs_clarification": False,
         "error": None,
     }
 

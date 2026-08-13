@@ -1,0 +1,45 @@
+# Lean runtime dependencies for the local Docker Compose stack.
+#
+# This deliberately omits development/evaluation packages (pytest, ruff, ragas,
+# datasets) and optional local ML packages (sentence-transformers, Presidio).
+# Docker Compose selects EMBEDDING_BACKEND=hashing, so the RAG service remains
+# functional without loading a transformer model.  The full requirements.txt is
+# retained for development and full-fidelity AI deployments.
+
+# Web and configuration
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
+python-dotenv>=1.0.0
+python-multipart>=0.0.9
+
+# Agent and vector storage
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-mistralai>=0.2.0
+langgraph>=0.2.0
+langsmith>=0.1.0
+chromadb>=0.5.0
+
+# Persistence, security and integrations
+sqlalchemy>=2.0.0
+aiosqlite>=0.20.0
+alembic>=1.14.0
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+httpx>=0.28.0
+anyio>=4.0.0
+redis>=5.0.0
+upstash-redis>=1.1.0
+google-genai>=0.1.0
+requests>=2.31.0
+
+# OpenTelemetry
+opentelemetry-api>=1.30.0
+opentelemetry-sdk>=1.30.0
+opentelemetry-exporter-otlp-proto-grpc>=1.30.0
+opentelemetry-instrumentation-fastapi>=0.51b0
+opentelemetry-instrumentation-httpx>=0.51b0
+opentelemetry-instrumentation-sqlalchemy>=0.51b0

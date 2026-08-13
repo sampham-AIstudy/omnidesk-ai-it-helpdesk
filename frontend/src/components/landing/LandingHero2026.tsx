@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
 import { useAuthStore } from '@/lib/authStore';
@@ -20,7 +19,7 @@ export default function LandingHero2026() {
       {/* Main Hero Container */}
       <div className="relative w-full max-w-[1400px] mx-auto rounded-[48px] bg-white border border-slate-200/50 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.03)] overflow-hidden h-[600px] flex flex-col">
         
-        {/* Underlying Video Layer */}
+        {/* Hero motion is part of the product's visual identity. */}
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none">
           <video
             autoPlay

@@ -1,0 +1,27 @@
+{
+  "version": "1.2", 
+  "label_source": "explicit_expected_rubric", 
+  "note": "These rubric labels are a stable calibration contract. They do not claim to be independent human annotations.",
+  "cases": [
+    {"case_id": "GT-001", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-006", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-015", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-023", "human": {"faithfulness": "high", "completeness": "medium", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-027", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-033", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-040", "human": {"faithfulness": "high", "completeness": "medium", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-047", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-048", "human": {"faithfulness": "high", "completeness": "medium", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-056", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-057", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-058", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-059", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-060", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-068", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-078", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-081", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-086", "human": {"faithfulness": "low", "completeness": "low", "relevance": "medium", "correct_abstention": false, "semantic_pass": false}},
+    {"case_id": "GT-087", "human": {"faithfulness": "high", "completeness": "high", "relevance": "high", "correct_abstention": true, "semantic_pass": true}},
+    {"case_id": "GT-088", "human": {"faithfulness": "low", "completeness": "low", "relevance": "low", "correct_abstention": false, "semantic_pass": false}}
+  ]
+}

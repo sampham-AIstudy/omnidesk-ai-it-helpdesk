@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 0.5,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "INCOMPLETE_ANSWER",
+      "INCORRECT_REFUSAL"
+    ],
+    "unsupported_claims": [
+      "answer does not match expected behavior"
+    ],
+    "missing_points": [
+      "expected behavior is not fully addressed"
+    ],
+    "brief_rationale": "The generated answer does not fully match the expected behavior and does not provide a complete answer.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

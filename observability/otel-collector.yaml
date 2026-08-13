@@ -1,0 +1,68 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 256
+    spike_limit_mib: 64
+  # Fail closed for span attributes. Application code also deliberately avoids
+  # sending prompts, responses, identities, credentials, and document bodies.
+  redaction:
+    allow_all_keys: false
+    allowed_keys:
+      - service.name
+      - service.version
+      - deployment.environment.name
+      - http.request.method
+      - url.path
+      - http.response.status_code
+      - server.address
+      - server.port
+      - network.protocol.version
+      - client.address
+      - db.system.name
+      - db.operation.name
+      - db.namespace
+      - gen_ai.provider.name
+      - gen_ai.request.model
+      - gen_ai.response.model
+      - gen_ai.usage.input_tokens
+      - gen_ai.usage.output_tokens
+      - helpdesk.guardrail.result
+      - helpdesk.rag.documents_retrieved
+      - helpdesk.rag.top_score
+      - helpdesk.ticket.workflow
+      - error.type
+      - operation
+      - event
+    blocked_values:
+      - '(?i)bearer\\s+[a-z0-9._-]+'
+      - '(?i)(api[_-]?key|password|secret|token)\\s*[:=]\\s*\\S+'
+  batch:
+    timeout: 5s
+    send_batch_size: 512
+
+exporters:
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+  prometheus:
+    endpoint: 0.0.0.0:9464
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, redaction, batch]
+      exporters: [otlp/tempo]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, redaction, batch]
+      exporters: [prometheus]

@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { formatVietnamTime } from '@/lib/utils';
 import {
   ChevronRight,
   ArrowLeft,
@@ -14,12 +15,12 @@ import {
   Building2,
   ListChecks,
   CheckCheck,
+  CheckCircle2,
   Zap,
   History,
   OctagonAlert,
   Loader2,
   Check,
-  Circle,
   GitBranch,
   GitMerge,
   Clock,
@@ -37,7 +38,6 @@ import {
 
 export default function FulfillmentDetailWorkbenchPage() {
   const params = useParams();
-  const router = useRouter();
   const reqId = params?.id as string;
 
   const [reqData, setReqData] = useState<RequestFulfillment | null>(null);
@@ -49,28 +49,31 @@ export default function FulfillmentDetailWorkbenchPage() {
   const [completedBanner, setCompletedBanner] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    const found = MOCK_WORKBENCH_REQUESTS.find((r) => r.id === reqId);
-    if (found) {
-      const cloned: RequestFulfillment = JSON.parse(JSON.stringify(found));
-      setReqData(cloned);
-      document.title = `Chi Tiết Fulfillment ${cloned.id}`;
+    const initializeRequest = () => {
+      const found = MOCK_WORKBENCH_REQUESTS.find((r) => r.id === reqId);
+      if (found) {
+        const cloned: RequestFulfillment = JSON.parse(JSON.stringify(found));
+        setReqData(cloned);
+        document.title = `Chi Tiết Fulfillment ${cloned.id}`;
 
-      // Initialize notes state
-      const notesMap: Record<string, string> = {};
-      cloned.tasks.forEach((t) => {
-        if (t.notes) notesMap[t.id] = t.notes;
-      });
-      setNotesState(notesMap);
-    } else {
-      setReqData(null);
-    }
-    setLoading(false);
+        // Initialize notes state
+        const notesMap: Record<string, string> = {};
+        cloned.tasks.forEach((t) => {
+          if (t.notes) notesMap[t.id] = t.notes;
+        });
+        setNotesState(notesMap);
+      } else {
+        setReqData(null);
+      }
+      setLoading(false);
+    };
+    const initTimer = window.setTimeout(initializeRequest, 0);
+    return () => window.clearTimeout(initTimer);
   }, [reqId]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#05070d] text-white p-10 flex items-center justify-center">
+      <div className="page-state min-h-screen p-10 flex items-center justify-center">
         <Loader2 size={32} className="animate-spin text-cyan-400" />
       </div>
     );
@@ -78,10 +81,10 @@ export default function FulfillmentDetailWorkbenchPage() {
 
   if (!reqData) {
     return (
-      <div className="min-h-screen bg-[#05070d] text-white p-10 flex flex-col items-center justify-center rounded-3xl">
+      <div className="page-state min-h-screen p-10 flex flex-col items-center justify-center">
         <AlertTriangle size={48} className="text-amber-400 mb-4" />
         <h1 className="text-2xl font-bold">Không tìm thấy yêu cầu</h1>
-        <p className="text-white/50 text-sm mt-1">Mã yêu cầu "{reqId}" không tồn tại hoặc đã bị gỡ.</p>
+        <p className="text-white/50 text-sm mt-1">Mã yêu cầu &quot;{reqId}&quot; không tồn tại hoặc đã bị gỡ.</p>
         <Link
           href="/technician/requests"
           className="mt-6 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-medium transition"
@@ -131,7 +134,7 @@ export default function FulfillmentDetailWorkbenchPage() {
       );
       const newActivity = {
         id: `act-${Date.now()}`,
-        timestamp: new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
+        timestamp: formatVietnamTime(new Date(), { hour: '2-digit', minute: '2-digit' }),
         actor: 'Lê Minh Công',
         message: `đã chuyển "${task.name}" sang ${TASK_STATUS_META[nextStatus].label}.`,
         statusColor: TASK_STATUS_META[nextStatus].color,
@@ -223,7 +226,7 @@ export default function FulfillmentDetailWorkbenchPage() {
   const group3Sequential = reqData.tasks.filter((t) => t.order >= 4 && !t.parallel);
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
+    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
       {/* Background glow orbs */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl animate-pulse pointer-events-none" />

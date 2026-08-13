@@ -48,7 +48,7 @@ export default function LandingFeatures() {
                 <span>RAG Service Execution</span>
                 <span className="text-emerald-400">● 200 OK (0.18s)</span>
               </div>
-              <div className="text-blue-400">QUERY &gt; "Khắc phục lỗi không gửi được email Outlook PST"</div>
+              <div className="text-blue-400">QUERY &gt; &quot;Khắc phục lỗi không gửi được email Outlook PST&quot;</div>
               <div className="text-slate-300">RETRIEVED &gt; DocID: web-outlook-repair-datafile-001 (Match Score: 0.94)</div>
               <div className="text-emerald-300">SOLUTION &gt; Chạy công cụ Scanpst.exe để sửa tệp dữ liệu PST...</div>
             </div>
@@ -65,7 +65,7 @@ export default function LandingFeatures() {
                 Tự Động Đóng Ticket & Phân Luồng HITL
               </h3>
               <p className="text-slate-600 text-sm leading-relaxed">
-                Đánh giá độ tin cậy (Confidence Score). Nếu &gt;75% hệ thống tự động phản hồi & đóng ticket; nếu 60-75% sẽ chuyển duyệt Human-In-The-Loop.
+                Hiển thị độ chắc chắn của bước phân loại. Câu trả lời và hành động chỉ được xác nhận khi có evidence, guardrail và workflow phù hợp.
               </p>
             </div>
 

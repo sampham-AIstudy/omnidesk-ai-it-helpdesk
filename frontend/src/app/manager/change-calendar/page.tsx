@@ -1,19 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import {
   ChevronRight,
   Calendar,
   AlertTriangle,
-  GitBranch,
-  CheckCircle2,
-  Clock,
-  UserRound,
-  Zap,
 } from 'lucide-react';
-import { MOCK_CHANGE_CALENDAR, ChangeCalendarItem } from '@/lib/changeCalendarData';
+import { MOCK_CHANGE_CALENDAR } from '@/lib/changeCalendarData';
 
 export default function ChangeCalendarPage() {
   useEffect(() => {
@@ -23,7 +17,7 @@ export default function ChangeCalendarPage() {
   const collisions = MOCK_CHANGE_CALENDAR.filter((c) => c.hasCollision);
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
+    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
       {/* Glow Orbs */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
 

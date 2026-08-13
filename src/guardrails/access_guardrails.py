@@ -4,12 +4,12 @@ Enforces Role-Based Access Control (RBAC) and Multi-Tenant Company Isolation.
 """
 
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 # Tool permissions by user role
-ROLE_PERMISSIONS: Dict[str, List[str]] = {
+ROLE_PERMISSIONS: dict[str, list[str]] = {
     "employee": [
         "search_kb",
         "get_own_ticket",
@@ -53,7 +53,7 @@ ROLE_PERMISSIONS: Dict[str, List[str]] = {
 }
 
 
-def check_ticket_access(user: Dict[str, Any], ticket: Dict[str, Any]) -> Dict[str, Any]:
+def check_ticket_access(user: dict[str, Any], ticket: dict[str, Any]) -> dict[str, Any]:
     """Validate ticket access based on tenant isolation, department scope, and role."""
     user_company = str(user.get("company_unit", user.get("company", ""))).lower()
     ticket_company = str(ticket.get("company_unit", ticket.get("company", ""))).lower()
@@ -63,7 +63,8 @@ def check_ticket_access(user: Dict[str, Any], ticket: Dict[str, Any]) -> Dict[st
     ticket_creator_id = str(ticket.get("created_by_id", ticket.get("user_id", "")))
 
     # Cross-tenant isolation check
-    if user_role != "admin" and user_company and ticket_company and user_company != ticket_company:
+    central_it = user_role == "admin" or user_company == "corporate"
+    if not central_it and user_company and ticket_company and user_company != ticket_company:
         return {
             "allowed": False,
             "decision": "DENY",
@@ -81,26 +82,37 @@ def check_ticket_access(user: Dict[str, Any], ticket: Dict[str, Any]) -> Dict[st
     return {"allowed": True, "decision": "ALLOW", "reason": "Authorized ticket access"}
 
 
-def check_kb_access(user: Dict[str, Any], doc_metadata: Dict[str, Any]) -> Dict[str, Any]:
+def check_kb_access(user: dict[str, Any], doc_metadata: dict[str, Any]) -> dict[str, Any]:
     """Validate KB document retrieval access by tenant and department."""
-    applicable_to_all = doc_metadata.get("applicable_to_all", True)
-    if applicable_to_all:
-        return {"allowed": True, "decision": "ALLOW", "reason": "Public company KB entry"}
-
     user_company = str(user.get("company_unit", user.get("company", ""))).lower()
     doc_company = str(doc_metadata.get("company_unit", doc_metadata.get("company", "all"))).lower()
+    user_department = str(user.get("department", "")).lower()
+    doc_department = str(doc_metadata.get("department", "")).lower()
+    user_role = str(user.get("role", "employee")).lower()
+    central_it = user_role == "admin"
 
-    if doc_company != "all" and user_company and doc_company and user_company != doc_company:
+    applicable_to_all = doc_metadata.get("applicable_to_all", True)
+    if isinstance(applicable_to_all, str):
+        applicable_to_all = applicable_to_all.lower() in {"true", "1", "yes", "all"}
+    company_allowed = applicable_to_all or doc_company in {"", "all", user_company}
+    if not central_it and not company_allowed:
         return {
             "allowed": False,
             "decision": "DENY",
             "reason": f"KB tenant isolation mismatch: '{user_company}' vs '{doc_company}'",
         }
 
+    if not central_it and doc_department and doc_department != user_department:
+        return {
+            "allowed": False,
+            "decision": "DENY",
+            "reason": "KB department scope mismatch",
+        }
+
     return {"allowed": True, "decision": "ALLOW", "reason": "Authorized KB access"}
 
 
-def check_tool_permission(user: Dict[str, Any], tool_name: str) -> Dict[str, Any]:
+def check_tool_permission(user: dict[str, Any], tool_name: str) -> dict[str, Any]:
     """Validate tool execution permissions by role."""
     user_role = str(user.get("role", "employee")).lower()
     allowed_tools = ROLE_PERMISSIONS.get(user_role, ROLE_PERMISSIONS["employee"])

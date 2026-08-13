@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "HALLUCINATION|UNSUPPORTED_CLAIM|INCOMPLETE_ANSWER|INCORRECT_REFUSAL|BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER|OVER_QUESTIONING"
+    ],
+    "unsupported_claims": [
+      "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này. Vui lòng cung cấp thêm chi tiết hoặc liên hệ với bộ phận hỗ trợ kỹ thuật để được trợ giúp."
+    ],
+    "missing_points": [
+      "Nguyên nhân của vấn đề kết nối VPN",
+      "Cách giải quyết vấn đề kết nối VPN"
+    ],
+    "brief_rationale": "Không có thông tin cụ thể nào được cung cấp để xác định nguyên nhân và giải quyết vấn đề kết nối VPN.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

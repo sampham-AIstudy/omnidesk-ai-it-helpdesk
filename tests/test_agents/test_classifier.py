@@ -99,8 +99,8 @@ async def test_classify_node_vip_upgrades_priority():
 
 
 @pytest.mark.asyncio
-async def test_auto_close_eligible():
-    """Ticket đơn giản với confidence cao → auto-close eligible."""
+async def test_ai_never_auto_closes_high_confidence_ticket():
+    """A high-confidence AI answer still requires a user or technician to close."""
     from src.agents.nodes.auto_close_node import auto_close_check_node
 
     state = {
@@ -116,7 +116,7 @@ async def test_auto_close_eligible():
     }
 
     result = await auto_close_check_node(state)
-    assert result["auto_close_eligible"] is True
+    assert result["auto_close_eligible"] is False
 
 
 @pytest.mark.asyncio

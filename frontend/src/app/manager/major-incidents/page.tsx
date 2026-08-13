@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { Siren, Users, Activity, MessageSquare, AlertTriangle, CheckCircle2, Radio } from 'lucide-react';
 import { PageHeader } from '@/components/ui';
+import { formatVietnamTime } from '@/lib/utils';
 
 export default function MajorIncidentWarRoomPage() {
   const [broadcastMsg, setBroadcastMsg] = useState('');
@@ -16,7 +17,7 @@ export default function MajorIncidentWarRoomPage() {
     if (!broadcastMsg.trim()) return;
     setTimeline([
       ...timeline,
-      { time: new Date().toLocaleTimeString('vi-VN').slice(0, 5), author: 'Incident Commander', text: broadcastMsg.trim() },
+      { time: formatVietnamTime(new Date(), { hour: '2-digit', minute: '2-digit' }), author: 'Incident Commander', text: broadcastMsg.trim() },
     ]);
     setBroadcastMsg('');
     toast.success('Đã phát thông báo khẩn cấp toàn công ty qua Email & Zalo/Teams Bot!');

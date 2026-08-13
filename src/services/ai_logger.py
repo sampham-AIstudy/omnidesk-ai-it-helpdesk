@@ -7,12 +7,26 @@ from __future__ import annotations
 import json
 import logging
 import os
+import re
 import subprocess
-from datetime import datetime, timezone, timedelta
+from functools import lru_cache
 from pathlib import Path
 
+from src.observability.tracing import current_trace_id
+from src.timezone import vietnam_now
+
 logger = logging.getLogger(__name__)
-VN_TZ = timezone(timedelta(hours=7))
+
+
+# These JSONL logs may be shared outside the application. Use one replacement
+# for all contact information so neither full nor partial values are exposed.
+_EMAIL_PATTERN = re.compile(r"(?i)(?<![\w.+-])[\w.+-]+@[\w-]+(?:\.[\w-]+)+(?![\w-])")
+_PHONE_PATTERN = re.compile(r"(?<!\w)(?:\+?84|0)(?:[\s().-]*\d){8,10}(?!\w)")
+
+
+def _redact_public_log_text(value: str) -> str:
+    """Remove contact PII before writing a public-facing AI log event."""
+    return _PHONE_PATTERN.sub("***", _EMAIL_PATTERN.sub("***", value))
 
 
 def _git_output(cmd: str) -> str:
@@ -21,8 +35,6 @@ def _git_output(cmd: str) -> str:
     except Exception:
         return ""
 
-
-from functools import lru_cache
 
 @lru_cache(maxsize=1)
 def _get_cached_git_info() -> dict:
@@ -51,17 +63,18 @@ def log_web_app_ai_event(
     try:
         git_info = _get_cached_git_info()
         entry = {
-            "ts": datetime.now(VN_TZ).isoformat(),
+            "ts": vietnam_now().isoformat(),
             "tool": tool,
             "event": event_name,
             "session_id": session_id or "web-session",
+            "trace_id": current_trace_id(),
             "model": model,
             "repo": git_info["repo"],
             "branch": git_info["branch"],
             "commit": git_info["commit"],
-            "student": git_info["student"],
-            "prompt": prompt[:1000] if prompt else "",
-            "response_summary": response_summary[:500] if response_summary else "",
+            "student": _redact_public_log_text(git_info["student"]),
+            "prompt": _redact_public_log_text(prompt)[:1000] if prompt else "",
+            "response_summary": _redact_public_log_text(response_summary)[:500] if response_summary else "",
         }
 
 

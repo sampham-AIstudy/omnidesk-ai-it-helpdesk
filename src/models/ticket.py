@@ -66,7 +66,7 @@ class TicketStatus(str, enum.Enum):
     IN_PROGRESS = "in_progress"            # Đang xử lý
     WAITING_FOR_AGENT = "waiting_for_agent" # Chờ chuyên viên tiếp nhận
     HUMAN_ACTIVE = "human_active"           # Chuyên viên đang hỗ trợ
-    PENDING_CLOSURE = "pending_closure"    # Chờ auto-close confirmation
+    PENDING_CLOSURE = "pending_closure"    # Chờ người dùng/chuyên viên xác nhận
     RESOLVED = "resolved"                  # Đã giải quyết
     CLOSED = "closed"                      # Đã đóng
     REOPENED = "reopened"                  # Mở lại
@@ -158,6 +158,8 @@ class Ticket(Base):
     priority: Mapped[TicketPriority | None] = mapped_column(FlexibleEnum(TicketPriority), nullable=True)
     urgency: Mapped[TicketUrgency | None] = mapped_column(FlexibleEnum(TicketUrgency), nullable=True)
     confidence_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    retrieval_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    groundedness_score: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # AI Analysis
     suggested_solution: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -181,6 +183,13 @@ class Ticket(Base):
     resolution_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     rating: Mapped[int | None] = mapped_column(Integer, nullable=True)
     rating_feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Duplicate/incident linkage. Never used to auto-close or reject a ticket.
+    duplicate_of_ticket_id: Mapped[int | None] = mapped_column(ForeignKey("tickets.id"), nullable=True, index=True)
+    duplicate_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    duplicate_detection_method: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    duplicate_confirmed_by: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    parent_incident_ticket_id: Mapped[int | None] = mapped_column(ForeignKey("tickets.id"), nullable=True, index=True)
 
     # HITL
     hitl_required: Mapped[bool] = mapped_column(Boolean, default=False)

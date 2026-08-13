@@ -13,6 +13,16 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 
 
+def _determine_hitl(state: TicketAgentState) -> tuple[bool, str]:
+    """Baseline confidence gate from PRD FR-09, independent of risk policies."""
+    if state.get("is_production_impact", False):
+        return True, "production impact requires HITL review"
+    confidence = float(state.get("confidence_score", 0.0))
+    if confidence < settings.confidence_threshold_hitl:
+        return True, "Confidence dưới 60% requires HITL review"
+    return False, "Confidence is within the normal processing band"
+
+
 def calculate_ticket_risk_score(state: TicketAgentState) -> Tuple[float, Dict[str, float]]:
     """
     Multi-Factor Risk Engine (Calibrated 0.0 -> 1.0):
@@ -71,8 +81,35 @@ async def hitl_check_node(state: TicketAgentState) -> TicketAgentState:
     risk_score, components = calculate_ticket_risk_score(state)
     policy_res = evaluate_policy(state, risk_score)
 
-    hitl_required = (policy_res["decision"] == "REQUIRE_HITL")
-    reason_text = f"[{policy_res['policy_triggered']}] {policy_res['reason']} (Risk: {risk_score:.2f})"
+    # No grounded KB context means the AI must invite a specialist, regardless
+    # of the classifier's confidence about the ticket category.
+    if (
+        not state.get("rag_context")
+        and not state.get("is_production_impact", False)
+        and policy_res["decision"] != "REQUIRE_HITL"
+    ):
+        return {
+            **state,
+            "hitl_required": False,
+            "hitl_reason": "No sufficiently relevant knowledge-base guidance; hand off to IT Support.",
+            "risk_score": risk_score,
+            "action_taken": "human_handoff",
+            "decision_factors_json": json.dumps({
+                "risk_score": risk_score,
+                "components": components,
+                "policy_decision": "ESCALATE",
+                "policy_triggered": "POLICY_NO_RELEVANT_KB_HANDOFF",
+                "action_type": "HUMAN_HANDOFF",
+                "target_status": "waiting_for_agent",
+            }, ensure_ascii=False),
+        }
+
+    confidence_requires_hitl, confidence_reason = _determine_hitl(state)
+    hitl_required = confidence_requires_hitl or (policy_res["decision"] == "REQUIRE_HITL")
+    if confidence_requires_hitl:
+        reason_text = f"[confidence_gate] {confidence_reason} (Risk: {risk_score:.2f})"
+    else:
+        reason_text = f"[{policy_res['policy_triggered']}] {policy_res['reason']} (Risk: {risk_score:.2f})"
 
     logger.info(
         f"[PolicyEngine] Ticket #{state.get('ticket_number')} "

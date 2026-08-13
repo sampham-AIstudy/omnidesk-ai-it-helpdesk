@@ -1,0 +1,19 @@
+{
+  "result": {
+    "faithfulness": 1.0,
+    "completeness": 1.0,
+    "relevance": 1.0,
+    "correct_abstention": 1.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [],
+    "brief_rationale": "Không có bằng chứng được ủy quyền để trả lời câu hỏi kết nối VPN công ty.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

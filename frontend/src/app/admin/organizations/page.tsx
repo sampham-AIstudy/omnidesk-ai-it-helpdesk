@@ -1,18 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import {
   ChevronRight,
   Building2,
-  Users,
-  ShieldCheck,
-  Plus,
-  ChevronDown,
   Building,
 } from 'lucide-react';
-import { MOCK_ORGANIZATIONS, CompanyTenant } from '@/lib/orgData';
+import { MOCK_ORGANIZATIONS } from '@/lib/orgData';
 
 export default function OrganizationTenantPage() {
   useEffect(() => {
@@ -20,7 +15,7 @@ export default function OrganizationTenantPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
+    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
       {/* Glow Orbs */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
 

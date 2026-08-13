@@ -11,6 +11,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="vi">
       <body>
+        <a className="skip-link" href="#main-content">Bỏ qua điều hướng</a>
         <Providers>{children}</Providers>
       </body>
     </html>

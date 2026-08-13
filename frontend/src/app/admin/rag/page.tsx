@@ -1,20 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import {
   ChevronRight,
   Database,
   FileText,
-  Layers,
   Cpu,
-  CheckCircle2,
   Search,
   Play,
-  ArrowUpRight,
-  RefreshCw,
   Sparkles,
 } from 'lucide-react';
 import {
@@ -27,7 +22,6 @@ export default function RAGPipelinePage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'playground' | 'documents' | 'index'>('overview');
   const [queryInput, setQueryInput] = useState('VPN không thể kết nối sau khi đổi mật khẩu');
   const [retrievedResults, setRetrievedResults] = useState<KBRetrievalResult[]>(MOCK_RETRIEVAL_RESULTS.default);
-  const [isRunningRetrieval, setIsRunningRetrieval] = useState(false);
 
   useEffect(() => {
     document.title = 'RAG Knowledge Pipeline — Vector Search & Reranker';
@@ -35,16 +29,14 @@ export default function RAGPipelinePage() {
 
   const handleRunRetrieval = () => {
     if (!queryInput.trim()) return;
-    setIsRunningRetrieval(true);
-    setTimeout(() => {
+    {
       setRetrievedResults(MOCK_RETRIEVAL_RESULTS.default);
-      setIsRunningRetrieval(false);
       toast.success('Đã hoàn thành Hybrid Search + Cross-Encoder Reranking!');
-    }, 400);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
+    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
       {/* Background glow */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
 
@@ -192,11 +184,10 @@ export default function RAGPipelinePage() {
               <button
                 type="button"
                 onClick={handleRunRetrieval}
-                disabled={isRunningRetrieval}
                 className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-lg hover:from-cyan-400 hover:to-blue-500 transition inline-flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 <Play size={16} />
-                <span>{isRunningRetrieval ? 'Đang chạy...' : 'Run Retrieval'}</span>
+                <span>Run Retrieval</span>
               </button>
             </div>
 

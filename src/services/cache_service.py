@@ -107,9 +107,10 @@ def init_llm_cache() -> bool:
     """Initialize the cache without making Redis a startup dependency.
 
     Standard Redis is attempted first. If it is unavailable, Upstash REST is
-    attempted before the application continues without a cache.
+    attempted. Cache is an optional optimization: when neither backend is
+    configured/healthy, requests continue without a process-local cache.
     """
-    global _cache_initialized
+    global _cache_initialized, _cache_backend, _cache_host
 
     if _cache_initialized:
         return True
@@ -118,9 +119,14 @@ def init_llm_cache() -> bool:
         _cache_initialized = True
         return True
 
-    logger.warning(
-        "[Cache] No usable Redis configuration; LLM requests will bypass cache"
-    )
+    # A local cache is deliberately not used here. It hides configuration
+    # problems in health checks, has no cross-worker consistency, and can
+    # retain sensitive prompts for the lifetime of a worker.
+    set_llm_cache(None)
+    _cache_initialized = False
+    _cache_backend = "none"
+    _cache_host = None
+    logger.info("[Cache] No external cache configured; continuing without LLM cache")
     return False
 
 

@@ -18,6 +18,9 @@ def evaluate(cases: list[dict], top_k: int = 3) -> dict:
     reciprocal_rank_sum = 0.0
     hit_at_1 = 0
     hit_at_k = 0
+    relevant_retrieved = 0
+    retrieved_total = 0
+    duplicate_retrieved = 0
 
     for case in cases:
         retrieved = search_similar(
@@ -25,10 +28,29 @@ def evaluate(cases: list[dict], top_k: int = 3) -> dict:
             category_filter=case.get("category"),
             n_results=top_k,
         )
-        titles = [item.get("metadata", {}).get("title", "") for item in retrieved]
-        expected = case["expected_title"].casefold()
+        titles = [str(item.get("metadata", {}).get("title", "")) for item in retrieved]
+        expected_titles = case.get("expected_titles") or [case["expected_title"]]
+        expected = [title.casefold() for title in expected_titles]
+        expected_source_ids = {str(source_id) for source_id in case.get("expected_source_ids", [])}
+        minimum_relevance = float(case.get("minimum_relevance", 0.0))
+        relevant = [
+            item
+            for item in retrieved
+            if (
+                any(expected_title in str(item.get("metadata", {}).get("title", "")).casefold() for expected_title in expected)
+                or str(item.get("doc_id", "")) in expected_source_ids
+            ) and float(item.get("relevance_score", 1.0)) >= minimum_relevance
+        ]
+        source_keys = [
+            str(item.get("doc_id") or item.get("metadata", {}).get("title", "")).casefold().strip()
+            for item in retrieved
+        ]
+        duplicates = len(source_keys) - len({key for key in source_keys if key})
+        relevant_retrieved += len(relevant)
+        retrieved_total += len(retrieved)
+        duplicate_retrieved += duplicates
         rank = next(
-            (index for index, title in enumerate(titles, start=1) if expected in title.casefold()),
+            (index for index, item in enumerate(retrieved, start=1) if item in relevant),
             None,
         )
         if rank == 1:
@@ -42,6 +64,9 @@ def evaluate(cases: list[dict], top_k: int = 3) -> dict:
                 "rank": rank,
                 "passed": rank is not None,
                 "retrieved_titles": titles,
+                "source_relevance": len(relevant) / len(retrieved) if retrieved else 0.0,
+                "noise_rate": (len(retrieved) - len(relevant)) / len(retrieved) if retrieved else 0.0,
+                "duplicate_source_rate": duplicates / len(retrieved) if retrieved else 0.0,
             }
         )
 
@@ -55,7 +80,11 @@ def evaluate(cases: list[dict], top_k: int = 3) -> dict:
         "case_count": count,
         "hit_at_1": hit_at_1 / count if count else 0.0,
         f"hit_at_{top_k}": hit_at_k / count if count else 0.0,
+        f"recall_at_{top_k}": hit_at_k / count if count else 0.0,
         "mrr": reciprocal_rank_sum / count if count else 0.0,
+        "source_relevance": relevant_retrieved / retrieved_total if retrieved_total else 0.0,
+        "noise_rate": (retrieved_total - relevant_retrieved) / retrieved_total if retrieved_total else 0.0,
+        "duplicate_source_rate": duplicate_retrieved / retrieved_total if retrieved_total else 0.0,
         "results": results,
     }
 
@@ -70,14 +99,22 @@ def markdown_report(report: dict, top_k: int) -> str:
         f"- Cases: {report['case_count']}",
         f"- Hit@1: {report['hit_at_1']:.1%}",
         f"- Hit@{top_k}: {report[f'hit_at_{top_k}']:.1%}",
+        f"- Recall@{top_k}: {report[f'recall_at_{top_k}']:.1%}",
         f"- MRR: {report['mrr']:.3f}",
+        f"- Source relevance: {report['source_relevance']:.1%}",
+        f"- Noise rate: {report['noise_rate']:.1%}",
+        f"- Duplicate source rate: {report['duplicate_source_rate']:.1%}",
         "",
-        "| Query | Expected | Rank |",
-        "|---|---|---:|",
+        "| Query | Expected | Rank | Relevance | Noise | Duplicates |",
+        "|---|---|---:|---:|---:|---:|",
     ]
     for item in report["results"]:
         rank = item["rank"] if item["rank"] is not None else "miss"
-        lines.append(f"| {item['query']} | {item['expected_title']} | {rank} |")
+        expected = ", ".join(item.get("expected_titles") or [item["expected_title"]])
+        lines.append(
+            f"| {item['query']} | {expected} | {rank} | {item['source_relevance']:.0%} | "
+            f"{item['noise_rate']:.0%} | {item['duplicate_source_rate']:.0%} |"
+        )
     return "\n".join(lines) + "\n"
 
 

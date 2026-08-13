@@ -13,9 +13,12 @@ interface Props {
   compact?: boolean;
   selected?: boolean;
   onClick?: () => void;
+  queue?: boolean;
+  showSla?: boolean;
 }
 
-export default function TicketCard({ ticket, linkTo, onApprove, compact, selected, onClick }: Props) {
+export default function TicketCard({ ticket, linkTo, onApprove, compact, selected, onClick, queue, showSla = true }: Props) {
+  const queueSummary = ticket.description.includes('---') ? ticket.description.split('---').at(-1)?.trim() || ticket.description : ticket.description;
   const card = (
     <div
       className="card"
@@ -34,7 +37,7 @@ export default function TicketCard({ ticket, linkTo, onApprove, compact, selecte
             <StatusBadge status={ticket.status} />
             {ticket.priority && <PriorityBadge priority={ticket.priority} />}
             <HITLBadge required={ticket.hitl_required} />
-            {ticket.sla_escalated && <span className="badge badge-escalated">SLA escalated</span>}
+            {showSla && ticket.sla_escalated && <span className="badge badge-escalated">SLA escalated</span>}
           </div>
 
           <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--text)', lineHeight: 1.35, marginBottom: compact ? 0 : 5 }}>
@@ -43,7 +46,7 @@ export default function TicketCard({ ticket, linkTo, onApprove, compact, selecte
 
           {!compact && (
             <div style={{ color: 'var(--text-secondary)', fontSize: 12, lineHeight: 1.5, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-              {ticket.description}
+              {queue ? queueSummary : ticket.description}
             </div>
           )}
 
@@ -67,7 +70,7 @@ export default function TicketCard({ ticket, linkTo, onApprove, compact, selecte
         </div>
 
         <div className="ticket-card-meta" style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
-          <SLABadge deadline={ticket.sla_deadline} />
+          {showSla && <SLABadge deadline={ticket.sla_deadline} />}
           {!compact && <ConfidenceBadge score={ticket.confidence_score} />}
           {onApprove && ticket.status === 'pending_hitl' && (
             <button

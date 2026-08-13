@@ -6,14 +6,9 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronRight,
-  Wrench,
   PackageCheck,
   Search,
   Filter,
-  CheckCircle2,
-  Loader2,
-  OctagonAlert,
-  Circle,
   UserRound,
   RefreshCw,
 } from 'lucide-react';
@@ -22,8 +17,6 @@ import {
   TASK_STATUS_META,
   PRIORITY_META,
   deriveRequestStatus,
-  RequestFulfillment,
-  TaskStatus,
 } from '@/lib/fulfillmentData';
 
 const STATUS_FILTER_OPTIONS = [
@@ -46,7 +39,7 @@ const cardVariants = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
   exit: { opacity: 0, scale: 0.96, transition: { duration: 0.2 } },
-};
+} as const;
 
 export default function FulfillmentWorkbenchListPage() {
   const router = useRouter();
@@ -100,7 +93,7 @@ export default function FulfillmentWorkbenchListPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
+    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
       {/* Background radial glow accents */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
@@ -140,39 +133,6 @@ export default function FulfillmentWorkbenchListPage() {
           </div>
         </div>
       </header>
-
-      {/* MODULE SEGMENTATION TABS */}
-      <div className="mb-6 relative z-10">
-        <div className="grid grid-cols-2 gap-2 w-full max-w-md rounded-2xl border border-white/10 bg-black/40 p-1.5 backdrop-blur-md">
-          {/* Tab 1: Ticket Queue Link */}
-          <Link
-            href="/technician/queue"
-            className="relative flex flex-col items-center justify-center py-2.5 px-3 rounded-xl border border-white/10 bg-white/[0.02] text-white/50 hover:text-white transition-all text-center"
-          >
-            <div className="flex items-center gap-1.5 font-medium text-xs">
-              <Wrench size={16} />
-              <span>Ticket Queue</span>
-            </div>
-            <span className="font-mono text-[9px] text-white/40 mt-0.5">INC · Sự cố</span>
-          </Link>
-
-          {/* Tab 2: Fulfillment Workbench (Active) */}
-          <button
-            type="button"
-            className="relative flex flex-col items-center justify-center py-2.5 px-3 rounded-xl border border-cyan-400/60 bg-cyan-400/10 text-cyan-300 font-semibold transition-all text-center cursor-pointer shadow-md shadow-cyan-500/10"
-          >
-            <div className="flex items-center gap-1.5 font-medium text-xs">
-              <PackageCheck size={16} />
-              <span>Fulfillment Workbench</span>
-            </div>
-            <span className="font-mono text-[9px] text-cyan-300/70 mt-0.5">REQ · Dịch vụ</span>
-            <motion.div
-              layoutId="seg"
-              className="h-0.5 bg-cyan-400 absolute bottom-0 inset-x-4 rounded-full"
-            />
-          </button>
-        </div>
-      </div>
 
       {/* FILTER BAR */}
       <div className="mb-6 flex flex-col md:flex-row gap-3 relative z-10">

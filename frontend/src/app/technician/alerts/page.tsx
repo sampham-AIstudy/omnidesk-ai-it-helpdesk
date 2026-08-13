@@ -9,6 +9,7 @@ import {
   ChevronRight,
   Search,
   CheckCheck,
+  CheckCircle2,
   Siren,
   BellOff,
   UserRound,
@@ -68,12 +69,13 @@ export default function AlertEventConsolePage() {
   const [suppressTime, setSuppressTime] = useState('4h');
   const [assigneeTech, setAssigneeTech] = useState('Lê Minh Công');
 
-  // Live timer tick every 1s
+  // Refresh elapsed labels periodically. Updating each second re-rendered the
+  // entire animated monitoring console and could overwhelm demo browsers.
   useEffect(() => {
     document.title = 'Alert / Event Console — Realtime Monitoring';
     const timer = setInterval(() => {
       setTimeTick((prev) => prev + 1);
-    }, 1000);
+    }, 15_000);
     return () => clearInterval(timer);
   }, []);
 
@@ -193,7 +195,7 @@ export default function AlertEventConsolePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
+    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
       {/* Subtle background glow orbs */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-red-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-cyan-600/10 rounded-full blur-3xl animate-pulse pointer-events-none" />

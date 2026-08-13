@@ -1,0 +1,27 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "HALLUCINATION|UNSUPPORTED_CLAIM|INCOMPLETE_ANSWER|INCORRECT_REFUSAL|BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER|OVER_QUESTIONING"
+    ],
+    "unsupported_claims": [
+      "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "Để cung cấp hướng dẫn chính xác về cách reset password công ty, tôi cần các tài liệu hướng dẫn (runbook/SOP/policy) hoặc dữ liệu hệ thống đã được phê duyệt có liên quan đến quy trình reset mật khẩu.",
+      "Vui lòng cung cấp:",
+      "- Đường dẫn tới tài liệu hướng dẫn reset mật khẩu (nếu có)",
+      "- Hoặc liên hệ với bộ phận IT Support để được hỗ trợ trực tiếp"
+    ],
+    "missing_points": [
+      "Cách reset password công ty"
+    ],
+    "brief_rationale": "Refusal to answer due to lack of authorized evidence",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

@@ -1,19 +1,17 @@
 'use client';
 
+/* This legacy mock detail contains identifiers rendered verbatim in JSX. */
+/* eslint-disable react/no-unescaped-entities */
+
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import {
   ChevronRight,
   ArrowLeft,
   Globe,
-  Mail,
-  FolderOpen,
-  Cloud,
-  AppWindow,
-  Database,
   UserRound,
   Gauge,
   Clock,
@@ -33,8 +31,6 @@ import {
   Plus,
   Network,
   X,
-  Server,
-  Info,
 } from 'lucide-react';
 import {
   MOCK_SERVICES,
@@ -45,7 +41,6 @@ import {
 
 export default function ServiceHealthDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const svcId = params?.id as string;
 
   const [service, setService] = useState<ServiceItem | null>(null);
@@ -59,7 +54,7 @@ export default function ServiceHealthDetailPage() {
   const incidentsSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setLoading(true);
+    const initTimer = window.setTimeout(() => {
     const found = MOCK_SERVICES.find((s) => s.id === svcId);
     if (found) {
       setService({ ...found });
@@ -68,11 +63,13 @@ export default function ServiceHealthDetailPage() {
       setService(null);
     }
     setLoading(false);
+    }, 0);
+    return () => window.clearTimeout(initTimer);
   }, [svcId]);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#05070d] text-white p-10 flex items-center justify-center">
+      <div className="page-state min-h-screen p-10 flex items-center justify-center">
         <Loader2 size={32} className="animate-spin text-cyan-400" />
       </div>
     );
@@ -80,7 +77,7 @@ export default function ServiceHealthDetailPage() {
 
   if (!service) {
     return (
-      <div className="min-h-screen bg-[#05070d] text-white p-10 flex flex-col items-center justify-center rounded-3xl">
+      <div className="page-state min-h-screen p-10 flex flex-col items-center justify-center">
         <AlertTriangle size={48} className="text-amber-400 mb-4" />
         <h1 className="text-2xl font-bold">Không tìm thấy dịch vụ</h1>
         <p className="text-white/50 text-sm mt-1">Dịch vụ với mã "{svcId}" không tồn tại.</p>
@@ -119,7 +116,7 @@ export default function ServiceHealthDetailPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
+    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
       {/* Background glow orbs */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl animate-pulse pointer-events-none" />

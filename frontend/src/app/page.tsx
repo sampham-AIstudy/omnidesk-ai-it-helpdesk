@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/lib/authStore';
 import LandingNavbar from '@/components/landing/LandingNavbar';
@@ -10,17 +10,16 @@ import LandingFeatures from '@/components/landing/LandingFeatures';
 import { Spinner } from '@/components/ui';
 
 export default function RootPage() {
-  const { hydrate } = useAuthStore();
-  const [mounted, setMounted] = useState(false);
+  const hydrate = useAuthStore((state) => state.hydrate);
+  const hydrated = useAuthStore((state) => state.hydrated);
 
   useEffect(() => {
     hydrate();
-    setMounted(true);
   }, [hydrate]);
 
-  if (!mounted) {
+  if (!hydrated) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#f9fafb]">
+      <div className="public-app-page flex items-center justify-center min-h-screen bg-[#f9fafb]">
         <Spinner size={34} />
       </div>
     );
@@ -28,7 +27,7 @@ export default function RootPage() {
 
   // Next-Gen 2026 Landing Page (#f9fafb background)
   return (
-    <div className="min-h-screen bg-[#f9fafb] text-slate-900 selection:bg-blue-600 selection:text-white">
+    <div className="public-app-page min-h-screen bg-[#f9fafb] text-slate-900 selection:bg-cyan-300 selection:text-slate-950">
       <LandingNavbar />
       <main className="pb-16">
         <LandingHero2026 />
@@ -60,6 +59,3 @@ export default function RootPage() {
     </div>
   );
 }
-
-
-

@@ -1,9 +1,9 @@
-'use client';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { redirect } from 'next/navigation';
 
-export default function TechAllRedirect() {
-  const router = useRouter();
-  useEffect(() => { router.replace('/technician/queue'); }, [router]);
-  return null;
+/**
+ * The queue is the single operational surface for incidents.  Keep this
+ * redirect for old bookmarks without maintaining a second, inconsistent list.
+ */
+export default function LegacyTechnicianAllPage() {
+  redirect('/technician/queue');
 }

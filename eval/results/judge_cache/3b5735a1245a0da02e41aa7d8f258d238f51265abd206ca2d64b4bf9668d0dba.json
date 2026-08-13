@@ -1,0 +1,25 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER"
+    ],
+    "unsupported_claims": [
+      "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu của bạn.",
+      "Để hỗ trợ bạn, vui lòng cung cấp:",
+      "*Lưu ý: Tôi chỉ có thể hỗ trợ dựa trên dữ liệu được ủy quyền từ hệ thống ITSM."
+    ],
+    "missing_points": [
+      "Hướng dẫn cụ thể về cách xử lý yêu cầu của người dùng"
+    ],
+    "brief_rationale": "Đáp án không chính xác và không cung cấp thông tin hỗ trợ cần thiết.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

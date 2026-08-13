@@ -38,6 +38,7 @@ export interface RequestFulfillment {
   id: string;            // e.g. "REQ-10291"
   title: string;         // e.g. "New Employee Onboarding"
   category: string;      // e.g. "Onboarding"
+  status?: TaskStatus;
   priority: PriorityKey;
   createdAt: string;     // "06/08/2026 09:14"
   startDate: string;     // "12/08/2026"

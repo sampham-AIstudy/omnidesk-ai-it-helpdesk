@@ -8,6 +8,9 @@ from httpx import ASGITransport, AsyncClient
 
 # Set test DB before importing app
 os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///./data/test.db"
+# Do not let deterministic duplicate/memory indexes leak from the developer's
+# real Chroma store into an isolated test database.
+os.environ["CHROMA_PERSIST_DIR"] = "./data/test_chroma"
 
 from src.data.knowledge_base import get_all_kb_entries
 from src.database import AsyncSessionLocal, Base, engine
@@ -20,6 +23,14 @@ async def prepare_database():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
+
+    from src.services.rag_service import get_chroma_client
+    chroma_client = get_chroma_client()
+    for collection_name in ("helpdesk_ticket_duplicates_v1", "helpdesk_episodic_memory_v1"):
+        try:
+            chroma_client.delete_collection(collection_name)
+        except Exception:
+            pass
 
     async with AsyncSessionLocal() as db:
         await _seed_demo_users(db)

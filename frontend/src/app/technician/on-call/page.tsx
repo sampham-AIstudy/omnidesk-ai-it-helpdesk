@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
+import { formatVietnamTime } from '@/lib/utils';
 import {
   ChevronRight,
   RotateCcw,
@@ -60,10 +61,11 @@ export default function OnCallEscalationPage() {
     document.title = 'On-Call & Escalation — Realtime Agent Shift';
     const updateTime = () => {
       const now = new Date();
-      setTimeStr(now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      setTimeStr(formatVietnamTime(now, { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
     };
     updateTime();
-    const interval = setInterval(updateTime, 1000);
+    // A dashboard clock does not need to re-render this large page every second.
+    const interval = setInterval(updateTime, 15_000);
     return () => clearInterval(interval);
   }, []);
 
@@ -102,7 +104,7 @@ export default function OnCallEscalationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
+    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
       {/* Background radial glow accents */}
       <div className="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
