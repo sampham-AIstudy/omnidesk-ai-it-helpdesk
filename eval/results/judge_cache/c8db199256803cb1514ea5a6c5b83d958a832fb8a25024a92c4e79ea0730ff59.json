@@ -1,0 +1,32 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "HALLUCINATION|UNSUPPORTED_CLAIM|INCOMPLETE_ANSWER|INCORRECT_REFUSAL|BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER|OVER_QUESTIONING"
+    ],
+    "unsupported_claims": [
+      "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "Để hỗ trợ bạn, tôi cần xác minh:",
+      "Vui lòng cung cấp:",
+      "- **Tên tenant** (nếu có).",
+      "- **Mã lỗi** (nếu hiển thị trên màn hình).",
+      "- **Ảnh chụp màn hình lỗi** (nếu có thể).",
+      "1. **Trạng thái license** hiện tại của Microsoft 365 (đã hết hạn hay sắp hết hạn).",
+      "2. **Loại license** đang sử dụng (ví dụ: E3, E5, Business Basic, v.v.).",
+      "3. **Thời gian hết hạn** (nếu có) và **nguyên nhân** (quá hạn thanh toán, hết hạn tự động, v.v.).",
+      "4. **Cách kiểm tra license** (qua Admin Center, PowerShell, hay báo lỗi cụ thể)."
+    ],
+    "missing_points": [
+      "Hướng khắc phục dựa trên bằng chứng hợp lệ"
+    ],
+    "brief_rationale": "Không có thông tin đủ để trả lời câu hỏi.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

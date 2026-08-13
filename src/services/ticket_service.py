@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import logging
 from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -13,6 +14,7 @@ from src.config import get_settings
 from src.models.audit_log import AuditAction, AuditLog
 from src.models.ticket import Ticket, TicketPriority, TicketStatus
 from src.models.user import User
+from src.timezone import vietnam_now
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -29,7 +31,7 @@ SLA_HOURS: dict[TicketPriority, int] = {
 
 def _gen_ticket_number() -> str:
     """Generate INC-YYYYMMDD-XXXX style ticket number."""
-    now = datetime.now(UTC)
+    now = vietnam_now()
     import random
     return f"INC-{now.strftime('%Y%m%d')}-{random.randint(1000, 9999)}"
 
@@ -40,6 +42,10 @@ async def create_ticket(
     description: str,
     submitter_id: int,
     is_production_impact: bool = False,
+    duplicate_of_ticket_id: int | None = None,
+    duplicate_score: float | None = None,
+    duplicate_detection_method: str | None = None,
+    duplicate_confirmed_by: str | None = None,
 ) -> Ticket:
     ticket = Ticket(
         ticket_number=_gen_ticket_number(),
@@ -48,6 +54,10 @@ async def create_ticket(
         submitter_id=submitter_id,
         is_production_impact=is_production_impact,
         status=TicketStatus.OPEN,
+        duplicate_of_ticket_id=duplicate_of_ticket_id,
+        duplicate_score=duplicate_score,
+        duplicate_detection_method=duplicate_detection_method,
+        duplicate_confirmed_by=duplicate_confirmed_by,
     )
     db.add(ticket)
     await db.flush()
@@ -122,12 +132,15 @@ async def get_tickets(
     return result.scalars().all(), total
 
 
-async def get_pending_hitl(db: AsyncSession) -> list[Ticket]:
-    result = await db.execute(
-        select(Ticket)
-        .where(Ticket.status == TicketStatus.PENDING_HITL)
-        .order_by(Ticket.created_at.asc())
-    )
+async def get_pending_hitl(
+    db: AsyncSession, submitter_company_unit: str | None = None
+) -> list[Ticket]:
+    query = select(Ticket).where(Ticket.status == TicketStatus.PENDING_HITL)
+    if submitter_company_unit:
+        query = query.join(User, Ticket.submitter_id == User.id).where(
+            User.company_unit == submitter_company_unit
+        )
+    result = await db.execute(query.order_by(Ticket.created_at.asc()))
     return result.scalars().all()
 
 
@@ -138,8 +151,10 @@ async def update_ticket_classification(
     priority: str,
     urgency: str,
     confidence_score: float,
+    retrieval_confidence: float | None,
+    groundedness_score: float | None,
     suggested_solution: str | None,
-    rag_sources: list[str] | None,
+    rag_sources: list[str | dict[str, Any]] | None,
     agent_reasoning: str | None,
     routing_target: str | None,
     hitl_required: bool,
@@ -155,6 +170,8 @@ async def update_ticket_classification(
     ticket.priority = TicketPriority(priority)
     ticket.urgency = TicketUrgency(urgency)
     ticket.confidence_score = confidence_score
+    ticket.retrieval_confidence = retrieval_confidence
+    ticket.groundedness_score = groundedness_score
     ticket.suggested_solution = suggested_solution
     ticket.rag_sources = json.dumps(rag_sources or [])
     ticket.agent_reasoning = agent_reasoning
@@ -181,7 +198,13 @@ async def update_ticket_classification(
             f"AI phân loại: category={category}, priority={priority}, "
             f"confidence={confidence_score:.2f}, hitl={hitl_required}"
         ),
-        metadata={"category": category, "priority": priority, "confidence": confidence_score},
+        metadata={
+            "category": category,
+            "priority": priority,
+            "classification_confidence": confidence_score,
+            "retrieval_confidence": retrieval_confidence,
+            "groundedness_score": groundedness_score,
+        },
         confidence_score=confidence_score,
         model_used=model_used,
     )
@@ -231,6 +254,8 @@ async def close_ticket(
     actor_type: str,
     note: str = "",
 ) -> Ticket | None:
+    if actor_type == "agent":
+        raise ValueError("AI agent không có quyền đóng ticket")
     ticket = await get_ticket(db, ticket_id)
     if not ticket:
         return None
@@ -239,40 +264,23 @@ async def close_ticket(
     ticket.resolved_at = datetime.now(UTC)
     await db.flush()
 
-    # ── Auto Knowledge Capture for RAG Vector Store ──────────────────────
-    solution_text = ticket.suggested_solution or note
-    if solution_text and len(solution_text.strip()) > 15:
-        try:
-            from src.services.rag_service import index_document
+    # Ticket text may include PII, credentials, customer data and tenant-only
+    # incidents. Knowledge publication must be a reviewed KB workflow, never
+    # an automatic side effect of closing a ticket.
+    logger.info("KB publication requires an approved, redacted KB review for ticket #%s", ticket.ticket_number)
 
-            kb_doc_id = f"auto-kb-ticket-{ticket.id}"
-            kb_content = (
-                f"Sự cố: {ticket.title}. "
-                f"Mô tả chi tiết: {ticket.description}. "
-                f"Giải pháp xử lý chuẩn: {solution_text.strip()}"
-            )
-            kb_metadata = {
-                "title": f"KB bài học từ Ticket #{ticket.ticket_number}",
-                "category": ticket.category.value if ticket.category else "other",
-                "solution": solution_text.strip(),
-                "company_unit": "all",
-                "applicable_to_all": True,
-            }
-            index_document(doc_id=kb_doc_id, content=kb_content, metadata=kb_metadata)
-            logger.info("Auto Knowledge Capture: Đã lưu bài học từ Ticket #%s vào RAG Vector DB", ticket.ticket_number)
-        except Exception as exc:
-            logger.warning("Auto Knowledge Capture thất bại cho Ticket #%s: %s", ticket.ticket_number, exc)
+    try:
+        from src.services.zero_mem_service import index_ticket_trace
+        await index_ticket_trace(db, ticket)
+    except Exception as exc:
+        logger.warning("Could not refresh episodic ticket trace %s: %s", ticket.id, exc)
 
-    action = (
-        AuditAction.TICKET_AUTO_CLOSED if actor_type == "agent"
-        else AuditAction.TICKET_MANUALLY_CLOSED
-    )
     await write_audit_log(
         db=db,
         ticket_id=ticket_id,
         actor_id=actor_id,
         actor_type=actor_type,
-        action=action,
+        action=AuditAction.TICKET_MANUALLY_CLOSED,
         description=f"Ticket đóng bởi {actor_type}. {note}",
     )
     await db.refresh(ticket)
@@ -323,14 +331,14 @@ async def takeover_ticket(
     tech_user = await db.get(User, technician_id)
     tech_name = tech_user.full_name if tech_user else f"Chuyên viên #{technician_id}"
 
-    from src.services.ticket_conversation_service import add_message
     from src.models.ticket_message import TicketMessageSender
+    from src.services.ticket_conversation_service import add_message
     await add_message(
         db,
         ticket_id=ticket.id,
         sender_type=TicketMessageSender.SYSTEM,
         sender_id=technician_id,
-        content=f"👨‍💻 Chuyên viên {tech_name} đã tiếp nhận ticket và tham gia cuộc trò chuyện.",
+        content=f"👨‍💻 Chuyên viên {tech_name} đã tiếp nhận xử lý ticket.",
     )
 
     await write_audit_log(
@@ -372,4 +380,3 @@ async def write_audit_log(
     db.add(log)
     await db.flush()
     return log
-

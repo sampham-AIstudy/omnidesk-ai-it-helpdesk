@@ -1,127 +1,131 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { Cpu, Bot, CheckCircle2, AlertTriangle, ShieldCheck, RefreshCw, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Bot, CheckCircle2, CircleAlert, Cpu, ShieldCheck, ThumbsDown, ThumbsUp, Timer } from 'lucide-react';
 import { PageHeader } from '@/components/ui';
 
-interface AgenticTaskLog {
+type ExecutionMode = 'copilot' | 'supervised';
+type RunStatus = 'completed' | 'review';
+
+type AgentRun = {
   id: string;
-  ticketId: string;
+  ticket: string;
   action: string;
-  status: 'Autonomous Success' | 'Flagged for Feedback';
-  confidence: string;
-  executionTime: string;
-}
+  confidence: number;
+  duration: string;
+  status: RunStatus;
+  reviewed?: 'helpful' | 'unsafe';
+};
 
-export default function AgenticAIConsolePage() {
-  const [autoLevel, setAutoLevel] = useState<'copilot' | 'agentic'>('agentic');
+const INITIAL_RUNS: AgentRun[] = [
+  { id: 'AI-991', ticket: 'HD-9941', action: 'Đề xuất quy trình mở khóa Entra ID và xác minh OTP.', confidence: 0.985, duration: '1.2s', status: 'completed' },
+  { id: 'AI-992', ticket: 'HD-9945', action: 'Nháp yêu cầu cấp quyền SharePoint cho nhóm Kế toán.', confidence: 0.95, duration: '2.4s', status: 'review' },
+  { id: 'AI-993', ticket: 'HD-9948', action: 'Tóm tắt sự cố VPN và đính kèm 3 nguồn Knowledge Base.', confidence: 0.73, duration: '1.8s', status: 'review' },
+];
 
-  const [logs, setLogs] = useState<AgenticTaskLog[]>([
-    {
-      id: 'AI-991',
-      ticketId: '#HD-9941',
-      action: 'Tự động mở khóa tài khoản Entra ID SSPR & Gửi SMS OTP xác nhận',
-      status: 'Autonomous Success',
-      confidence: '98.5%',
-      executionTime: '1.2s',
-    },
-    {
-      id: 'AI-992',
-      ticketId: '#HD-9945',
-      action: 'Tự động cấp quyền truy cập Sharepoint thư mục Phòng Kế Toán',
-      status: 'Autonomous Success',
-      confidence: '95.0%',
-      executionTime: '2.4s',
-    },
-  ]);
+export default function AIConsolePage() {
+  const [mode, setMode] = useState<ExecutionMode>('supervised');
+  const [runs, setRuns] = useState(INITIAL_RUNS);
+  const [guardrails, setGuardrails] = useState({
+    piiMasking: true,
+    humanApproval: true,
+    productionBlock: true,
+  });
 
-  const handleFeedback = (id: string, isGood: boolean) => {
-    toast.success(isGood ? 'Đã phản hồi tích cực cho AI Agent!' : 'Đã gửi log phản hồi để Fine-Tune chống Hallucination!');
+  const reviewCount = useMemo(() => runs.filter((run) => run.status === 'review' && !run.reviewed).length, [runs]);
+  const avgConfidence = useMemo(() => Math.round((runs.reduce((sum, run) => sum + run.confidence, 0) / runs.length) * 100), [runs]);
+
+  const selectMode = (next: ExecutionMode) => {
+    setMode(next);
+    toast.success(next === 'copilot' ? 'AI chỉ tạo đề xuất; kỹ thuật viên sẽ thực thi.' : 'AI được phép tự xử lý các tác vụ đã được phê duyệt policy.');
+  };
+
+  const reviewRun = (id: string, reviewed: 'helpful' | 'unsafe') => {
+    setRuns((items) => items.map((item) => item.id === id ? { ...item, reviewed } : item));
+    toast.success(reviewed === 'helpful' ? 'Đã lưu phản hồi tích cực cho lần đánh giá sau.' : 'Đã đánh dấu lần chạy để rà soát policy và prompt.');
   };
 
   return (
-    <div className="space-y-6">
+    <div>
       <PageHeader
-        title="Trung Tâm Điều Hành AI Agentic (Agentic AI Copilot Console)"
-        subtitle="Dành riêng cho System Administrator: Chuyển đổi từ 'AI trả lời gợi ý' sang 'AI Agent tự hoàn thành công việc từ đầu đến cuối', review log thực thi & Fine-Tune chống Hallucination."
+        title="AI agent console"
+        subtitle="Kiểm soát quyền tự động hóa, guardrails và các quyết định cần người phê duyệt."
+        action={<span className="badge badge-in_progress"><span className="pulse-dot" /> Engine online</span>}
       />
 
-      {/* AI AUTOMATION MODE SWITCHER */}
-      <div className="glass-card-light rounded-3xl p-6 space-y-4 border border-slate-200">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-blue-600 font-bold text-base">
-            <Cpu size={20} />
-            <span>Cấu Hình Chế Độ Tự Động Hóa AI Agent (Execution Mode)</span>
+      <div className="admin-console-grid">
+        <section className="card admin-panel">
+          <div className="admin-panel-heading">
+            <span className="admin-panel-icon"><Cpu size={18} /></span>
+            <div><h2>Chế độ thực thi</h2><p>Thay đổi này áp dụng cho các ticket mới.</p></div>
           </div>
-          <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            Agentic Engine Active
-          </span>
-        </div>
+          <div className="execution-mode-grid">
+            <button type="button" className={`execution-mode ${mode === 'copilot' ? 'selected' : ''}`} onClick={() => selectMode('copilot')}>
+              <Bot size={18} />
+              <span>Copilot</span>
+              <small>AI phân tích, trích nguồn và soạn phản hồi. Người dùng quyết định mọi thao tác.</small>
+            </button>
+            <button type="button" className={`execution-mode ${mode === 'supervised' ? 'selected' : ''}`} onClick={() => selectMode('supervised')}>
+              <ShieldCheck size={18} />
+              <span>Tự động có giám sát</span>
+              <small>Chỉ chạy playbook rủi ro thấp; các bước production, quyền và dữ liệu nhạy cảm luôn qua HITL.</small>
+            </button>
+          </div>
+          <div className="mode-note"><CircleAlert size={15} /> Không có chế độ “tự động hoàn toàn” cho thao tác access hoặc production.</div>
+        </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div
-            onClick={() => { setAutoLevel('copilot'); toast.success('Đã chuyển sang chế độ AI Copilot (Chỉ gợi ý)'); }}
-            className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-              autoLevel === 'copilot' ? 'border-blue-500 bg-blue-50/50 ring-2 ring-blue-400' : 'border-slate-200 bg-white'
-            }`}
-          >
-            <div className="font-bold text-slate-900 text-sm">💡 Chế độ 1: AI Copilot (Gợi Ý Bàn Phím)</div>
-            <div className="text-xs text-slate-500 font-medium mt-1">AI đọc KB và gợi ý giải pháp. Kỹ thuật viên phải nhấn nút xác nhận trước khi thực hiện.</div>
+        <aside className="card admin-panel">
+          <div className="admin-panel-heading">
+            <span className="admin-panel-icon"><ShieldCheck size={18} /></span>
+            <div><h2>Guardrails đang áp dụng</h2><p>Chính sách được kiểm tra trước khi gọi công cụ.</p></div>
           </div>
-
-          <div
-            onClick={() => { setAutoLevel('agentic'); toast.success('Đã bật chế độ Agentic AI (Tự động hóa hoàn toàn)'); }}
-            className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-              autoLevel === 'agentic' ? 'border-emerald-500 bg-emerald-50/50 ring-2 ring-emerald-400' : 'border-slate-200 bg-white'
-            }`}
-          >
-            <div className="font-bold text-slate-900 text-sm">🤖 Chế độ 2: Agentic AI (Tự Thực Thi 100%)</div>
-            <div className="text-xs text-slate-500 font-medium mt-1">AI tự đọc ý định, lấy đúng ngữ cảnh, tự kích hoạt API reset mật khẩu & cấp quyền mà không cần chờ con người.</div>
+          <div className="guardrail-list">
+            {[
+              ['piiMasking', 'Che dữ liệu nhạy cảm trong prompt và trace'],
+              ['humanApproval', 'Bắt buộc HITL khi confidence thấp hoặc VIP'],
+              ['productionBlock', 'Chặn thay đổi production ngoài change window'],
+            ].map(([key, label]) => (
+              <label key={key} className="guardrail-row">
+                <span>{label}</span>
+                <input type="checkbox" checked={guardrails[key as keyof typeof guardrails]} onChange={() => setGuardrails((current) => ({ ...current, [key]: !current[key as keyof typeof current] }))} />
+              </label>
+            ))}
           </div>
-        </div>
+        </aside>
       </div>
 
-      {/* AUTONOMOUS EXECUTION AUDIT LOGS */}
-      <div className="glass-card-light rounded-3xl p-6 space-y-4 border border-slate-200">
-        <h3 className="font-bold text-slate-900 text-base flex items-center gap-2" style={{ fontFamily: 'Outfit, sans-serif' }}>
-          <Bot size={18} className="text-purple-600" />
-          <span>Nhật Ký AI Tự Thực Thi & Loop Phản Hồi Chống Hallucination</span>
-        </h3>
+      <div className="admin-console-stats">
+        <Metric icon={Timer} label="Lần chạy hôm nay" value="128" />
+        <Metric icon={CheckCircle2} label="Confidence trung bình" value={`${avgConfidence}%`} />
+        <Metric icon={CircleAlert} label="Đang chờ review" value={String(reviewCount)} warning />
+      </div>
 
-        <div className="space-y-3">
-          {logs.map((log) => (
-            <div key={log.id} className="p-4 rounded-2xl bg-white border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono font-bold text-xs text-purple-600">{log.id}</span>
-                  <span className="font-mono font-bold text-xs text-blue-600">{log.ticketId}</span>
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                    Confidence {log.confidence}
-                  </span>
-                </div>
-                <div className="font-bold text-slate-900 text-xs mt-1">{log.action}</div>
+      <section className="card admin-panel" style={{ marginTop: 16 }}>
+        <div className="admin-panel-heading">
+          <span className="admin-panel-icon"><Bot size={18} /></span>
+          <div><h2>Nhật ký thực thi gần đây</h2><p>Đánh giá nhanh sẽ được đưa vào tập benchmark và luồng cải tiến prompt.</p></div>
+        </div>
+        <div className="agent-run-list">
+          {runs.map((run) => (
+            <article key={run.id} className="agent-run">
+              <div className="agent-run-main">
+                <div className="agent-run-meta"><span>{run.id}</span><span>{run.ticket}</span><span className={run.status === 'review' ? 'badge badge-pending_hitl' : 'badge badge-closed'}>{run.status === 'review' ? 'Cần review' : 'Đã hoàn tất'}</span></div>
+                <p>{run.action}</p>
               </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleFeedback(log.id, true)}
-                  className="p-2 bg-slate-100 hover:bg-emerald-100 text-slate-600 hover:text-emerald-700 rounded-xl transition-all"
-                >
-                  <ThumbsUp size={14} />
-                </button>
-                <button
-                  onClick={() => handleFeedback(log.id, false)}
-                  className="p-2 bg-slate-100 hover:bg-rose-100 text-slate-600 hover:text-rose-700 rounded-xl transition-all"
-                >
-                  <ThumbsDown size={14} />
-                </button>
+              <div className="agent-run-score"><strong>{Math.round(run.confidence * 100)}%</strong><span>confidence · {run.duration}</span></div>
+              <div className="agent-run-actions">
+                <button type="button" aria-label={`Phản hồi tốt cho ${run.id}`} className={run.reviewed === 'helpful' ? 'feedback selected' : 'feedback'} onClick={() => reviewRun(run.id, 'helpful')}><ThumbsUp size={15} /></button>
+                <button type="button" aria-label={`Đánh dấu rủi ro cho ${run.id}`} className={run.reviewed === 'unsafe' ? 'feedback danger selected' : 'feedback danger'} onClick={() => reviewRun(run.id, 'unsafe')}><ThumbsDown size={15} /></button>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-      </div>
+      </section>
     </div>
   );
+}
+
+function Metric({ icon: Icon, label, value, warning = false }: { icon: typeof Timer; label: string; value: string; warning?: boolean }) {
+  return <div className="stat-card"><div className="metric-label"><span>{label}</span><Icon size={16} /></div><strong className={warning ? 'metric-warning' : ''}>{value}</strong></div>;
 }

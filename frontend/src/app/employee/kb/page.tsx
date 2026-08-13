@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { 
   Search, BookOpen, ThumbsUp, ChevronRight, Eye, Tag, X, FileText, 
-  CheckCircle2, Wrench, Shield, Layers, HelpCircle
+  CheckCircle2, Wrench, Shield
 } from 'lucide-react';
 import { PageHeader, Spinner } from '@/components/ui';
 import api from '@/lib/api';
@@ -28,8 +29,22 @@ interface KBEntry {
   created_at: string;
 }
 
+interface ResolvedKnowledgeSource {
+  source_id: string;
+  title: string;
+  content: string;
+  category: string;
+  tags: string | null;
+  solution: string | null;
+  runbook: string | null;
+  source_url: string | null;
+}
+
 export default function EndUserHelpCenterPage() {
-  const [query, setQuery] = useState('');
+  const searchParams = useSearchParams();
+  const sourceId = searchParams.get('source_id')?.trim() || '';
+  const sourceLabel = searchParams.get('source_label')?.trim() || '';
+  const [query, setQuery] = useState(() => searchParams.get('search') || '');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [votedIds, setVotedIds] = useState<Set<number>>(new Set());
   const [activeArticle, setActiveArticle] = useState<KBEntry | null>(null);
@@ -38,6 +53,31 @@ export default function EndUserHelpCenterPage() {
     queryKey: ['kb-articles'],
     queryFn: async () => (await api.get('/admin/kb')).data,
   });
+
+  const { data: resolvedSource, isLoading: isLoadingSource, isError: isSourceError } = useQuery<ResolvedKnowledgeSource>({
+    queryKey: ['knowledge-source', sourceId, sourceLabel],
+    enabled: Boolean(sourceId || sourceLabel),
+    queryFn: async () => {
+      const url = sourceId
+        ? `/chat/sources/${encodeURIComponent(sourceId)}`
+        : `/chat/sources?label=${encodeURIComponent(sourceLabel)}`;
+      return (await api.get(url)).data;
+    },
+    retry: false,
+  });
+
+  const sourceArticle = useMemo(() => {
+    if (!resolvedSource) return null;
+    return articles.find((article) =>
+      article.chroma_id === resolvedSource.source_id || article.title === resolvedSource.title,
+    ) ?? null;
+  }, [articles, resolvedSource]);
+
+  useEffect(() => {
+    if (!sourceArticle) return;
+    const openTimer = window.setTimeout(() => setActiveArticle(sourceArticle), 0);
+    return () => window.clearTimeout(openTimer);
+  }, [sourceArticle]);
 
   const voteMutation = useMutation({
     mutationFn: async (articleId: number) =>
@@ -52,14 +92,32 @@ export default function EndUserHelpCenterPage() {
     onError: () => toast.error('Không thể lưu lượt bình chọn'),
   });
 
+  const unvoteMutation = useMutation({
+    mutationFn: async (articleId: number) =>
+      (await api.post(`/admin/kb/${articleId}/unvote`)).data,
+    onSuccess: (updatedArticle: KBEntry) => {
+      toast.success('Đã gỡ lượt đánh giá hữu ích!');
+      refetch();
+      if (activeArticle && activeArticle.id === updatedArticle.id) {
+        setActiveArticle(updatedArticle);
+      }
+    },
+    onError: () => toast.error('Không thể gỡ lượt bình chọn'),
+  });
+
   const handleVote = (e: React.MouseEvent, artId: number) => {
     e.stopPropagation();
     if (votedIds.has(artId)) {
-      toast.error('Bạn đã bình chọn cho bài viết này rồi!');
-      return;
+      setVotedIds((prev) => {
+        const next = new Set(prev);
+        next.delete(artId);
+        return next;
+      });
+      unvoteMutation.mutate(artId);
+    } else {
+      setVotedIds((prev) => new Set(prev).add(artId));
+      voteMutation.mutate(artId);
     }
-    setVotedIds((prev) => new Set(prev).add(artId));
-    voteMutation.mutate(artId);
   };
 
   const categories = useMemo(() => {
@@ -86,6 +144,33 @@ export default function EndUserHelpCenterPage() {
         title="Trung Tâm Trợ Giúp Tri Thức CNTT (Help Center Knowledge Base)"
         subtitle="Tra cứu các bài viết hướng dẫn xử lý sự cố chuẩn Microsoft & Doanh nghiệp dành cho toàn thể nhân viên."
       />
+
+      {resolvedSource && !sourceArticle && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          Bài tham chiếu không còn được công bố trong Knowledge Base hiện tại.
+        </div>
+      )}
+
+      {(sourceId || sourceLabel) && (isLoadingSource || isSourceError) && (
+        <section className="rounded-3xl border border-blue-200 bg-blue-50/70 p-6 space-y-4" aria-live="polite">
+          {isLoadingSource && <div className="flex items-center gap-2 text-sm font-semibold text-blue-800"><Spinner size={18} /> Đang mở nguồn tham khảo…</div>}
+          {isSourceError && <div className="text-sm font-semibold text-rose-700">Nguồn tham khảo không còn tồn tại hoặc bạn không có quyền xem.</div>}
+          {resolvedSource && (
+            <>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-[11px] font-extrabold uppercase tracking-wider text-blue-700">Nguồn AI đã tra cứu</div>
+                  <h2 className="mt-1 text-lg font-extrabold text-slate-900">{resolvedSource.title}</h2>
+                </div>
+                <span className="rounded-lg bg-white px-2.5 py-1 text-[10px] font-bold uppercase text-slate-600 border border-blue-100">{resolvedSource.category}</span>
+              </div>
+              <div className="whitespace-pre-line rounded-2xl border border-blue-100 bg-white p-4 text-sm leading-relaxed text-slate-700">{resolvedSource.content}</div>
+              {resolvedSource.solution && <div className="whitespace-pre-line rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm leading-relaxed text-emerald-950"><strong>Hướng dẫn đã lưu:</strong>{'\n'}{resolvedSource.solution}</div>}
+              {resolvedSource.source_url && <a href={resolvedSource.source_url} target="_blank" rel="noreferrer" className="inline-flex text-xs font-bold text-blue-700 underline underline-offset-2">Mở nguồn gốc đã được xác thực</a>}
+            </>
+          )}
+        </section>
+      )}
 
       {/* SEARCH BAR & CATEGORY TABS */}
       <div className="glass-card-light rounded-3xl p-6 space-y-4 border border-slate-200">
@@ -131,7 +216,7 @@ export default function EndUserHelpCenterPage() {
           <div className="py-12 text-center text-slate-400 space-y-2">
             <BookOpen size={36} className="mx-auto text-slate-300" />
             <div className="text-sm font-bold text-slate-600">Không tìm thấy bài viết phù hợp</div>
-            <div className="text-xs">Thử tìm kiếm với từ khóa khác như "VPN", "Outlook", "Password"</div>
+            <div className="text-xs">Thử tìm kiếm với từ khóa khác như &quot;VPN&quot;, &quot;Outlook&quot;, &quot;Password&quot;</div>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-2">
@@ -166,7 +251,7 @@ export default function EndUserHelpCenterPage() {
                     }`}
                   >
                     <ThumbsUp size={13} className={votedIds.has(art.id) ? 'fill-blue-600 text-blue-600' : ''} />
-                    <span>Hữu ích ({(art.helpful_votes || 0) + (votedIds.has(art.id) ? 1 : 0)})</span>
+                    <span>Hữu ích ({art.helpful_votes || 0})</span>
                   </button>
 
                   <button
@@ -274,7 +359,7 @@ export default function EndUserHelpCenterPage() {
               >
                 <ThumbsUp size={14} className={activeArticle && votedIds.has(activeArticle.id) ? 'fill-blue-600 text-blue-600' : ''} />
                 <span>
-                  Bài viết này hữu ích ({((activeArticle?.helpful_votes || 0) + (activeArticle && votedIds.has(activeArticle.id) ? 1 : 0))})
+                  Bài viết này hữu ích ({activeArticle?.helpful_votes || 0})
                 </span>
               </button>
 

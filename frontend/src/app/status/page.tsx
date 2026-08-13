@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { CheckCircle2, AlertTriangle, XCircle, RefreshCw, ShieldCheck, Activity } from 'lucide-react';
+import { Activity } from 'lucide-react';
+import { formatVietnamTime } from '@/lib/utils';
 
 interface ServiceStatus {
   name: string;
@@ -22,7 +23,7 @@ export default function PublicStatusPage() {
   ]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-blue-600 selection:text-white p-6 md:p-12">
+    <div className="status-page min-h-screen bg-slate-50 text-slate-900 selection:bg-cyan-300 selection:text-slate-950 p-6 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
         
         {/* Header */}
@@ -54,7 +55,7 @@ export default function PublicStatusPage() {
                 Tất Cả Dịch Vụ Đang Hoạt Động Mượt Mà (All Systems Operational)
               </div>
               <div className="text-xs text-emerald-100 font-medium">
-                Cập nhật lúc {new Date().toLocaleTimeString('vi-VN')} • Không ghi nhận sự cố gián đoạn
+                Cập nhật lúc {formatVietnamTime(new Date(), { hour: '2-digit', minute: '2-digit', second: '2-digit' })} • Không ghi nhận sự cố gián đoạn
               </div>
             </div>
           </div>

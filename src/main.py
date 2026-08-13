@@ -11,6 +11,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.api.routes import router
 from src.config import get_settings
+from src.observability.telemetry import configure_telemetry, instrument_sqlalchemy
+from src.observability.tracing import current_trace_id
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -183,7 +185,8 @@ async def lifespan(app: FastAPI):
     init_llm_cache()
 
     # Init DB tables
-    from src.database import AsyncSessionLocal, init_db
+    from src.database import AsyncSessionLocal, engine, init_db
+    instrument_sqlalchemy(engine)
     await init_db()
     logger.info("✅ Database initialized")
 
@@ -191,6 +194,9 @@ async def lifespan(app: FastAPI):
     async with AsyncSessionLocal() as db:
         await _seed_demo_users(db)
         await _seed_knowledge_base(db)
+        # Reuse the RAG embedding backend to make legacy tickets discoverable for duplicate checks.
+        from src.services.duplicate_detection_service import rebuild_ticket_duplicate_index
+        await rebuild_ticket_duplicate_index(db)
 
     logger.info("✅ Ready to serve requests")
     yield
@@ -215,21 +221,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Trace ID Middleware
-import uuid
+# Trace ID Middleware. The header is for support/UI correlation only; W3C
+# traceparent propagation and span creation are handled by OpenTelemetry.
 from starlette.requests import Request
 from starlette.responses import Response
 
 @app.middleware("http")
 async def trace_id_middleware(request: Request, call_next):
-    trace_id = request.headers.get("X-Trace-ID") or str(uuid.uuid4())[:8]
-    request.state.trace_id = trace_id
     response: Response = await call_next(request)
-    response.headers["X-Trace-ID"] = trace_id
+    trace_id = current_trace_id()
+    if trace_id:
+        request.state.trace_id = trace_id
+        response.headers["X-Trace-ID"] = trace_id
     return response
 
 # Routes
 app.include_router(router, prefix="/api/v1")
+
+# Configure this after application middleware/routes are registered so the
+# auto-instrumentor observes the complete ASGI application.
+configure_telemetry(app, settings)
 
 
 @app.get("/health")

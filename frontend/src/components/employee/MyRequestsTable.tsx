@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { toast } from 'react-hot-toast';
 import { CheckCircle2, MessageSquare, Star, Clock, AlertTriangle, ShieldCheck, ArrowRight } from 'lucide-react';
 import { Ticket } from '@/types';
+import { formatVietnamTime } from '@/lib/utils';
 
 interface MyRequestsTableProps {
   tickets: Ticket[];
@@ -99,7 +100,7 @@ export default function MyRequestsTable({ tickets, onRefresh }: MyRequestsTableP
                     {t.title}
                   </td>
                   <td className="py-4 px-4 text-slate-500 text-xs">
-                    {new Date(t.created_at).toLocaleDateString('vi-VN')}
+                    {formatVietnamTime(t.created_at, { dateStyle: 'short' })}
                   </td>
                   <td className="py-4 px-4">
                     {getStatusBadge(t.status)}
@@ -142,7 +143,7 @@ export default function MyRequestsTable({ tickets, onRefresh }: MyRequestsTableP
                 Xác Nhận Đóng Phiếu & Đánh Giá CSAT
               </h3>
               <p className="text-xs text-slate-500 font-medium">
-                Phiếu #{csatModalTicket.ticket_number}: "{csatModalTicket.title}" đã được hỗ trợ xong. Hãy để lại đánh giá cho chất lượng hỗ trợ IT!
+                Phiếu #{csatModalTicket.ticket_number}: &quot;{csatModalTicket.title}&quot; đã được hỗ trợ xong. Hãy để lại đánh giá cho chất lượng hỗ trợ IT!
               </p>
             </div>
 

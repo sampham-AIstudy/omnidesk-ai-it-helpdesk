@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { Clock, ShieldAlert, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Clock } from 'lucide-react';
 import { PageHeader } from '@/components/ui';
 
 interface SLARule {
@@ -15,8 +14,7 @@ interface SLARule {
   escalationNotice: string;
 }
 
-export default function SLAMatrixPage() {
-  const [matrix, setMatrix] = useState<SLARule[]>([
+const SLA_MATRIX: SLARule[] = [
     {
       id: '1',
       tier: 'Khẩn cấp (Critical / Production)',
@@ -53,7 +51,9 @@ export default function SLAMatrixPage() {
       resolutionTime: '24 Giờ',
       escalationNotice: 'Nhắc nhở hàng tuần',
     },
-  ]);
+];
+
+export default function SLAMatrixPage() {
 
   const handleSave = () => {
     toast.success('Đã cập nhật Ma trận Cam kết SLA!');
@@ -93,7 +93,7 @@ export default function SLAMatrixPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium">
-              {matrix.map((row) => (
+              {SLA_MATRIX.map((row) => (
                 <tr key={row.id} className="hover:bg-blue-50/30 transition-colors">
                   <td className="py-4 px-4 font-bold text-slate-900">{row.tier}</td>
                   <td className="py-4 px-4 text-slate-700">{row.userRank}</td>

@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'react-hot-toast';
 import { 
-  AlertCircle, AlertTriangle, BookOpen, Bot, CheckCircle2, Database, 
+  AlertCircle, BookOpen, Bot, CheckCircle2, Database,
   FileUp, HelpCircle, Layers, Monitor, Send, ShieldAlert, UploadCloud, UserCheck, AlertOctagon, Info
 } from 'lucide-react';
 import AIProcessingModal from '@/components/AIProcessingModal';
@@ -20,6 +20,7 @@ const PRODUCTS = [
   { id: 'HARDWARE_PC', name: 'Máy Tính Cá Nhân & Thiết Bị Phần Cứng (Workstation / Laptop)', icon: '💻' },
   { id: 'ACCESS_AUTH', name: 'Quản Lý Tài Khoản & Phân Quyền Truy Cập (Active Directory / IAM)', icon: '🔑' },
   { id: 'INFRA_SERVER', name: 'Hạ Tầng Máy Chủ & Cơ Sở Dữ Liệu (Server / Database / Storage)', icon: '🖥️' },
+  { id: 'OTHER_PRODUCT', name: 'Khác (Ứng dụng / Dịch vụ chưa có trong danh sách trên)', icon: '⚙️' },
 ];
 
 const CATEGORIES = [
@@ -27,6 +28,7 @@ const CATEGORIES = [
   { id: 'REQUEST_ACCESS_PERMISSION', name: 'Yêu Cầu Dịch Vụ & Phân Quyền (Service Request)' },
   { id: 'SOFTWARE_SUPPORT', name: 'Hỗ Trợ Ứng Dụng Phần Mềm (Software Support)' },
   { id: 'HARDWARE_REQUEST', name: 'Yêu Cầu Trang Thiết Bị Phần Cứng (Hardware Provisioning)' },
+  { id: 'OTHER_CATEGORY', name: 'Khác (Phân loại dịch vụ mới / Yêu cầu chưa có trong danh sách)' },
 ];
 
 const URGENCY_LEVELS = [
@@ -60,23 +62,30 @@ const SUB_ISSUES: Record<string, string[]> = {
     'Lỗi xác thực domain / Hết hạn phiên làm việc',
     'Mất kết nối mạng nội bộ / Gián đoạn VPN',
     'Tốc độ xử lý hệ thống rất chậm / Quá tải tài nguyên',
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
   ],
   REQUEST_ACCESS_PERMISSION: [
     'Yêu cầu đặt lại mật khẩu / Mở khóa tài khoản AD',
     'Cấp quyền truy cập thư mục dùng chung / Sharepoint',
     'Gia hạn / Khởi tạo Token SSL VPN',
     'Mở khóa tài khoản SAP bị giới hạn phiên',
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
   ],
   SOFTWARE_SUPPORT: [
     'Email không gửi/nhận được từ đối tác ngoài',
     'Cần cài đặt / Nâng cấp phần mềm làm việc',
     'Lỗi kích hoạt / Hết hạn bản quyền phần mềm',
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
   ],
   HARDWARE_REQUEST: [
     'Lỗi kết nối máy in / Máy quét văn phòng',
     'Lỗi màn hình / Cáp chuyển đổi tín hiệu',
     'Hỏng phím, chuột, thiết bị ngoại vi',
     'Đề xuất trang bị máy tính / Màn hình phụ mới',
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
+  ],
+  OTHER_CATEGORY: [
+    'Khác (Mô tả chi tiết sự cố & thông báo lỗi ở bên dưới)',
   ],
 };
 
@@ -88,8 +97,9 @@ const getProductTag = (prodId: string) => {
     HARDWARE_PC: 'Phần Cứng & Laptop',
     ACCESS_AUTH: 'Tài Khoản & Quyền',
     INFRA_SERVER: 'Máy Chủ & Hạ Tầng',
+    OTHER_PRODUCT: 'Yêu Cầu Khác',
   };
-  return map[prodId] || 'ITSM';
+  return map[prodId] || 'Yêu Cầu Khác';
 };
 
 const OS_OPTIONS = [
@@ -106,6 +116,8 @@ const LOCATION_OPTIONS = [
   'Hệ thống máy chủ / Datacenter',
   'Văn phòng chi nhánh / Nhà máy',
 ];
+
+type CreateTicketResult = { ticket_id: number; ticket_number: string };
 
 export default function NewTicketPage() {
   const router = useRouter();
@@ -129,12 +141,28 @@ export default function NewTicketPage() {
   const [createdTicket, setCreatedTicket] = useState<{ id: number; number: string } | null>(null);
 
   useEffect(() => {
-    if (prefillSubject) setTitle(prefillSubject);
+    if (!prefillSubject) return;
+    const timer = window.setTimeout(() => setTitle(prefillSubject), 0);
+    return () => window.clearTimeout(timer);
   }, [prefillSubject]);
 
   const selectedProduct = useMemo(() => PRODUCTS.find((p) => p.id === product), [product]);
   const selectedCategory = useMemo(() => CATEGORIES.find((c) => c.id === category), [category]);
   const selectedUrgency = useMemo(() => URGENCY_LEVELS.find((u) => u.id === urgency), [urgency]);
+
+  const ticketTitle = `[${getProductTag(product)}] ${title.trim()}`;
+  const buildDescription = (attachmentTags: string[] = []) => [
+    `[Hệ Thống / Dịch Vụ: ${selectedProduct?.name ?? product}]`,
+    `[Phân Loại Dịch Vụ: ${selectedCategory?.name ?? category}]`,
+    `[Mức Độ Khẩn Cấp: ${selectedUrgency?.label}]`,
+    `[Mã Sự Cố: ${subIssue}]`,
+    `[Môi Trường HĐH: ${os}]`,
+    `[Vị Trí Vận Hành: ${location}]`,
+    ...attachmentTags,
+    '',
+    '--- MÔ TẢ CHI TIẾT SỰ CỐ ---',
+    description.trim(),
+  ].filter(Boolean).join('\n');
 
   const handleCategoryChange = (newCatId: string) => {
     setCategory(newCatId);
@@ -153,7 +181,7 @@ export default function NewTicketPage() {
     }
   };
 
-  const submitMutation = useMutation({
+  const submitMutation = useMutation<CreateTicketResult, unknown>({
     mutationFn: async () => {
       // Read image files as base64 Data URLs so they can be viewed in detail page
       const fileDataUrls = await Promise.all(
@@ -174,31 +202,18 @@ export default function NewTicketPage() {
           : `[Đính Kèm Tệp: ${item.name}]`
       );
 
-      const fullDescription = [
-        `[Hệ Thống / Dịch Vụ: ${selectedProduct?.name ?? product}]`,
-        `[Phân Loại Dịch Vụ: ${selectedCategory?.name ?? category}]`,
-        `[Mức Độ Khẩn Cấp: ${selectedUrgency?.label}]`,
-        `[Mã Sự Cố: ${subIssue}]`,
-        `[Môi Trường HĐH: ${os}]`,
-        `[Vị Trí Vận Hành: ${location}]`,
-        ...attachmentTags,
-        '',
-        '--- MÔ TẢ CHI TIẾT SỰ CỐ ---',
-        description.trim(),
-      ]
-        .filter(Boolean)
-        .join('\n');
+      const fullDescription = buildDescription(attachmentTags);
 
       return (
         await api.post('/tickets', {
-          title: `[${getProductTag(product)}] ${title.trim()}`,
+          title: ticketTitle,
           description: fullDescription,
-          is_production_impact: isProd || urgency === 'HIGH',
+          is_production_impact: isProd,
         })
       ).data;
     },
     onSuccess: (data) => setCreatedTicket({ id: data.ticket_id, number: data.ticket_number }),
-    onError: (err) => toast.error(getErrorMessage(err)),
+    onError: (err: unknown) => toast.error(getErrorMessage(err)),
   });
 
   const handleSubmit = () => {
@@ -445,7 +460,7 @@ export default function NewTicketPage() {
 
             {/* SUBMIT BUTTON */}
             <button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit()}
               disabled={submitMutation.isPending}
               className="w-full py-4 shimmer-button text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 active:scale-98 transition-transform"
             >
@@ -486,4 +501,3 @@ export default function NewTicketPage() {
     </div>
   );
 }
-

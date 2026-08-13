@@ -10,6 +10,7 @@ if project_root not in sys.path:
 
 import chromadb
 from mcp.server.fastmcp import FastMCP
+from src.services.rag_service import embed_query, get_collection
 
 mcp = FastMCP("ChromaDB Vector Store")
 
@@ -29,9 +30,11 @@ def list_chroma_collections() -> dict:
 def query_chroma_documents(collection_name: str, query_text: str, n_results: int = 5) -> dict:
     """Query ChromaDB collection for nearest documents matching query_text."""
     try:
-        client = chromadb.PersistentClient(path=CHROMA_PATH)
-        col = client.get_collection(collection_name)
-        results = col.query(query_texts=[query_text], n_results=n_results)
+        col = get_collection()
+        if col.name != collection_name:
+            client = chromadb.PersistentClient(path=CHROMA_PATH)
+            col = client.get_collection(collection_name)
+        results = col.query(query_embeddings=[embed_query(query_text)], n_results=n_results)
         return {
             "documents": results.get("documents", []),
             "metadatas": results.get("metadatas", []),

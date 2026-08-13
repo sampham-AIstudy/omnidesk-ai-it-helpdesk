@@ -222,5 +222,61 @@
     "url": "https://support.microsoft.com/en-us/teams/meetings/my-microphone-isn-t-working-in-microsoft-teams",
     "category": "software",
     "tags": ["teams", "microphone", "audio", "no sound", "meeting"]
+  },
+  {
+    "key": "windows-hello-troubleshoot",
+    "title": "Khắc phục sự cố Windows Hello, vân tay và nhận diện khuôn mặt",
+    "url": "https://support.microsoft.com/en-us/windows/security/identity-signin/windows-hello-common-issues-and-troubleshooting-tips",
+    "category": "access_permission",
+    "tags": ["windows hello", "fingerprint", "face recognition", "pin", "sign in"]
+  },
+  {
+    "key": "windows-reset-pin",
+    "title": "Đổi hoặc đặt lại PIN đăng nhập Windows",
+    "url": "https://support.microsoft.com/en-us/windows/security/identity-signin/change-or-reset-your-pin-in-windows",
+    "category": "access_permission",
+    "tags": ["pin", "password", "windows", "sign in", "reset"]
+  },
+  {
+    "key": "office-install-troubleshoot",
+    "title": "Khắc phục sự cố cài đặt Microsoft Office",
+    "url": "https://support.microsoft.com/en-us/office/lifecycle/officeinstall/troubleshoot-installing-office",
+    "category": "software",
+    "tags": ["office", "install", "activation", "microsoft 365", "license"]
+  },
+  {
+    "key": "teams-restore-access",
+    "title": "Khôi phục quyền truy cập Microsoft Teams",
+    "url": "https://support.microsoft.com/en-us/teams/platform/restore-your-access-to-microsoft-teams",
+    "category": "access_permission",
+    "tags": ["teams", "sign in", "mfa", "access", "vpn"]
+  },
+  {
+    "key": "outlook-shared-mailbox-performance",
+    "title": "Outlook chậm khi mở nhiều shared mailbox hoặc folder",
+    "url": "https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/slow-performance-if-having-many-shared-folder-or-mailboxes-open",
+    "category": "email",
+    "tags": ["outlook", "shared mailbox", "performance", "sync", "mailbox"]
+  },
+  {
+    "key": "exchange-access-other-mailbox",
+    "title": "Truy cập mailbox dùng chung trong Microsoft 365",
+    "url": "https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/how-to-access-other-mailboxes",
+    "category": "access_permission",
+    "tags": ["exchange", "shared mailbox", "full access", "send as", "permission"]
+  },
+  {
+    "key": "m365-shared-mailboxes",
+    "title": "Shared mailbox Microsoft 365 và các lỗi quyền gửi mail",
+    "url": "https://learn.microsoft.com/en-us/microsoft-365/admin/email/about-shared-mailboxes?view=o365-worldwide",
+    "category": "email",
+    "tags": ["microsoft 365", "shared mailbox", "send as", "exchange", "permission"]
+  },
+  {
+    "key": "defender-device-discovery-troubleshoot",
+    "title": "Khắc phục sự cố device discovery trên Microsoft Defender",
+    "url": "https://learn.microsoft.com/en-us/defender-endpoint/troubleshoot-device-discovery-network-scans",
+    "category": "security",
+    "tags": ["defender", "endpoint", "device discovery", "network scan", "security"]
   }
 ]

@@ -1,12 +1,12 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { AlertTriangle, Bot, CheckCircle2, Clock, Inbox, Loader2, ShieldAlert } from 'lucide-react';
+import { AlertTriangle, Bot, CheckCircle2, Clock, Inbox, Loader2, Search, ShieldAlert, X } from 'lucide-react';
 import { TicketPriority, TicketStatus } from '@/types';
 import { getConfidencePresentation, PRIORITY_LABELS, STATUS_LABELS } from '@/lib/utils';
 
 export function StatusBadge({ status }: { status: TicketStatus }) {
-  return <span className={`badge badge-${status}`}>{STATUS_LABELS[status] ?? status}</span>;
+  return <span className={`badge badge-${status}`}><span className="status-dot" aria-hidden="true" />{STATUS_LABELS[status] ?? status}</span>;
 }
 
 export function PriorityBadge({ priority }: { priority: TicketPriority }) {
@@ -27,7 +27,7 @@ export function ConfidenceBadge({ score }: { score: number | null }) {
         <span style={{ color: presentation.color, fontSize: 11, fontWeight: 800 }}>{presentation.label}</span>
         <span className="muted" style={{ fontSize: 11 }}>{pct}%</span>
       </div>
-      <div className="confidence-bar" role="progressbar" aria-label={`Độ tin cậy AI: ${pct}% — ${presentation.label}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}>
+      <div className="confidence-bar" role="progressbar" aria-label={`Độ chắc chắn phân loại: ${pct}% — ${presentation.label}`} aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct}>
         <div className="confidence-fill" style={{ width: `${pct}%`, background: presentation.color }} />
       </div>
     </div>
@@ -212,12 +212,55 @@ export function PageHeader({
   return (
     <div className="page-header">
       <div>
-        <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800, letterSpacing: 0 }}>{title}</h1>
-        {subtitle && <p style={{ margin: '6px 0 0', color: 'var(--text-secondary)', fontSize: 13 }}>{subtitle}</p>}
+        <h1>{title}</h1>
+        {subtitle && <p>{subtitle}</p>}
       </div>
-      {action && <div style={{ flexShrink: 0 }}>{action}</div>}
+      {action && <div className="page-header-action">{action}</div>}
     </div>
   );
+}
+
+export function ContentCard({
+  title,
+  description,
+  action,
+  children,
+  className = '',
+}: {
+  title?: string;
+  description?: string;
+  action?: React.ReactNode;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <section className={`content-card ${className}`}>
+    {(title || description || action) && <header className="content-card-header"><div>{title && <h2>{title}</h2>}{description && <p>{description}</p>}</div>{action && <div>{action}</div>}</header>}
+    {children}
+  </section>;
+}
+
+export function MetricCard({ label, value, detail, tone = 'neutral' }: { label: string; value: React.ReactNode; detail?: React.ReactNode; tone?: 'neutral' | 'info' | 'success' | 'warning' | 'danger' }) {
+  return <section className={`metric-card metric-card--${tone}`}><p>{label}</p><strong>{value}</strong>{detail && <span>{detail}</span>}</section>;
+}
+
+export function DataToolbar({
+  searchValue,
+  onSearchChange,
+  searchPlaceholder = 'Tìm kiếm',
+  filters,
+  activeFilters,
+  onClearFilters,
+  actions,
+}: {
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  searchPlaceholder?: string;
+  filters?: React.ReactNode;
+  activeFilters?: React.ReactNode;
+  onClearFilters?: () => void;
+  actions?: React.ReactNode;
+}) {
+  return <div className="data-toolbar"><div className="data-toolbar-main"><label className="toolbar-search"><Search size={16} aria-hidden="true" /><span className="sr-only">{searchPlaceholder}</span><input value={searchValue} onChange={(event) => onSearchChange(event.target.value)} placeholder={searchPlaceholder} /></label>{filters}</div>{actions && <div className="data-toolbar-actions">{actions}</div>}{activeFilters && <div className="active-filters">{activeFilters}{onClearFilters && <button type="button" className="btn-ghost btn-sm" onClick={onClearFilters}><X size={14} />Xóa bộ lọc</button>}</div>}</div>;
 }
 
 export function EmptyState({

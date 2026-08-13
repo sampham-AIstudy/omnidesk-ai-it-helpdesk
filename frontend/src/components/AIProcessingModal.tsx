@@ -15,7 +15,7 @@ interface Props {
   onBackToList: () => void;
 }
 
-type StepState = 'waiting' | 'active' | 'done' | 'skipped';
+type StepState = 'waiting' | 'active' | 'done' | 'unavailable';
 
 const PROCESSING_STATUSES = new Set(['open', 'classifying']);
 
@@ -32,21 +32,39 @@ export default function AIProcessingModal({ ticketId, ticketNumber, onViewTicket
     queryFn: async () => (await api.get(`/tickets/${ticketId}`)).data as Ticket,
     refetchInterval: (query) => {
       const ticket = query.state.data;
-      if (query.state.isError) return 2000;
-      return !ticket || PROCESSING_STATUSES.has(ticket.status) ? 2500 : false;
+      if (query.state.status === 'error') return 1500;
+      return !ticket || PROCESSING_STATUSES.has(ticket.status) ? 1200 : false;
     },
     retry: 5,
-    retryDelay: 1500,
+    retryDelay: 1000,
   });
 
   const ticket = ticketQuery.data;
   const isProcessing = !ticket || PROCESSING_STATUSES.has(ticket.status);
 
   const steps = useMemo(() => {
-    const hasClassification = ticket?.category !== null && ticket?.confidence_score !== null;
-    const ragCompleted = Boolean(ticket?.suggested_solution) || Boolean(hasClassification && !isProcessing);
+    const hasClassification = ticket?.category != null && ticket?.confidence_score != null;
+    let sourceCount = 0;
+    let hasExternalGuidance = false;
+    try {
+      const parsedSources = JSON.parse(ticket?.rag_sources || '[]');
+      sourceCount = Array.isArray(parsedSources) ? parsedSources.length : 0;
+      hasExternalGuidance = Array.isArray(parsedSources) && parsedSources.some(
+        (source) => typeof source === 'object' && source !== null && source.kind === 'web',
+      );
+    } catch {
+      sourceCount = 0;
+    }
+    // The backend calibrates relevance by embedding backend.  A source is the
+    // authoritative signal that guidance is grounded; a fixed client score
+    // would incorrectly label valid hashing-embedding results as "no KB".
+    const hasKbGuidance = sourceCount > 0 && !hasExternalGuidance;
+    const hasResearchGuidance = sourceCount > 0 && hasExternalGuidance;
+    const ragCompleted = Boolean(ticket && !isProcessing);
     const safetyCompleted = Boolean(hasClassification && !isProcessing);
-    const routingCompleted = Boolean(ticket?.routing_target) || Boolean(ticket && !isProcessing);
+    const awaitingSpecialist = ticket?.status === 'waiting_for_agent';
+    const needsClarification = ticket?.status === 'needs_clarification';
+    const routingCompleted = Boolean(ticket?.routing_target) || awaitingSpecialist || Boolean(ticket && !isProcessing);
 
     return [
       {
@@ -59,13 +77,15 @@ export default function AIProcessingModal({ ticketId, ticketNumber, onViewTicket
       },
       {
         title: 'Tra cứu kho tri thức',
-        desc: ticket?.suggested_solution
+        desc: hasKbGuidance
           ? 'Đã tìm thấy hướng xử lý phù hợp với quyền truy cập của bạn.'
+          : hasResearchGuidance
+            ? 'Đã tìm thấy nguồn tham khảo công khai phù hợp; AI vẫn không thay thế quy trình nội bộ hoặc chuyên viên IT.'
           : ragCompleted
-            ? 'Không tìm thấy tài liệu đủ phù hợp; đội IT sẽ tiếp tục hỗ trợ.'
+            ? 'Chưa có bài hướng dẫn đủ sát với nội dung này. AI không tự suy đoán; bạn có thể bổ sung chi tiết trong ticket.'
             : 'Chờ kết quả phân loại để tìm tài liệu liên quan.',
         icon: Database,
-        state: (ticket?.suggested_solution ? 'done' : ragCompleted ? 'skipped' : hasClassification ? 'active' : 'waiting') as StepState,
+        state: (hasKbGuidance || hasResearchGuidance ? 'done' : ragCompleted ? 'unavailable' : hasClassification ? 'active' : 'waiting') as StepState,
       },
       {
         title: 'Kiểm tra an toàn và HITL',
@@ -78,16 +98,20 @@ export default function AIProcessingModal({ ticketId, ticketNumber, onViewTicket
         state: (safetyCompleted ? 'done' : ragCompleted ? 'active' : 'waiting') as StepState,
       },
       {
-        title: 'Định tuyến hoặc hoàn tất',
-        desc: ticket?.routing_target
-          ? `Đã chuyển tới ${ticket.routing_target}.`
-          : ticket?.status === 'closed'
-            ? 'Ticket đã được đóng dựa trên giải pháp đủ điều kiện.'
-            : routingCompleted
+        title: 'Định tuyến xử lý',
+        desc: awaitingSpecialist && ticket?.routing_target
+          ? `Đội phù hợp dự kiến: ${ticket.routing_target}. Ticket đang chờ chuyên viên tiếp nhận.`
+          : awaitingSpecialist
+            ? 'Ticket đang chờ chuyên viên IT tiếp nhận.'
+          : needsClarification
+            ? 'Cần thêm thông tin trước khi xác định đội xử lý phù hợp.'
+          : ticket?.routing_target
+            ? `Đội phụ trách dự kiến: ${ticket.routing_target}.`
+          : routingCompleted
               ? 'Ticket đã sẵn sàng cho bước xử lý tiếp theo.'
               : 'Chờ quyết định từ quy trình xử lý.',
         icon: GitBranch,
-        state: (routingCompleted ? 'done' : safetyCompleted ? 'active' : 'waiting') as StepState,
+        state: (awaitingSpecialist || (routingCompleted && !needsClarification) ? 'done' : safetyCompleted ? 'active' : 'waiting') as StepState,
       },
     ];
   }, [isProcessing, ticket]);
@@ -104,15 +128,19 @@ export default function AIProcessingModal({ ticketId, ticketNumber, onViewTicket
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
           <div style={{ width: 42, height: 42, borderRadius: 8, background: 'var(--primary-soft)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {isProcessing ? <Spinner size={21} /> : <CheckCircle2 size={22} />}
+            {isProcessing ? <Spinner size={21} /> : ticket?.status === 'waiting_for_agent' ? <Bot size={22} /> : <CheckCircle2 size={22} />}
           </div>
           <div>
             <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 800, textTransform: 'uppercase' }}>Quy trình AI theo thời gian thực</div>
             <h2 id="ai-processing-title" style={{ margin: 0, fontSize: 18, fontWeight: 800 }}>
-              {isProcessing ? `Đang xử lý ${ticketNumber}` : `${ticketNumber} đã được tiếp nhận`}
+              {isProcessing
+                ? `Đang xử lý ${ticketNumber}`
+                : ticket?.status === 'waiting_for_agent'
+                  ? `${ticketNumber} đang chờ chuyên viên tiếp nhận`
+                  : `${ticketNumber} đã được tiếp nhận`}
             </h2>
             <p id="ai-processing-description" className="muted" style={{ margin: '4px 0 0', fontSize: 12 }}>
-              Trạng thái bên dưới được đồng bộ trực tiếp từ hệ thống, không phải tiến trình mô phỏng.
+              Kết quả được đồng bộ trực tiếp từ hệ thống. Chỉ các bước có hướng dẫn đủ căn cứ mới được đánh dấu hoàn tất.
             </p>
           </div>
         </div>
@@ -138,7 +166,7 @@ export default function AIProcessingModal({ ticketId, ticketNumber, onViewTicket
               const Icon = step.icon;
               const done = step.state === 'done';
               const active = step.state === 'active';
-              const skipped = step.state === 'skipped';
+              const unavailable = step.state === 'unavailable';
               return (
                 <div
                   key={`step-${idx}`}
@@ -148,16 +176,16 @@ export default function AIProcessingModal({ ticketId, ticketNumber, onViewTicket
                     gap: 12,
                     padding: 12,
                     borderRadius: 8,
-                    border: `1px solid ${active ? 'var(--primary)' : done ? '#bce7d2' : 'var(--border)'}`,
-                    background: active ? 'var(--primary-soft)' : done ? 'var(--green-soft)' : 'var(--surface-soft)',
+                    border: `1px solid ${active ? 'var(--primary)' : done ? '#bce7d2' : unavailable ? '#f6dd99' : 'var(--border)'}`,
+                    background: active ? 'var(--primary-soft)' : done ? 'var(--green-soft)' : unavailable ? 'var(--amber-soft)' : 'var(--surface-soft)',
                   }}
                 >
-                  <div style={{ width: 28, height: 28, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', color: active ? 'var(--primary)' : done ? 'var(--green)' : 'var(--text-muted)' }}>
-                    {done ? <CheckCircle2 size={18} /> : active ? <Spinner size={18} /> : <Icon size={18} />}
+                  <div style={{ width: 28, height: 28, borderRadius: 7, display: 'flex', alignItems: 'center', justifyContent: 'center', color: active ? 'var(--primary)' : done ? 'var(--green)' : unavailable ? '#a16207' : 'var(--text-muted)' }}>
+                    {done ? <CheckCircle2 size={18} /> : active ? <Spinner size={18} /> : unavailable ? <AlertTriangle size={18} /> : <Icon size={18} />}
                   </div>
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 800 }}>{step.title}</div>
-                    <div style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{skipped ? `Không áp dụng — ${step.desc}` : step.desc}</div>
+                    <div style={{ color: 'var(--text-secondary)', fontSize: 12 }}>{step.desc}</div>
                   </div>
                 </div>
               );

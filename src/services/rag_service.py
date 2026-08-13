@@ -1,9 +1,14 @@
 """RAG Service — ChromaDB vector store cho knowledge base."""
 from __future__ import annotations
 
+import asyncio
+import hashlib
 import logging
+import math
 import re
+import threading
 import unicodedata
+from functools import lru_cache
 from pathlib import Path
 
 import chromadb
@@ -18,7 +23,9 @@ settings = get_settings()
 # Singleton instances
 _chroma_client: chromadb.ClientAPI | None = None
 _collection: chromadb.Collection | None = None
-_embedder: HuggingFaceEmbeddings | None = None
+_ticket_duplicate_collection: chromadb.Collection | None = None
+_episodic_memory_collection: chromadb.Collection | None = None
+_embedder: HuggingFaceEmbeddings | _HashingEmbedder | None = None
 
 _SEARCH_STOPWORDS = {
     "a", "an", "and", "for", "in", "is", "of", "on", "the", "to", "with",
@@ -95,21 +102,59 @@ def _lexical_score(query: str, metadata: dict, content: str = "") -> float:
     return len(query_tokens & document_tokens) / len(query_tokens)
 
 
-import threading
 _embedder_lock = threading.Lock()
 
 
-def _get_embedder() -> HuggingFaceEmbeddings:
+class _HashingEmbedder:
+    """Deterministic, low-memory fallback when a transformer cannot run."""
+
+    dimensions = 384
+
+    def _embed(self, text: str) -> list[float]:
+        values = [0.0] * self.dimensions
+        for token in _search_tokens(text):
+            digest = hashlib.blake2b(token.encode("utf-8"), digest_size=8).digest()
+            index = int.from_bytes(digest[:4], "little") % self.dimensions
+            values[index] += 1.0 if digest[4] & 1 else -1.0
+        norm = math.sqrt(sum(value * value for value in values))
+        return [value / norm for value in values] if norm else values
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        return [self._embed(text) for text in texts]
+
+    def embed_query(self, text: str) -> list[float]:
+        return self._embed(text)
+
+
+def _active_embedding_backend() -> str:
+    if _collection is not None:
+        metadata = _collection.metadata or {}
+        return str(metadata.get("embedding_backend", settings.embedding_backend))
+    return settings.embedding_backend
+
+
+def _get_embedder() -> HuggingFaceEmbeddings | _HashingEmbedder:
     global _embedder
     if _embedder is None:
         with _embedder_lock:
             if _embedder is None:
+                if _active_embedding_backend() == "hashing":
+                    logger.warning("Using low-memory hashing embeddings for RAG retrieval")
+                    _embedder = _HashingEmbedder()
+                    return _embedder
                 logger.info("Loading embedding model (%s)...", settings.embedding_model)
-                _embedder = HuggingFaceEmbeddings(
-                    model_name=settings.embedding_model,
-                    model_kwargs={"device": "cpu"},
-                    encode_kwargs={"normalize_embeddings": True},
-                )
+                try:
+                    _embedder = HuggingFaceEmbeddings(
+                        model_name=settings.embedding_model,
+                        model_kwargs={"device": "cpu", "local_files_only": not settings.embedding_allow_network_downloads},
+                        encode_kwargs={"normalize_embeddings": True},
+                    )
+                except Exception as exc:
+                    # Retrieval must remain available in offline/self-hosted
+                    # deployments.  The deterministic fallback has the same
+                    # vector size and is also used by duplicate/Zero-Mem index.
+                    logger.warning("Embedding model unavailable; using hashing fallback: %s", exc)
+                    _embedder = _HashingEmbedder()
     return _embedder
 
 
@@ -134,18 +179,47 @@ def get_collection() -> chromadb.Collection:
             metadata={
                 "hnsw:space": "cosine",
                 "embedding_model": settings.embedding_model,
+                "embedding_backend": settings.embedding_backend,
             },
         )
     return _collection
 
 
+def get_ticket_duplicate_collection() -> chromadb.Collection:
+    """Ticket-only semantic index using the same Chroma client and embedding model as RAG."""
+    global _ticket_duplicate_collection
+    if _ticket_duplicate_collection is None:
+        _ticket_duplicate_collection = get_chroma_client().get_or_create_collection(
+            name="helpdesk_ticket_duplicates_v1",
+            metadata={
+                "hnsw:space": "cosine",
+                "embedding_model": settings.embedding_model,
+                "embedding_backend": _active_embedding_backend(),
+                "purpose": "semantic_duplicate_detection",
+            },
+        )
+    return _ticket_duplicate_collection
+
+
+def get_episodic_memory_collection() -> chromadb.Collection:
+    """Episodic memory shares the existing Chroma client and embedding backend."""
+    global _episodic_memory_collection
+    if _episodic_memory_collection is None:
+        _episodic_memory_collection = get_chroma_client().get_or_create_collection(
+            name="helpdesk_episodic_memory_v1",
+            metadata={
+                "hnsw:space": "cosine",
+                "embedding_model": settings.embedding_model,
+                "embedding_backend": _active_embedding_backend(),
+                "purpose": "zero_token_episodic_memory",
+            },
+        )
+    return _episodic_memory_collection
+
+
 def embed_texts(texts: list[str]) -> list[list[float]]:
     embedder = _get_embedder()
     return embedder.embed_documents(texts)
-
-
-from functools import lru_cache
-import asyncio
 
 
 @lru_cache(maxsize=1024)
@@ -229,6 +303,9 @@ INDIRECT_INJECTION_PATTERNS = [
     re.compile(r"you\s+are\s+now", re.IGNORECASE),
     re.compile(r"override\s+policy", re.IGNORECASE),
     re.compile(r"return\s+secrets?", re.IGNORECASE),
+    re.compile(r"игнорир\w*\s+(?:все\s+)?(?:предыдущ\w*|инструкц\w*|огранич\w*)", re.IGNORECASE),
+    re.compile(r"переопределени\w*\s+систем\w*", re.IGNORECASE),
+    re.compile(r"(?:раскрой|перечисл|извлеч)\w*.*(?:системн\w*\s+(?:подсказ|инструкц)|секрет\w*|токен\w*|парол\w*)", re.IGNORECASE),
 ]
 
 
@@ -308,6 +385,10 @@ def search_similar(
                 continue
 
             docs.append({
+                # Chroma returns persisted IDs for every query result.  Carry
+                # them through the pipeline so the answer model can cite a
+                # real evidence identifier instead of inventing one.
+                "doc_id": results.get("ids", [[]])[0][i] if results.get("ids") else "",
                 "content": doc,
                 "metadata": metadata,
                 "distance": results["distances"][0][i] if results.get("distances") else 1.0,
@@ -330,6 +411,93 @@ def search_similar(
     _rag_query_cache[cache_key] = final_docs
 
     return final_docs
+
+
+def get_document_by_id(
+    doc_id: str,
+    *,
+    user_company_unit: str | None = None,
+    user_department: str | None = None,
+) -> dict | None:
+    """Load one retrieved source for navigation, preserving KB ACLs.
+
+    This reader is deliberately separate from semantic retrieval: a client can
+    only open a persisted source ID and never use this endpoint to search
+    arbitrary Chroma metadata.
+    """
+    if not doc_id or len(doc_id) > 200:
+        return None
+    try:
+        result = get_collection().get(
+            ids=[doc_id], include=["documents", "metadatas"]
+        )
+    except Exception as exc:
+        logger.warning("Could not load RAG source %s: %s", doc_id, exc)
+        return None
+
+    documents = result.get("documents", []) if result else []
+    metadatas = result.get("metadatas", []) if result else []
+    ids = result.get("ids", []) if result else []
+    if not documents or not ids:
+        return None
+    content = str(documents[0] or "")
+    metadata = metadatas[0] or {}
+    if not _metadata_allowed(metadata, user_company_unit, user_department):
+        return None
+    if scan_indirect_injection(content):
+        logger.warning("Blocked unsafe RAG source navigation for %s", doc_id)
+        return None
+    return {"doc_id": str(ids[0]), "content": content, "metadata": metadata}
+
+
+def get_document_by_title(
+    title: str,
+    *,
+    user_company_unit: str | None = None,
+    user_department: str | None = None,
+) -> dict | None:
+    """Resolve legacy source labels to one exact, ACL-visible RAG document."""
+    if not title or len(title) > 255:
+        return None
+    try:
+        result = get_collection().get(
+            where={"title": title}, include=["documents", "metadatas"]
+        )
+    except Exception as exc:
+        logger.warning("Could not resolve RAG source title: %s", exc)
+        return None
+    # Chroma equality may not match visually identical Unicode text when old
+    # sources were indexed with a different normalization form.  Legacy source
+    # labels need exact-title compatibility, never semantic best-match lookup.
+    if not result.get("ids"):
+        try:
+            all_sources = get_collection().get(include=["documents", "metadatas"])
+            expected = unicodedata.normalize("NFC", title).casefold()
+            matching = [
+                index for index, metadata in enumerate(all_sources.get("metadatas", []))
+                if unicodedata.normalize("NFC", str((metadata or {}).get("title") or "")).casefold() == expected
+            ]
+            result = {
+                key: [values[index] for index in matching]
+                for key, values in all_sources.items()
+                if isinstance(values, list)
+            }
+        except Exception as exc:
+            logger.warning("Could not normalize legacy RAG source title: %s", exc)
+            return None
+    for doc_id, content, metadata in zip(
+        result.get("ids", []),
+        result.get("documents", []),
+        result.get("metadatas", []),
+    ):
+        metadata = metadata or {}
+        content = str(content or "")
+        if (
+            _metadata_allowed(metadata, user_company_unit, user_department)
+            and not scan_indirect_injection(content)
+        ):
+            return {"doc_id": str(doc_id), "content": content, "metadata": metadata}
+    return None
 
 
 
@@ -356,4 +524,3 @@ def get_collection_count() -> int:
         return get_collection().count()
     except Exception:
         return 0
-

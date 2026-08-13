@@ -35,16 +35,27 @@ passlib[bcrypt]>=1.7.4
 httpx>=0.28.0
 anyio>=4.0.0
 
+# --- Local MCP servers ---
+# The bundled servers import ``mcp.server.fastmcp``, which is the MCP 1.x API.
+mcp>=1.6.0,<2.0.0
+
 # --- Cache (standard Redis + Upstash REST fallback) ---
 redis>=5.0.0
 upstash-redis>=1.1.0
 
 # --- Observability ---
-# langsmith already listed above
+# LangSmith remains optional for AI evaluation/debugging. OpenTelemetry provides
+# vendor-neutral distributed tracing and operational metrics.
+opentelemetry-api>=1.30.0
+opentelemetry-sdk>=1.30.0
+opentelemetry-exporter-otlp-proto-grpc>=1.30.0
+opentelemetry-instrumentation-fastapi>=0.51b0
+opentelemetry-instrumentation-httpx>=0.51b0
+opentelemetry-instrumentation-sqlalchemy>=0.51b0
 
-# --- Evaluation ---
-ragas>=0.2.0
-datasets>=2.20.0
+# The in-repository evaluation runner works without RAGAS.  Do not add RAGAS
+# here: its current dependency chain is incompatible with this project's
+# LangChain 1.x stack and has no Windows Python 3.14 scikit-network wheel.
 
 # --- Security & Guardrails ---
 presidio-analyzer>=2.2.0
@@ -56,4 +67,3 @@ requests>=2.31.0
 ruff>=0.8.0
 pytest>=8.0.0
 pytest-asyncio>=0.24.0
-

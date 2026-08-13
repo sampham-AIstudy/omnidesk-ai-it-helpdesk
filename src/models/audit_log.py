@@ -31,6 +31,12 @@ class AuditAction(str, enum.Enum):
     KB_DELETED = "kb_deleted"
     RUNBOOK_EXECUTED = "runbook_executed"
     AGENT_DECISION = "agent_decision"
+    WEB_RESEARCH_EXECUTED = "web_research_executed"
+    DUPLICATE_DETECTED = "duplicate_detected"
+    DUPLICATE_PREVENTED = "duplicate_prevented"
+    DUPLICATE_CONFIRMED = "duplicate_confirmed"
+    DUPLICATE_FALSE_POSITIVE = "duplicate_false_positive"
+    MEMORY_RETRIEVED = "memory_retrieved"
 
 
 class AuditLog(Base):

@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "HALLUCINATION|UNSUPPORTED_CLAIM|INCOMPLETE_ANSWER|INCORRECT_REFUSAL|BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER|OVER_QUESTIONING"
+    ],
+    "unsupported_claims": [
+      "Tình trạng khóa tài khoản VPN",
+      "Thời gian SLA khi tạo incident"
+    ],
+    "missing_points": [
+      "Cần có evidence từ hệ thống ITSM, service catalog hoặc policy đã phê duyệt"
+    ],
+    "brief_rationale": "Chưa có đủ thông tin để trả lời câu hỏi, yêu cầu thêm evidence từ hệ thống ITSM hoặc liên hệ trực tiếp với IT Help Desk.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

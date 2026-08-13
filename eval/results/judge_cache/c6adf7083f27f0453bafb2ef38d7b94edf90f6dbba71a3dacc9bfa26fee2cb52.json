@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER"
+    ],
+    "unsupported_claims": [
+      "Thông tin hiện có chưa đủ để trả lời câu hỏi này"
+    ],
+    "missing_points": [
+      "Giải thích rõ hơn về tình huống này"
+    ],
+    "brief_rationale": "Bot không được phép trả lời khi kỹ thuật viên đang xử lý vấn đề.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

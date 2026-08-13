@@ -8,6 +8,8 @@ import re
 from typing import Any, Dict
 
 from src.agents.state import TicketAgentState
+from src.guardrails.output_guardrails import format_plain_text_response, redact_secrets_and_pii
+from src.observability.tracing import set_current_attributes, traced_async_operation
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +22,7 @@ SECRET_PATTERNS = [
 ]
 
 
+@traced_async_operation("guardrail.output")
 async def output_guardrail_node(state: TicketAgentState) -> Dict[str, Any]:
     """Step 2 Output Guardrail Node: Sanitizes output text."""
     solution = state.get("suggested_solution", "")
@@ -32,8 +35,13 @@ async def output_guardrail_node(state: TicketAgentState) -> Dict[str, Any]:
     for pattern, replacement in SECRET_PATTERNS:
         sanitized = re.sub(pattern, replacement, sanitized, flags=re.IGNORECASE)
 
-    if sanitized != solution:
-        logger.warning("[OutputGuardrailNode] Sanitized sensitive data from solution for ticket #%s", state.get("ticket_number"))
-        return {"suggested_solution": sanitized}
+    # Reuse the canonical redactor so the graph path protects PII, JWTs and
+    # private keys consistently with chat/API responses.
+    sanitized = redact_secrets_and_pii(sanitized)["redacted"]
+    formatted = format_plain_text_response(sanitized)
+    set_current_attributes({"helpdesk.guardrail.result": "REDACTED" if formatted != solution else "ALLOW"})
+    if formatted != solution:
+        logger.warning("[OutputGuardrailNode] Sanitized security or Markdown formatting from solution for ticket #%s", state.get("ticket_number"))
+        return {"suggested_solution": formatted}
 
     return {}

@@ -1,0 +1,21 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "INCOMPLETE_ANSWER"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "cụ thể thông tin về mã lỗi, màn hình lỗi, thời gian chính xác, thiết bị/ứng dụng"
+    ],
+    "brief_rationale": "Đáp án không cung cấp thông tin cụ thể về nguyên nhân và tình trạng VPN không vào được.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

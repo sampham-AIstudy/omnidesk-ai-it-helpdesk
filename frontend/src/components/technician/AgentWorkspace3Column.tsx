@@ -2,9 +2,9 @@
 
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { 
-  User, Laptop, ShieldCheck, Phone, Building, Calendar, CheckSquare, 
-  Send, Lock, Mail, Search, FileText, Plus, CheckCircle2, Clock, Siren 
+import {
+  Laptop, ShieldCheck, Phone, Building, CheckSquare,
+  Send, Lock, Mail, Search, Plus, CheckCircle2, Siren,
 } from 'lucide-react';
 import { Ticket } from '@/types';
 import { ConfidenceBadge, PriorityBadge, SLABadge, StatusBadge } from '@/components/ui';
@@ -249,7 +249,7 @@ export default function AgentWorkspace3Column({ ticket, onUpdateStatus, onEscala
             </div>
 
             <div>
-              <div className="text-[11px] font-semibold text-slate-500 mb-1">AI Confidence Score</div>
+              <div className="text-[11px] font-semibold text-slate-500 mb-1">Độ chắc chắn phân loại</div>
               <ConfidenceBadge score={ticket.confidence_score} />
             </div>
 

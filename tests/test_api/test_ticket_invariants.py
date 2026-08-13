@@ -8,6 +8,8 @@ Verifies strict Enterprise Help Desk Invariants:
 5. Invalid rating (< 1 or > 5) is rejected with HTTP 422.
 """
 
+from unittest.mock import AsyncMock, patch
+
 import pytest
 from httpx import AsyncClient
 
@@ -73,7 +75,48 @@ async def test_dissatisfaction_triggers_human_handoff(
     assert ticket_res.status_code == 200
     t_data = ticket_res.json()
     assert t_data["status"] in ("waiting_for_agent", "escalated")
-    assert t_data["support_mode"] == "human"
+    assert t_data["support_mode"] == "ai"
+
+
+@pytest.mark.asyncio
+async def test_waiting_ticket_always_gets_a_fallback_agent_reply(
+    client: AsyncClient,
+    auth_employee: str,
+):
+    """A queued ticket must not silently save an employee message."""
+    headers = {"Authorization": f"Bearer {auth_employee}"}
+    create_res = await client.post(
+        "/api/v1/tickets",
+        json={"title": "Can cai dat phan mem noi bo", "description": "Can huong dan cai dat phan mem da duoc cap phep"},
+        headers=headers,
+    )
+    assert create_res.status_code == 201
+    ticket_id = create_res.json()["ticket_id"]
+
+    queued = await client.post(f"/api/v1/tickets/{ticket_id}/request-technician", headers=headers)
+    assert queued.status_code == 200
+
+    with (
+        patch("src.services.ticket_conversation_service.search_similar", return_value=[]),
+        patch("src.services.ticket_conversation_service.has_actionable_external_context", return_value=False),
+        patch("src.services.zero_mem_service.retrieve_episodic_evidence", AsyncMock(return_value=([], {}))),
+        patch("src.services.zero_mem_service.audit_memory_retrieval", AsyncMock()),
+    ):
+        response = await client.post(
+            f"/api/v1/tickets/{ticket_id}/messages/stream",
+            json={"message": "Phan mem con loi, toi can bo sung thong tin gi?"},
+            headers=headers,
+        )
+
+    assert response.status_code == 200
+    assert "event: token" in response.text
+    assert "event: done" in response.text
+    messages_response = await client.get(f"/api/v1/tickets/{ticket_id}/messages", headers=headers)
+    assert messages_response.status_code == 200
+    messages = messages_response.json()["items"]
+    assert messages[-2]["sender_type"] == "user"
+    assert messages[-1]["sender_type"] == "agent"
+    assert "Ticket c\u1ee7a b\u1ea1n \u0111ang ch\u1edd chuy\u00ean vi\u00ean" in messages[-1]["content"]
 
 
 @pytest.mark.asyncio
@@ -131,6 +174,57 @@ async def test_empty_reopen_reason_rejected(
         headers=headers,
     )
     assert reopen_res.status_code in (400, 422)
+
+
+@pytest.mark.asyncio
+async def test_ticket_reopens_with_reason(
+    client: AsyncClient,
+    auth_employee: str,
+):
+    """A valid reopen request must bind its JSON body and reopen the ticket."""
+    headers = {"Authorization": f"Bearer {auth_employee}"}
+    create_res = await client.post(
+        "/api/v1/tickets",
+        json={"title": "Káº¿t ná»‘i VPN váº«n lá»—i", "description": "KhÃ´ng thá»ƒ truy cáº­p táº§ng nguyá»“n ná»™i bá»™ sau khi Ä‘Ã³ng ticket."},
+        headers=headers,
+    )
+    ticket_id = create_res.json()["ticket_id"]
+    await client.post(f"/api/v1/tickets/{ticket_id}/close", headers=headers)
+
+    reopen_res = await client.post(
+        f"/api/v1/tickets/{ticket_id}/reopen",
+        json={"reason": "Sá»± cá»‘ váº«n táº¡i diá»…n sau khi Ã¡p dá»¥ng hÆ°á»›ng dáº«n."},
+        headers=headers,
+    )
+
+    assert reopen_res.status_code == 200
+    assert reopen_res.json()["status"] in ("reopened", "waiting_for_agent", "human_active")
+
+
+@pytest.mark.asyncio
+async def test_ticket_rating_is_saved(
+    client: AsyncClient,
+    auth_employee: str,
+):
+    """A valid post-resolution rating must be persisted on the ticket."""
+    headers = {"Authorization": f"Bearer {auth_employee}"}
+    create_res = await client.post(
+        "/api/v1/tickets",
+        json={"title": "ÄÃ¡nh giÃ¡ há»— trá»£", "description": "Kiá»ƒm tra lÆ°u Ä‘Ã¡nh giÃ¡ sau khi Ä‘Ã³ng ticket."},
+        headers=headers,
+    )
+    ticket_id = create_res.json()["ticket_id"]
+    await client.post(f"/api/v1/tickets/{ticket_id}/close", headers=headers)
+
+    rating_res = await client.post(
+        f"/api/v1/tickets/{ticket_id}/rating",
+        json={"rating": 5, "feedback": "ÄÃ£ xá»­ lÃ½ nhanh vÃ  Ä‘Ãºng váº¥n Ä‘á»."},
+        headers=headers,
+    )
+
+    assert rating_res.status_code == 200
+    assert rating_res.json()["rating"] == 5
+    assert rating_res.json()["rating_feedback"] == "ÄÃ£ xá»­ lÃ½ nhanh vÃ  Ä‘Ãºng váº¥n Ä‘á»."
 
 
 @pytest.mark.asyncio

@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 1.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "UNSUPPORTED_CLAIM|INCOMPLETE_ANSWER|CITATION_ERROR"
+    ],
+    "unsupported_claims": [
+      "Không có [AUTHORIZED_EVIDENCE] nào được cung cấp để xác minh quyền truy cập hoặc dữ liệu ticket của nhân viên phòng HR."
+    ],
+    "missing_points": [
+      "Hướng dẫn cụ thể để cung cấp chứng chỉ/quyền truy cập hợp lệ, nguồn dữ liệu ủy quyền và xác nhận tuân thủ chính sách bảo mật"
+    ],
+    "brief_rationale": "Không có đủ căn cứ từ [AUTHORIZED_EVIDENCE] để trả lời câu hỏi.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

@@ -67,7 +67,7 @@ export default function NotificationCenter() {
 
       {/* Notification Drawer Dropdown */}
       {open && (
-        <div className="absolute left-0 sm:left-0 mt-3 w-80 sm:w-96 glass-card-light rounded-3xl p-4 shadow-2xl border border-slate-200 z-[9999] space-y-3 animate-in fade-in zoom-in-95 bg-white/95 backdrop-blur-md">
+        <div className="absolute right-0 sm:right-0 mt-3 w-80 sm:w-96 glass-card-light rounded-3xl p-4 shadow-2xl border border-slate-200 z-[9999] space-y-3 animate-in fade-in zoom-in-95 bg-white/95 backdrop-blur-md">
 
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <div className="font-bold text-slate-900 text-sm flex items-center gap-1.5" style={{ fontFamily: 'Outfit, sans-serif' }}>

@@ -1,26 +1,38 @@
 """Tickets API — CRUD + agent workflow trigger + HITL decisions."""
 from __future__ import annotations
 
+import asyncio
+import json
 import logging
 
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, Header, HTTPException, Query, Request
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.responses import StreamingResponse
 
 from src.api.auth import get_current_active_user
 from src.database import get_db
+from src.models.audit_log import AuditAction
 from src.models.schemas import (
     AgentProcessResponse,
+    DuplicateActionRequest,
+    DuplicateCheckRequest,
+    DuplicateCheckResponse,
+    DuplicateTicketCandidate,
     HITLDecisionRequest,
-    TicketCreate,
     TicketConversationResponse,
+    TicketCreate,
     TicketListResponse,
     TicketMessageCreate,
     TicketMessageResponse,
+    TicketRatingRequest,
+    TicketReopenRequest,
     TicketResponse,
     TicketStatusUpdate,
 )
-from src.models.ticket import TicketStatus
+from src.models.ticket import Ticket, TicketStatus
 from src.models.user import CompanyUnit, User, UserRole
+from src.observability.tracing import record_business_event
 from src.services import auth_service, ticket_service
 
 logger = logging.getLogger(__name__)
@@ -28,9 +40,34 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/tickets", tags=["Tickets"])
 
 
-from fastapi import Header
+_IDEMPOTENCY_CACHE_LIMIT = 1_000
+_idempotency_store: dict[tuple[int, str], AgentProcessResponse] = {}
 
-_idempotency_store: dict[str, AgentProcessResponse] = {}
+
+def _duplicate_response(check) -> DuplicateCheckResponse:
+    primary = check.primary
+    requires_confirmation = bool(primary and primary.classification in {"EXACT_DUPLICATE", "SEMANTIC_DUPLICATE"} and (primary.is_active or primary.is_resolved))
+    if primary and primary.is_resolved:
+        message = "Có vẻ vấn đề này đã được xử lý trong một yêu cầu trước. Bạn có thể xem giải pháp hoặc vẫn tạo ticket mới."
+    elif primary and primary.is_active:
+        message = "Bạn đã có một yêu cầu tương tự đang được xử lý. Bạn có thể mở ticket hiện tại để bổ sung thông tin."
+    elif check.matches:
+        message = "Chúng tôi tìm thấy một số yêu cầu có thể liên quan."
+    else:
+        message = None
+    return DuplicateCheckResponse(
+        classification=primary.classification if primary else "NOT_DUPLICATE",
+        requires_confirmation=requires_confirmation,
+        message=message,
+        same_user_repeat_count=check.same_user_repeat_count,
+        shared_incident_signal=check.shared_incident_signal,
+        matches=[DuplicateTicketCandidate(
+            ticket_id=match.ticket.id, ticket_number=match.ticket.ticket_number, title=match.ticket.title,
+            status=match.ticket.status, resolved_at=match.ticket.resolved_at or match.ticket.closed_at,
+            solution=match.solution, classification=match.classification, score=round(match.score, 4),
+            detection_method=match.method, is_active=match.is_active, is_resolved=match.is_resolved,
+        ) for match in check.matches],
+    )
 
 
 # ─── Submit Ticket ────────────────────────────────────────────────────────────
@@ -44,9 +81,40 @@ async def create_ticket(
     current_user: User = Depends(get_current_active_user),
 ):
     """Nhân viên gửi ticket mới (hỗ trợ X-Idempotency-Key chống trùng lặp) → Agent xử lý background."""
-    if x_idempotency_key and x_idempotency_key in _idempotency_store:
+    if x_idempotency_key and len(x_idempotency_key) > 128:
+        raise HTTPException(status_code=400, detail="Idempotency key is too long")
+
+    idempotency_key = (current_user.id, x_idempotency_key) if x_idempotency_key else None
+    if idempotency_key and idempotency_key in _idempotency_store:
         logger.info(f"Idempotency Key hit: {x_idempotency_key}")
-        return _idempotency_store[x_idempotency_key]
+        return _idempotency_store[idempotency_key]
+
+    # Guardrail is intentionally before duplicate retrieval and all expensive AI work.
+    from src.guardrails.input_guardrails import InputGuardrailPlugin
+    guard_result = InputGuardrailPlugin().on_user_message_callback(f"{payload.title}\n{payload.description}")
+    if guard_result.get("decision") == "BLOCK":
+        raise HTTPException(status_code=400, detail=guard_result.get("safe_response", "Nội dung ticket không đạt yêu cầu an toàn."))
+
+    # A short per-user limit absorbs accidental re-clicks/repeated submissions;
+    # it never closes or discards a ticket and the caller can retry after the window.
+    from src.assignment.rate_limiter import is_rate_limited
+    rate_result = is_rate_limited(f"ticket-create:{current_user.id}")
+    if not rate_result["allowed"]:
+        raise HTTPException(status_code=429, detail="Bạn đang gửi yêu cầu quá nhanh. Vui lòng thử lại sau ít phút hoặc cập nhật ticket đang mở.")
+
+    from src.services.duplicate_detection_service import (
+        audit_duplicate_decision,
+        check_duplicate_tickets,
+        index_ticket_for_duplicate_detection,
+    )
+    check = await check_duplicate_tickets(db, payload.title, payload.description, current_user)
+    duplicate_response = _duplicate_response(check)
+    await audit_duplicate_decision(db, check, current_user)
+
+    # Similar-ticket lookup is advisory only.  A user should always be able to
+    # submit the incident; the linked context is surfaced by the AI inside the
+    # created ticket, where they can assess it without interrupting the form.
+    related_match = check.primary if duplicate_response.requires_confirmation else None
 
     ticket = await ticket_service.create_ticket(
         db=db,
@@ -54,8 +122,26 @@ async def create_ticket(
         description=payload.description,
         submitter_id=current_user.id,
         is_production_impact=payload.is_production_impact,
+        duplicate_of_ticket_id=related_match.ticket.id if related_match else None,
+        duplicate_score=related_match.score if related_match else None,
+        duplicate_detection_method=related_match.method if related_match else None,
+        duplicate_confirmed_by=None,
     )
     await db.commit()
+    record_business_event("ticket.created")
+
+    # Index before enqueueing the workflow so rapid re-submits are caught without an LLM call.
+    try:
+        import asyncio
+        await asyncio.to_thread(index_ticket_for_duplicate_detection, ticket, current_user)
+    except Exception as exc:
+        logger.warning("Could not index ticket %s for duplicate detection: %s", ticket.id, exc)
+    try:
+        from src.services.zero_mem_service import index_ticket_trace
+        await index_ticket_trace(db, ticket, current_user)
+        await db.commit()
+    except Exception as exc:
+        logger.warning("Could not index ticket %s for episodic memory: %s", ticket.id, exc)
 
     # Trigger agent workflow in background
     background_tasks.add_task(
@@ -84,10 +170,62 @@ async def create_ticket(
         message="Ticket đã được tạo. Agent đang phân tích...",
     )
 
-    if x_idempotency_key:
-        _idempotency_store[x_idempotency_key] = response_data
+    if idempotency_key:
+        if len(_idempotency_store) >= _IDEMPOTENCY_CACHE_LIMIT:
+            _idempotency_store.pop(next(iter(_idempotency_store)))
+        _idempotency_store[idempotency_key] = response_data
 
     return response_data
+
+
+@router.post("/duplicate-check", response_model=DuplicateCheckResponse)
+async def duplicate_check(
+    payload: DuplicateCheckRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Preview tenant-scoped duplicate suggestions; no ticket is created by this endpoint."""
+    from src.services.duplicate_detection_service import audit_duplicate_decision, check_duplicate_tickets
+    check = await check_duplicate_tickets(db, payload.title, payload.description, current_user)
+    await audit_duplicate_decision(db, check, current_user)
+    return _duplicate_response(check)
+
+
+@router.post("/duplicate-action")
+async def duplicate_action(
+    payload: DuplicateActionRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Record that an existing solution helped, or an optional false-positive label for metrics."""
+    from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+
+    from src.models.ticket import Ticket
+    from src.services.ticket_service import write_audit_log
+
+    result = await db.execute(select(Ticket).options(selectinload(Ticket.submitter)).where(Ticket.id == payload.matched_ticket_id))
+    ticket = result.scalar_one_or_none()
+    if not ticket or ticket.submitter.company_unit != current_user.company_unit or (ticket.submitter.department or "") != (current_user.department or ""):
+        raise HTTPException(status_code=404, detail="Không tìm thấy ticket trong phạm vi truy cập của bạn")
+    action = AuditAction.DUPLICATE_PREVENTED if payload.action == "resolved_existing" else AuditAction.DUPLICATE_FALSE_POSITIVE
+    await write_audit_log(
+        db=db, ticket_id=ticket.id, actor_id=current_user.id, actor_type="user", action=action,
+        description="User selected existing duplicate ticket outcome",
+        metadata={"matched_ticket_id": ticket.id, "outcome": payload.action},
+    )
+    return {"ok": True}
+
+
+@router.get("/duplicate-metrics")
+async def get_duplicate_metrics(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    if current_user.role not in {UserRole.MANAGER, UserRole.ADMIN}:
+        raise HTTPException(status_code=403, detail="Chỉ quản lý hoặc admin có thể xem duplicate metrics")
+    from src.services.duplicate_detection_service import duplicate_metrics
+    return await duplicate_metrics(db)
 
 
 async def _run_agent_workflow(
@@ -129,6 +267,7 @@ async def _run_agent_workflow(
 
             # Check if Guardrail Step 1 Short-Circuited / Blocked
             if final_state.get("is_blocked"):
+                record_business_event("guardrail.block")
                 ticket = await ticket_service.get_ticket(db, ticket_id)
                 if ticket:
                     ticket.status = TicketStatus.REJECTED
@@ -168,6 +307,8 @@ async def _run_agent_workflow(
                 priority=final_state.get("priority", "medium"),
                 urgency=final_state.get("urgency", "medium"),
                 confidence_score=final_state.get("confidence_score", 0.5),
+                retrieval_confidence=final_state.get("retrieval_confidence"),
+                groundedness_score=final_state.get("groundedness_score"),
                 suggested_solution=final_state.get("suggested_solution"),
                 rag_sources=final_state.get("rag_sources", []),
                 agent_reasoning=final_state.get("agent_reasoning"),
@@ -184,23 +325,27 @@ async def _run_agent_workflow(
             ticket = await ticket_service.get_ticket(db, ticket_id)
             if ticket:
                 if final_state.get("hitl_required"):
+                    record_business_event("ticket.handoff")
                     ticket.status = TicketStatus.PENDING_HITL
                     # Create Action-Level HITL Approval Record
                     from src.models.hitl_approval import HITLApproval
                     hitl_record = HITLApproval(
                         ticket_id=ticket_id,
-                        action_type="EXECUTE_HIGH_RISK",
-                        action_payload=final_state.get("suggested_solution"),
-                        risk_score=final_state.get("risk_score", 0.70),
-                        reason=final_state.get("hitl_reason", "Policy Engine Decision"),
+                        approval_type="manager_approval",
+                        reason=f"[HIGH_RISK] {final_state.get('hitl_reason', 'Policy Engine Decision')} | Risk Score: {final_state.get('risk_score', 0.70)}",
                     )
                     db.add(hitl_record)
                 elif final_state.get("action_taken") == "ask_clarification":
                     ticket.status = TicketStatus.NEEDS_CLARIFICATION
                 elif final_state.get("action_taken") == "human_handoff":
-                    ticket.status = TicketStatus.WAITING_FOR_AGENT
-                elif final_state.get("auto_close_eligible") or final_state.get("action_taken") == "auto_answer":
-                    ticket.status = TicketStatus.PENDING_CLOSURE
+                    record_business_event("ticket.handoff")
+                    from src.services.ticket_conversation_service import escalate_to_technician
+                    await escalate_to_technician(
+                        db,
+                        ticket=ticket,
+                        actor_id=None,
+                        reason="AI không có hướng dẫn Knowledge Base đủ phù hợp để xử lý an toàn.",
+                    )
 
             await db.commit()
             logger.info(f"Agent workflow completed for ticket #{ticket_number}")
@@ -266,8 +411,31 @@ async def get_pending_hitl(
     if not auth_service.can_approve_hitl(current_user):
         raise HTTPException(status_code=403, detail="Chỉ Manager hoặc Admin mới xem được")
 
-    tickets = await ticket_service.get_pending_hitl(db)
+    company_scope = auth_service.scoped_company_unit(current_user)
+    tickets = await ticket_service.get_pending_hitl(
+        db,
+        submitter_company_unit=company_scope.value if company_scope else None,
+    )
     return [TicketResponse.model_validate(t) for t in tickets]
+
+
+@router.get("/resolve/{ticket_number}", response_model=TicketResponse)
+async def resolve_ticket_reference(
+    ticket_number: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Resolve a display ticket number without bypassing ticket ACLs."""
+    normalized = ticket_number.strip().upper()
+    if not normalized or len(normalized) > 80:
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    ticket = (
+        await db.execute(select(Ticket).where(Ticket.ticket_number == normalized))
+    ).scalar_one_or_none()
+    if not ticket or not auth_service.can_view_ticket(current_user, ticket):
+        # Do not leak the existence of a ticket outside the caller scope.
+        raise HTTPException(status_code=404, detail="Ticket not found")
+    return TicketResponse.model_validate(ticket)
 
 
 @router.get("/{ticket_id}", response_model=TicketResponse)
@@ -329,6 +497,12 @@ async def post_ticket_message(
         )
 
 
+    if current_user.role != UserRole.EMPLOYEE and ticket.assignee_id != current_user.id:
+        raise HTTPException(
+            status_code=409,
+            detail="Bạn cần tiếp nhận ticket trước khi gửi phản hồi cho người dùng.",
+        )
+
     from src.services.ticket_conversation_service import handle_ticket_message
 
     messages = await handle_ticket_message(
@@ -341,6 +515,58 @@ async def post_ticket_message(
     return TicketConversationResponse(
         items=[TicketMessageResponse.model_validate(item) for item in messages]
     )
+
+
+@router.post("/{ticket_id}/messages/stream")
+async def stream_ticket_message(
+    ticket_id: int,
+    payload: TicketMessageCreate,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Stream token output for the ticket conversation, then persist the final message once."""
+    ticket = await ticket_service.get_ticket(db, ticket_id)
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket không tồn tại")
+    if not auth_service.can_view_ticket(current_user, ticket):
+        raise HTTPException(status_code=403, detail="Không có quyền xem ticket này")
+    if current_user.role != UserRole.EMPLOYEE and ticket.assignee_id != current_user.id:
+        raise HTTPException(
+            status_code=409,
+            detail="You must take ownership of the ticket before replying.",
+        )
+
+    if ticket.status in {TicketStatus.CLOSED, TicketStatus.RESOLVED, TicketStatus.REJECTED}:
+        raise HTTPException(status_code=400, detail="Ticket đã được xử lý hoặc đã đóng. Không thể gửi thêm tin nhắn.")
+
+    from src.services.ticket_conversation_service import handle_ticket_message
+
+    async def events():
+        queue: asyncio.Queue[str] = asyncio.Queue()
+
+        async def on_token(text: str) -> None:
+            await queue.put(text)
+
+        task = asyncio.create_task(handle_ticket_message(db, ticket=ticket, user=current_user, content=payload.message, on_token=on_token))
+        try:
+            while not task.done() or not queue.empty():
+                if await request.is_disconnected():
+                    task.cancel()
+                    return
+                try:
+                    token = await asyncio.wait_for(queue.get(), timeout=0.15)
+                    yield f"event: token\ndata: {json.dumps({'text': token}, ensure_ascii=False)}\n\n"
+                except TimeoutError:
+                    continue
+            messages = await task
+            await db.commit()
+            yield f"event: done\ndata: {json.dumps(TicketConversationResponse(items=[TicketMessageResponse.model_validate(item).model_dump(mode='json') for item in messages]).model_dump(mode='json'), ensure_ascii=False)}\n\n"
+        except Exception as exc:
+            logger.exception("Ticket message streaming failed: %s", exc)
+            yield f"event: error\ndata: {json.dumps({'message': 'Không thể tạo phản hồi streaming.'}, ensure_ascii=False)}\n\n"
+
+    return StreamingResponse(events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
 @router.post("/{ticket_id}/request-technician", response_model=TicketConversationResponse)
@@ -416,6 +642,8 @@ async def approve_ticket(
     ticket = await ticket_service.get_ticket(db, ticket_id)
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket không tồn tại")
+    if not auth_service.can_view_ticket(current_user, ticket):
+        raise HTTPException(status_code=403, detail="Không có quyền phê duyệt ticket này")
     if ticket.status != TicketStatus.PENDING_HITL:
         raise HTTPException(status_code=400, detail=f"Ticket không ở trạng thái PENDING_HITL (hiện: {ticket.status})")
 
@@ -512,8 +740,8 @@ async def confirm_resolution(
     if ticket.submitter_id != current_user.id and current_user.role == UserRole.EMPLOYEE:
         raise HTTPException(status_code=403, detail="Chỉ người tạo ticket mới có quyền xác nhận")
 
-    from src.services.ticket_conversation_service import add_message, escalate_to_technician
     from src.models.ticket_message import TicketMessageSender
+    from src.services.ticket_conversation_service import add_message, escalate_to_technician
 
     if resolved:
         await ticket_service.close_ticket(
@@ -549,15 +777,15 @@ async def close_ticket_api(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
-    """Đóng ticket bởi User hoặc Agent."""
+    """Đóng ticket bởi người tạo hoặc nhân sự hỗ trợ."""
     ticket = await ticket_service.get_ticket(db, ticket_id)
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket không tồn tại")
     if ticket.submitter_id != current_user.id and current_user.role == UserRole.EMPLOYEE:
         raise HTTPException(status_code=403, detail="Chỉ người tạo ticket mới có quyền đóng")
 
-    from src.services.ticket_conversation_service import add_message
     from src.models.ticket_message import TicketMessageSender
+    from src.services.ticket_conversation_service import add_message
 
     await ticket_service.close_ticket(
         db=db,
@@ -597,11 +825,12 @@ async def reopen_ticket_api(
     if not payload.reason or not payload.reason.strip():
         raise HTTPException(status_code=400, detail="Vui lòng nhập lý do mở lại ticket")
 
+    from datetime import UTC, datetime
+
     from src.models.audit_log import AuditAction
     from src.models.ticket import TicketSupportMode
-    from src.services.ticket_conversation_service import add_message
     from src.models.ticket_message import TicketMessageSender
-    from datetime import UTC, datetime
+    from src.services.ticket_conversation_service import add_message
 
     ticket.status = TicketStatus.REOPENED
     if ticket.assignee_id:
@@ -666,4 +895,3 @@ async def submit_ticket_rating(
     await db.commit()
     await db.refresh(ticket)
     return TicketResponse.model_validate(ticket)
-

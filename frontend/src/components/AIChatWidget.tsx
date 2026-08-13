@@ -1,179 +1,137 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { Bot, MessageSquareText, Send, X } from 'lucide-react';
-import { Spinner } from './ui';
+import { ArrowUpRight, Bot, MessageSquareText, Send, X } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 
-interface Message {
+type ChatMessage = {
+  id: string;
   sender: 'user' | 'agent';
   text: string;
-  sources?: string[];
-  time: string;
-}
+};
 
-function timeLabel() {
-  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
+type Conversation = {
+  id: string;
+  title: string;
+};
 
-export default function AIChatWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+type ChatReply = {
+  reply: string;
+};
+
+type AIChatWidgetProps = {
+  initiallyOpen?: boolean;
+  showLauncher?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+};
+
+/**
+ * Quick chat for every portal page. Messages are persisted to the exact same
+ * conversation API as the full workspace, rather than keeping a second chat.
+ */
+export default function AIChatWidget({ initiallyOpen = false, showLauncher = true, open, onOpenChange }: AIChatWidgetProps) {
+  const router = useRouter();
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(initiallyOpen);
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>(() => [
-    {
-      sender: 'agent',
-      text: 'Tôi có thể tra cứu knowledge base theo quyền của bạn và gợi ý hướng xử lý trước khi tạo ticket.',
-      time: timeLabel(),
-    },
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { id: 'welcome', sender: 'agent', text: 'Tôi có thể hỗ trợ về thiết bị, tài khoản, phần mềm và các quy trình IT.' },
   ]);
-
   const bottomRef = useRef<HTMLDivElement>(null);
+  const isOpen = open ?? uncontrolledOpen;
 
-  useEffect(() => {
-    if (isOpen) bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isOpen]);
-
-  const chatMutation = useMutation({
-    mutationFn: async (msg: string) => (await api.post('/chat', { message: msg })).data,
-    onSuccess: (data) => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: 'agent',
-          text: data.reply,
-          sources: data.sources,
-          time: timeLabel(),
-        },
-      ]);
-    },
-    onError: () => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: 'agent',
-          text: 'Kết nối AI chưa sẵn sàng. Bạn vẫn có thể gửi ticket để hệ thống phân loại và định tuyến.',
-          time: timeLabel(),
-        },
-      ]);
-    },
-  });
-
-  const handleSend = (event: React.FormEvent) => {
-    event.preventDefault();
-    const text = input.trim();
-    if (!text || chatMutation.isPending) return;
-    setInput('');
-    setMessages((prev) => [...prev, { sender: 'user', text, time: timeLabel() }]);
-    chatMutation.mutate(text);
+  const setPanelOpen = (next: boolean) => {
+    if (open === undefined) setUncontrolledOpen(next);
+    onOpenChange?.(next);
   };
 
-  return (
-    <>
-      <button
-        onClick={() => setIsOpen((value) => !value)}
-        style={{
-          position: 'fixed',
-          right: 24,
-          bottom: 24,
-          zIndex: 60,
-          height: 42,
-          borderRadius: 999,
-          padding: '0 16px',
-          background: '#101827',
-          color: '#ffffff',
-          boxShadow: '0 14px 34px rgba(15,23,42,0.22)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 9,
-          fontSize: 13,
-          fontWeight: 800,
-          cursor: 'pointer',
-        }}
-      >
-        <MessageSquareText size={17} />
-        AI Copilot
+  useEffect(() => {
+    if (isOpen) bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, [isOpen, messages, sending]);
+
+  const openWorkspace = () => {
+    setPanelOpen(false);
+    router.push(conversationId ? `/employee/chatbot?conversation=${encodeURIComponent(conversationId)}` : '/employee/chatbot');
+  };
+
+  const handleSend = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const text = input.trim();
+    if (!text || sending) return;
+
+    setInput('');
+    setError(null);
+    setSending(true);
+    const userMessage: ChatMessage = { id: `user-${crypto.randomUUID()}`, sender: 'user', text };
+    setMessages((current) => [...current, userMessage]);
+
+    try {
+      let currentId = conversationId;
+      if (!currentId) {
+        const response = await api.post<Conversation>('/chat/conversations', { title: text.slice(0, 60) });
+        currentId = response.data.id;
+        setConversationId(currentId);
+      }
+      const response = await api.post<ChatReply>(`/chat/conversations/${currentId}/messages`, { message: text });
+      setMessages((current) => [...current, { id: `agent-${crypto.randomUUID()}`, sender: 'agent', text: response.data.reply }]);
+    } catch {
+      setError('Không thể gửi tin nhắn. Vui lòng thử lại.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  return <>
+    {showLauncher && (
+      <button onClick={() => setPanelOpen(!isOpen)} className="ai-copilot-launcher" aria-label="Mở AI Copilot" aria-expanded={isOpen}>
+        <MessageSquareText size={17} aria-hidden="true" /> AI Copilot
       </button>
+    )}
 
-      {isOpen && (
-        <div
-          className="card"
-          style={{
-            position: 'fixed',
-            right: 24,
-            bottom: 78,
-            width: 390,
-            height: 520,
-            zIndex: 70,
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-          }}
-        >
-          <div style={{ height: 56, padding: '0 14px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 8, background: 'var(--primary-soft)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Bot size={18} />
-              </div>
-              <div>
-                <div style={{ fontWeight: 800, fontSize: 13 }}>Help Desk Copilot</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: 11 }}>RAG đã lọc theo phân quyền</div>
-              </div>
+    {isOpen && (
+      <section className="card fixed bottom-[4.875rem] right-6 z-[70] flex h-[33.75rem] w-[min(24.375rem,calc(100vw-2rem))] flex-col overflow-hidden border-slate-200 shadow-[0_18px_45px_rgba(15,23,42,0.18)]" aria-label="AI Copilot">
+        <header className="flex min-h-14 items-center justify-between gap-3 border-b border-slate-200 bg-white px-3.5">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-blue-50 text-blue-600"><Bot size={17} /></span>
+            <div className="min-w-0">
+              <h2 className="truncate text-[13px] font-bold text-slate-900">AI Copilot</h2>
+              <p className="truncate text-[10px] text-slate-500">Hỏi nhanh, lịch sử được lưu tự động</p>
             </div>
-            <button onClick={() => setIsOpen(false)} className="btn-ghost" style={{ width: 32, height: 32, padding: 0 }}>
-              <X size={15} />
-            </button>
           </div>
-
-          <div style={{ flex: 1, overflowY: 'auto', padding: 14, display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {messages.map((message, index) => (
-              <div key={index} style={{ alignSelf: message.sender === 'user' ? 'flex-end' : 'flex-start', maxWidth: '86%' }}>
-                <div
-                  style={{
-                    borderRadius: 8,
-                    padding: '9px 11px',
-                    background: message.sender === 'user' ? 'var(--primary)' : 'var(--surface-muted)',
-                    color: message.sender === 'user' ? '#ffffff' : 'var(--text)',
-                    fontSize: 12,
-                    lineHeight: 1.55,
-                    whiteSpace: 'pre-wrap',
-                  }}
-                >
-                  {message.text}
-                  {message.sources && message.sources.length > 0 && (
-                    <div style={{ marginTop: 8, paddingTop: 7, borderTop: '1px solid rgba(82,96,113,0.22)' }}>
-                      <div style={{ fontSize: 10, fontWeight: 800, color: message.sender === 'user' ? '#dbeafe' : 'var(--cyan)', marginBottom: 4 }}>Nguồn KB</div>
-                      {Array.from(new Set(message.sources)).slice(0, 3).map((source, sIdx) => (
-                        <div key={`${source}-${sIdx}`} style={{ fontSize: 10, color: message.sender === 'user' ? '#eaf1ff' : 'var(--text-secondary)' }}>{source}</div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div style={{ marginTop: 3, color: 'var(--text-muted)', fontSize: 10, textAlign: message.sender === 'user' ? 'right' : 'left' }}>{message.time}</div>
-              </div>
-            ))}
-            {chatMutation.isPending && (
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--primary)', fontSize: 12, fontWeight: 800 }}>
-                <Spinner size={14} />
-                Đang truy vấn KB
-              </div>
-            )}
-            <div ref={bottomRef} />
-          </div>
-
-          <form onSubmit={handleSend} style={{ padding: 12, borderTop: '1px solid var(--border)', display: 'flex', gap: 8 }}>
-            <input
-              className="input-field"
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              placeholder="Hỏi về VPN, email, quyền truy cập..."
-            />
-            <button className="btn-primary" disabled={!input.trim() || chatMutation.isPending} style={{ width: 40, padding: 0 }}>
-              <Send size={15} />
+          <div className="flex shrink-0 items-center gap-1">
+            <button type="button" onClick={openWorkspace} className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-[11px] font-bold text-blue-700 transition hover:bg-blue-50" title="Mở toàn bộ lịch sử trong AI Workspace">
+              Workspace <ArrowUpRight size={13} />
             </button>
-          </form>
+            <button type="button" onClick={() => setPanelOpen(false)} className="grid size-8 place-items-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-800" aria-label="Đóng AI Copilot"><X size={16} /></button>
+          </div>
+        </header>
+
+        <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-slate-50/70 px-3.5 py-4">
+          {messages.map((message) => {
+            const isUser = message.sender === 'user';
+            return <div key={message.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+              <div className={`max-w-[86%] rounded-xl px-3 py-2 text-xs leading-5 shadow-sm ${isUser ? 'rounded-br-sm bg-blue-600 text-white' : 'rounded-bl-sm border border-slate-200 bg-white text-slate-700'}`}>
+                {message.text}
+              </div>
+            </div>;
+          })}
+          {sending && <div className="flex justify-start"><div className="inline-flex items-center gap-2 rounded-xl rounded-bl-sm border border-slate-200 bg-white px-3 py-2 text-xs text-slate-500 shadow-sm"><span className="size-1.5 animate-pulse rounded-full bg-blue-600" /> AI Copilot đang trả lời</div></div>}
+          <div ref={bottomRef} />
         </div>
-      )}
-    </>
-  );
+
+        {error && <p className="border-t border-rose-100 bg-rose-50 px-3.5 py-2 text-[11px] text-rose-700">{error}</p>}
+        <form onSubmit={(event) => void handleSend(event)} className="border-t border-slate-200 bg-white p-3">
+          <div className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white p-1.5 transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-50">
+            <input value={input} onChange={(event) => setInput(event.target.value)} placeholder="Hỏi về VPN, email, quyền truy cập…" className="min-w-0 flex-1 border-0 bg-transparent px-2 py-1 text-xs text-slate-800 outline-none placeholder:text-slate-400" aria-label="Câu hỏi cho AI Copilot" />
+            <button type="submit" disabled={!input.trim() || sending} className="grid size-8 place-items-center rounded-md bg-blue-600 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Gửi tin nhắn"><Send size={15} /></button>
+          </div>
+          <p className="mt-2 px-1 text-[10px] text-slate-400">Lịch sử cuộc trò chuyện này có trong AI Workspace.</p>
+        </form>
+      </section>
+    )}
+  </>;
 }

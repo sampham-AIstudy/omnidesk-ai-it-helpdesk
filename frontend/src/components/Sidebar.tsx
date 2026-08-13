@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import { usePathname, useRouter } from 'next/navigation';
 import {
   BarChart3,
   BookOpen,
@@ -16,7 +17,6 @@ import {
   ShieldCheck,
   TicketCheck,
   Users,
-  Wrench,
   X,
   Zap,
   Clock,
@@ -27,63 +27,97 @@ import {
   Layers,
   Siren,
   Cpu,
-  Bot,
   HelpCircle,
+  PackageCheck,
+  Bell,
+  Network,
+  Calendar,
+  Building2,
+  Activity,
+  UserCheck,
+  UserRound,
+  Settings,
+  Search,
+  Package,
+  ClipboardCheck,
+  FileClock,
+  MessageSquareText,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/authStore';
 import { ROLE_LABELS } from '@/lib/utils';
 import NotificationCenter from './NotificationCenter';
-import AIChatWidget from './AIChatWidget';
+
+const AIChatWidget = dynamic(() => import('./AIChatWidget'), {
+  ssr: false,
+  loading: () => null,
+});
 
 interface NavItem {
   href: string;
   label: string;
   icon: React.ComponentType<{ size?: number }>;
+  group?: string;
 }
 
-// 1. END-USER PORTAL NAV
 const END_USER_NAV: NavItem[] = [
-  { href: '/employee/dashboard', label: 'Cổng Tự Phục Vụ', icon: LayoutDashboard },
-  { href: '/employee/sspr', label: 'Tự Reset Mật Khẩu & Access', icon: KeyRound },
-  { href: '/employee/kb', label: 'Trung Tâm Tri Thức (KB)', icon: HelpCircle },
-  { href: '/employee/new-ticket', label: 'Gửi Yêu Cầu Hỗ Trợ', icon: FilePlus2 },
-  { href: '/employee/tickets', label: 'Yêu Cầu Của Tôi & CSAT', icon: ClipboardList },
+  { href: '/employee/dashboard', label: 'Cổng tự phục vụ', icon: LayoutDashboard, group: 'Tổng quan' },
+  { href: '/employee/chatbot', label: 'Chatbot Workspace', icon: MessageSquareText, group: 'Hỗ trợ' },
+  { href: '/employee/new-ticket', label: 'Tạo ticket với AI', icon: FilePlus2 },
+  { href: '/employee/tickets', label: 'Sự cố của tôi', icon: TicketCheck },
+  { href: '/employee/catalog', label: 'IT Service Catalog', icon: Package, group: 'Dịch vụ' },
+  { href: '/employee/requests', label: 'Yêu cầu dịch vụ', icon: ClipboardList },
+  { href: '/employee/kb', label: 'Trung tâm tri thức', icon: HelpCircle, group: 'Tài khoản' },
+  { href: '/employee/profile', label: 'Hồ sơ & thiết lập', icon: UserRound },
+  { href: '/status', label: 'Trạng thái dịch vụ', icon: Activity },
 ];
 
-// 2. IT AGENT / TECHNICIAN NAV
 const TECH_AGENT_NAV: NavItem[] = [
-  { href: '/technician/queue', label: 'Hàng Đợi Ticket (Queue)', icon: Inbox },
-  { href: '/manager/changes', label: 'Quản Lý Thay Đổi (Changes)', icon: GitBranch },
-  { href: '/manager/problems', label: 'Kho Lỗi Đã Biết (KEDB)', icon: Layers },
-  { href: '/employee/tickets', label: 'Tra Cứu Ticket Cá Nhân', icon: TicketCheck },
+  { href: '/technician/queue', label: 'Incident queue', icon: Inbox, group: 'Xử lý công việc' },
+  { href: '/technician/requests', label: 'Fulfillment workbench', icon: PackageCheck },
+  { href: '/technician/alerts', label: 'Alerts & monitoring', icon: Bell, group: 'Trực vận hành' },
+  { href: '/technician/on-call', label: 'Lịch trực on-call', icon: Clock },
 ];
 
-// 3. IT MANAGER / TEAM LEAD NAV
 const IT_MANAGER_NAV: NavItem[] = [
-  { href: '/manager/dashboard', label: 'Bảng Điều Khiển Quản Lý', icon: Gauge },
-  { href: '/manager/major-incidents', label: 'War Room Sự Cố P1', icon: Siren },
-  { href: '/manager/changes', label: 'Quản Lý Thay Đổi ITIL', icon: GitBranch },
-  { href: '/manager/problems', label: 'Quản Lý Vấn Đề (KEDB)', icon: Layers },
-  { href: '/manager/automation', label: 'Tự Động Hóa Workflow', icon: Zap },
-  { href: '/manager/sla-matrix', label: 'Ma Trận Cam Kết SLA', icon: Clock },
-  { href: '/manager/wallboard', label: 'Real-Time Wallboard TV', icon: Tv },
-  { href: '/manager/analytics', label: 'Phân Tích Hiệu Suất', icon: BarChart3 },
+  { href: '/manager/dashboard', label: 'Control tower', icon: Gauge, group: 'Điều hành' },
+  { href: '/manager/wallboard', label: 'Live wallboard', icon: Tv },
+  { href: '/manager/analytics', label: 'Phân tích hiệu suất', icon: BarChart3 },
+  { href: '/manager/approvals', label: 'HITL approvals', icon: ClipboardCheck, group: 'Quyết định' },
+  { href: '/manager/major-incidents', label: 'Major incidents', icon: Siren },
+  { href: '/manager/problems', label: 'Problem management', icon: Layers },
+  { href: '/manager/changes', label: 'Change management', icon: GitBranch, group: 'Quản trị dịch vụ' },
+  { href: '/manager/change-calendar', label: 'Change calendar & CAB', icon: Calendar },
+  { href: '/manager/services', label: 'Service portfolio', icon: Activity },
+  { href: '/manager/sla-matrix', label: 'SLA matrix', icon: Clock },
+  { href: '/manager/assets-rbac', label: 'Assets & RBAC', icon: ShieldCheck, group: 'Quản trị' },
+  { href: '/manager/audit', label: 'Audit log', icon: FileClock },
+  { href: '/manager/automation', label: 'Workflow automation', icon: Zap },
 ];
 
-// 4. SYSTEM ADMINISTRATOR (SUPER ADMIN) NAV
 const SYSTEM_ADMIN_NAV: NavItem[] = [
-  { href: '/admin/ai-console', label: 'AI Agentic Console', icon: Cpu },
-  { href: '/admin/users', label: 'Quản Lý Phân Quyền RBAC', icon: Users },
-  { href: '/admin/cmdb', label: 'Kho Cấu Hình Hạ Tầng CMDB', icon: Laptop },
-  { href: '/admin/integrations', label: 'Tích Hợp SSO / Mail / Bot', icon: KeyRound },
-  { href: '/admin/kb', label: 'Quản Lý Tri Thức (KB)', icon: BookOpen },
-  { href: '/manager/analytics', label: 'Báo Cáo Bảng Giám Sát', icon: BarChart3 },
+  { href: '/admin/ai-review', label: 'AI review queue', icon: UserCheck, group: 'AI governance' },
+  { href: '/admin/ai-evaluation', label: 'Evaluation & benchmarks', icon: BarChart3 },
+  { href: '/admin/ai-console', label: 'AI agent console', icon: Cpu },
+  { href: '/admin/rag', label: 'RAG pipeline', icon: BookOpen },
+  { href: '/admin/kb', label: 'Knowledge base', icon: ClipboardList },
+  { href: '/admin/cmdb', label: 'CMDB records', icon: Laptop, group: 'Nền tảng' },
+  { href: '/admin/cmdb/map', label: 'Topology map', icon: Network },
+  { href: '/admin/system-health', label: 'System health & jobs', icon: Activity },
+  { href: '/admin/integrations', label: 'SSO & integrations', icon: KeyRound },
+  { href: '/admin/users', label: 'Users & RBAC', icon: Users, group: 'Tổ chức' },
+  { href: '/admin/organizations', label: 'Organizations & tenants', icon: Building2 },
 ];
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, logout } = useAuthStore();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [quickQuery, setQuickQuery] = useState('');
+  const [quickSearchOpen, setQuickSearchOpen] = useState(false);
+  const [aiChatStarted, setAiChatStarted] = useState(false);
+  const [aiChatOpen, setAiChatOpen] = useState(false);
+  const quickSearchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
@@ -97,12 +131,43 @@ export default function Sidebar() {
 
   const navItems =
     user?.role === 'employee'
-      ? END_USER_NAV
+      ? END_USER_NAV.filter((item) => item.href !== '/employee/profile')
       : user?.role === 'technician'
       ? TECH_AGENT_NAV
       : user?.role === 'admin'
       ? SYSTEM_ADMIN_NAV
       : IT_MANAGER_NAV;
+
+  const quickMatches = useMemo(() => {
+    const query = quickQuery.trim().toLocaleLowerCase('vi-VN');
+    if (!query) return navItems.slice(0, 5);
+    return navItems.filter((item) => item.label.toLocaleLowerCase('vi-VN').includes(query)).slice(0, 6);
+  }, [navItems, quickQuery]);
+
+  const navigateFromQuickSearch = (href: string) => {
+    router.push(href);
+    setQuickQuery('');
+    setQuickSearchOpen(false);
+    setMobileOpen(false);
+  };
+
+  useEffect(() => {
+    const focusQuickSearch = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setMobileOpen(true);
+        setQuickSearchOpen(true);
+        window.setTimeout(() => quickSearchRef.current?.focus(), 0);
+      }
+      if (event.key === 'Escape' && document.activeElement === quickSearchRef.current) {
+        setQuickQuery('');
+        setQuickSearchOpen(false);
+        quickSearchRef.current?.blur();
+      }
+    };
+    window.addEventListener('keydown', focusQuickSearch);
+    return () => window.removeEventListener('keydown', focusQuickSearch);
+  }, []);
 
   return (
     <>
@@ -121,72 +186,122 @@ export default function Sidebar() {
           <X size={20} aria-hidden="true" />
         </button>
 
-        <div style={{ display: 'flex', alignItems: 'center', justifyBetween: 'space-between', width: '100%', padding: '4px 8px 18px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 38, height: 38, borderRadius: 12, background: 'linear-gradient(135deg, #2563eb, #06b6d4)', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
+        <div className="sidebar-brand">
+          <div className="sidebar-brand-mark">
               AI
             </div>
-            <div>
-              <div style={{ color: '#ffffff', fontWeight: 800, fontSize: 15, fontFamily: 'Outfit, sans-serif' }}>OmniDesk.AI</div>
-              <div style={{ color: '#8fa0b7', fontSize: 11, fontWeight: 700 }}>
+            <div className="sidebar-brand-copy">
+              <div>OmniDesk.AI</div>
+              <div>
                 {user?.role === 'admin' ? 'Super Admin Console' : user?.role === 'manager' ? 'IT Manager Tower' : user?.role === 'technician' ? 'IT Agent Workbench' : 'End-User Portal'}
               </div>
             </div>
-          </div>
-
-          <div className="ml-auto">
-            <NotificationCenter />
-          </div>
         </div>
 
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
-          {navItems.map((item) => {
+        <div className="sidebar-quick-search">
+          <div className="sidebar-quick-search-input">
+            <Search size={13} aria-hidden="true" />
+            <input
+              ref={quickSearchRef}
+              type="search"
+              value={quickQuery}
+              onChange={(event) => {
+                setQuickQuery(event.target.value);
+                setQuickSearchOpen(true);
+              }}
+              onFocus={() => setQuickSearchOpen(true)}
+              onBlur={() => window.setTimeout(() => setQuickSearchOpen(false), 120)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter' && quickMatches[0]) {
+                  event.preventDefault();
+                  navigateFromQuickSearch(quickMatches[0].href);
+                }
+              }}
+              placeholder="Tìm nhanh…"
+              aria-label="Tìm trang hoặc thao tác nhanh"
+              aria-controls="sidebar-quick-search-results"
+              className="sidebar-quick-search-field"
+            />
+            <kbd>Ctrl + K</kbd>
+          </div>
+
+          {quickSearchOpen && (
+            <div id="sidebar-quick-search-results" className="sidebar-quick-results">
+              {quickMatches.length > 0 ? quickMatches.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <button
+                    key={item.href}
+                    type="button"
+                    onMouseDown={(event) => event.preventDefault()}
+                    onClick={() => navigateFromQuickSearch(item.href)}
+                    className="sidebar-quick-result"
+                  >
+                    <span className="sidebar-quick-result-icon" aria-hidden="true"><Icon size={14} /></span>
+                    <span>{item.label}</span>
+                  </button>
+                );
+              }) : (
+                <p className="px-2.5 py-3 text-xs text-slate-400">Không tìm thấy mục phù hợp.</p>
+              )}
+            </div>
+          )}
+        </div>
+
+        <nav className="sidebar-navigation" aria-label="Điều hướng portal">
+          {navItems.map((item, index) => {
             const Icon = item.icon;
             const active = pathname === item.href || (item.href !== '/' && pathname.startsWith(`${item.href}`));
             return (
-              <Link key={item.href} href={item.href} className={`sidebar-nav-item ${active ? 'active' : ''}`} aria-current={active ? 'page' : undefined} onClick={() => setMobileOpen(false)}>
-                <Icon size={17} aria-hidden="true" />
-                <span>{item.label}</span>
-              </Link>
+              <div key={item.href}>
+                {item.group && (index === 0 || navItems[index - 1]?.group !== item.group) && <div className="sidebar-nav-group">{item.group}</div>}
+                <Link href={item.href} prefetch className={`sidebar-nav-item ${active ? 'active' : ''}`} aria-current={active ? 'page' : undefined} onClick={() => setMobileOpen(false)}>
+                  <Icon size={17} aria-hidden="true" />
+                  <span>{item.label}</span>
+                </Link>
+              </div>
             );
           })}
         </nav>
 
-        <div className="sidebar-status" style={{ border: '1px solid #263247', background: '#152033', borderRadius: 12, padding: 12, marginBottom: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-            <span className="pulse-dot" />
-            <span style={{ color: '#dbeafe', fontSize: 12, fontWeight: 800 }}>Agentic AI Online</span>
-          </div>
-          <div style={{ color: '#91a1b7', fontSize: 11, lineHeight: 1.45 }}>
-            392+ KB Docs • Auto-SSPR Active
-          </div>
-        </div>
-
         {user && (
-          <div className="sidebar-footer" style={{ borderTop: '1px solid #263247', paddingTop: 12 }}>
-            <div className="sidebar-user-card" style={{ display: 'flex', gap: 10, alignItems: 'center', padding: 10, borderRadius: 12, background: '#152033', marginBottom: 10 }}>
-              <div style={{ width: 34, height: 34, borderRadius: 8, background: '#2563eb', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800 }}>
+          <div className="sidebar-footer">
+            <Link href={user.role === 'employee' ? '/employee/profile' : user.role === 'technician' ? '/technician/queue' : user.role === 'manager' ? '/manager/dashboard' : '/admin/ai-review'} className="sidebar-user-card" style={{ display: 'flex', gap: 10, alignItems: 'center', padding: 8, borderRadius: 12, background: '#152033', marginBottom: 8, color: 'inherit', textDecoration: 'none' }} title={user.role === 'employee' ? 'Mở hồ sơ cá nhân' : 'Mở trang chính'}>
+              <div className="sidebar-user-avatar">
                 {user.full_name.slice(0, 1)}
               </div>
-              <div style={{ minWidth: 0 }}>
-                <div style={{ color: '#ffffff', fontSize: 13, fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              <div className="sidebar-user-copy">
+                <div>
                   {user.full_name}
                 </div>
-                <div style={{ color: '#91a1b7', fontSize: 11, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div>
                   {ROLE_LABELS[user.role]}
                 </div>
               </div>
-            </div>
-            <button onClick={logout} className="btn-ghost" style={{ width: '100%', background: '#101827', borderColor: '#263247', color: '#dce3ee' }}>
+              {user.role === 'employee' && <Settings className="sidebar-profile-shortcut" size={16} aria-hidden="true" />}
+            </Link>
+            <button onClick={logout} className="btn-ghost sidebar-logout">
               <LogOut size={15} />
               Đăng xuất
             </button>
           </div>
         )}
       </aside>
-      <AIChatWidget />
+      {pathname !== '/employee/chatbot' && !aiChatOpen && (
+        <button
+          type="button"
+          onClick={() => {
+            setAiChatStarted(true);
+            setAiChatOpen(true);
+          }}
+          className="ai-copilot-launcher"
+          aria-label="Mở AI Copilot"
+        >
+          <MessageSquareText size={17} aria-hidden="true" />
+          AI Copilot
+        </button>
+      )}
+      {pathname !== '/employee/chatbot' && aiChatStarted && <AIChatWidget open={aiChatOpen} showLauncher={false} onOpenChange={setAiChatOpen} />}
     </>
   );
 }
-
-

@@ -20,12 +20,46 @@ class Settings(BaseSettings):
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     cors_origins: str = "http://localhost:3000,http://localhost:5173"
 
-    # LLM — Mistral (primary)
+    # OpenTelemetry. The collector endpoint is internal to Docker Compose by
+    # default; use localhost:4317 when running the backend on the host.
+    otel_enabled: bool = False
+    otel_service_name: str = "helpdesk-ai-agent"
+    otel_exporter_otlp_endpoint: str = "localhost:4317"
+    otel_metric_export_interval_ms: int = Field(default=15000, ge=5000, le=60000)
+
+    # LLM — Multi-Provider Config (Mistral / OpenAI / Local Ollama)
     mistral_api_key: str = ""
     mistral_classifier_model: str = "mistral-small-2506"
     mistral_rag_model: str = "mistral-small-2506"
     mistral_runbook_model: str = "codestral-2508"
     mistral_fast_classifier_model: str = "ministral-3b-2512"
+
+    openai_api_key: str = ""
+    openai_model: str = "gpt-4o-mini"
+
+    # Dedicated key for the Gemini LLM fallback. It is intentionally separate
+    # from google_api_key, which is reserved for security guardrails.
+    gemini_api_key: str = ""
+
+    # External evaluation judge. This is deliberately separate from the answer
+    # model and is never used by the production Help Desk request path.
+    eval_judge_base_url: str = "https://api.openai.com/v1"
+    eval_judge_api_key: str = ""
+    eval_judge_model: str = ""
+    eval_judge_timeout_seconds: float = Field(default=90.0, ge=10.0, le=180.0)
+
+    # NVIDIA NIM is used as the automatic external judge when the explicit
+    # EVAL_JUDGE_* variables are not set.  It is deliberately not part of the
+    # production LLM provider chain: production tickets and KB evidence must
+    # not leave the approved providers by accident.
+    nvidia_api_key: str = ""
+    nvidia_base_url: str = "https://integrate.api.nvidia.com/v1"
+    # 8B is the responsive hosted default for an automated quality gate. A
+    # larger model may be selected explicitly for offline benchmark runs.
+    nvidia_eval_judge_model: str = "meta/llama-3.1-8b-instruct"
+
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "mistral"
 
     # Database
     database_url: str = "sqlite+aiosqlite:///./data/helpdesk.db"
@@ -34,6 +68,30 @@ class Settings(BaseSettings):
     chroma_persist_dir: str = "./data/chroma"
     chroma_collection_name: str = "helpdesk_kb_multilingual_v1"
     embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    embedding_backend: Literal["sentence_transformer", "hashing"] = "sentence_transformer"
+    embedding_allow_network_downloads: bool = False
+
+    # External research (only used after the internal RAG decision gate)
+    web_research_enabled: bool = True
+    web_search_provider: Literal["duckduckgo_html", "disabled"] = "duckduckgo_html"
+    web_research_timeout_seconds: float = Field(default=6.0, ge=1.0, le=20.0)
+    web_research_max_results: int = Field(default=4, ge=1, le=8)
+    web_research_min_rag_score: float = Field(default=0.55, ge=0.0, le=1.0)
+    rag_min_relevance_score: float = Field(default=0.55, ge=0.0, le=1.0)
+
+    # Semantic duplicate ticket detection
+    duplicate_high_threshold: float = Field(default=0.85, ge=0.0, le=1.0)
+    duplicate_possible_threshold: float = Field(default=0.62, ge=0.0, le=1.0)
+    duplicate_search_candidates: int = Field(default=24, ge=5, le=100)
+    duplicate_spam_window_minutes: int = Field(default=30, ge=5, le=240)
+
+    # Zero-Mem episodic retrieval.  These operations only use deterministic
+    # parsing, SQLite/Chroma and embeddings; they never invoke an LLM.
+    zero_mem_enabled: bool = True
+    zero_mem_primary_view_weight: float = Field(default=0.60, ge=0.0, le=1.0)
+    zero_mem_primary_candidates: int = Field(default=8, ge=1, le=30)
+    zero_mem_final_evidence: int = Field(default=5, ge=1, le=12)
+    zero_mem_neighbor_window: int = Field(default=1, ge=0, le=3)
 
     # Auth / Security
     jwt_secret: str = "change-me-in-production"
@@ -66,6 +124,7 @@ class Settings(BaseSettings):
     ai_log_dir: str = ".ai-log"
 
     # Security & Guardrail Integrations
+    # Gemini Safety Judge / guardrail key only; never use for LLM fallback.
     google_api_key: str = ""
     google_genai_use_vertexai: int = 0
     rate_limit_max_requests: int = 10

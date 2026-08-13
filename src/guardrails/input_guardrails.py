@@ -7,7 +7,7 @@ IT topic filtering, and Cloudflare Turnstile token validation.
 import logging
 import re
 import unicodedata
-from typing import Any, Dict
+from typing import Any
 
 import requests
 
@@ -48,6 +48,15 @@ INJECTION_PATTERNS = [
     r"system\s+override\s+successful",
     r"all\s+hidden\s+instructions",
 
+    # Russian / Cyrillic prompt-injection patterns. These are deliberately
+    # behavior-based, so an ordinary Russian-language IT support request is
+    # still allowed while system-override and secret-extraction requests are
+    # blocked before retrieval or an LLM call.
+    r"игнорир\w*\s+(?:все\s+)?(?:предыдущ\w*|инструкц\w*|огранич\w*)",
+    r"переопределени\w*\s+систем\w*",
+    r"(?:раскрой|перечисл|извлеч)\w*.*(?:системн\w*\s+(?:подсказ|инструкц)|секрет\w*|токен\w*|парол\w*)",
+    r"приоритет\w*\s+(?:косвенн\w*\s+)?внедрен\w*",
+
     # Vietnamese patterns (Unicode escape format)
     r"b\u1ecf\s+qua\s+h\u01b0\u1edbng\s+d\u1eabn\s+tr\u01b0\u1edbc",
     r"qu\u00ean\s+m\u1ecdi\s+quy\s+t\u1eafc",
@@ -77,11 +86,80 @@ DEFENSIVE_SECURITY_KEYWORDS = [
 
 OFF_TOPIC_PATTERNS = [
     r"\brecipe\b", r"\bsports\b", r"\bdating\b", r"\bpolitics\b",
-    r"nau an", r"the thao", r"hen ho", r"chinh tri", r"hack illegal", r"create malware"
+    r"nau an", r"the thao", r"hen ho", r"chinh tri", r"hack illegal", r"create malware",
+    r"h[oố]c\s+c[oơ]m", r"\bc[oơ]m\b", r"\bđ[oó]i\s+bụng\b", r"\bfood\b", r"\beat\b"
 ]
 
 COMPILED_INJECTION_PATTERNS = [re.compile(p, re.IGNORECASE) for p in INJECTION_PATTERNS]
 COMPILED_OFF_TOPIC_PATTERNS = [re.compile(p, re.IGNORECASE) for p in OFF_TOPIC_PATTERNS]
+
+# This boundary is intentionally deterministic.  A user-requested role claim
+# or an adversarial request must be rejected before it can influence routing,
+# retrieval, memory lookup, or any tool selection.
+_SECURITY_REQUEST_PATTERNS: list[tuple[str, re.Pattern[str], str]] = [
+    (
+        "SYSTEM_PROMPT_EXTRACTION",
+        re.compile(r"(?:bo qua.*(?:huong dan|quy tac)|(?:system|developer)\s+prompt|hidden\s+instructions)", re.I),
+        "Tôi không thể cung cấp system prompt, developer instructions hoặc chính sách nội bộ không công khai.",
+    ),
+    (
+        "CREDENTIAL_REQUEST",
+        re.compile(r"(?:toi la admin|i am admin).*(?:mat khau|password|credential|database|production)", re.I),
+        "Quyền hạn không thể được xác nhận từ nội dung chat. Tôi không thể tiết lộ thông tin xác thực hoặc cấp quyền khi chưa có xác thực RBAC hợp lệ.",
+    ),
+    (
+        "SECRET_REQUEST",
+        re.compile(r"(?:api\s*key|secret|token|mat khau|password).*(?:lich su|ticket|memory|database|production|admin)|(?:lay|tim|gui).*(?:api\s*key|secret|token|mat khau|password)", re.I),
+        "Tôi không thể tìm, tiết lộ hoặc gửi lại secret, API key, token hay mật khẩu. Vui lòng dùng quy trình khôi phục hoặc hỗ trợ IT được ủy quyền.",
+    ),
+    (
+        "DUAL_USE_SECURITY_REQUEST",
+        re.compile(r"(?:bypass|vuot qua|ne|vo hieu hoa).*(?:mfa|xac thuc|authentication|security|bao mat)", re.I),
+        "Tôi không thể hướng dẫn vượt qua MFA hoặc biện pháp bảo mật. Tôi có thể hỗ trợ quy trình khôi phục truy cập hợp lệ qua IT.",
+    ),
+]
+
+# A vague report must not be sent to vector retrieval.  Otherwise an embedding
+# search can return an unrelated "closest" KB article and make the assistant
+# confidently invent a diagnosis.  This is intentionally a clarification, not
+# a rejection: users are not expected to know the name of an IT fault.
+CLARIFICATION_RESPONSE = (
+    "Mình có thể hỗ trợ, và bạn không cần biết tên lỗi. Hãy cho mình biết: "
+    "1. Bạn đang dùng thiết bị hoặc dịch vụ nào (ví dụ Wi‑Fi, VPN, email, máy tính); "
+    "2. Điều gì xảy ra khi bạn thao tác; 3. Thông báo lỗi, thời điểm xảy ra hoặc ảnh chụp màn hình nếu có."
+)
+VAGUE_REQUEST_PATTERNS = [
+    r"\btoi\s+hong\b",
+    r"\bbi\s+hong\b",
+    r"\bkhong\s+biet\s+(?:la\s+)?loi\s+gi\b",
+    r"\bkhong\s+ro\s+loi\b",
+    r"\bkhong\s+biet\s+gi\b",
+]
+TECH_CONTEXT_TERMS = {
+    "wifi", "wi-fi", "mang", "vpn", "email", "outlook", "teams", "hris", "sap",
+    "may tinh", "laptop", "may in", "printer", "tai khoan", "mat khau", "mfa",
+    "phan mem", "ung dung", "he thong", "website", "trinh duyet", "man hinh",
+    "ban phim", "chuot", "tai nghe", "camera", "loa", "bluetooth", "usb", "server",
+}
+
+
+def _fold_vietnamese(text: str) -> str:
+    """Return lowercase Vietnamese text without diacritics for policy matching only."""
+    decomposed = unicodedata.normalize("NFD", normalize_input(text).lower())
+    return "".join(char for char in decomposed if unicodedata.category(char) != "Mn").replace("đ", "d")
+
+
+def needs_it_clarification(text: str, conversation_context: str = "") -> bool:
+    """True only when neither the turn nor authorized conversation has IT context.
+
+    ``conversation_context`` is deliberately bounded to the current ticket's
+    original report. It prevents asking again for a device/cause the requester
+    already supplied, without retrieving unrelated historical memories.
+    """
+    folded = _fold_vietnamese(f"{conversation_context} {text}")
+    if any(term in folded for term in TECH_CONTEXT_TERMS):
+        return False
+    return any(re.search(pattern, folded) for pattern in VAGUE_REQUEST_PATTERNS)
 
 
 
@@ -97,7 +175,21 @@ def normalize_input(text: str) -> str:
     return text
 
 
-def detect_injection_lakera(text: str) -> Dict[str, Any]:
+def classify_security_request(text: str) -> dict[str, str] | None:
+    """Return a trusted policy classification for unsafe user intent, if any.
+
+    The text is folded first so Vietnamese diacritics and Unicode presentation
+    variants cannot bypass a policy expression.  This is an input policy gate,
+    not an authorization decision based on user-provided role claims.
+    """
+    folded = _fold_vietnamese(text)
+    for category, pattern, safe_response in _SECURITY_REQUEST_PATTERNS:
+        if pattern.search(folded):
+            return {"category": category, "safe_response": safe_response}
+    return None
+
+
+def detect_injection_lakera(text: str) -> dict[str, Any]:
     """Call Lakera Guard API with tight 0.5s/1.0s timeout as optional enhancement."""
     api_key = settings.lakeraguard_api_key
     if not api_key:
@@ -140,7 +232,7 @@ def calculate_input_risk_score(text: str, is_explicit_it_query: bool) -> float:
     return max(0.0, min(1.0, score))
 
 
-def detect_injection(text: str) -> Dict[str, Any]:
+def detect_injection(text: str) -> dict[str, Any]:
     """Detect prompt injection using Tiered Architecture: Tier 0 (Local Regex < 1ms) -> Tier 1 (Risk Scoring) -> Tier 2 (External API if risk >= 0.65)."""
     normalized = normalize_input(text)
 
@@ -193,7 +285,7 @@ def detect_injection(text: str) -> Dict[str, Any]:
     }
 
 
-def topic_filter(text: str) -> Dict[str, Any]:
+def topic_filter(text: str) -> dict[str, Any]:
     """Check if input falls within IT support scope."""
     normalized = normalize_input(text).lower()
 
@@ -211,7 +303,7 @@ def topic_filter(text: str) -> Dict[str, Any]:
     return {"is_it_topic": True, "reason": "Valid IT topic"}
 
 
-def verify_turnstile(token: str, remote_ip: str = "") -> Dict[str, Any]:
+def verify_turnstile(token: str, remote_ip: str = "") -> dict[str, Any]:
     """Verify Cloudflare Turnstile token."""
     secret_key = settings.turnstile_secret_key
     if not secret_key or not token:
@@ -233,7 +325,9 @@ def verify_turnstile(token: str, remote_ip: str = "") -> Dict[str, Any]:
 
 
 class InputGuardrailPlugin:
-    def on_user_message_callback(self, text: str, turnstile_token: str = "") -> Dict[str, Any]:
+    def on_user_message_callback(
+        self, text: str, turnstile_token: str = "", conversation_context: str = ""
+    ) -> dict[str, Any]:
         normalized = normalize_input(text)
 
         if turnstile_token:
@@ -246,10 +340,19 @@ class InputGuardrailPlugin:
                 }
 
         inj_res = detect_injection(normalized)
+        security_request = classify_security_request(normalized)
+        if security_request:
+            return {
+                "decision": "BLOCK",
+                "reason": security_request["category"],
+                "security_category": security_request["category"],
+                "safe_response": security_request["safe_response"],
+            }
         if inj_res["detected"]:
             return {
                 "decision": "BLOCK",
                 "reason": inj_res["reason"],
+                "security_category": "PROMPT_INJECTION",
                 "safe_response": "Your request was blocked because it attempted to override system security policies.",
             }
 
@@ -261,7 +364,12 @@ class InputGuardrailPlugin:
                 "safe_response": "I can only assist with IT support requests.",
             }
 
-        return {"decision": "ALLOW", "normalized_text": normalized}
+        return {
+            "decision": "ALLOW",
+            "normalized_text": normalized,
+            "needs_clarification": needs_it_clarification(normalized, conversation_context),
+            "clarification_response": CLARIFICATION_RESPONSE,
+        }
 
 
 if __name__ == "__main__":

@@ -2,6 +2,15 @@ import { TicketCategory, TicketPriority, TicketStatus } from '@/types';
 import { differenceInHours, differenceInMinutes, formatDistanceToNow } from 'date-fns';
 import { vi } from 'date-fns/locale';
 
+export const VIETNAM_TIME_ZONE = 'Asia/Ho_Chi_Minh';
+
+export function formatVietnamTime(
+  value: string | Date,
+  options: Intl.DateTimeFormatOptions = { dateStyle: 'short', timeStyle: 'short' },
+): string {
+  return new Intl.DateTimeFormat('vi-VN', { timeZone: VIETNAM_TIME_ZONE, ...options }).format(new Date(value));
+}
+
 export const CATEGORY_LABELS: Record<TicketCategory, string> = {
   network: 'Mạng / VPN',
   software: 'Phần mềm',
@@ -25,13 +34,17 @@ export const PRIORITY_LABELS: Record<TicketPriority, string> = {
 export const STATUS_LABELS: Record<TicketStatus, string> = {
   open: 'Mới',
   classifying: 'AI đang đọc',
+  needs_clarification: 'Cần bổ sung thông tin',
   pending_hitl: 'Chờ duyệt',
   in_progress: 'Đang xử lý',
+  waiting_for_agent: 'Chờ kỹ thuật viên',
+  human_active: 'Đang xử lý thủ công',
   pending_closure: 'Chờ đóng',
   resolved: 'Đã xử lý',
   closed: 'Đã đóng',
   escalated: 'Leo thang',
   rejected: 'Từ chối',
+  reopened: 'Mở lại',
 };
 
 export const COMPANY_LABELS: Record<string, string> = {
@@ -99,23 +112,23 @@ export function getConfidencePresentation(score: number | null | undefined): Con
   if (score >= CONFIDENCE_AUTO_MIN) {
     return {
       band: 'normal',
-      label: 'Đủ tin cậy',
-      description: 'Agent có thể xử lý bình thường nếu không có điều kiện HITL độc lập.',
+      label: 'Phân loại rõ',
+      description: 'Đây là độ chắc chắn của bước phân loại, không phải mức độ đúng của câu trả lời hay mức độ phù hợp của nguồn.',
       color: 'var(--green)',
     };
   }
   if (score >= CONFIDENCE_WARNING_MIN) {
     return {
       band: 'warning',
-      label: 'Cần lưu ý',
-      description: 'Bạn có thể thử giải pháp hoặc yêu cầu người hỗ trợ trực tiếp.',
+      label: 'Phân loại cần rà soát',
+      description: 'Đây là độ chắc chắn của bước phân loại; quyết định xử lý vẫn cần dựa vào evidence và workflow.',
       color: 'var(--amber)',
     };
   }
   return {
     band: 'manual',
-    label: 'Xử lý thủ công',
-    description: 'Ticket bắt buộc được chuyển cho đội IT Support.',
+    label: 'Cần xác minh phân loại',
+    description: 'Độ chắc chắn phân loại thấp; kỹ thuật viên cần xác minh trước khi xử lý.',
     color: 'var(--red)',
   };
 }
@@ -155,5 +168,3 @@ export function getErrorMessage(err: unknown): string {
   }
   return 'Đã xảy ra lỗi';
 }
-
-

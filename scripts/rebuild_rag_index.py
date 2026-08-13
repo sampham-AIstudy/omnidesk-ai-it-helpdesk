@@ -56,6 +56,7 @@ def historical_documents(path: Path) -> list[dict]:
     for index, item in enumerate(payload):
         title = item.get("title", "Sự cố lịch sử")
         solution = item.get("solution", "")
+        ticket_number = item.get("ticket_number") or item.get("ticket_id")
         documents.append(
             {
                 "doc_id": item.get("doc_id", f"historical-{index:05d}"),
@@ -67,6 +68,7 @@ def historical_documents(path: Path) -> list[dict]:
                     "solution": solution,
                     "runbook": item.get("runbook", ""),
                     "source": "historical_resolved_ticket",
+                    "origin_ticket_number": str(ticket_number) if ticket_number else "",
                     "company_unit": "all",
                     "department": "",
                     "applicable_to_all": True,

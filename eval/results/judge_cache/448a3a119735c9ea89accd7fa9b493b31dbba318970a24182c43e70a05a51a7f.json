@@ -1,0 +1,28 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "HALLUCINATION|UNSUPPORTED_CLAIM|INCOMPLETE_ANSWER|INCORRECT_REFUSAL|BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER|OVER_QUESTIONING"
+    ],
+    "unsupported_claims": [
+      "Laptop hỏng có thuộc danh mục thiết bị được bảo hành/thay thế theo chính sách của tổ chức không?",
+      "Bạn đã liên hệ bộ phận hỗ trợ kỹ thuật (IT Helpdesk) để xác nhận lỗi chưa?",
+      "Bạn có thuộc đối tượng được cấp laptop thay thế theo chính sách không?",
+      "Mã ticket/incident/service request (nếu đã tạo).",
+      "Thông tin về lỗi cụ thể (nếu đã được IT xác nhận).",
+      "Chính sách bảo hành/thay thế thiết bị của tổ chức (nếu bạn có)."
+    ],
+    "missing_points": [
+      "Hướng dẫn quy trình xin laptop thay thế"
+    ],
+    "brief_rationale": "Không có đủ thông tin để xử lý yêu cầu của bạn.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

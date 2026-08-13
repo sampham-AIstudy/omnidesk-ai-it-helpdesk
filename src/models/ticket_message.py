@@ -10,6 +10,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database import Base
 
 
+from src.models.ticket import FlexibleEnum
+
+
 class TicketMessageSender(str, enum.Enum):
     USER = "user"
     AGENT = "agent"
@@ -24,7 +27,7 @@ class TicketMessage(Base):
     ticket_id: Mapped[int] = mapped_column(ForeignKey("tickets.id"), nullable=False, index=True)
     sender_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     sender_type: Mapped[TicketMessageSender] = mapped_column(
-        Enum(TicketMessageSender), nullable=False, index=True
+        FlexibleEnum(TicketMessageSender), nullable=False, index=True
     )
     content: Mapped[str] = mapped_column(Text, nullable=False)
     sources_json: Mapped[str | None] = mapped_column(Text, nullable=True)

@@ -3,20 +3,23 @@ FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir --user -r requirements.txt
+COPY requirements.docker.txt .
+RUN pip install --no-cache-dir --user -r requirements.docker.txt
 
 # ---- Stage 2: Production ----
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy installed packages from builder
-COPY --from=builder /root/.local /root/.local
-ENV PATH=/root/.local/bin:$PATH
-
 # Security: run as non-root user
 RUN useradd -m appuser
+
+# The builder installs packages under /root/.local.  Put them in the runtime
+# user's home so console scripts such as uvicorn remain executable after the
+# image drops root privileges.
+COPY --from=builder /root/.local /home/appuser/.local
+RUN chown -R appuser:appuser /home/appuser/.local
+ENV PATH=/home/appuser/.local/bin:$PATH
 
 # Copy application code
 COPY . .

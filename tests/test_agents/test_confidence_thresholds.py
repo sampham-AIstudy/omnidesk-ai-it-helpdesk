@@ -35,10 +35,10 @@ def test_warning_band_does_not_force_hitl_or_auto_close(score: float):
 
 
 @pytest.mark.parametrize("score", [0.75, 1.0])
-def test_confidence_at_seventy_five_can_auto_close(score: float):
+def test_high_confidence_still_cannot_auto_close(score: float):
     required, _ = _determine_hitl(_state(score))
     assert required is False
-    assert _is_auto_close_eligible(_state(score)) is True
+    assert _is_auto_close_eligible(_state(score)) is False
 
 
 def test_safety_rules_remain_independent_from_confidence():

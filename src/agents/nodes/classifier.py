@@ -10,6 +10,8 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from src.agents.state import TicketAgentState
 from src.config import get_settings
 from src.services.llm import get_classifier_llm
+from src.services.ticket_text import user_report
+from src.observability.tracing import set_current_attributes, traced_async_operation
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -53,6 +55,7 @@ Trả về JSON theo format sau (KHÔNG thêm text ngoài JSON):
 }"""
 
 
+@traced_async_operation("ai.classify")
 async def classify_node(state: TicketAgentState) -> TicketAgentState:
     """Phân loại ticket sử dụng Mistral LLM."""
     logger.info(f"[Classifier] Classifying ticket #{state.get('ticket_number')}")
@@ -60,14 +63,15 @@ async def classify_node(state: TicketAgentState) -> TicketAgentState:
     llm = get_classifier_llm()
     title = state.get("title", "")
     description = state.get("description", "")
+    report_title, report_description = user_report(title, description)
     company = state.get("company_unit", "corporate")
     is_prod = state.get("is_production_impact", False)
     is_vip = state.get("submitter_is_vip", False)
 
     user_prompt = f"""Phân loại ticket sau:
 
-TIÊU ĐỀ: {title}
-MÔ TẢ: {description}
+TIÊU ĐỀ NGƯỜI DÙNG VIẾT: {report_title}
+MÔ TẢ NGƯỜI DÙNG VIẾT: {report_description}
 CÔNG TY: {company}
 PRODUCTION IMPACT (user khai báo): {"Có" if is_prod else "Không"}
 NGƯỜI GỬI VIP: {"Có" if is_vip else "Không"}
@@ -79,6 +83,10 @@ Trả về JSON phân loại."""
             SystemMessage(content=CLASSIFIER_SYSTEM_PROMPT),
             HumanMessage(content=user_prompt),
         ])
+        set_current_attributes({
+            "gen_ai.request.model": getattr(llm, "model", getattr(llm, "model_name", "unknown")),
+            "helpdesk.ticket.workflow": "classified",
+        })
 
         content = response.content.strip()
         # Xử lý nếu LLM wrap trong ```json ... ```
@@ -150,10 +158,11 @@ Trả về JSON phân loại."""
             "error": f"classification_json_error: {str(e)}",
         }
     except Exception as e:
+        set_current_attributes({"helpdesk.ticket.workflow": "classifier_fallback"})
         logger.warning(f"[Classifier] LLM call failed ({e}). Falling back to Heuristic Rule Engine.")
 
         # Heuristic Rule Engine for Offline / Fallback mode
-        text = f"{title} {description}".lower()
+        text = f"{report_title} {report_description}".lower()
         category = "other"
         priority = "medium"
         urgency = "medium"
@@ -188,10 +197,9 @@ Trả về JSON phân loại."""
             "category": category,
             "priority": priority,
             "urgency": urgency,
-            "confidence_score": settings.confidence_threshold_auto_close,
+            "confidence_score": 0.45,
             "agent_reasoning": "[Heuristic Fallback Engine] Phân loại dựa trên luật từ khóa vì LLM bận/lỗi API key",
             "routing_target": routing,
             "model_used": "rule-heuristic-fallback",
             "error": None,
         }
-

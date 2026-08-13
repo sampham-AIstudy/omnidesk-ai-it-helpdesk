@@ -2,17 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import {
-  AlertTriangle,
   ArrowLeft,
   Bot,
   CheckCircle2,
   Clock,
   Database,
-  History,
+  ExternalLink,
   MessageCircle,
   RotateCcw,
   Send,
@@ -24,91 +23,33 @@ import {
 } from 'lucide-react';
 
 import {
-  ConfidenceBadge,
   EmptyState,
-  HITLBadge,
   PriorityBadge,
   Spinner,
   StatusBadge,
 } from '@/components/ui';
 import { Ticket, TicketConversationResponse, TicketMessage } from '@/types';
-import { CATEGORY_LABELS, formatRelative, getErrorMessage } from '@/lib/utils';
+import { CATEGORY_LABELS, formatRelative, formatVietnamTime, getErrorMessage } from '@/lib/utils';
 import { useAuthStore } from '@/lib/authStore';
 import api from '@/lib/api';
 
-// Real-time Dynamic SLA Countdown Component
-function DynamicSLACountdown({ deadline, isEscalated }: { deadline: string | null; isEscalated: boolean }) {
-  const [timeLeft, setTimeLeft] = useState<string>('');
-  const [slaStatus, setSlaStatus] = useState<'on_track' | 'at_risk' | 'breached'>('on_track');
-
-  useEffect(() => {
-    if (!deadline) {
-      setTimeLeft('Chưa thiết lập SLA');
-      return;
-    }
-
-    const calculate = () => {
-      const target = new Date(deadline).getTime();
-      const now = new Date().getTime();
-      const diff = target - now;
-
-      if (diff <= 0 || isEscalated) {
-        setSlaStatus('breached');
-        const absDiff = Math.abs(diff);
-        const hours = Math.floor(absDiff / (1000 * 60 * 60));
-        const mins = Math.floor((absDiff % (1000 * 60 * 60)) / (1000 * 60));
-        setTimeLeft(`SLA vi phạm ${hours > 0 ? `${hours}h ` : ''}${mins}m`);
-      } else {
-        const hours = Math.floor(diff / (1000 * 60 * 60));
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        if (hours < 1) {
-          setSlaStatus('at_risk');
-        } else {
-          setSlaStatus('on_track');
-        }
-        setTimeLeft(`SLA còn ${hours > 0 ? `${hours}h ` : ''}${mins}m`);
-      }
-    };
-
-    calculate();
-    const timer = setInterval(calculate, 10000);
-    return () => clearInterval(timer);
-  }, [deadline, isEscalated]);
-
-  const badgeStyle =
-    slaStatus === 'breached'
-      ? 'bg-rose-100 text-rose-700 border-rose-200'
-      : slaStatus === 'at_risk'
-        ? 'bg-amber-100 text-amber-800 border-amber-200'
-        : 'bg-emerald-100 text-emerald-800 border-emerald-200';
-
-  return (
-    <div className="flex items-center gap-2">
-      <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${badgeStyle}`}>
-        {timeLeft}
-      </span>
-      <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-        {slaStatus === 'breached' ? 'Breached' : slaStatus === 'at_risk' ? 'At Risk' : 'On Track'}
-      </span>
-    </div>
-  );
-}
-
 export default function RiotStyleTicketDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  const focusedMessageRef = useRef<string | null>(null);
   const { user } = useAuthStore();
   const [message, setMessage] = useState('');
   const [showReopenModal, setShowReopenModal] = useState(false);
   const [reopenReason, setReopenReason] = useState('');
   const [selectedRating, setSelectedRating] = useState<number>(0);
   const [ratingFeedback, setRatingFeedback] = useState('');
-  const chatEndRef = useRef<HTMLDivElement>(null);
 
   const [optimisticMessages, setOptimisticMessages] = useState<TicketMessage[]>([]);
+  const [isTicketStreaming, setIsTicketStreaming] = useState(false);
   const [lightboxImage, setLightboxImage] = useState<{ name: string; url: string } | null>(null);
 
-  // 1. Fetch Ticket Data (Optimized with staleTime & parallel fetch)
+  // 1. Fetch Ticket Data (Optimized with staleTime & parallel fetch + auto-refetch when classifying)
   const { data: ticket, isLoading: isTicketLoading, refetch: refetchTicket } = useQuery({
     queryKey: ['ticket', id],
     queryFn: async () => (await api.get(`/tickets/${id}`)).data as Ticket,
@@ -116,9 +57,13 @@ export default function RiotStyleTicketDetailPage() {
     staleTime: 30000,
     gcTime: 300000,
     refetchOnWindowFocus: false,
+    refetchInterval: (query) => {
+      const t = query.state.data;
+      return !t || t.status === 'classifying' || t.status === 'open' ? 2000 : false;
+    },
   });
 
-  // 2. Fetch Conversation Messages (Runs in PARALLEL with ticket query)
+  // 2. Fetch Conversation Messages (Runs in PARALLEL with ticket query + auto-refetch while AI is reading)
   const { data: conversationData, refetch: refetchMessages } = useQuery({
     queryKey: ['ticket-messages', id],
     queryFn: async () => (await api.get(`/tickets/${id}/messages`)).data as TicketConversationResponse,
@@ -126,33 +71,27 @@ export default function RiotStyleTicketDetailPage() {
     staleTime: 15000,
     gcTime: 300000,
     refetchOnWindowFocus: false,
+    refetchInterval: () => {
+      return !ticket || ticket.status === 'classifying' || ticket.status === 'open' ? 2000 : false;
+    },
   });
 
   const isLoading = isTicketLoading && !ticket;
 
   const serverMessages: TicketMessage[] = conversationData?.items ?? [];
   const messages: TicketMessage[] = [...serverMessages, ...optimisticMessages];
-
-  // Mutations (Defined before useEffect to avoid ReferenceError)
-  const sendMutation = useMutation({
-    mutationFn: async (content: string) =>
-      (await api.post(`/tickets/${id}/messages`, { message: content })).data,
-    onSuccess: () => {
-      setOptimisticMessages([]);
-      queryClient.invalidateQueries({ queryKey: ['ticket-messages', id] });
-      queryClient.invalidateQueries({ queryKey: ['ticket', id] });
-      refetchMessages();
-      refetchTicket();
-    },
-    onError: (err) => {
-      setOptimisticMessages([]);
-      toast.error(getErrorMessage(err));
-    },
-  });
+  const focusMessageId = searchParams.get('message');
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages.length, sendMutation.isPending]);
+    if (!focusMessageId || focusedMessageRef.current === focusMessageId) return;
+    const focusTimer = window.setTimeout(() => {
+      const messageElement = document.getElementById(`ticket-message-${focusMessageId}`);
+      if (!messageElement) return;
+      messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      focusedMessageRef.current = focusMessageId;
+    }, 0);
+    return () => window.clearTimeout(focusTimer);
+  }, [focusMessageId, messages.length]);
 
   const requestAgentMutation = useMutation({
     mutationFn: async () => (await api.post(`/tickets/${id}/request-technician`)).data,
@@ -221,9 +160,9 @@ export default function RiotStyleTicketDetailPage() {
     onError: (err) => toast.error(getErrorMessage(err)),
   });
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const trimmed = message.trim();
-    if (!trimmed || sendMutation.isPending) return;
+    if (!trimmed || isTicketStreaming) return;
 
     // Optimistically render user's message immediately on screen
     const tempMsg: TicketMessage = {
@@ -232,12 +171,66 @@ export default function RiotStyleTicketDetailPage() {
       sender_type: 'user',
       sender_id: user?.id ?? 1,
       content: trimmed,
+      sources_json: null,
+      confidence_score: null,
+      routing_hint: null,
       created_at: new Date().toISOString(),
     };
 
-    setOptimisticMessages((prev) => [...prev, tempMsg]);
+    const streamingId = -Date.now();
+    const streamingMessage: TicketMessage = {
+      id: streamingId,
+      ticket_id: Number(id),
+      sender_id: null,
+      sender_type: 'agent',
+      content: '',
+      sources_json: null,
+      confidence_score: null,
+      routing_hint: null,
+      created_at: new Date().toISOString(),
+    };
+    setOptimisticMessages((prev) => [...prev, tempMsg, streamingMessage]);
     setMessage('');
-    sendMutation.mutate(trimmed);
+    setIsTicketStreaming(true);
+    try {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${apiBase}/api/v1/tickets/${id}/messages/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        body: JSON.stringify({ message: trimmed }),
+      });
+      if (!response.ok || !response.body) throw new Error('Không thể mở phản hồi streaming');
+      const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
+      const consume = (rawEvent: string) => {
+        const event = rawEvent.match(/^event:\s*(.+)$/m)?.[1] ?? 'message';
+        const payloadLine = rawEvent.match(/^data:\s*(.+)$/m)?.[1];
+        if (!payloadLine) return;
+        const payload = JSON.parse(payloadLine);
+        if (event === 'token') setOptimisticMessages((previous) => previous.map((item) => item.id === streamingId ? { ...item, content: item.content + (payload.text ?? '') } : item));
+        if (event === 'done') {
+          setOptimisticMessages([]);
+          queryClient.setQueryData(['ticket-messages', id], payload);
+          queryClient.invalidateQueries({ queryKey: ['ticket', id] });
+          refetchTicket();
+        }
+        if (event === 'error') throw new Error(payload.message || 'Không thể tạo phản hồi streaming');
+      };
+      while (true) {
+        const { done, value } = await reader.read();
+        buffer += decoder.decode(value ?? new Uint8Array(), { stream: !done });
+        const events = buffer.split('\n\n'); buffer = events.pop() ?? '';
+        events.filter(Boolean).forEach(consume);
+        if (done) break;
+      }
+    } catch (error) {
+      setOptimisticMessages([]);
+      toast.error(getErrorMessage(error));
+    } finally {
+      setIsTicketStreaming(false);
+      queryClient.invalidateQueries({ queryKey: ['ticket-messages', id] });
+      refetchMessages();
+    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -269,7 +262,7 @@ export default function RiotStyleTicketDetailPage() {
   const isTechnician = user?.role === 'technician' || user?.role === 'manager' || user?.role === 'admin';
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 pb-12">
+    <div className="ticket-detail max-w-6xl mx-auto space-y-6 pb-12">
       {/* Back Button Navigation Header */}
       <div className="flex items-center justify-between">
         <Link
@@ -304,7 +297,7 @@ export default function RiotStyleTicketDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         {/* LEFT SIDEBAR: Ticket Metadata & Agent Information (4 cols - STICKY) */}
-        <aside className="lg:col-span-4 space-y-4 sticky top-20">
+        <aside className="lg:order-2 lg:col-span-4 space-y-4 lg:sticky lg:top-20">
           
           {/* Metadata Details Card */}
           <div className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-sm space-y-5">
@@ -340,11 +333,6 @@ export default function RiotStyleTicketDetailPage() {
                 <div className="text-slate-700 font-medium">{formatRelative(ticket.updated_at)}</div>
               </div>
 
-              {/* Dynamic Live SLA Countdown */}
-              <div>
-                <div className="text-slate-400 font-bold mb-1.5">CAM KẾT SLA THỜI GIAN</div>
-                <DynamicSLACountdown deadline={ticket.sla_deadline} isEscalated={ticket.sla_escalated} />
-              </div>
             </div>
           </div>
 
@@ -373,9 +361,9 @@ export default function RiotStyleTicketDetailPage() {
                   <Clock size={20} className="animate-spin" />
                 </div>
                 <div>
-                  <div className="text-xs font-bold text-slate-900">Đang tìm chuyên viên</div>
+                  <div className="text-xs font-bold text-slate-900">Đang chờ chuyên viên tiếp nhận</div>
                   <div className="text-[11px] text-amber-700 font-semibold mt-0.5">Ticket nằm trong hàng đợi ưu tiên</div>
-                  <div className="text-[10px] text-slate-500 mt-1">Chuyên viên sẽ nhận cuộc họp sớm nhất</div>
+                  <div className="text-[10px] text-slate-500 mt-1">AI vẫn hỗ trợ trong lúc chờ chuyên viên tiếp nhận</div>
                 </div>
               </div>
             ) : (
@@ -386,20 +374,20 @@ export default function RiotStyleTicketDetailPage() {
                 <div>
                   <div className="text-xs font-bold text-slate-900">AI Support Assistant</div>
                   <div className="text-[11px] text-blue-700 font-semibold mt-0.5">Tự động tra cứu tri thức RAG</div>
-                  <div className="text-[10px] text-slate-500 mt-1">Sẵn sàng handoff sang người thật khi cần</div>
+                  <div className="text-[10px] text-slate-500 mt-1">Bạn có thể yêu cầu chuyên viên bất cứ lúc nào</div>
                 </div>
               </div>
             )}
 
             {/* Quick Action Buttons on Sidebar */}
-            {!isClosedOrResolved && !isWaitingAgent && !isHumanActive && !isTechnician && (
+            {!isClosedOrResolved && !isHumanActive && !isTechnician && (
               <button
                 onClick={() => requestAgentMutation.mutate()}
-                disabled={requestAgentMutation.isPending}
-                className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
+                disabled={requestAgentMutation.isPending || isWaitingAgent}
+                className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 disabled:bg-amber-100 disabled:text-amber-800 disabled:shadow-none text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
               >
-                <UserPlus size={14} />
-                <span>Yêu cầu gặp chuyên viên</span>
+                {isWaitingAgent ? <Clock size={14} className="animate-spin" /> : <UserPlus size={14} />}
+                <span>{isWaitingAgent ? 'Đang chờ chuyên viên tiếp nhận' : 'Yêu cầu gặp chuyên viên'}</span>
               </button>
             )}
 
@@ -419,7 +407,7 @@ export default function RiotStyleTicketDetailPage() {
         </aside>
 
         {/* RIGHT AREA: Continuous Conversation Timeline & Fixed Composer (8 cols) */}
-        <main className="lg:col-span-8 space-y-4">
+        <section className="lg:order-1 lg:col-span-8 space-y-4">
 
           {/* Conversation Box */}
           <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col min-h-[580px]">
@@ -460,23 +448,9 @@ export default function RiotStyleTicketDetailPage() {
 
               {/* Messages Mapping */}
               {messages.map((msg) => (
-                <ConversationMessageItem key={msg.id} msg={msg} />
+                <ConversationMessageItem key={msg.id} msg={msg} highlighted={focusMessageId === String(msg.id)} />
               ))}
 
-              {/* AI Agent Real-time Typing Indicator Bubble */}
-              {sendMutation.isPending && (
-                <div className="flex items-start gap-3 my-2 animate-pulse">
-                  <div className="w-9 h-9 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm">
-                    <Bot size={18} className="animate-spin" />
-                  </div>
-                  <div className="p-4 rounded-3xl rounded-tl-none bg-blue-50/80 border border-blue-200/80 text-xs text-blue-900 font-semibold flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
-                    <span>AI Support Assistant đang suy nghĩ và tổng hợp câu trả lời...</span>
-                  </div>
-                </div>
-              )}
-
-              <div ref={chatEndRef} />
             </div>
 
             {/* Bottom Composer Area */}
@@ -491,7 +465,7 @@ export default function RiotStyleTicketDetailPage() {
                       {isHumanActive
                         ? 'Bạn đang trao đổi trực tiếp với Chuyên viên hỗ trợ IT'
                         : isWaitingAgent
-                          ? 'Đang chờ chuyên viên tiếp nhận yêu cầu...'
+                          ? 'AI vẫn hỗ trợ trong khi chờ chuyên viên tiếp nhận...'
                           : 'AI Support Assistant đang sẵn sàng phản hồi'}
                     </span>
                   </div>
@@ -509,15 +483,15 @@ export default function RiotStyleTicketDetailPage() {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    disabled={sendMutation.isPending}
+                    disabled={isTicketStreaming}
                     className="flex-1 p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all resize-none"
                   />
                   <button
                     onClick={handleSend}
-                    disabled={!message.trim() || sendMutation.isPending}
+                    disabled={!message.trim() || isTicketStreaming}
                     className="px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm h-[52px]"
                   >
-                    {sendMutation.isPending ? <Spinner size={16} /> : <Send size={16} />}
+                    {isTicketStreaming ? <Spinner size={16} /> : <Send size={16} />}
                     <span className="hidden sm:inline">Gửi</span>
                   </button>
                 </div>
@@ -601,7 +575,7 @@ export default function RiotStyleTicketDetailPage() {
 
           </div>
 
-        </main>
+        </section>
       </div>
 
       {/* REOPEN TICKET MODAL */}
@@ -677,6 +651,7 @@ export default function RiotStyleTicketDetailPage() {
             >
               <X size={20} />
             </button>
+            {/* eslint-disable-next-line @next/next/no-img-element -- attachment hosts are not statically known */}
             <img
               src={lightboxImage.url}
               alt={lightboxImage.name}
@@ -736,9 +711,9 @@ function ParsedDescriptionCard({
       </div>
 
       {/* Cleaned Description Text */}
-      <p className="text-xs sm:text-sm text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">
-        {cleanText}
-      </p>
+      <div className="text-xs sm:text-sm text-slate-800 font-normal leading-relaxed whitespace-pre-wrap">
+        {renderFormattedContent(cleanText)}
+      </div>
 
       {/* Image Attachments Gallery */}
       {imageAttachments.length > 0 && (
@@ -753,6 +728,7 @@ function ParsedDescriptionCard({
                 onClick={() => onImageClick(img.name, img.url)}
                 className="group relative w-32 h-24 rounded-xl overflow-hidden border border-slate-200 bg-slate-100 cursor-pointer shadow-xs hover:shadow-md transition-all hover:border-blue-400"
               >
+                {/* eslint-disable-next-line @next/next/no-img-element -- attachment hosts are not statically known */}
                 <img src={img.url} alt={img.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                 <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-bold gap-1">
                   <span>Phóng to</span>
@@ -777,19 +753,76 @@ function ParsedDescriptionCard({
   );
 }
 
+// Render trusted ticket references emitted by the assistant alongside bold text.
+function renderFormattedContent(content: string) {
+  if (!content) return null;
+  const parts = content.split(/(\*\*[^*]+\*\*|\[\[ticket:\d+\|[^\]]+\]\])/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      const innerText = part.slice(2, -2);
+      return (
+        <strong key={index} className="font-extrabold text-slate-900">
+          {innerText}
+        </strong>
+      );
+    }
+    const ticketReference = part.match(/^\[\[ticket:(\d+)\|([^\]]+)\]\]$/);
+    if (ticketReference) {
+      const [, ticketId, ticketNumber] = ticketReference;
+      return (
+        <Link
+          key={index}
+          href={`/employee/tickets/${ticketId}`}
+          className="font-bold text-blue-700 underline decoration-blue-300 underline-offset-2 transition-colors hover:text-blue-900"
+        >
+          {ticketNumber}
+        </Link>
+      );
+    }
+    return part;
+  });
+}
+
 // Individual Message Card Component
-function ConversationMessageItem({ msg }: { msg: TicketMessage }) {
+type MessageSource = string | {
+  label?: string;
+  kind?: string;
+  url?: string;
+  source_id?: string;
+  ticket_id?: string;
+  message_id?: string;
+};
+
+function ConversationMessageItem({ msg, highlighted = false }: { msg: TicketMessage; highlighted?: boolean }) {
   const isUser = msg.sender_type === 'user';
   const isAgent = msg.sender_type === 'agent';
-  const isTech = msg.sender_type === 'technician';
   const isSystem = msg.sender_type === 'system';
 
-  let sources: string[] = [];
+  let sources: MessageSource[] = [];
   try {
-    if (msg.sources_json) sources = JSON.parse(msg.sources_json);
+    if (msg.sources_json) {
+      const parsed = JSON.parse(msg.sources_json);
+      sources = Array.isArray(parsed) ? parsed : [];
+    }
   } catch {
     sources = [];
   }
+
+  if (isAgent && !msg.content.trim()) {
+    return (
+      <div className="flex items-start gap-3 my-2 animate-pulse" aria-live="polite">
+        <div className="w-9 h-9 rounded-2xl bg-blue-600 text-white flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm">
+          <Bot size={18} className="animate-spin" />
+        </div>
+        <div className="p-4 rounded-3xl rounded-tl-none bg-blue-50/80 border border-blue-200/80 text-xs text-blue-900 font-semibold flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-blue-600 animate-ping" />
+          <span>AI Support Assistant đang suy nghĩ và tổng hợp câu trả lời...</span>
+        </div>
+      </div>
+    );
+  }
+
+  const hasWebSource = sources.some((source) => typeof source !== 'string' && source.kind === 'web');
 
   // Centered System Event Card
   if (isSystem) {
@@ -803,7 +836,7 @@ function ConversationMessageItem({ msg }: { msg: TicketMessage }) {
   }
 
   return (
-    <div className={`flex items-start gap-3 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+    <div id={`ticket-message-${msg.id}`} className={`ticket-message flex items-start gap-3 ${highlighted ? 'ticket-message-highlight' : ''} ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
       
       {/* Avatar Icon */}
       <div
@@ -845,36 +878,64 @@ function ConversationMessageItem({ msg }: { msg: TicketMessage }) {
                 : 'bg-emerald-50/90 text-emerald-950 border-emerald-200/90 rounded-tl-none'
           }`}
         >
-          {msg.content}
+          {renderFormattedContent(msg.content)}
 
           {/* RAG Sources Chips */}
           {sources.length > 0 && (
             <div className="mt-3 pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
-              {sources.map((s) => (
-                <span
-                  key={s}
-                  className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1"
-                >
-                  <Database size={10} />
-                  <span>{s}</span>
-                </span>
-              ))}
+              {sources.map((source, index) => <SourceLink key={index} source={source} />)}
             </div>
           )}
 
           {/* AI Confidence Badge */}
-          {msg.confidence_score !== null && msg.confidence_score !== undefined && isAgent && (
+          {msg.confidence_score !== null && msg.confidence_score !== undefined && isAgent && sources.length > 0 && (
             <div className="mt-2 text-[10px] text-slate-400 font-medium">
-              Độ tin cậy RAG: {(msg.confidence_score * 100).toFixed(0)}%
+              {hasWebSource ? 'Độ phù hợp của nguồn tham khảo' : 'Mức phù hợp của KB'}: {(msg.confidence_score * 100).toFixed(0)}%
             </div>
           )}
         </div>
 
         {/* Timestamp */}
         <div className="text-[10px] text-slate-400 font-medium px-1">
-          {new Date(msg.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
+          {formatVietnamTime(msg.created_at, { hour: '2-digit', minute: '2-digit' })}
         </div>
       </div>
     </div>
   );
+}
+
+function SourceLink({ source }: { source: MessageSource }) {
+  const details = typeof source === 'string' ? { label: source } : source;
+  const label = details.label || 'Nguồn tham khảo';
+  const ticketNumber = label.match(/^Lịch sử Ticket #(.+)$/)?.[1];
+  const legacySourceId = label.match(/^\[([A-Za-z0-9._:-]+)\]\s+/)?.[1];
+  const legacyUrl = label.match(/\s+—\s+(https?:\/\/\S+)$/)?.[1];
+  const inferredTicketNumber = label.match(/Ticket\s*#([A-Za-z0-9-]+)/i)?.[1];
+  const embeddedTicketNumber = label.match(/\b(?:INC|REQ)-[A-Za-z0-9-]+\b/i)?.[0];
+  const resolvedTicketNumber = ticketNumber || inferredTicketNumber || embeddedTicketNumber;
+  const isTicketSource = details.kind === 'ticket' || (
+    Boolean(resolvedTicketNumber)
+  );
+  const isWebSource = details.kind === 'web';
+  const ticketHref = details.url || (details.ticket_id
+    ? `/employee/tickets/${details.ticket_id}`
+    : `/employee/tickets/reference/${encodeURIComponent(resolvedTicketNumber || label)}`);
+  const ticketHrefWithAnchor = details.message_id
+    ? `${ticketHref}?message=${encodeURIComponent(details.message_id)}#ticket-message-${encodeURIComponent(details.message_id)}`
+    : ticketHref;
+  const href = isTicketSource
+    ? ticketHrefWithAnchor
+    : details.url || legacyUrl || (legacySourceId
+      ? `/employee/kb?source_id=${encodeURIComponent(legacySourceId)}`
+      : `/employee/kb?source_label=${encodeURIComponent(label)}`);
+  const className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200 flex items-center gap-1 transition-colors hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500';
+
+  const displayLabel = isTicketSource
+    ? `Ticket #${ticketNumber || inferredTicketNumber || details.ticket_id || 'liên quan'}`
+    : label.replace(/\s+/g, ' ').trim().slice(0, 88);
+  const content = <>{isWebSource ? <ExternalLink size={10} /> : <Database size={10} />}<span>{displayLabel}</span></>;
+  if ((details.url || legacyUrl) && !isTicketSource) {
+    return <a href={href} target="_blank" rel="noreferrer" className={className}>{content}</a>;
+  }
+  return <Link href={href} className={className}>{content}</Link>;
 }

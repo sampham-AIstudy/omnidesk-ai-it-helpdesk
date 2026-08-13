@@ -2,11 +2,12 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Any
+from typing import Literal
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.models.audit_log import AuditAction
+from src.models.service_request import ServiceRequestStatus
 from src.models.ticket import (
     TicketCategory,
     TicketPriority,
@@ -14,10 +15,8 @@ from src.models.ticket import (
     TicketSupportMode,
     TicketUrgency,
 )
-
 from src.models.ticket_message import TicketMessageSender
 from src.models.user import CompanyUnit, UserRole
-
 
 # ─── Auth Schemas ────────────────────────────────────────────────────────────
 
@@ -29,7 +28,7 @@ class LoginRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
-    user: "UserResponse"
+    user: UserResponse
 
 
 class UserResponse(BaseModel):
@@ -37,6 +36,7 @@ class UserResponse(BaseModel):
     username: str
     email: str
     full_name: str
+    phone: str | None = None
     role: UserRole
     company_unit: CompanyUnit
     department: str | None
@@ -49,21 +49,65 @@ class UserResponse(BaseModel):
 
 class UserCreate(BaseModel):
     username: str = Field(min_length=3, max_length=50)
-    email: str
+    email: str = Field(min_length=5, max_length=100, pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
     full_name: str = Field(min_length=2, max_length=100)
-    password: str = Field(min_length=6)
+    password: str = Field(min_length=6, max_length=72)
     role: UserRole = UserRole.EMPLOYEE
     company_unit: CompanyUnit = CompanyUnit.CORPORATE
     department: str | None = None
     is_vip: bool = False
 
 
+class UserSelfUpdate(BaseModel):
+    """Fields an authenticated person may change on their own profile only."""
+    model_config = ConfigDict(extra="forbid")
+
+    full_name: str | None = Field(None, min_length=2, max_length=100)
+    email: str | None = Field(None, min_length=5, max_length=100, pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+    phone: str | None = Field(None, max_length=30, pattern=r"^[0-9+().\-\s]*$")
+
+
 # ─── Ticket Schemas ──────────────────────────────────────────────────────────
 
 class TicketCreate(BaseModel):
     title: str = Field(min_length=5, max_length=255)
-    description: str = Field(min_length=10)
+    description: str = Field(min_length=10, max_length=100_000)
     is_production_impact: bool = False
+    duplicate_decision: Literal["create_anyway"] | None = None
+    duplicate_of_ticket_id: int | None = None
+
+
+class DuplicateCheckRequest(BaseModel):
+    title: str = Field(min_length=5, max_length=255)
+    description: str = Field(min_length=10, max_length=100_000)
+
+
+class DuplicateTicketCandidate(BaseModel):
+    ticket_id: int
+    ticket_number: str
+    title: str
+    status: TicketStatus
+    resolved_at: datetime | None = None
+    solution: str | None = None
+    classification: str
+    score: float
+    detection_method: str
+    is_active: bool
+    is_resolved: bool
+
+
+class DuplicateCheckResponse(BaseModel):
+    classification: str
+    requires_confirmation: bool
+    message: str | None = None
+    matches: list[DuplicateTicketCandidate] = Field(default_factory=list)
+    same_user_repeat_count: int = 0
+    shared_incident_signal: bool = False
+
+
+class DuplicateActionRequest(BaseModel):
+    matched_ticket_id: int
+    action: Literal["resolved_existing", "false_positive"]
 
 
 class TicketResponse(BaseModel):
@@ -75,6 +119,8 @@ class TicketResponse(BaseModel):
     priority: TicketPriority | None
     urgency: TicketUrgency | None
     confidence_score: float | None
+    retrieval_confidence: float | None = None
+    groundedness_score: float | None = None
     suggested_solution: str | None
     rag_sources: str | None
     agent_reasoning: str | None
@@ -89,6 +135,11 @@ class TicketResponse(BaseModel):
     resolution_summary: str | None = None
     rating: int | None = None
     rating_feedback: str | None = None
+    duplicate_of_ticket_id: int | None = None
+    duplicate_score: float | None = None
+    duplicate_detection_method: str | None = None
+    duplicate_confirmed_by: str | None = None
+    parent_incident_ticket_id: int | None = None
     submitter_id: int
     assignee_id: int | None
     sla_deadline: datetime | None
@@ -132,6 +183,52 @@ class TicketRatingRequest(BaseModel):
 
 class TicketMessageCreate(BaseModel):
     message: str = Field(min_length=1, max_length=4000)
+
+
+# â”€â”€â”€ Service Request Schemas â”€â”€â”€
+
+class ServiceRequestCreate(BaseModel):
+    service_name: str = Field(min_length=2, max_length=255)
+    category: str = Field(min_length=2, max_length=50)
+    form_data: dict[str, str] = Field(default_factory=dict)
+
+
+class ServiceCatalogItem(BaseModel):
+    service_name: str
+    category: str
+    fulfillment_group: str
+    approval_roles: list[str]
+    risk_level: str
+    sla_hours: int
+
+
+class ServiceCatalogResponse(BaseModel):
+    items: list[ServiceCatalogItem]
+
+
+class ServiceRequestResponse(BaseModel):
+    id: int
+    request_number: str
+    service_id: str
+    service_name: str
+    category: str
+    status: ServiceRequestStatus
+    fulfillment_group: str
+    approval_policy: str
+    risk_level: str
+    sla_hours: int
+    form_data: str
+    rejection_reason: str | None
+    submitter_id: int
+    requested_for_id: int | None
+    created_at: datetime
+    updated_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class ServiceRequestListResponse(BaseModel):
+    items: list[ServiceRequestResponse]
 
 
 

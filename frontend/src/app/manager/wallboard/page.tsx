@@ -2,20 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import { Monitor, CheckCircle2, Clock, AlertTriangle, Activity, Star, RefreshCw } from 'lucide-react';
+import { formatVietnamTime } from '@/lib/utils';
 
 export default function RealtimeWallboardPage() {
   const [now, setNow] = useState<string>('');
 
   useEffect(() => {
-    setNow(new Date().toLocaleTimeString('vi-VN'));
-    const interval = setInterval(() => {
-      setNow(new Date().toLocaleTimeString('vi-VN'));
-    }, 1000);
-    return () => clearInterval(interval);
+    const updateClock = () => {
+      setNow(formatVietnamTime(new Date(), { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+    };
+    const initialTimer = window.setTimeout(updateClock, 0);
+    const interval = window.setInterval(updateClock, 1000);
+    return () => {
+      window.clearTimeout(initialTimer);
+      window.clearInterval(interval);
+    };
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6 sm:p-10 space-y-8 font-sans selection:bg-blue-600 selection:text-white">
+    <div className="enterprise-console min-h-screen bg-slate-950 text-white p-6 sm:p-10 space-y-8 font-sans selection:bg-blue-600 selection:text-white">
       {/* Wallboard Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800">
         <div className="flex items-center gap-3">

@@ -3,37 +3,47 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { CheckCircle2, ExternalLink, RefreshCw, Siren, Wrench } from 'lucide-react';
+import { CheckCircle2, ExternalLink, RefreshCw, Search, Siren, Wrench } from 'lucide-react';
 import TicketCard from '@/components/TicketCard';
 import { ConfidenceBadge, EmptyState, PageHeader, PriorityBadge, SLABadge, Spinner, StatusBadge } from '@/components/ui';
 import { Ticket, TicketStatus } from '@/types';
 import { CATEGORY_LABELS, formatRelative, getErrorMessage } from '@/lib/utils';
 import api from '@/lib/api';
 
-const FILTERS: { value: TicketStatus | 'all'; label: string }[] = [
+type QueueFilter = 'all' | 'open' | 'classifying' | 'pending_hitl' | 'working' | 'escalated';
+const FILTERS: { value: QueueFilter; label: string }[] = [
   { value: 'all', label: 'Tất cả' },
   { value: 'open', label: 'Mới' },
   { value: 'classifying', label: 'AI đang đọc' },
   { value: 'pending_hitl', label: 'Chờ HITL' },
-  { value: 'in_progress', label: 'Đang xử lý' },
+  { value: 'working', label: 'Đang xử lý' },
   { value: 'escalated', label: 'Leo thang' },
 ];
 
 export default function TechQueuePage() {
-  const [filter, setFilter] = useState<TicketStatus | 'all'>('all');
+  const [filter, setFilter] = useState<QueueFilter>('all');
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [search, setSearch] = useState('');
   const queryClient = useQueryClient();
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['tech-queue', filter],
+    queryKey: ['tech-queue'],
     queryFn: async () => {
-      const params = filter !== 'all' ? `&status=${filter}` : '';
-      return (await api.get(`/tickets?page=1&page_size=60${params}`)).data as { items: Ticket[]; total: number };
+      return (await api.get('/tickets?page=1&page_size=100')).data as { items: Ticket[]; total: number };
     },
     refetchInterval: 12000,
   });
 
-  const tickets = useMemo(() => data?.items ?? [], [data]);
+  const tickets = useMemo(() => {
+    const term = search.trim().toLocaleLowerCase('vi-VN');
+    const source = (data?.items ?? []).filter((ticket) => {
+      if (filter === 'all') return true;
+      if (filter === 'working') return ['in_progress', 'waiting_for_agent', 'human_active', 'reopened'].includes(ticket.status);
+      return ticket.status === filter;
+    });
+    if (!term) return source;
+    return source.filter((ticket) => `${ticket.ticket_number} ${ticket.title} ${ticket.description}`.toLocaleLowerCase('vi-VN').includes(term));
+  }, [data, filter, search]);
   const defaultSelected = selectedId ?? tickets[0]?.id ?? null;
 
   const { data: selectedTicket } = useQuery({
@@ -102,12 +112,18 @@ export default function TechQueuePage() {
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 16 }}>
-        {FILTERS.map((item) => (
-          <button key={item.value} className={filter === item.value ? 'btn-primary' : 'btn-ghost'} style={{ height: 32 }} onClick={() => setFilter(item.value)}>
-            {item.label}
-          </button>
-        ))}
+      <div className="queue-toolbar">
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {FILTERS.map((item) => (
+            <button key={item.value} className={filter === item.value ? 'btn-primary' : 'btn-ghost'} style={{ height: 32 }} onClick={() => setFilter(item.value)}>
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <label className="queue-search">
+          <Search size={15} aria-hidden="true" />
+          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm ticket, tiêu đề…" aria-label="Tìm trong hàng đợi" />
+        </label>
       </div>
 
       <div className="workbench-grid">
@@ -123,6 +139,7 @@ export default function TechQueuePage() {
               <TicketCard
                 key={ticket.id}
                 ticket={ticket}
+                queue
                 selected={selectedTicket?.id === ticket.id}
                 onClick={() => setSelectedId(ticket.id)}
               />
@@ -130,7 +147,7 @@ export default function TechQueuePage() {
           )}
         </div>
 
-        <aside className="card" style={{ padding: 16, position: 'sticky', top: 24 }}>
+        <aside className="card queue-detail-panel" style={{ padding: 18 }}>
           {!selectedTicket ? (
             <EmptyState icon="inbox" title="Chọn một ticket" desc="Thông tin phân loại, RAG và hành động xử lý sẽ hiện ở đây." />
           ) : (
@@ -144,12 +161,18 @@ export default function TechQueuePage() {
                     {selectedTicket.priority && <PriorityBadge priority={selectedTicket.priority} />}
                   </div>
                 </div>
-                <a className="btn-ghost" href={`/employee/tickets/${selectedTicket.id}`} style={{ width: 36, padding: 0 }}>
+                <a className="btn-ghost" href={`/technician/tickets/${selectedTicket.id}`} style={{ width: 36, padding: 0 }} aria-label={`Mở workspace ticket ${selectedTicket.ticket_number}`}>
                   <ExternalLink size={15} />
                 </a>
               </div>
 
-              <p style={{ color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.65, margin: 0 }}>{selectedTicket.description}</p>
+              <details style={{ borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', padding: '10px 0' }}>
+                <summary style={{ cursor: 'pointer', color: 'var(--text-secondary)', fontSize: 12, fontWeight: 700 }}>Thông tin kỹ thuật</summary>
+                <p style={{ color: 'var(--text-muted)', fontSize: 12, lineHeight: 1.6, overflowWrap: 'anywhere' }}>{selectedTicket.description}</p>
+              </details>
+              <a className="btn-primary" href={`/technician/tickets/${selectedTicket.id}`} style={{ justifyContent: 'center', textDecoration: 'none' }}>
+                Mở workspace & trả lời người dùng
+              </a>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                 <div className="card" style={{ padding: 12, boxShadow: 'none' }}>
@@ -157,7 +180,7 @@ export default function TechQueuePage() {
                   <SLABadge deadline={selectedTicket.sla_deadline} />
                 </div>
                 <div className="card" style={{ padding: 12, boxShadow: 'none' }}>
-                  <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 800, marginBottom: 6 }}>Confidence</div>
+                  <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 800, marginBottom: 6 }}>Chắc chắn phân loại</div>
                   <ConfidenceBadge score={selectedTicket.confidence_score} />
                 </div>
               </div>
@@ -171,7 +194,7 @@ export default function TechQueuePage() {
               </div>
 
               {selectedTicket.suggested_solution && (
-                <div className="card" style={{ padding: 12, boxShadow: 'none', borderColor: '#b7e8f2' }}>
+                <div className="card queue-ai-assessment" style={{ padding: 12, boxShadow: 'none', borderColor: '#b7e8f2' }}>
                   <div style={{ color: 'var(--cyan)', fontSize: 11, fontWeight: 800, marginBottom: 7 }}>RAG đề xuất</div>
                   <div style={{ color: 'var(--text-secondary)', fontSize: 12, lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{selectedTicket.suggested_solution}</div>
                   {ragSources.length > 0 && (

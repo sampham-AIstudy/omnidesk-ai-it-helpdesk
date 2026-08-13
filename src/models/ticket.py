@@ -66,7 +66,7 @@ class TicketStatus(str, enum.Enum):
     IN_PROGRESS = "in_progress"            # Đang xử lý
     WAITING_FOR_AGENT = "waiting_for_agent" # Chờ chuyên viên tiếp nhận
     HUMAN_ACTIVE = "human_active"           # Chuyên viên đang hỗ trợ
-    PENDING_CLOSURE = "pending_closure"    # Chờ auto-close confirmation
+    PENDING_CLOSURE = "pending_closure"    # Chờ người dùng/chuyên viên xác nhận
     RESOLVED = "resolved"                  # Đã giải quyết
     CLOSED = "closed"                      # Đã đóng
     REOPENED = "reopened"                  # Mở lại
@@ -107,6 +107,42 @@ def can_transition_ticket(current_status: TicketStatus | str, new_status: Ticket
     return new_enum in ALLOWED_TICKET_TRANSITIONS.get(curr_enum, set())
 
 
+from sqlalchemy import TypeDecorator
+
+class FlexibleEnum(TypeDecorator):
+    """
+    Robust Enum TypeDecorator for SQLAlchemy:
+    - Handles case mismatches (e.g. 'software' vs 'SOFTWARE', 'ACCESS_PERMISSION' vs 'access_permission')
+    - Handles string values or Enum instances when writing to DB
+    - Graceful fallback when reading unknown values instead of crashing with 500 Internal Server Error
+    """
+    impl = String(50)
+    cache_ok = True
+
+    def __init__(self, enum_cls, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.enum_cls = enum_cls
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        if isinstance(value, self.enum_cls):
+            return value.value
+        return str(value).lower().strip()
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return None
+        val_str = str(value).lower().strip()
+        for e in self.enum_cls:
+            if e.value.lower() == val_str or e.name.lower() == val_str:
+                return e
+        for attr in ('OTHER', 'other'):
+            if hasattr(self.enum_cls, attr):
+                return getattr(self.enum_cls, attr)
+        return list(self.enum_cls)[0]
+
+
 class Ticket(Base):
     __tablename__ = "tickets"
 
@@ -118,10 +154,12 @@ class Ticket(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False)
 
     # Classification (do AI phân loại)
-    category: Mapped[TicketCategory | None] = mapped_column(Enum(TicketCategory), nullable=True)
-    priority: Mapped[TicketPriority | None] = mapped_column(Enum(TicketPriority), nullable=True)
-    urgency: Mapped[TicketUrgency | None] = mapped_column(Enum(TicketUrgency), nullable=True)
+    category: Mapped[TicketCategory | None] = mapped_column(FlexibleEnum(TicketCategory), nullable=True)
+    priority: Mapped[TicketPriority | None] = mapped_column(FlexibleEnum(TicketPriority), nullable=True)
+    urgency: Mapped[TicketUrgency | None] = mapped_column(FlexibleEnum(TicketUrgency), nullable=True)
     confidence_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    retrieval_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
+    groundedness_score: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # AI Analysis
     suggested_solution: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -132,12 +170,12 @@ class Ticket(Base):
     routing_target: Mapped[str | None] = mapped_column(String(100), nullable=True)
     is_production_impact: Mapped[bool] = mapped_column(Boolean, default=False)
     support_mode: Mapped[TicketSupportMode] = mapped_column(
-        Enum(TicketSupportMode), default=TicketSupportMode.AI, nullable=False
+        FlexibleEnum(TicketSupportMode), default=TicketSupportMode.AI, nullable=False
     )
 
     # Status
     status: Mapped[TicketStatus] = mapped_column(
-        Enum(TicketStatus), default=TicketStatus.OPEN, nullable=False, index=True
+        FlexibleEnum(TicketStatus), default=TicketStatus.OPEN, nullable=False, index=True
     )
 
     # Closure & Rating
@@ -145,6 +183,13 @@ class Ticket(Base):
     resolution_summary: Mapped[str | None] = mapped_column(Text, nullable=True)
     rating: Mapped[int | None] = mapped_column(Integer, nullable=True)
     rating_feedback: Mapped[str | None] = mapped_column(Text, nullable=True)
+
+    # Duplicate/incident linkage. Never used to auto-close or reject a ticket.
+    duplicate_of_ticket_id: Mapped[int | None] = mapped_column(ForeignKey("tickets.id"), nullable=True, index=True)
+    duplicate_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    duplicate_detection_method: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    duplicate_confirmed_by: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    parent_incident_ticket_id: Mapped[int | None] = mapped_column(ForeignKey("tickets.id"), nullable=True, index=True)
 
     # HITL
     hitl_required: Mapped[bool] = mapped_column(Boolean, default=False)

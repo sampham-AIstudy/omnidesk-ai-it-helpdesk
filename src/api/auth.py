@@ -6,8 +6,8 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_db
-from src.models.schemas import LoginRequest, TokenResponse, UserCreate, UserResponse
-from src.models.user import User
+from src.models.schemas import LoginRequest, TokenResponse, UserCreate, UserResponse, UserSelfUpdate
+from src.models.user import User, UserRole
 from src.services import auth_service
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -57,12 +57,49 @@ async def me(current_user: User = Depends(get_current_active_user)):
     return UserResponse.model_validate(current_user)
 
 
+@router.patch("/me", response_model=UserResponse)
+async def update_my_profile(
+    payload: UserSelfUpdate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Update only the authenticated user's non-privileged profile fields."""
+    changes = payload.model_dump(exclude_unset=True)
+    if "email" in changes:
+        email = str(changes["email"]).lower()
+        existing = await auth_service.get_user_by_email(db, email)
+        if existing and existing.id != current_user.id:
+            raise HTTPException(status_code=409, detail="Email này đã được sử dụng bởi một tài khoản khác")
+        current_user.email = email
+    if "full_name" in changes:
+        current_user.full_name = changes["full_name"].strip()
+    if "phone" in changes:
+        current_user.phone = changes["phone"].strip() or None
+
+    await db.flush()
+    await db.refresh(current_user)
+    return UserResponse.model_validate(current_user)
+
+
 @router.post("/register", response_model=UserResponse, status_code=201)
-async def register(payload: UserCreate, db: AsyncSession = Depends(get_db)):
+async def register(
+    payload: UserCreate,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
     """Demo only — trong production chỉ admin mới tạo được user."""
+    if current_user.role != UserRole.ADMIN:
+        raise HTTPException(status_code=403, detail="Only administrators can create accounts")
+
     existing = await auth_service.get_user_by_username(db, payload.username)
     if existing:
         raise HTTPException(status_code=409, detail="Username đã tồn tại")
 
-    user = await auth_service.create_user(db, **payload.model_dump())
+    email_in_use = await auth_service.get_user_by_email(db, payload.email.lower())
+    if email_in_use:
+        raise HTTPException(status_code=409, detail="Email is already in use")
+
+    user_data = payload.model_dump()
+    user_data["email"] = payload.email.lower()
+    user = await auth_service.create_user(db, **user_data)
     return UserResponse.model_validate(user)

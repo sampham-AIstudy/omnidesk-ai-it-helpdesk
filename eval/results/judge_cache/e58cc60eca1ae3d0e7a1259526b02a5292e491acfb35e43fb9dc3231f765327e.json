@@ -1,0 +1,28 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "HALLUCINATION|UNSUPPORTED_CLAIM|INCOMPLETE_ANSWER|INCORRECT_REFUSAL|BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER|OVER_QUESTIONING"
+    ],
+    "unsupported_claims": [
+      "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "Để hỗ trợ bạn khắc phục lỗi Outlook 0x8004010F, tôi cần có **bằng chứng được ủy quyền** (authorized evidence) như:",
+      "- **Knowledge Base/SOP** về lỗi Outlook 0x8004010F",
+      "- **Ticket/Incident/Service Request** liên quan (nếu có)",
+      "- **Log/Tool Output** (ví dụ: kết quả từ `Outlook /safe`, `sfc /scannow`, hoặc Event Viewer)",
+      "- **Thông tin cấu hình hệ thống** (phiên bản Outlook, Windows 11 build, profile Exchange/IMAP)"
+    ],
+    "missing_points": [
+      "Giải pháp cụ thể cho lỗi Outlook 0x8004010F"
+    ],
+    "brief_rationale": "Lời xin lỗi và yêu cầu bằng chứng được ủy quyền không đủ để cung cấp giải pháp cụ thể.",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

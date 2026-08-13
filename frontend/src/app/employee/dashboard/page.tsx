@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { 
-  AlertTriangle, CheckCircle2, Clock3, FilePlus2, Inbox, ShieldCheck, 
+  CheckCircle2, Clock3, Inbox, ShieldCheck,
   Search, Laptop, Wifi, KeyRound, AlertOctagon, ExternalLink, ArrowRight 
 } from 'lucide-react';
 import TicketCard from '@/components/TicketCard';
-import { EmptyState, PageHeader, Spinner } from '@/components/ui';
+import { EmptyState, Spinner } from '@/components/ui';
 import { useAuthStore } from '@/lib/authStore';
 import { Ticket } from '@/types';
 import api from '@/lib/api';
@@ -25,28 +25,55 @@ const SERVICE_CATALOG = [
     bgColor: 'bg-blue-50/80',
     borderColor: 'border-blue-200/80',
     textColor: 'text-blue-700',
+    href: '/employee/catalog/hardware',
   },
   {
-    id: 'network',
-    title: 'Hạ tầng mạng & VPN',
-    desc: 'Báo cáo mất mạng, đăng ký VPN làm việc từ xa, Wi-Fi doanh nghiệp',
+    id: 'access',
+    title: 'VPN & quyền truy cập',
+    desc: 'Đăng ký VPN làm việc từ xa, quyền Git repository hoặc quyền truy cập hệ thống',
     icon: Wifi,
-    badge: 'Hạ tầng mạng',
+    badge: 'Quyền truy cập',
     color: 'from-cyan-500 to-blue-600',
     bgColor: 'bg-cyan-50/80',
     borderColor: 'border-cyan-200/80',
     textColor: 'text-cyan-700',
+    href: '/employee/catalog/access',
   },
   {
-    id: 'account',
-    title: 'Phần mềm & Tài khoản',
-    desc: 'Bản quyền Office 365, mở khóa SSPR, cấp email & tài khoản phần mềm',
+    id: 'network',
+    title: 'Kết nối mạng văn phòng',
+    desc: 'Đăng ký Wi-Fi cho thiết bị mới, IP tĩnh hoặc quyền mạng nội bộ',
+    icon: Wifi,
+    badge: 'Hạ tầng mạng',
+    color: 'from-sky-500 to-cyan-600',
+    bgColor: 'bg-sky-50/80',
+    borderColor: 'border-sky-200/80',
+    textColor: 'text-sky-700',
+    href: '/employee/catalog/network',
+  },
+  {
+    id: 'software',
+    title: 'Phần mềm & license',
+    desc: 'Microsoft 365, cài đặt phần mềm được phê duyệt và bảo vệ antivirus',
     icon: KeyRound,
-    badge: 'Tài khoản / M365',
+    badge: 'Phần mềm',
     color: 'from-emerald-500 to-teal-600',
     bgColor: 'bg-emerald-50/80',
     borderColor: 'border-emerald-200/80',
     textColor: 'text-emerald-700',
+    href: '/employee/catalog/software',
+  },
+  {
+    id: 'accounts',
+    title: 'Tài khoản công ty',
+    desc: 'Mở khóa tài khoản, email alias hoặc cập nhật tên hiển thị / email',
+    icon: KeyRound,
+    badge: 'Tài khoản',
+    color: 'from-violet-500 to-indigo-600',
+    bgColor: 'bg-violet-50/80',
+    borderColor: 'border-violet-200/80',
+    textColor: 'text-violet-700',
+    href: '/employee/catalog/accounts',
   },
   {
     id: 'urgent',
@@ -58,6 +85,7 @@ const SERVICE_CATALOG = [
     bgColor: 'bg-rose-50/80',
     borderColor: 'border-rose-200/80',
     textColor: 'text-rose-700',
+    href: '/employee/new-ticket?category=REQUEST_TECH_SUPPORT&subject=Sự cố khẩn cấp cần hỗ trợ',
   },
 ];
 
@@ -87,7 +115,6 @@ export default function EmployeeDashboard() {
   const active = tickets.filter((ticket) => ['open', 'classifying', 'in_progress'].includes(ticket.status)).length;
   const pendingHitl = tickets.filter((ticket) => ticket.status === 'pending_hitl').length;
   const done = tickets.filter((ticket) => ['resolved', 'closed'].includes(ticket.status)).length;
-  const risk = tickets.filter((ticket) => ticket.sla_escalated || ticket.is_production_impact).length;
 
   const filteredKb = KB_SUGGESTIONS.filter((item) =>
     item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -95,7 +122,7 @@ export default function EmployeeDashboard() {
   );
 
   return (
-    <div className="space-y-8">
+    <div className="employee-dashboard space-y-8">
       
       {/* Golden Zone Central Smart Search Bar */}
       <div className="glass-card-light rounded-3xl p-8 bg-gradient-to-r from-blue-50/60 via-white to-cyan-50/60 border border-slate-200/90 shadow-lg shadow-blue-900/5 relative overflow-hidden">
@@ -180,7 +207,7 @@ export default function EmployeeDashboard() {
             </h2>
             <p className="text-xs text-slate-500 font-medium">Chọn loại hình dịch vụ bạn cần hỗ trợ để chuyển nhanh đến biểu mẫu tương ứng.</p>
           </div>
-          <Link href="/employee/new-ticket" className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
+          <Link href="/employee/catalog" className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1">
             <span>Tất cả biểu mẫu</span>
             <ArrowRight size={14} />
           </Link>
@@ -192,7 +219,7 @@ export default function EmployeeDashboard() {
             return (
               <div
                 key={cat.id}
-                onClick={() => router.push(`/employee/new-ticket?category=${cat.id}`)}
+                onClick={() => router.push(cat.href)}
                 className={`glass-card-light glass-card-light-hover rounded-2xl p-5 border ${cat.borderColor} cursor-pointer flex flex-col justify-between group`}
               >
                 <div>
@@ -221,9 +248,8 @@ export default function EmployeeDashboard() {
         </div>
       </div>
 
-      {/* Process Status & Alert Bar */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="md:col-span-2 glass-card-light rounded-2xl p-5">
+      {/* Ticket process overview */}
+      <div className="glass-card-light rounded-2xl p-5">
           <div className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Luồng Xử Lý Ticket Tự Động</div>
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
             {['1. Tiếp nhận', '2. AI phân loại', '3. RAG tra KB', '4. Duyệt HITL', '5. Đóng ticket'].map((step, idx) => (
@@ -235,23 +261,6 @@ export default function EmployeeDashboard() {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className={`glass-card-light rounded-2xl p-5 border ${risk > 0 ? 'border-rose-200 bg-rose-50/50' : 'border-emerald-200 bg-emerald-50/50'}`}>
-          <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white ${risk > 0 ? 'bg-rose-600' : 'bg-emerald-600'}`}>
-              {risk > 0 ? <AlertTriangle size={20} /> : <CheckCircle2 size={20} />}
-            </div>
-            <div>
-              <div className="text-sm font-bold text-slate-900">
-                {risk > 0 ? `${risk} ticket cần lưu ý SLA` : 'Hệ thống an toàn'}
-              </div>
-              <div className="text-xs text-slate-500 font-medium mt-0.5">
-                {risk > 0 ? 'Ticket quá hạn SLA sẽ được đẩy ưu tiên khẩn' : 'Các ticket đều đạt chỉ số cam kết SLA'}
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Stat Cards */}
@@ -304,7 +313,7 @@ export default function EmployeeDashboard() {
         ) : (
           <div className="space-y-3">
             {tickets.slice(0, 5).map((ticket) => (
-              <TicketCard key={ticket.id} ticket={ticket} linkTo={`/employee/tickets/${ticket.id}`} />
+              <TicketCard key={ticket.id} ticket={ticket} linkTo={`/employee/tickets/${ticket.id}`} showSla={false} />
             ))}
           </div>
         )}
@@ -313,4 +322,3 @@ export default function EmployeeDashboard() {
     </div>
   );
 }
-

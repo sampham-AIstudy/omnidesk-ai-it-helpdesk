@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 0.0,
+    "failure_types": [
+      "BAD_ABSTENTION|CITATION_ERROR|IRRELEVANT_ANSWER"
+    ],
+    "unsupported_claims": [
+      "Chưa đủ thông tin để trả lời"
+    ],
+    "missing_points": [
+      "Nguyên nhân của VPN báo authentication failed"
+    ],
+    "brief_rationale": "Chưa đủ thông tin để trả lời, cần cung cấp thêm chi tiết hoặc bằng chứng ủy quyền",
+    "pass": false
+  },
+  "prompt_version": "1.2",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

@@ -88,7 +88,7 @@ export default function AutomationBuilderPage() {
         <div className="lg:col-span-5 glass-card-light rounded-3xl p-6 space-y-5">
           <div className="flex items-center gap-2 text-blue-600 font-bold text-base pb-3 border-b border-slate-200">
             <Zap size={20} />
-            <span>Tạo Quy Tắc Tự Động Hóa Mới (IF -> THEN)</span>
+            <span>Tạo Quy Tắc Tự Động Hóa Mới (IF → THEN)</span>
           </div>
 
           <div className="space-y-4">

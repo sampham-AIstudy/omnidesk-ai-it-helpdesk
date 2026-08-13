@@ -10,7 +10,7 @@ export type TicketCategory =
 export type TicketPriority = 'low' | 'medium' | 'high' | 'critical';
 export type TicketUrgency  = 'low' | 'medium' | 'high' | 'emergency';
 export type TicketStatus =
-  | 'open' | 'classifying' | 'pending_hitl' | 'in_progress' | 'waiting_for_agent' | 'human_active'
+  | 'open' | 'classifying' | 'needs_clarification' | 'pending_hitl' | 'in_progress' | 'waiting_for_agent' | 'human_active'
   | 'pending_closure' | 'resolved' | 'closed' | 'reopened' | 'escalated' | 'rejected';
 
 export interface User {
@@ -18,6 +18,7 @@ export interface User {
   username: string;
   email: string;
   full_name: string;
+  phone: string | null;
   role: UserRole;
   company_unit: CompanyUnit;
   department: string | null;
@@ -35,6 +36,8 @@ export interface Ticket {
   priority: TicketPriority | null;
   urgency: TicketUrgency | null;
   confidence_score: number | null;
+  retrieval_confidence?: number | null;
+  groundedness_score?: number | null;
   suggested_solution: string | null;
   rag_sources: string | null;
   agent_reasoning: string | null;
@@ -45,11 +48,18 @@ export interface Ticket {
   resolution_summary?: string | null;
   rating?: number | null;
   rating_feedback?: string | null;
+  duplicate_of_ticket_id?: number | null;
+  duplicate_score?: number | null;
+  duplicate_detection_method?: string | null;
+  duplicate_confirmed_by?: string | null;
+  parent_incident_ticket_id?: number | null;
   status: TicketStatus;
   hitl_required: boolean;
   hitl_note: string | null;
   hitl_decided_at: string | null;
   submitter_id: number;
+  /** Optional requester projection returned by detail-oriented ticket endpoints. */
+  created_by_user?: User | null;
   assignee_id: number | null;
   assignee?: User | null;
   sla_deadline: string | null;
