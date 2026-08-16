@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
+import { isAxiosError } from 'axios';
 import {
   UserRound,
   Wrench,
@@ -84,12 +85,23 @@ export default function LoginPage() {
   const router = useRouter();
   const setAuth = useAuthStore((state) => state.setAuth);
 
+  const isDemoLoginEnabled =
+    process.env.NEXT_PUBLIC_ENABLE_DEMO_LOGIN !== 'false' &&
+    process.env.NEXT_PUBLIC_APP_ENV !== 'production';
+
   const [activeTab, setActiveTab] = useState<RoleTab>('employee');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const redirectUser = (role: string) => {
+    if (role === 'employee') router.push('/employee/dashboard');
+    else if (role === 'technician') router.push('/technician/queue');
+    else if (role === 'admin') router.push('/admin/users');
+    else router.push('/manager/dashboard');
+  };
 
   useEffect(() => {
     document.title = 'Help Desk ITSM | Đăng Nhập';
@@ -107,13 +119,6 @@ export default function LoginPage() {
     }
   }, []);
 
-  const redirectUser = (role: string) => {
-    if (role === 'employee') router.push('/employee/dashboard');
-    else if (role === 'technician') router.push('/technician/queue');
-    else if (role === 'admin') router.push('/admin/users');
-    else router.push('/manager/dashboard');
-  };
-
   const handleLogin = async (u: string, p: string) => {
     if (!u || !p) return;
     setIsLoading(true);
@@ -124,8 +129,8 @@ export default function LoginPage() {
       const data = response.data;
       setAuth(data.user, data.access_token);
       redirectUser(data.user.role);
-    } catch (err: any) {
-      if (err.response?.status >= 400 && err.response?.status < 500) {
+    } catch (err: unknown) {
+      if (isAxiosError(err) && err.response?.status && err.response.status >= 400 && err.response.status < 500) {
         setErrorMessage('Tên đăng nhập hoặc mật khẩu không đúng.');
       } else {
         setErrorMessage('Không thể kết nối máy chủ. Vui lòng thử lại.');
@@ -269,81 +274,86 @@ export default function LoginPage() {
             <p className="text-sm text-slate-600 font-medium mt-1">Chọn vai trò hoặc nhập thông tin tài khoản để tiếp tục.</p>
           </div>
 
-          {/* Role Tabs */}
-          <div className="mt-6 grid grid-cols-4 gap-2">
-            {(Object.keys(ROLE_META) as RoleTab[]).map((role) => {
-              const Icon = ROLE_META[role].icon;
-              const isActive = activeTab === role;
-              return (
-                <button
-                  key={role}
-                  type="button"
-                  onClick={() => setActiveTab(role)}
-                  className={`flex flex-col items-center gap-1.5 rounded-xl border px-2 py-3 transition-all duration-300 cursor-pointer ${
-                    isActive
-                      ? 'border-2 border-blue-600 bg-blue-50 text-blue-800 font-bold shadow-sm'
-                      : 'border border-slate-300 bg-slate-100/70 text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-200/80 hover:text-slate-900'
-                  }`}
-                >
-                  <Icon size={20} />
-                  <span className="text-[11px] truncate w-full text-center">
-                    {ROLE_META[role].label}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          {/* Demo Login Shortcuts (Development & Staging only) */}
+          {isDemoLoginEnabled && (
+            <>
+              {/* Role Tabs */}
+              <div className="mt-6 grid grid-cols-4 gap-2">
+                {(Object.keys(ROLE_META) as RoleTab[]).map((role) => {
+                  const Icon = ROLE_META[role].icon;
+                  const isActive = activeTab === role;
+                  return (
+                    <button
+                      key={role}
+                      type="button"
+                      onClick={() => setActiveTab(role)}
+                      className={`flex flex-col items-center gap-1.5 rounded-xl border px-2 py-3 transition-all duration-300 cursor-pointer ${
+                        isActive
+                          ? 'border-2 border-blue-600 bg-blue-50 text-blue-800 font-bold shadow-sm'
+                          : 'border border-slate-300 bg-slate-100/70 text-slate-700 font-semibold hover:border-slate-400 hover:bg-slate-200/80 hover:text-slate-900'
+                      }`}
+                    >
+                      <Icon size={20} />
+                      <span className="text-[11px] truncate w-full text-center">
+                        {ROLE_META[role].label}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
 
-          {/* Active Role Indicator */}
-          <div className="font-mono uppercase text-xs tracking-wider text-slate-600 font-bold mt-2.5 text-right">
-            {ROLE_META[activeTab].keyLabel}
-          </div>
+              {/* Active Role Indicator */}
+              <div className="font-mono uppercase text-xs tracking-wider text-slate-600 font-bold mt-2.5 text-right">
+                {ROLE_META[activeTab].keyLabel}
+              </div>
 
-          {/* Demo Accounts List */}
-          <div className="mt-5">
-            <div className="font-mono uppercase text-xs tracking-wider text-slate-700 font-extrabold mb-2.5">
-              TÀI KHOẢN DEMO · ĐĂNG NHẬP 1-CLICK
-            </div>
+              {/* Demo Accounts List */}
+              <div className="mt-5">
+                <div className="font-mono uppercase text-xs tracking-wider text-slate-700 font-extrabold mb-2.5">
+                  TÀI KHOẢN DEMO · ĐĂNG NHẬP 1-CLICK
+                </div>
 
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-2.5"
-              >
-                {ACCOUNTS[activeTab].map((acc) => (
-                  <button
-                    key={acc.username}
-                    type="button"
-                    onClick={() => handleDemoClick(acc)}
-                    disabled={isLoading}
-                    className="w-full flex items-center justify-between gap-3 rounded-xl border border-slate-300 bg-slate-50 hover:border-blue-500 hover:bg-blue-50/70 px-4 py-3.5 transition-all duration-300 group text-left cursor-pointer shadow-xs disabled:opacity-50"
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeTab}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2 }}
+                    className="space-y-2.5"
                   >
-                    <div className="flex flex-col gap-0.5 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-slate-900 font-bold font-mono">{acc.username}</span>
-                        <span className="text-xs text-slate-800 font-semibold truncate">• {acc.name}</span>
-                      </div>
-                      <span className="text-xs text-slate-600 font-medium truncate">{acc.hint}</span>
-                    </div>
-                    <ChevronRight size={16} className="text-slate-500 group-hover:text-blue-700 transition-colors shrink-0" />
-                  </button>
-                ))}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+                    {ACCOUNTS[activeTab].map((acc) => (
+                      <button
+                        key={acc.username}
+                        type="button"
+                        onClick={() => handleDemoClick(acc)}
+                        disabled={isLoading}
+                        className="w-full flex items-center justify-between gap-3 rounded-xl border border-slate-300 bg-slate-50 hover:border-blue-500 hover:bg-blue-50/70 px-4 py-3.5 transition-all duration-300 group text-left cursor-pointer shadow-xs disabled:opacity-50"
+                      >
+                        <div className="flex flex-col gap-0.5 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm text-slate-900 font-bold font-mono">{acc.username}</span>
+                            <span className="text-xs text-slate-800 font-semibold truncate">• {acc.name}</span>
+                          </div>
+                          <span className="text-xs text-slate-600 font-medium truncate">{acc.hint}</span>
+                        </div>
+                        <ChevronRight size={16} className="text-slate-500 group-hover:text-blue-700 transition-colors shrink-0" />
+                      </button>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-          {/* Divider */}
-          <div className="mt-6 flex items-center gap-4">
-            <div className="h-px flex-1 bg-slate-300" />
-            <span className="font-mono uppercase text-xs tracking-wider text-slate-600 font-bold">
-              HOẶC NHẬP THỦ CÔNG
-            </span>
-            <div className="h-px flex-1 bg-slate-300" />
-          </div>
+              {/* Divider */}
+              <div className="mt-6 flex items-center gap-4">
+                <div className="h-px flex-1 bg-slate-300" />
+                <span className="font-mono uppercase text-xs tracking-wider text-slate-600 font-bold">
+                  HOẶC NHẬP THỦ CÔNG
+                </span>
+                <div className="h-px flex-1 bg-slate-300" />
+              </div>
+            </>
+          )}
 
           {/* Manual Form */}
           <form onSubmit={submitForm} className="mt-6 space-y-4">
@@ -415,10 +425,12 @@ export default function LoginPage() {
           </form>
 
           {/* Footer Right Note */}
-          <p className="mt-6 text-center text-xs text-slate-600 font-medium">
-            Đăng nhập bằng tài khoản demo giúp trải nghiệm nhanh từng vai trò.
-            <span className="font-mono text-slate-700 font-bold block mt-1 tracking-wider">DEMO123</span>
-          </p>
+          {isDemoLoginEnabled && (
+            <p className="mt-6 text-center text-xs text-slate-600 font-medium">
+              Đăng nhập bằng tài khoản demo giúp trải nghiệm nhanh từng vai trò.
+              <span className="font-mono text-slate-700 font-bold block mt-1 tracking-wider">DEMO123</span>
+            </p>
+          )}
         </motion.div>
       </section>
     </main>

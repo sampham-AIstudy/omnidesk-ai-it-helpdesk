@@ -1,0 +1,657 @@
+{
+  "generated_at": "2026-08-15T17:14:22.332631+00:00",
+  "source_collection": "helpdesk_kb_multilingual_v1",
+  "target_collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+  "source_count": 432,
+  "target_count": 432,
+  "queries": [
+    {
+      "id": "vpn",
+      "query": "Hướng dẫn kết nối VPN",
+      "expected_title_or_category_tokens": [
+        "vpn"
+      ],
+      "old_top_5": [
+        {
+          "doc_id": "auto-kb-ticket-64",
+          "title": "KB bài học từ Ticket #INC-20260810-4170",
+          "category": "network",
+          "distance": 0.591331
+        },
+        {
+          "doc_id": "kb-001",
+          "title": "Không kết nối được VPN công ty",
+          "category": "network",
+          "distance": 0.713701
+        },
+        {
+          "doc_id": "kb-008",
+          "title": "Phần mềm chuyên dụng không khởi động được",
+          "category": "software",
+          "distance": 0.736248
+        },
+        {
+          "doc_id": "kb-002",
+          "title": "WiFi văn phòng yếu/mất kết nối",
+          "category": "network",
+          "distance": 0.741801
+        },
+        {
+          "doc_id": "kb-012",
+          "title": "Yêu cầu tạo tài khoản mới cho nhân viên onboarding",
+          "category": "access_permission",
+          "distance": 0.747018
+        }
+      ],
+      "new_top_5": [
+        {
+          "doc_id": "web-windows-vpn-003",
+          "title": "Kết nối VPN trên Windows",
+          "category": "network",
+          "distance": 0.204386
+        },
+        {
+          "doc_id": "web-windows-vpn-004",
+          "title": "Kết nối VPN trên Windows",
+          "category": "network",
+          "distance": 0.227812
+        },
+        {
+          "doc_id": "web-windows-vpn-001",
+          "title": "Kết nối VPN trên Windows",
+          "category": "network",
+          "distance": 0.246564
+        },
+        {
+          "doc_id": "web-windows-vpn-002",
+          "title": "Kết nối VPN trên Windows",
+          "category": "network",
+          "distance": 0.248633
+        },
+        {
+          "doc_id": "kb-001",
+          "title": "Không kết nối được VPN công ty",
+          "category": "network",
+          "distance": 0.27323
+        }
+      ],
+      "old_expected_class_in_top_5": true,
+      "new_expected_class_in_top_5": true
+    },
+    {
+      "id": "outlook",
+      "query": "Outlook không gửi được email",
+      "expected_title_or_category_tokens": [
+        "outlook",
+        "email"
+      ],
+      "old_top_5": [
+        {
+          "doc_id": "mem-kgl-771",
+          "title": "[Software] Application configuration mismatch",
+          "category": "software",
+          "distance": 0.679744
+        },
+        {
+          "doc_id": "mem-kgl-114",
+          "title": "[Network] Hotspot not working",
+          "category": "network",
+          "distance": 0.691393
+        },
+        {
+          "doc_id": "mem-kgl-189",
+          "title": "[Software] Application configuration mismatch",
+          "category": "software",
+          "distance": 0.691393
+        },
+        {
+          "doc_id": "kb-005",
+          "title": "Không nhận được email từ bên ngoài",
+          "category": "email",
+          "distance": 0.69571
+        },
+        {
+          "doc_id": "kb-004",
+          "title": "Outlook không đồng bộ email / stuck sending",
+          "category": "email",
+          "distance": 0.731537
+        }
+      ],
+      "new_top_5": [
+        {
+          "doc_id": "kb-004",
+          "title": "Outlook không đồng bộ email / stuck sending",
+          "category": "email",
+          "distance": 0.243798
+        },
+        {
+          "doc_id": "web-outlook-send-receive-001",
+          "title": "Sự cố gửi và nhận email trong Outlook",
+          "category": "email",
+          "distance": 0.265099
+        },
+        {
+          "doc_id": "web-outlook-shared-mailbox-performance-005",
+          "title": "Outlook chậm khi mở nhiều shared mailbox hoặc folder",
+          "category": "email",
+          "distance": 0.347588
+        },
+        {
+          "doc_id": "web-exchange-access-other-mailbox-003",
+          "title": "Truy cập mailbox dùng chung trong Microsoft 365",
+          "category": "access_permission",
+          "distance": 0.348557
+        },
+        {
+          "doc_id": "kb-005",
+          "title": "Không nhận được email từ bên ngoài",
+          "category": "email",
+          "distance": 0.403114
+        }
+      ],
+      "old_expected_class_in_top_5": true,
+      "new_expected_class_in_top_5": true
+    },
+    {
+      "id": "password",
+      "query": "Quên mật khẩu tài khoản",
+      "expected_title_or_category_tokens": [
+        "mật khẩu",
+        "password",
+        "windows"
+      ],
+      "old_top_5": [
+        {
+          "doc_id": "kb-010",
+          "title": "Quên mật khẩu Windows / tài khoản domain",
+          "category": "access_permission",
+          "distance": 0.616674
+        },
+        {
+          "doc_id": "kb-017",
+          "title": "Nhận email phishing / lừa đảo",
+          "category": "security",
+          "distance": 0.733333
+        },
+        {
+          "doc_id": "web-m365-compromised-mailbox-006",
+          "title": "Ứng phó tài khoản email Microsoft 365 bị xâm nhập",
+          "category": "security",
+          "distance": 0.76306
+        },
+        {
+          "doc_id": "auto-kb-ticket-7",
+          "title": "KB bài học từ Ticket #INC-20260810-2047",
+          "category": "other",
+          "distance": 0.774625
+        },
+        {
+          "doc_id": "web-m365-compromised-mailbox-007",
+          "title": "Ứng phó tài khoản email Microsoft 365 bị xâm nhập",
+          "category": "security",
+          "distance": 0.789181
+        }
+      ],
+      "new_top_5": [
+        {
+          "doc_id": "kb-010",
+          "title": "Quên mật khẩu Windows / tài khoản domain",
+          "category": "access_permission",
+          "distance": 0.322076
+        },
+        {
+          "doc_id": "web-microsoft-account-locked-001",
+          "title": "Mở khóa tài khoản Microsoft bị khóa",
+          "category": "access_permission",
+          "distance": 0.376971
+        },
+        {
+          "doc_id": "web-m365-compromised-mailbox-004",
+          "title": "Ứng phó tài khoản email Microsoft 365 bị xâm nhập",
+          "category": "security",
+          "distance": 0.382664
+        },
+        {
+          "doc_id": "web-m365-password-policy-001",
+          "title": "Chính sách mật khẩu và thời hạn mật khẩu Microsoft 365",
+          "category": "access_permission",
+          "distance": 0.447937
+        },
+        {
+          "doc_id": "web-teams-restore-access-002",
+          "title": "Khôi phục quyền truy cập Microsoft Teams",
+          "category": "access_permission",
+          "distance": 0.476483
+        }
+      ],
+      "old_expected_class_in_top_5": true,
+      "new_expected_class_in_top_5": true
+    },
+    {
+      "id": "service_request",
+      "query": "Quy trình Service Request là gì?",
+      "expected_title_or_category_tokens": [
+        "yêu cầu",
+        "service",
+        "request"
+      ],
+      "old_top_5": [
+        {
+          "doc_id": "web-microsoft-account-locked-001",
+          "title": "Mở khóa tài khoản Microsoft bị khóa",
+          "category": "access_permission",
+          "distance": 0.862639
+        },
+        {
+          "doc_id": "web-bitlocker-recovery-002",
+          "title": "Tìm khóa khôi phục BitLocker",
+          "category": "security",
+          "distance": 0.863283
+        },
+        {
+          "doc_id": "web-windows-rdp-troubleshoot-008",
+          "title": "Khắc phục lỗi kết nối Remote Desktop (RDP)",
+          "category": "network",
+          "distance": 0.863917
+        },
+        {
+          "doc_id": "web-windows-wifi-005",
+          "title": "Khắc phục sự cố Wi-Fi trên Windows",
+          "category": "network",
+          "distance": 0.887846
+        },
+        {
+          "doc_id": "web-usb-device-not-recognized-002",
+          "title": "Sửa lỗi 'USB Device Not Recognized' trên Windows",
+          "category": "hardware",
+          "distance": 0.890236
+        }
+      ],
+      "new_top_5": [
+        {
+          "doc_id": "kb-027",
+          "title": "Phần mềm đặt lịch khám không hoạt động",
+          "category": "software",
+          "distance": 0.501143
+        },
+        {
+          "doc_id": "web-exchange-access-other-mailbox-005",
+          "title": "Truy cập mailbox dùng chung trong Microsoft 365",
+          "category": "access_permission",
+          "distance": 0.565907
+        },
+        {
+          "doc_id": "kb-032",
+          "title": "Không submit được đơn xin nghỉ phép",
+          "category": "hr_system",
+          "distance": 0.569149
+        },
+        {
+          "doc_id": "kb-011",
+          "title": "Cấp quyền truy cập thư mục/file share",
+          "category": "access_permission",
+          "distance": 0.574986
+        },
+        {
+          "doc_id": "web-windows-rdp-troubleshoot-007",
+          "title": "Khắc phục lỗi kết nối Remote Desktop (RDP)",
+          "category": "network",
+          "distance": 0.584555
+        }
+      ],
+      "old_expected_class_in_top_5": false,
+      "new_expected_class_in_top_5": false
+    },
+    {
+      "id": "hardware",
+      "query": "Yêu cầu cấp laptop",
+      "expected_title_or_category_tokens": [
+        "laptop",
+        "máy tính",
+        "hardware"
+      ],
+      "old_top_5": [
+        {
+          "doc_id": "kb-006",
+          "title": "Cần cấp quyền shared mailbox / distribution list",
+          "category": "access_permission",
+          "distance": 0.687652
+        },
+        {
+          "doc_id": "kb-012",
+          "title": "Yêu cầu tạo tài khoản mới cho nhân viên onboarding",
+          "category": "access_permission",
+          "distance": 0.717157
+        },
+        {
+          "doc_id": "kb-018",
+          "title": "Yêu cầu reset MFA / 2FA",
+          "category": "security",
+          "distance": 0.725279
+        },
+        {
+          "doc_id": "kb-003",
+          "title": "Không truy cập được Internet từ máy tính",
+          "category": "network",
+          "distance": 0.776393
+        },
+        {
+          "doc_id": "kb-017",
+          "title": "Nhận email phishing / lừa đảo",
+          "category": "security",
+          "distance": 0.776393
+        }
+      ],
+      "new_top_5": [
+        {
+          "doc_id": "mem-kgl-401",
+          "title": "[Hardware] Laptop won’t power on",
+          "category": "hardware",
+          "distance": 0.350978
+        },
+        {
+          "doc_id": "mem-kgl-413",
+          "title": "[Hardware] Laptop screen grayscale issue",
+          "category": "hardware",
+          "distance": 0.426664
+        },
+        {
+          "doc_id": "mem-kgl-266",
+          "title": "[Hardware] Laptop screen white screen",
+          "category": "hardware",
+          "distance": 0.427277
+        },
+        {
+          "doc_id": "mem-kgl-15",
+          "title": "[Hardware] Laptop screen red tint",
+          "category": "hardware",
+          "distance": 0.427922
+        },
+        {
+          "doc_id": "mem-kgl-123",
+          "title": "[Hardware] Laptop screen yellow tint",
+          "category": "hardware",
+          "distance": 0.431411
+        }
+      ],
+      "old_expected_class_in_top_5": true,
+      "new_expected_class_in_top_5": true
+    },
+    {
+      "id": "access_vpn",
+      "query": "Xin quyền truy cập VPN",
+      "expected_title_or_category_tokens": [
+        "vpn",
+        "truy cập",
+        "access"
+      ],
+      "old_top_5": [
+        {
+          "doc_id": "kb-031",
+          "title": "Không xem được bảng lương trên hệ thống HR",
+          "category": "hr_system",
+          "distance": 0.73032
+        },
+        {
+          "doc_id": "web-teams-restore-access-002",
+          "title": "Khôi phục quyền truy cập Microsoft Teams",
+          "category": "access_permission",
+          "distance": 0.736248
+        },
+        {
+          "doc_id": "kb-010",
+          "title": "Quên mật khẩu Windows / tài khoản domain",
+          "category": "access_permission",
+          "distance": 0.744449
+        },
+        {
+          "doc_id": "kb-006",
+          "title": "Cần cấp quyền shared mailbox / distribution list",
+          "category": "access_permission",
+          "distance": 0.790471
+        },
+        {
+          "doc_id": "kb-011",
+          "title": "Cấp quyền truy cập thư mục/file share",
+          "category": "access_permission",
+          "distance": 0.8
+        }
+      ],
+      "new_top_5": [
+        {
+          "doc_id": "web-windows-vpn-003",
+          "title": "Kết nối VPN trên Windows",
+          "category": "network",
+          "distance": 0.222651
+        },
+        {
+          "doc_id": "web-windows-vpn-004",
+          "title": "Kết nối VPN trên Windows",
+          "category": "network",
+          "distance": 0.238933
+        },
+        {
+          "doc_id": "web-windows-vpn-001",
+          "title": "Kết nối VPN trên Windows",
+          "category": "network",
+          "distance": 0.251247
+        },
+        {
+          "doc_id": "web-windows-vpn-002",
+          "title": "Kết nối VPN trên Windows",
+          "category": "network",
+          "distance": 0.263341
+        },
+        {
+          "doc_id": "kb-001",
+          "title": "Không kết nối được VPN công ty",
+          "category": "network",
+          "distance": 0.265194
+        }
+      ],
+      "old_expected_class_in_top_5": true,
+      "new_expected_class_in_top_5": true
+    },
+    {
+      "id": "software_license",
+      "query": "Đăng ký phần mềm Microsoft 365",
+      "expected_title_or_category_tokens": [
+        "office",
+        "microsoft",
+        "phần mềm",
+        "license"
+      ],
+      "old_top_5": [
+        {
+          "doc_id": "kb-021",
+          "title": "Phần mềm quản lý dự án BĐS không đồng bộ dữ liệu",
+          "category": "software",
+          "distance": 0.756568
+        },
+        {
+          "doc_id": "kb-008",
+          "title": "Phần mềm chuyên dụng không khởi động được",
+          "category": "software",
+          "distance": 0.759228
+        },
+        {
+          "doc_id": "web-office-repair-application-002",
+          "title": "Sửa lỗi ứng dụng Office bị treo hoặc không phản hồi",
+          "category": "software",
+          "distance": 0.778596
+        },
+        {
+          "doc_id": "web-onedrive-sync-002",
+          "title": "Khắc phục sự cố đồng bộ OneDrive",
+          "category": "software",
+          "distance": 0.812683
+        },
+        {
+          "doc_id": "kb-015",
+          "title": "Laptop hỏng / không khởi động được",
+          "category": "hardware",
+          "distance": 0.813228
+        }
+      ],
+      "new_top_5": [
+        {
+          "doc_id": "web-office-activation-error-003",
+          "title": "Khắc phục lỗi kích hoạt bản quyền Microsoft Office",
+          "category": "software",
+          "distance": 0.331868
+        },
+        {
+          "doc_id": "web-office-repair-application-002",
+          "title": "Sửa lỗi ứng dụng Office bị treo hoặc không phản hồi",
+          "category": "software",
+          "distance": 0.409055
+        },
+        {
+          "doc_id": "kb-034",
+          "title": "Yêu cầu cài phần mềm mới",
+          "category": "software",
+          "distance": 0.42137
+        },
+        {
+          "doc_id": "web-exchange-access-other-mailbox-004",
+          "title": "Truy cập mailbox dùng chung trong Microsoft 365",
+          "category": "access_permission",
+          "distance": 0.444498
+        },
+        {
+          "doc_id": "web-office-activation-error-001",
+          "title": "Khắc phục lỗi kích hoạt bản quyền Microsoft Office",
+          "category": "software",
+          "distance": 0.476052
+        }
+      ],
+      "old_expected_class_in_top_5": true,
+      "new_expected_class_in_top_5": true
+    },
+    {
+      "id": "unsupported",
+      "query": "Cách chăm sóc cây cảnh trong nhà",
+      "expected_title_or_category_tokens": [],
+      "old_top_5": [
+        {
+          "doc_id": "kb-016",
+          "title": "Nghi ngờ máy tính bị nhiễm virus/malware",
+          "category": "security",
+          "distance": 0.875485
+        },
+        {
+          "doc_id": "kb-029",
+          "title": "Dung lượng ổ cứng server sắp đầy",
+          "category": "infrastructure",
+          "distance": 0.887846
+        },
+        {
+          "doc_id": "kb-009",
+          "title": "Máy tính chạy chậm / lag",
+          "category": "hardware",
+          "distance": 0.889904
+        },
+        {
+          "doc_id": "web-windows-slow-performance-002",
+          "title": "Cải thiện hiệu năng máy tính Windows chạy chậm",
+          "category": "performance",
+          "distance": 0.890891
+        },
+        {
+          "doc_id": "web-m365-compromised-mailbox-005",
+          "title": "Ứng phó tài khoản email Microsoft 365 bị xâm nhập",
+          "category": "security",
+          "distance": 0.891747
+        }
+      ],
+      "new_top_5": [
+        {
+          "doc_id": "kb-026",
+          "title": "Máy chụp X-quang/MRI không kết nối PACS",
+          "category": "infrastructure",
+          "distance": 0.788758
+        },
+        {
+          "doc_id": "kb-013",
+          "title": "Màn hình không lên hình / flickering",
+          "category": "hardware",
+          "distance": 0.794814
+        },
+        {
+          "doc_id": "web-windows-slow-performance-003",
+          "title": "Cải thiện hiệu năng máy tính Windows chạy chậm",
+          "category": "performance",
+          "distance": 0.798894
+        },
+        {
+          "doc_id": "web-outlook-repair-datafile-002",
+          "title": "Sửa lỗi tệp dữ liệu Outlook PST và OST",
+          "category": "email",
+          "distance": 0.805289
+        },
+        {
+          "doc_id": "kb-022",
+          "title": "Hệ thống đặt lịch xem nhà bị lỗi",
+          "category": "software",
+          "distance": 0.805388
+        }
+      ],
+      "old_expected_class_in_top_5": null,
+      "new_expected_class_in_top_5": null
+    }
+  ],
+  "acl_query": "SAP không đăng nhập được",
+  "acl_results": {
+    "real_estate": [
+      {
+        "doc_id": "auto-kb-ticket-6",
+        "title": "KB bài học từ Ticket #INC-20260810-4106"
+      },
+      {
+        "doc_id": "auto-kb-ticket-7",
+        "title": "KB bài học từ Ticket #INC-20260810-2047"
+      },
+      {
+        "doc_id": "auto-kb-ticket-5",
+        "title": "KB bài học từ Ticket #INC-20260810-7715"
+      },
+      {
+        "doc_id": "kb-031",
+        "title": "Không xem được bảng lương trên hệ thống HR"
+      },
+      {
+        "doc_id": "kb-010",
+        "title": "Quên mật khẩu Windows / tài khoản domain"
+      }
+    ],
+    "corporate": [
+      {
+        "doc_id": "kb-019",
+        "title": "SAP không đăng nhập được / session timeout"
+      },
+      {
+        "doc_id": "auto-kb-ticket-6",
+        "title": "KB bài học từ Ticket #INC-20260810-4106"
+      },
+      {
+        "doc_id": "auto-kb-ticket-7",
+        "title": "KB bài học từ Ticket #INC-20260810-2047"
+      },
+      {
+        "doc_id": "auto-kb-ticket-5",
+        "title": "KB bài học từ Ticket #INC-20260810-7715"
+      },
+      {
+        "doc_id": "kb-020",
+        "title": "Lỗi khi tạo Purchase Order trong SAP"
+      }
+    ]
+  },
+  "security_expectation": {
+    "unauthorized_company_unit_must_not_return": [
+      "kb-019",
+      "kb-020"
+    ],
+    "corporate_should_return_restricted_sap_source": true
+  }
+}

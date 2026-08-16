@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Phòng ban/chi nhánh của nhân viên mới",
+      "Vị trí/chức danh của nhân viên",
+      "Yêu cầu cụ thể về cấu hình",
+      "Thời hạn triển khai"
+    ],
+    "brief_rationale": "Đáp án không cung cấp thông tin cần thiết để trả lời câu hỏi.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

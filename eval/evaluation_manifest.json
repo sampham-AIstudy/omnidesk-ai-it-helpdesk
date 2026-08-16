@@ -1,5 +1,6 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
+  "evaluation_contract_version": "enterprise-golden-v1.2",
   "golden_dataset": "eval/golden_testset_enterprise.json",
   "snapshot": {
     "knowledge_base_fixture": "src.data.knowledge_base:get_all_kb_entries",
@@ -17,6 +18,10 @@
   },
   "layers": {
     "routing_contract": {
+      "reporting_names": {
+        "canonical": "routing_contract_pass",
+        "all_expected_route_assertions": "route_assertion_pass"
+      },
       "case_ids": [
         "GT-001", "GT-002", "GT-003", "GT-004", "GT-005", "GT-006", "GT-007",
         "GT-008", "GT-009", "GT-010", "GT-011", "GT-012", "GT-013", "GT-014",
@@ -42,5 +47,9 @@
     "security": {
       "case_types": ["prompt_injection_rag_security", "hacking_dual_use", "memory_privacy", "tool_authorization"]
     }
+  },
+  "fixture_integrity": {
+    "pre_llm_failure_type": "EVAL_FIXTURE_ERROR",
+    "canary_contract": "eval/snapshots/canary_contract_v1_2_context_snapshot.json"
   }
 }

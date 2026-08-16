@@ -122,7 +122,7 @@ Yeu cau:
 - QUAN TRONG: Khong dung Markdown formatting. Khong dung **, *, #, ---, backtick hay ky hieu dinh dang. Chi viet van ban thuan tuy."""
 
 
-@traced_async_operation("rag.retrieve")
+@traced_async_operation("ai.retrieval")
 async def rag_node(state: TicketAgentState) -> TicketAgentState:
     """RAG node: tìm kiếm KB + tổng hợp giải pháp."""
     logger.info(f"[RAG] Searching KB for ticket #{state.get('ticket_number')}")

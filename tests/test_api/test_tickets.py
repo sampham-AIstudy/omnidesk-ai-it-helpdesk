@@ -8,6 +8,9 @@ async def test_create_ticket_success(client, auth_employee):
     if not auth_employee:
         pytest.skip("No auth token")
 
+    from src.assignment.rate_limiter import reset_rate_limiter
+    reset_rate_limiter()
+
     resp = await client.post(
         "/api/v1/tickets",
         json={

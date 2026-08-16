@@ -6,7 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:product-guards": "node scripts/verify-product-guards.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.101.4",

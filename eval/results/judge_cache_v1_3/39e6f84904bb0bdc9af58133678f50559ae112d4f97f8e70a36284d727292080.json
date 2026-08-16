@@ -1,0 +1,25 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "UNSUPPORTED_CLAIM"
+    ],
+    "unsupported_claims": [
+      "Yêu cầu này cần được thực hiện qua workflow ticket có xác nhận và phân quyền phù hợp"
+    ],
+    "missing_points": [
+      "Kiểm tra quyền/status.",
+      "Action tool.",
+      "Chỉ xác nhận sau Tool Result."
+    ],
+    "brief_rationale": "Lời giải không dựa trên bất kỳ bằng chứng nào được cung cấp.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

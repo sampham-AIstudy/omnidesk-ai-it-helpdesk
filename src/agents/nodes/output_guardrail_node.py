@@ -5,7 +5,7 @@ Runs after RAG synthesis to sanitize output for PII, leaked secrets, or credenti
 """
 import logging
 import re
-from typing import Any, Dict
+from typing import Any
 
 from src.agents.state import TicketAgentState
 from src.guardrails.output_guardrails import format_plain_text_response, redact_secrets_and_pii
@@ -22,8 +22,8 @@ SECRET_PATTERNS = [
 ]
 
 
-@traced_async_operation("guardrail.output")
-async def output_guardrail_node(state: TicketAgentState) -> Dict[str, Any]:
+@traced_async_operation("ai.guardrail.output")
+async def output_guardrail_node(state: TicketAgentState) -> dict[str, Any]:
     """Step 2 Output Guardrail Node: Sanitizes output text."""
     solution = state.get("suggested_solution", "")
     if not solution:

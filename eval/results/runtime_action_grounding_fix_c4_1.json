@@ -1,0 +1,53 @@
+{
+  "version": "runtime_action_grounding_fix_c4_1",
+  "recorded_at": "2026-08-15",
+  "scope": "C4.1 standalone Workspace Chat action-grounding only",
+  "source_artifacts": [
+    "eval/results/product_current_state_v1_4.md",
+    "eval/results/runtime_stability_audit_v1_0.md",
+    "eval/results/runtime_stability_audit_v1_0.json"
+  ],
+  "verified_reproduction": {
+    "message": "Tôi cần gặp chuyên viên IT để hỗ trợ",
+    "route": "knowledge",
+    "paths": ["POST /api/v1/chat", "POST /api/v1/chat/stream", "POST /api/v1/chat/conversations/{id}/messages"],
+    "pre_fix_result": "Fabricated technician handoff without authoritative ticket/workflow action",
+    "root_cause": "The Workspace RAG and SSE generation branches had no ActionResult/NOT_INVOKED gate; only the action_request route used action grounding."
+  },
+  "fix": {
+    "canonical_primitive": "src/services/action_grounding.py",
+    "new_control_boundary": "Pre-retrieval/pre-generation Workspace handoff gate",
+    "trusted_state_when_no_tool": "NOT_INVOKED",
+    "fake_tool_added": false,
+    "ticket_workflow_changed": false,
+    "prompts_or_retrieval_changed": false
+  },
+  "endpoint_parity": {
+    "chat": "NOT_INVOKED safe response",
+    "stream": "done-only safe response; no unsafe token emission",
+    "conversation_messages": "inherits chat_with_agent gate and persists safe response"
+  },
+  "runtime_after_fix": {
+    "chat_handoff": "200 safe",
+    "chat_confirmation": "200 safe",
+    "chat_workflow_guidance": "200 safe",
+    "stream": "200 done-only safe",
+    "conversation": "200 safe persisted reply",
+    "controlled_requests": 4,
+    "unexpected_5xx": 0
+  },
+  "validation": {
+    "python_compile": "pass",
+    "ruff_changed_scope": "pass",
+    "focused_action_grounding_routing": "23 passed",
+    "auth_access_action_routing_c4_1": "34 passed",
+    "full_service_request_e2e": "23 passed",
+    "production_workflow_plus_c1_e2e": "18 passed",
+    "full_e2e": "41 passed",
+    "test_eval": "93 passed",
+    "guardrail_pipeline": "2 stale assertion failures; runtime blocking behavior remains correct; not changed by C4.1"
+  },
+  "resolved_error_ids": ["RTE-006"],
+  "remaining_release_blockers": ["RTE-005 service request routing", "RTE-003 Chroma embedding backend drift"],
+  "verdict": "C4.1 PASS; overall release NOT_READY"
+}

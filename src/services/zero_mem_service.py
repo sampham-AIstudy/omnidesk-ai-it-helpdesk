@@ -23,10 +23,15 @@ from src.models.episodic_memory import EpisodicMemoryEntity, EpisodicMemoryTrace
 from src.models.ticket import Ticket
 from src.models.ticket_message import TicketMessage
 from src.models.user import User, UserRole
-from src.services.rag_service import embed_query, get_episodic_memory_collection, scan_indirect_injection
+from src.services.rag_service import (
+    embed_query_for_collection,
+    get_episodic_memory_collection,
+    scan_indirect_injection,
+)
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
+embed_query = embed_query_for_collection
 
 _TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9_.-]{1,}|\b\d{1,3}(?:\.\d{1,3}){3}\b")
 _ERROR_RE = re.compile(r"(?:error|err|code|ma loi|mã lỗi)\s*[:#-]?\s*([A-Za-z][A-Za-z0-9_-]{2,}|\d{3,8})", re.I)
@@ -167,7 +172,13 @@ async def _upsert_trace(
     except Exception as exc:
         logger.debug("Episodic FTS index skipped: %s", exc)
     metadata = {"trace_id": trace_id, "ticket_id": ticket.id, "tenant_id": values["tenant_id"], "department": values["department"], "owner_user_id": ticket.submitter_id, "source_type": source_type, "sequence_no": sequence_no}
-    await asyncio.to_thread(lambda: get_episodic_memory_collection().upsert(ids=[trace_id], documents=[content], embeddings=[embed_query(content)], metadatas=[metadata]))
+    collection = get_episodic_memory_collection()
+    await asyncio.to_thread(
+        lambda: collection.upsert(
+            ids=[trace_id], documents=[content],
+            embeddings=[embed_query_for_collection(content, collection)], metadatas=[metadata],
+        )
+    )
 
 
 async def index_ticket_trace(db: AsyncSession, ticket: Ticket, owner: User | None = None) -> None:
@@ -228,7 +239,12 @@ async def _graph_scores(db: AsyncSession, profile: QueryProfile) -> dict[str, fl
 
 def _dense_scores(query: str) -> dict[str, float]:
     try:
-        result = get_episodic_memory_collection().query(query_embeddings=[embed_query(query)], n_results=settings.zero_mem_primary_candidates * 3, include=["metadatas", "distances"])
+        collection = get_episodic_memory_collection()
+        result = collection.query(
+            query_embeddings=[embed_query_for_collection(query, collection)],
+            n_results=settings.zero_mem_primary_candidates * 3,
+            include=["metadatas", "distances"],
+        )
         metadata = result.get("metadatas", [[]])[0]
         distances = result.get("distances", [[]])[0]
         return {str(item.get("trace_id")): max(0.0, 1.0 - float(distance)) for item, distance in zip(metadata, distances) if item.get("trace_id")}

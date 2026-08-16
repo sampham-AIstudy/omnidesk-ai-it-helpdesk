@@ -79,9 +79,10 @@ export default function TechQueuePage() {
     lowConfidence: tickets.filter((ticket) => (ticket.confidence_score ?? 1) < 0.6).length,
   }), [tickets]);
 
-  let ragSources: string[] = [];
+  let ragSources: Array<string | { label?: string; url?: string; kind?: string }> = [];
   try {
-    ragSources = JSON.parse(selectedTicket?.rag_sources ?? '[]');
+    const parsed = JSON.parse(selectedTicket?.rag_sources ?? '[]');
+    ragSources = Array.isArray(parsed) ? parsed : [];
   } catch {
     ragSources = [];
   }
@@ -199,7 +200,14 @@ export default function TechQueuePage() {
                   <div style={{ color: 'var(--text-secondary)', fontSize: 12, lineHeight: 1.65, whiteSpace: 'pre-wrap' }}>{selectedTicket.suggested_solution}</div>
                   {ragSources.length > 0 && (
                     <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 9 }}>
-                      {ragSources.slice(0, 3).map((source) => <span key={source} className="badge badge-in_progress">{source}</span>)}
+                      {ragSources.slice(0, 3).map((source, idx) => {
+                        const label = typeof source === 'string' ? source : source?.label || source?.url || 'Nguồn RAG';
+                        return (
+                          <span key={idx} className="badge badge-in_progress">
+                            {label}
+                          </span>
+                        );
+                      })}
                     </div>
                   )}
                 </div>

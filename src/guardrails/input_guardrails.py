@@ -22,7 +22,7 @@ INJECTION_PATTERNS = [
     # English patterns
     r"ignore\s+(all\s+)?(previous|system)\s+instructions?",
     r"reveal\s+(your\s+)?system\s+prompt",
-    r"show\s+(hidden\s+)?prompt",
+    r"show\s+(hidden\s+)?(system\s+)?prompt",
     r"developer\s+message",
     r"override\s+policy",
     r"forget\s+(all\s+)?rules",
@@ -30,6 +30,7 @@ INJECTION_PATTERNS = [
     r"act\s+as\s+dan",
     r"disable\s+guardrails?",
     r"bypass\s+security",
+    r"bypass\s+guardrails?",
     r"ignore\s+(the\s+)?knowledge\s+base",
     r"return\s+secrets?",
     r"show\s+api\s+key",
@@ -48,21 +49,19 @@ INJECTION_PATTERNS = [
     r"system\s+override\s+successful",
     r"all\s+hidden\s+instructions",
 
-    # Russian / Cyrillic prompt-injection patterns. These are deliberately
-    # behavior-based, so an ordinary Russian-language IT support request is
-    # still allowed while system-override and secret-extraction requests are
-    # blocked before retrieval or an LLM call.
+    # Russian / Cyrillic prompt-injection patterns.
     r"игнорир\w*\s+(?:все\s+)?(?:предыдущ\w*|инструкц\w*|огранич\w*)",
     r"переопределени\w*\s+систем\w*",
     r"(?:раскрой|перечисл|извлеч)\w*.*(?:системн\w*\s+(?:подсказ|инструкц)|секрет\w*|токен\w*|парол\w*)",
     r"приоритет\w*\s+(?:косвенн\w*\s+)?внедрен\w*",
 
-    # Vietnamese patterns (Unicode escape format)
-    r"b\u1ecf\s+qua\s+h\u01b0\u1edbng\s+d\u1eabn\s+tr\u01b0\u1edbc",
+    # Vietnamese patterns
+    r"b\u1ecf\s+qua\s+(?:m\u1ecdi\s+)?h\u01b0\u1edbng\s+d\u1eabn\s+tr\u01b0\u1edbc",
+    r"b\u1ecf\s+qua\s+(?:m\u1ecdi\s+)?guardrails?",
     r"qu\u00ean\s+m\u1ecdi\s+quy\s+t\u1eafc",
     r"hi\u1ec7n\s+system\s+prompt",
     r"ti\u1ebft\s+l\u1ed9\s+prompt\s+h\u1ec7\s+th\u1ed1ng",
-    r"v\u00f4\s+hi\u1ec7u\s+h\u00f3a\s+guardrail",
+    r"v\u00f4\s+hi\u1ec7u\s+h\u00f3a\s+guardrails?",
     r"b\u1ecf\s+qua\s+ch\u00ednh\s+s\u00e1ch",
     r"hi\u1ec3n\s+th\u1ecb\s+m\u1eadt\s+kh\u1ea9u",
     r"l\u1ea5y\s+api\s+key",
@@ -93,19 +92,21 @@ OFF_TOPIC_PATTERNS = [
 COMPILED_INJECTION_PATTERNS = [re.compile(p, re.IGNORECASE) for p in INJECTION_PATTERNS]
 COMPILED_OFF_TOPIC_PATTERNS = [re.compile(p, re.IGNORECASE) for p in OFF_TOPIC_PATTERNS]
 
-# This boundary is intentionally deterministic.  A user-requested role claim
-# or an adversarial request must be rejected before it can influence routing,
-# retrieval, memory lookup, or any tool selection.
 _SECURITY_REQUEST_PATTERNS: list[tuple[str, re.Pattern[str], str]] = [
     (
         "SYSTEM_PROMPT_EXTRACTION",
-        re.compile(r"(?:bo qua.*(?:huong dan|quy tac)|(?:system|developer)\s+prompt|hidden\s+instructions)", re.I),
+        re.compile(r"(?:bo qua.*(?:huong dan|quy tac|guardrail|instructions?|rules?)|(?:system|developer)\s+prompt|hidden\s+instructions)", re.I),
         "Tôi không thể cung cấp system prompt, developer instructions hoặc chính sách nội bộ không công khai.",
     ),
     (
         "CREDENTIAL_REQUEST",
-        re.compile(r"(?:toi la admin|i am admin).*(?:mat khau|password|credential|database|production)", re.I),
+        re.compile(r"(?:toi la|i am|gia su|gia vo|dong vai|coi nhu|assume).*admin.*(?:mat khau|password|credential|database|production|bo qua|override|quyen)", re.I),
         "Quyền hạn không thể được xác nhận từ nội dung chat. Tôi không thể tiết lộ thông tin xác thực hoặc cấp quyền khi chưa có xác thực RBAC hợp lệ.",
+    ),
+    (
+        "DATA_EXFILTRATION",
+        re.compile(r"(?:liet ke|danh sach|cho toi|xem|lay|list|extract)\s+(?:thong tin\s+)?(?:tai khoan|mat khau|email|sdt|profile|credentials?)\s+(?:cua\s+)?(?:tat ca|toan bo|moi|all)\s+(?:nhan vien|user|nguoi dung|tai khoan|employees)", re.I),
+        "Tôi không thể trích xuất hoặc cung cấp danh sách dữ liệu hàng loạt của người dùng khác do chính sách bảo mật thông tin nội bộ.",
     ),
     (
         "SECRET_REQUEST",
@@ -249,8 +250,9 @@ def detect_injection(text: str) -> dict[str, Any]:
 
     # 1. Tier 0: Fast Local Compiled Regex Detection (Early-Exit < 1ms)
     matched_patterns = []
+    folded = _fold_vietnamese(normalized)
     for pattern in COMPILED_INJECTION_PATTERNS:
-        if pattern.search(normalized):
+        if pattern.search(normalized) or pattern.search(folded):
             matched_patterns.append(pattern.pattern)
 
     if matched_patterns:

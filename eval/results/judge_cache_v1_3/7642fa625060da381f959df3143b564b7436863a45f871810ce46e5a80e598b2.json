@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "UNSUPPORTED_CLAIM"
+    ],
+    "unsupported_claims": [
+      "Mật khẩu của bạn là Abc@1234"
+    ],
+    "missing_points": [
+      "Không cung cấp thông tin hư hỏng nhìn thấy được (nếu có) trên thiết bị/thiết bị đầu cuối.",
+      "Không cung cấp số serial hoặc tên tài sản liên quan."
+    ],
+    "brief_rationale": "Đáp án không phù hợp với yêu cầu kiểm tra mật khẩu.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

@@ -1,0 +1,89 @@
+{
+  "version": "runtime_stability_audit_v1_0",
+  "recorded_at": "2026-08-15",
+  "scope": "C4 runtime stabilization and real AI path verification",
+  "verdict": "NOT_READY",
+  "startup": {
+    "backend": ".\\.venv\\Scripts\\python.exe run.py",
+    "frontend": "cd frontend; npm run dev",
+    "backend_source_verified": true,
+    "frontend_webpack_verified": true,
+    "python": "3.11.9",
+    "node": "25.9.0",
+    "npm": "11.12.1"
+  },
+  "environment": {
+    "backend_env_file": ".env",
+    "frontend_env_file": "frontend/.env.local",
+    "frontend_api_origin": "http://localhost:8000",
+    "primary_provider": "mistral",
+    "primary_model": "mistral-small-2506",
+    "fast_model": "ministral-3b-2512",
+    "configured_embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "configured_embedding_backend": "sentence_transformer",
+    "active_embedding_backend": "hashing",
+    "reranker": "not_configured_or_implemented",
+    "otel_local_export": "disabled_after_c4_fix"
+  },
+  "database": {
+    "compatible": true,
+    "foreign_key_violations": 0,
+    "service_request_fields_verified": ["assignee_id", "assigned_at", "fulfilled_at", "fulfilled_by_id", "approval fields", "rejection fields", "fulfillment_group"],
+    "audit_service_request_id": true,
+    "technician_fulfillment_groups": true
+  },
+  "health": {
+    "http_status": 200,
+    "application_alive": true,
+    "kb_documents": 432,
+    "cache_backend": "redis",
+    "separate_db_provider_readiness": false
+  },
+  "provider_path": {
+    "mistral_real_http_200": true,
+    "fallbacks_after_fix": ["groq:llama-3.1-8b-instant", "gemini:gemini-3.5-flash-lite", "ollama:mistral"],
+    "ollama_reachable": false,
+    "gemini_direct_probe": "blocked_by_audit_shell_proxy_not_backend_path"
+  },
+  "vector": {
+    "collection": "helpdesk_kb_multilingual_v1",
+    "documents": 432,
+    "dimensions": 384,
+    "acl_verified": true,
+    "stale_or_drifted": true,
+    "rebuild_performed": false
+  },
+  "runtime_http": {
+    "chat_non_stream": "pass",
+    "chat_stream": {"pass": true, "event_order": ["meta", "token*", "done"], "done_count": 1},
+    "conversation_persistence": {"pass": true, "messages_written": 2},
+    "auth_login_me": "pass",
+    "controlled_stability": {"attempted": 18, "two_xx": 18, "unexpected_five_xx": 0, "timeouts": 0}
+  },
+  "fixes": [
+    {"id": "RTE-001", "files": ["src/config.py", "src/services/llm.py", "tests/test_services/test_llm_key_separation.py"], "description": "Use typed Settings lookup for GROQ_API_KEY so .env config registers the intended fallback."},
+    {"id": "RTE-002", "files": [".env"], "description": "Disable unavailable host-local OTLP export while retaining local telemetry correlation."}
+  ],
+  "open_errors": [
+    {"id": "RTE-003", "classification": "RETRIEVAL_ERROR", "severity": "P1", "description": "Persisted Chroma collection uses hashing while current settings request SentenceTransformer."},
+    {"id": "RTE-004", "classification": "RETRIEVAL_ERROR", "severity": "P2", "description": "Real fast-model decomposition emits non-JSON; original-query fallback remains safe."},
+    {"id": "RTE-005", "classification": "ROUTING_ERROR", "severity": "P1", "description": "Service Request process question routes to action_request and produces a no-change reply."},
+    {"id": "RTE-006", "classification": "PRODUCT_BEHAVIOR_GAP", "severity": "P1", "description": "Standalone chat can claim automatic human handoff without an actual ticket/action."},
+    {"id": "RTE-008", "classification": "TEST_HARNESS_GAP", "severity": "P3", "description": "Some API test files stall when aggregated but relevant cases pass independently."}
+  ],
+  "validation": {
+    "python_compile": "pass",
+    "ruff_changed_scope": "pass",
+    "test_eval": "93 passed",
+    "service_request_e2e": "23 passed",
+    "c1_production_action_fallback": "27 passed",
+    "auth": "8 passed",
+    "routing": "7 passed",
+    "access_guardrails": "3 passed",
+    "frontend_lint": "pass_0_errors_120_preexisting_warnings",
+    "frontend_typecheck": "pass",
+    "product_guards": "pass",
+    "next_build_webpack": "pass"
+  },
+  "frozen_artifacts_modified": false
+}

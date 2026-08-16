@@ -4,7 +4,14 @@ import json
 import httpx
 import pytest
 
-from eval.judge.semantic_judge import SemanticJudgeAdapter, parse_judge_output
+from eval.judge.semantic_judge import (
+    SEMANTIC_JUDGE_V1_3,
+    JudgeResult,
+    SemanticJudgeAdapter,
+    final_pass_decision,
+    judge_prompt,
+    parse_judge_output,
+)
 
 VALID = {
     "faithfulness": 1.0, "completeness": 1.0, "relevance": 1.0,
@@ -111,3 +118,43 @@ def test_schema_and_invalid_json_are_infra_errors(tmp_path):
 
     result = call(make_adapter(malformed, tmp_path / "raw"))
     assert result.infra_error_type == "TRUNCATED_RESPONSE" and len(raw_calls) == 2
+
+
+def test_v1_3_is_route_aware_and_keeps_short_safe_responses_complete():
+    prompt = judge_prompt("q", "context", "answer", {"response_mode": "SECURITY_REFUSAL"}, [], version=SEMANTIC_JUDGE_V1_3)
+    assert "SECURITY_REFUSAL" in prompt
+    assert "concise safe refusal is complete" in prompt
+    assert "PARTIAL_ANSWER" in prompt
+
+
+def test_final_pass_has_non_compensatory_hallucination_hard_gate():
+    result = JudgeResult(0.0, 1.0, 1.0, 1.0, 1.0, False, ["HALLUCINATION"], ["false fact"], [], "Unsupported material claim.")
+    decision = final_pass_decision(result)
+    assert not decision["passed"]
+    assert decision["decision"] == "HARD_GATE"
+    assert decision["hard_gates"] == ["HALLUCINATION"]
+
+
+def test_final_pass_rejects_incorrect_refusal_without_averaging_scores():
+    result = JudgeResult(1.0, 0.5, 1.0, 0.0, 1.0, False, ["INCORRECT_REFUSAL"], [], ["supported answer"], "Refused supported evidence.")
+    decision = final_pass_decision(result)
+    assert not decision["passed"]
+    assert decision["decision"] == "SEMANTIC_FAILURE"
+
+
+def test_gt_041_schema_behavior_retries_once_then_records_valid_result(tmp_path):
+    """GT-041 was the historical schema-error case; retry stays bounded."""
+    calls = []
+    invalid = dict(VALID)
+    invalid.pop("missing_points")
+
+    async def transport(_):
+        calls.append(1)
+        content = json.dumps(invalid if len(calls) == 1 else VALID)
+        return response({"choices": [{"message": {"content": content}}]})
+
+    result = call(make_adapter(transport, tmp_path))
+    assert result.successful
+    assert len(calls) == 2
+    assert result.observations[0].infra_error_type == "SCHEMA_MISMATCH"
+    assert result.observations[1].schema_status == "OK"

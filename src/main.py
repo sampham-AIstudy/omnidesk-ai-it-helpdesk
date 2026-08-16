@@ -5,14 +5,24 @@ Tự động: init DB, seed demo users, seed knowledge base vào ChromaDB
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
+from time import perf_counter
+from uuid import uuid4
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import Response
 
 from src.api.routes import router
 from src.config import get_settings
-from src.observability.telemetry import configure_telemetry, instrument_sqlalchemy
-from src.observability.tracing import current_trace_id
+from src.observability.telemetry import (
+    configure_telemetry,
+    instrument_sqlalchemy,
+    reset_request_id,
+    set_request_id,
+    shutdown_telemetry,
+)
+from src.observability.tracing import current_trace_id, record_http_request
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -21,8 +31,12 @@ settings = get_settings()
 
 async def _seed_demo_users(db):
     """Tạo demo users nếu chưa có."""
+    from sqlalchemy import select
+
+    from src.models.technician_fulfillment_group import TechnicianFulfillmentGroup
     from src.models.user import CompanyUnit, UserRole
     from src.services.auth_service import create_user, get_user_by_username
+    from src.services.service_request_service import canonical_fulfillment_groups
 
     demo_users = [
         {
@@ -104,9 +118,25 @@ async def _seed_demo_users(db):
             await create_user(db, **user_data)
             seeded += 1
 
-    if seeded:
+    # The demo technician is explicitly provisioned for every catalog group so
+    # sample workflows retain a usable technician. This never grants groups to
+    # any other existing or newly-created technician.
+    demo_technician = await get_user_by_username(db, "tech1")
+    if demo_technician:
+        result = await db.execute(
+            select(TechnicianFulfillmentGroup.fulfillment_group).where(
+                TechnicianFulfillmentGroup.technician_id == demo_technician.id
+            )
+        )
+        missing_groups = set(canonical_fulfillment_groups()) - set(result.scalars())
+        db.add_all([
+            TechnicianFulfillmentGroup(technician_id=demo_technician.id, fulfillment_group=group)
+            for group in sorted(missing_groups)
+        ])
+
+    if seeded or demo_technician:
         await db.commit()
-        logger.info(f"Seeded {seeded} demo users")
+        logger.info(f"Seeded {seeded} demo users and explicit tech1 group memberships")
 
 
 async def _seed_knowledge_base(db):
@@ -114,13 +144,14 @@ async def _seed_knowledge_base(db):
     from sqlalchemy import select
 
     from src.data.knowledge_base import get_all_kb_entries
+    from src.data.service_request_kb import SERVICE_REQUEST_KB_ENTRY
     from src.models.knowledge_base import KnowledgeBaseEntry
     from src.services.rag_service import (
         get_collection_count,
         get_indexed_document_ids,
         index_document,
     )
-    entries = get_all_kb_entries()
+    entries = list(get_all_kb_entries()) + [SERVICE_REQUEST_KB_ENTRY]
     indexed_ids = get_indexed_document_ids([entry["id"] for entry in entries])
     logger.info("Syncing %d KB entries; %d already indexed", len(entries), len(indexed_ids))
 
@@ -172,6 +203,40 @@ async def _seed_knowledge_base(db):
     logger.info(f"KB seeding complete. ChromaDB now has {get_collection_count()} documents")
 
 
+async def _provision_initial_admin(
+    db,
+    email: str,
+    username: str = "admin",
+    password: str = "",
+    full_name: str = "System Administrator",
+):
+    """Tạo tài khoản quản trị viên khởi tạo cho production nếu được cung cấp."""
+    from src.models.user import CompanyUnit, UserRole
+    from src.services.auth_service import create_user, get_user_by_email, get_user_by_username
+
+    if not email or not password:
+        return
+
+    existing_user = await get_user_by_username(db, username)
+    existing_email = await get_user_by_email(db, email.lower())
+    if not existing_user and not existing_email:
+        await create_user(
+            db,
+            username=username,
+            email=email.lower(),
+            full_name=full_name,
+            password=password,
+            role=UserRole.ADMIN,
+            company_unit=CompanyUnit.CORPORATE,
+            department="IT",
+            is_vip=False,
+        )
+        await db.commit()
+        logger.info("Provisioned initial production administrator '%s'", username)
+    else:
+        logger.info("Initial administrator '%s' already exists; skipping provisioning", username)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup: init DB + seed data + LLM cache. Shutdown: cleanup."""
@@ -190,9 +255,25 @@ async def lifespan(app: FastAPI):
     await init_db()
     logger.info("✅ Database initialized")
 
-    # Seed demo data
+    # Seed data
     async with AsyncSessionLocal() as db:
-        await _seed_demo_users(db)
+        if settings.is_demo_seed_enabled:
+            await _seed_demo_users(db)
+        else:
+            if settings.initial_admin_email and settings.initial_admin_password:
+                await _provision_initial_admin(
+                    db,
+                    email=settings.initial_admin_email,
+                    username=settings.initial_admin_username or "admin",
+                    password=settings.initial_admin_password,
+                    full_name=settings.initial_admin_full_name or "System Administrator",
+                )
+            else:
+                logger.info(
+                    "Demo user seeding is disabled (APP_ENV=%s, ENABLE_DEMO_SEED=%s)",
+                    settings.app_env,
+                    settings.enable_demo_seed,
+                )
         await _seed_knowledge_base(db)
         # Reuse the RAG embedding backend to make legacy tickets discoverable for duplicate checks.
         from src.services.duplicate_detection_service import rebuild_ticket_duplicate_index
@@ -201,6 +282,7 @@ async def lifespan(app: FastAPI):
     logger.info("✅ Ready to serve requests")
     yield
     logger.info("Shutting down Help Desk AI Agent...")
+    shutdown_telemetry()
 
 
 app = FastAPI(
@@ -211,6 +293,10 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+# Request Size Hard Limit Guard
+from src.guardrails.request_size_guard import RequestSizeLimitMiddleware
+app.add_middleware(RequestSizeLimitMiddleware)
 
 # CORS
 app.add_middleware(
@@ -223,17 +309,31 @@ app.add_middleware(
 
 # Trace ID Middleware. The header is for support/UI correlation only; W3C
 # traceparent propagation and span creation are handled by OpenTelemetry.
-from starlette.requests import Request
-from starlette.responses import Response
-
 @app.middleware("http")
 async def trace_id_middleware(request: Request, call_next):
-    response: Response = await call_next(request)
-    trace_id = current_trace_id()
-    if trace_id:
-        request.state.trace_id = trace_id
-        response.headers["X-Trace-ID"] = trace_id
-    return response
+    # Request ID is local support correlation only. W3C traceparent remains the
+    # distributed identity and is created/continued by FastAPI instrumentation.
+    request_id = request.headers.get("X-Request-ID") or uuid4().hex
+    token = set_request_id(request_id[:128])
+    started = perf_counter()
+    try:
+        response: Response = await call_next(request)
+        trace_id = current_trace_id()
+        if trace_id:
+            request.state.trace_id = trace_id
+            response.headers["X-Trace-ID"] = trace_id
+        response.headers["X-Request-ID"] = request_id[:128]
+        return response
+    finally:
+        route = getattr(request.scope.get("route"), "path", None) or request.url.path
+        status_code = locals().get("response", None)
+        record_http_request(
+            route=route,
+            method=request.method,
+            status_code=status_code.status_code if status_code is not None else 500,
+            duration_ms=(perf_counter() - started) * 1000,
+        )
+        reset_request_id(token)
 
 # Routes
 app.include_router(router, prefix="/api/v1")

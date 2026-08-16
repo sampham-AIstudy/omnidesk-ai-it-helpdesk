@@ -1,0 +1,601 @@
+{
+  "experiment": "response_planner_exp1_2",
+  "metadata": {
+    "evaluation_lock": "evaluation_lock_v1_2.json",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_refreshed": false
+  },
+  "cases": [
+    {
+      "id": "GT-006",
+      "question": "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn.",
+      "old": {
+        "id": "GT-006",
+        "test_type": "incident_hardware",
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "question": "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn.",
+        "answer": "Mình đã ghi nhận laptop bị màn hình đen ngay sau va đập. Đây là sự cố phần cứng cần được kỹ thuật viên kiểm tra; bạn nên ngừng tác động thêm lên thiết bị. Mình không cần hỏi lại loại thiết bị, nguyên nhân va đập hoặc thời điểm xảy ra. Nếu tiện, bạn có thể bổ sung serial/mã tài sản hoặc ảnh hư hỏng để hỗ trợ tiếp nhận incident.",
+        "context_ids": [],
+        "used_sources": [],
+        "tool_results": [],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Không hỏi lại `\"sự cố có xảy ra sau va đập không\"`.",
+            "Hỏi tối thiểu thông tin còn thiếu phục vụ xử lý."
+          ],
+          "brief_rationale": "Lỗi abstention và hỏi lại thông tin không cần thiết."
+        },
+        "observability": [],
+        "infra_error_type": null,
+        "cache_hit": true,
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "status": "FAIL"
+      },
+      "new": {
+        "answer": "Mình đã ghi nhận laptop bị màn hình đen ngay sau va đập. Đây là sự cố phần cứng cần được kỹ thuật viên kiểm tra; bạn nên ngừng tác động thêm lên thiết bị. Mình không cần hỏi lại loại thiết bị, nguyên nhân va đập hoặc thời điểm xảy ra. Nếu tiện, bạn có thể bổ sung serial/mã tài sản hoặc ảnh hư hỏng để hỗ trợ tiếp nhận incident.",
+        "plan": {
+          "workflow_mode": "INCIDENT",
+          "coverage_mode": "FULL_ANSWER",
+          "requested_parts": [
+            "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn"
+          ],
+          "part_support": {
+            "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn": "SUPPORTED"
+          },
+          "answerable_claims": [
+            "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn"
+          ],
+          "unsupported_claims": [],
+          "missing_information": [],
+          "known_facts": {
+            "device": "laptop",
+            "symptom": "black_screen",
+            "physical_damage": "physical_impact",
+            "cause": "physical_impact",
+            "temporal_relation": "immediate_or_after_event"
+          },
+          "missing_required_facts": [],
+          "useful_for_diagnosis": [
+            "device",
+            "symptom",
+            "physical_damage",
+            "power_state"
+          ],
+          "optional_facts": [
+            "asset_or_serial",
+            "visible_damage"
+          ],
+          "primary_intent": "incident",
+          "secondary_intents": [],
+          "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+        },
+        "evaluation_metadata": {
+          "knowledge_answerability": "root_cause_unknown",
+          "workflow_actionability": true,
+          "blocking_clarification": []
+        },
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Short outcome rationale."
+        },
+        "observability": [
+          {
+            "attempt": 1,
+            "latency_ms": 859,
+            "http_status": 200,
+            "response_length": 932,
+            "parse_status": "OK",
+            "schema_status": "OK",
+            "infra_error_type": null
+          }
+        ],
+        "infra_error_type": null,
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "status": "PASS",
+        "planning_ms": 0.507,
+        "generator_calls": 0
+      },
+      "delta": "IMPROVED"
+    },
+    {
+      "id": "GT-023",
+      "question": "Tôi không kết nối được VPN.",
+      "old": {
+        "id": "GT-023",
+        "test_type": "network_vpn",
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "question": "Tôi không kết nối được VPN.",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\nVui lòng cung cấp thêm chi tiết hoặc liên hệ với bộ phận hỗ trợ kỹ thuật để được trợ giúp.",
+        "context_ids": [],
+        "used_sources": [],
+        "tool_results": [],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.0,
+          "relevance": 1.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "answer supported portions"
+          ],
+          "brief_rationale": "Lack of supported answer for supported portions."
+        },
+        "observability": [],
+        "infra_error_type": null,
+        "cache_hit": true,
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "status": "FAIL"
+      },
+      "new": {
+        "answer": "Dựa trên [kb-001], bạn có thể thử các bước sau để khắc phục lỗi kết nối VPN:\n\n1. Kiểm tra lại **username/password VPN** (thường khác email công ty).\n2. **Xóa profile VPN cũ** và tạo mới.\n3. Kiểm tra **firewall** trên máy tính local.\n4. Thử đổi **mạng kết nối** (sử dụng 4G thay cho WiFi).\n5. **Reset MFA app** nếu hệ thống yêu cầu 2FA.\n6. Nếu vẫn lỗi, liên hệ IT để **reset tài khoản VPN**.",
+        "plan": {
+          "workflow_mode": "INCIDENT",
+          "coverage_mode": "FULL_ANSWER",
+          "requested_parts": [
+            "Tôi không kết nối được VPN"
+          ],
+          "part_support": {
+            "Tôi không kết nối được VPN": "SUPPORTED"
+          },
+          "answerable_claims": [
+            "Tôi không kết nối được VPN"
+          ],
+          "unsupported_claims": [],
+          "missing_information": [],
+          "known_facts": {
+            "vpn_symptom": "connection_or_authentication_failure"
+          },
+          "missing_required_facts": [],
+          "useful_for_diagnosis": [
+            "vpn_symptom",
+            "error_message",
+            "authentication_state",
+            "network_availability",
+            "client_platform"
+          ],
+          "optional_facts": [
+            "device"
+          ],
+          "primary_intent": "incident",
+          "secondary_intents": [],
+          "incident_domain": "VPN_CONNECTIVITY"
+        },
+        "evaluation_metadata": {
+          "workflow_actionability": true
+        },
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer accurately reflects the authorized context and provides a clear, step-by-step solution to the user's issue."
+        },
+        "observability": [
+          {
+            "attempt": 1,
+            "latency_ms": 922,
+            "http_status": 200,
+            "response_length": 1036,
+            "parse_status": "OK",
+            "schema_status": "OK",
+            "infra_error_type": null
+          }
+        ],
+        "infra_error_type": null,
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "status": "PASS",
+        "planning_ms": 0.153,
+        "generator_calls": 1
+      },
+      "delta": "IMPROVED"
+    },
+    {
+      "id": "GT-047",
+      "question": "VPN dùng cổng nào và tài khoản bị khóa sau bao nhiêu lần nhập sai?",
+      "old": {
+        "id": "GT-047",
+        "test_type": "partial_context",
+        "response_mode": "PARTIAL_ANSWER",
+        "question": "VPN dùng cổng nào và tài khoản bị khóa sau bao nhiêu lần nhập sai?",
+        "answer": "Theo thông tin được cung cấp: Corporate VPN gateway uses port 443. Với phần 'tài khoản bị khóa sau bao nhiêu lần nhập sai', tài liệu hiện có không đủ để xác định chính xác.",
+        "context_ids": [
+          "eval-gt047-vpn-port"
+        ],
+        "used_sources": [],
+        "tool_results": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Phần account lockout: nói chưa đủ thông tin."
+          ],
+          "brief_rationale": "Phần tài khoản bị khóa không được trả lời đầy đủ."
+        },
+        "observability": [],
+        "infra_error_type": null,
+        "cache_hit": true,
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "status": "PASS"
+      },
+      "new": {
+        "answer": "Theo thông tin được cung cấp: Corporate VPN gateway uses port 443. Với phần 'tài khoản bị khóa sau bao nhiêu lần nhập sai', bằng chứng được cấp phép hiện chưa đủ để xác định chính xác.",
+        "plan": {
+          "workflow_mode": "INCIDENT",
+          "coverage_mode": "PARTIAL_ANSWER",
+          "requested_parts": [
+            "VPN dùng cổng nào",
+            "tài khoản bị khóa sau bao nhiêu lần nhập sai"
+          ],
+          "part_support": {
+            "VPN dùng cổng nào": "SUPPORTED",
+            "tài khoản bị khóa sau bao nhiêu lần nhập sai": "UNSUPPORTED"
+          },
+          "answerable_claims": [
+            "VPN dùng cổng nào"
+          ],
+          "unsupported_claims": [
+            "tài khoản bị khóa sau bao nhiêu lần nhập sai"
+          ],
+          "missing_information": [
+            "tài khoản bị khóa sau bao nhiêu lần nhập sai"
+          ],
+          "known_facts": {},
+          "missing_required_facts": [],
+          "useful_for_diagnosis": [
+            "vpn_symptom",
+            "error_message",
+            "authentication_state",
+            "network_availability",
+            "client_platform"
+          ],
+          "optional_facts": [
+            "device"
+          ],
+          "primary_intent": "incident",
+          "secondary_intents": [],
+          "incident_domain": "VPN_CONNECTIVITY"
+        },
+        "evaluation_metadata": {
+          "workflow_actionability": false
+        },
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "tài khoản bị khóa sau bao nhiêu lần nhập sai"
+          ],
+          "brief_rationale": "Phần tài khoản bị khóa sau bao nhiêu lần nhập sai không được trả lời đầy đủ."
+        },
+        "observability": [
+          {
+            "attempt": 1,
+            "latency_ms": 905,
+            "http_status": 200,
+            "response_length": 1028,
+            "parse_status": "OK",
+            "schema_status": "OK",
+            "infra_error_type": null
+          }
+        ],
+        "infra_error_type": null,
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "status": "PASS",
+        "planning_ms": 0.112,
+        "generator_calls": 0
+      },
+      "delta": "UNCHANGED"
+    },
+    {
+      "id": "GT-048",
+      "question": "Điều kiện xin laptop mới là gì và mất bao lâu để được cấp?",
+      "old": {
+        "id": "GT-048",
+        "test_type": "partial_context",
+        "response_mode": "PARTIAL_ANSWER",
+        "question": "Điều kiện xin laptop mới là gì và mất bao lâu để được cấp?",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể cung cấp thông tin chính xác về điều kiện xin laptop mới và thời gian cấp phát, tôi cần bằng chứng được ủy quyền (authorized evidence) như:\n- Chính sách/quy trình nội bộ về cấp phát thiết bị\n- Service Catalog hoặc form yêu cầu\n- Thời gian xử lý SLA theo quy định\n- Điều kiện đủ điều kiện (role, phòng ban, lý do, ngân sách, v.v.)\n\nVui lòng cung cấp nguồn evidence hợp lệ hoặc liên hệ bộ phận IT/HR để được hỗ trợ.",
+        "context_ids": [],
+        "used_sources": [],
+        "tool_results": [],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 0.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Điều kiện xin laptop mới",
+            "Thời gian cấp phát"
+          ],
+          "brief_rationale": "Đáp án không cung cấp thông tin chính xác về điều kiện xin laptop mới và thời gian cấp phát."
+        },
+        "observability": [],
+        "infra_error_type": null,
+        "cache_hit": true,
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "status": "FAIL"
+      },
+      "new": {
+        "answer": "Theo thông tin được cung cấp: Replacement-laptop eligibility requires an approved business need, manager approval, and confirmation that the employee needs a company device for the assigned role. Với phần 'mất bao lâu để được cấp', bằng chứng được cấp phép hiện chưa đủ để xác định chính xác.",
+        "plan": {
+          "workflow_mode": "KNOWLEDGE",
+          "coverage_mode": "PARTIAL_ANSWER",
+          "requested_parts": [
+            "Điều kiện xin laptop mới là gì",
+            "mất bao lâu để được cấp"
+          ],
+          "part_support": {
+            "Điều kiện xin laptop mới là gì": "SUPPORTED",
+            "mất bao lâu để được cấp": "UNSUPPORTED"
+          },
+          "answerable_claims": [
+            "Điều kiện xin laptop mới là gì"
+          ],
+          "unsupported_claims": [
+            "mất bao lâu để được cấp"
+          ],
+          "missing_information": [
+            "mất bao lâu để được cấp"
+          ],
+          "known_facts": {},
+          "missing_required_facts": [],
+          "useful_for_diagnosis": [],
+          "optional_facts": [],
+          "primary_intent": null,
+          "secondary_intents": [],
+          "incident_domain": null
+        },
+        "evaluation_metadata": {
+          "workflow_actionability": false
+        },
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "mất bao lâu để được cấp"
+          ],
+          "brief_rationale": "Đáp án không đầy đủ, nhưng không bịa fulfillment time."
+        },
+        "observability": [
+          {
+            "attempt": 1,
+            "latency_ms": 984,
+            "http_status": 200,
+            "response_length": 1049,
+            "parse_status": "OK",
+            "schema_status": "OK",
+            "infra_error_type": null
+          }
+        ],
+        "infra_error_type": null,
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "status": "PASS",
+        "planning_ms": 0.32,
+        "generator_calls": 0
+      },
+      "delta": "IMPROVED"
+    },
+    {
+      "id": "GT-068",
+      "question": "Laptop tôi hỏng rồi và tôi muốn xin laptop thay thế.",
+      "old": {
+        "id": "GT-068",
+        "test_type": "multi_intent",
+        "response_mode": "MULTI_INTENT",
+        "question": "Laptop tôi hỏng rồi và tôi muốn xin laptop thay thế.",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu của bạn.\n\nĐể hỗ trợ bạn xin laptop thay thế, tôi cần xác định:\n1. **Laptop hỏng có thuộc danh mục thiết bị được bảo hành/thay thế theo chính sách của tổ chức không?** (ví dụ: hỏng phần cứng do lỗi sản xuất, hết bảo hành, hay hỏng do lỗi người dùng)\n2. **Bạn đã liên hệ bộ phận hỗ trợ kỹ thuật (IT Helpdesk) để xác nhận lỗi chưa?** (thường yêu cầu ticket/incident/service request được tạo trước khi xem xét thay thế)\n3. **Bạn có thuộc đối tượng được cấp laptop thay thế theo chính sách không?** (ví dụ: nhân viên chính thức, hợp đồng dài hạn, hay yêu cầu đặc biệt)\n\n**Vui lòng cung cấp:**\n- Mã ticket/incident/service request (nếu đã tạo).\n- Thông tin về lỗi cụ thể (nếu đã được IT xác nhận).\n- Chính sách bảo hành/thay thế thiết bị của tổ chức (nếu bạn có).\n\nTôi sẽ hỗ trợ bạn theo đúng quy trình khi có đủ thông tin.",
+        "context_ids": [],
+        "used_sources": [],
+        "tool_results": [],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 0.5,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Đáp án không cung cấp thông tin cụ thể về quy trình xử lý yêu cầu"
+          ],
+          "brief_rationale": "Đáp án không cung cấp thông tin cụ thể về quy trình xử lý yêu cầu."
+        },
+        "observability": [],
+        "infra_error_type": null,
+        "cache_hit": true,
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "status": "FAIL"
+      },
+      "new": {
+        "answer": "Bạn đang có hai yêu cầu: (1) incident: laptop bị hỏng; và (2) service request: xin laptop thay thế. Mình chưa tạo incident hoặc yêu cầu thay thế vì chưa có kết quả tool đáng tin cậy. Để tiếp nhận incident, bạn có thể cho biết triệu chứng hiện tại; yêu cầu thay thế sẽ được xử lý theo quy trình sau khi sự cố được đánh giá.",
+        "plan": {
+          "workflow_mode": "MULTI_INTENT",
+          "coverage_mode": "PARTIAL_ANSWER",
+          "requested_parts": [
+            "Laptop tôi hỏng rồi",
+            "tôi muốn xin laptop thay thế"
+          ],
+          "part_support": {
+            "Laptop tôi hỏng rồi": "SUPPORTED",
+            "tôi muốn xin laptop thay thế": "ACTION_DEPENDENT"
+          },
+          "answerable_claims": [
+            "Laptop tôi hỏng rồi"
+          ],
+          "unsupported_claims": [],
+          "missing_information": [
+            "tôi muốn xin laptop thay thế"
+          ],
+          "known_facts": {
+            "device": "laptop"
+          },
+          "missing_required_facts": [],
+          "useful_for_diagnosis": [
+            "device",
+            "symptom",
+            "physical_damage",
+            "power_state"
+          ],
+          "optional_facts": [
+            "asset_or_serial",
+            "visible_damage"
+          ],
+          "primary_intent": "incident",
+          "secondary_intents": [
+            "service_request_replacement_device"
+          ],
+          "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+        },
+        "evaluation_metadata": {
+          "knowledge_answerability": "policy_unknown",
+          "workflow_actionability": true,
+          "blocking_clarification": []
+        },
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Đáp ứng chính xác hai intent và đề xuất tiếp nhận incident với sự giúp đỡ."
+        },
+        "observability": [
+          {
+            "attempt": 1,
+            "latency_ms": 811,
+            "http_status": 200,
+            "response_length": 996,
+            "parse_status": "OK",
+            "schema_status": "OK",
+            "infra_error_type": null
+          }
+        ],
+        "infra_error_type": null,
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "status": "PASS",
+        "planning_ms": 0.12,
+        "generator_calls": 0
+      },
+      "delta": "IMPROVED"
+    }
+  ],
+  "summary": {
+    "generator_calls": 1,
+    "extra_planner_llm_calls": 0,
+    "mean_planning_ms": 0.242
+  },
+  "canary_gate": {
+    "decision": "PASS",
+    "reasons": [],
+    "failure_types": []
+  }
+}

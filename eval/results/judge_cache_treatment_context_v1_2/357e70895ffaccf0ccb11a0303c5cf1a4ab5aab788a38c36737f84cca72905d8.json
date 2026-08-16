@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "UNSUPPORTED_CLAIM"
+    ],
+    "unsupported_claims": [
+      "Lời giải không dựa trên bất kỳ bằng chứng nào"
+    ],
+    "missing_points": [
+      "Hành động tạo ticket thành công"
+    ],
+    "brief_rationale": "Lời giải không dựa trên bất kỳ bằng chứng nào và không tạo ticket thành công.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

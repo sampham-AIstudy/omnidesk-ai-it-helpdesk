@@ -19,6 +19,9 @@ type ChatMessage = {
   created_at?: string;
 };
 
+const MAX_CHAT_MESSAGE_CHARS = 8000;
+const WARN_CHAT_MESSAGE_CHARS = 7000;
+
 const SUGGESTIONS = [
   'Hướng dẫn khắc phục lỗi không kết nối được VPN công ty',
   'Tôi cần cấp quyền truy cập một thư mục dùng chung',
@@ -45,11 +48,14 @@ export default function ChatbotWorkspacePage() {
   const [input, setInput] = useState('');
   const [loadingHistory, setLoadingHistory] = useState(true);
   const [loadingConversation, setLoadingConversation] = useState(false);
+  const [isCreatingConversation, setIsCreatingConversation] = useState(false);
   const [thinking, setThinking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const isCreatingRef = useRef(false);
+  const switchingIdRef = useRef<string | null>(null);
 
   const loadConversations = useCallback(async () => {
     setLoadingHistory(true);
@@ -66,18 +72,25 @@ export default function ChatbotWorkspacePage() {
   }, []);
 
   const selectConversation = useCallback(async (id: string, updateUrl = true) => {
+    switchingIdRef.current = id;
     setActiveId(id);
     setLoadingConversation(true);
     setError(null);
     if (updateUrl) router.replace(`/employee/chatbot?conversation=${encodeURIComponent(id)}`);
     try {
       const response = await api.get<{ messages: ChatMessage[] }>(`/chat/conversations/${id}`);
-      setMessages(response.data.messages);
+      if (switchingIdRef.current === id) {
+        setMessages(response.data.messages);
+      }
     } catch {
-      setMessages([]);
-      setError('Không thể mở cuộc trò chuyện này. Có thể lịch sử đã được xoá.');
+      if (switchingIdRef.current === id) {
+        setMessages([]);
+        setError('Không thể mở cuộc trò chuyện này. Có thể lịch sử đã được xoá.');
+      }
     } finally {
-      setLoadingConversation(false);
+      if (switchingIdRef.current === id) {
+        setLoadingConversation(false);
+      }
     }
   }, [router]);
 
@@ -87,8 +100,13 @@ export default function ChatbotWorkspacePage() {
   }, [loadConversations]);
 
   useEffect(() => {
-    if (!requestedConversation || requestedConversation === activeId) return;
-    const timer = window.setTimeout(() => { void selectConversation(requestedConversation, false); }, 0);
+    if (!requestedConversation) return;
+    if (requestedConversation === activeId || isCreatingRef.current || switchingIdRef.current === requestedConversation) return;
+    const timer = window.setTimeout(() => {
+      if (!isCreatingRef.current && switchingIdRef.current !== requestedConversation) {
+        void selectConversation(requestedConversation, false);
+      }
+    }, 0);
     return () => window.clearTimeout(timer);
   }, [activeId, requestedConversation, selectConversation]);
 
@@ -96,20 +114,43 @@ export default function ChatbotWorkspacePage() {
     messagesEndRef.current?.scrollIntoView({ behavior: thinking ? 'smooth' : 'auto' });
   }, [messages, thinking]);
 
-  const startNewChat = () => {
-    setActiveId(null);
-    setMessages([]);
-    setInput('');
+  const startNewChat = async () => {
+    if (isCreatingRef.current || thinking) return;
+    isCreatingRef.current = true;
+    setIsCreatingConversation(true);
     setError(null);
-    router.replace('/employee/chatbot');
-    window.setTimeout(() => textareaRef.current?.focus(), 0);
+
+    try {
+      const response = await api.post<ConversationItem>('/chat/conversations', { title: 'Cuộc trò chuyện mới' });
+      const newConv = response.data;
+      const newId = newConv.id;
+
+      switchingIdRef.current = newId;
+      setActiveId(newId);
+      setMessages([]);
+      setInput('');
+      setConversations((prev) => [newConv, ...prev.filter((c) => c.id !== newId)]);
+      router.replace(`/employee/chatbot?conversation=${encodeURIComponent(newId)}`);
+      window.setTimeout(() => textareaRef.current?.focus(), 0);
+    } catch {
+      setError('Không thể tạo cuộc trò chuyện mới. Vui lòng thử lại.');
+    } finally {
+      setIsCreatingConversation(false);
+      isCreatingRef.current = false;
+    }
   };
 
   const deleteConversation = async (event: React.MouseEvent<HTMLButtonElement>, id: string) => {
     event.stopPropagation();
     try {
       await api.delete(`/chat/conversations/${id}`);
-      if (activeId === id) startNewChat();
+      if (activeId === id) {
+        switchingIdRef.current = null;
+        setActiveId(null);
+        setMessages([]);
+        setInput('');
+        router.replace('/employee/chatbot');
+      }
       await loadConversations();
     } catch {
       setError('Không thể xoá cuộc trò chuyện. Vui lòng thử lại.');
@@ -118,7 +159,11 @@ export default function ChatbotWorkspacePage() {
 
   const handleSend = async (suggestion?: string) => {
     const text = (suggestion ?? input).trim();
-    if (!text || thinking) return;
+    if (!text || thinking || isCreatingRef.current) return;
+    if (text.length > MAX_CHAT_MESSAGE_CHARS) {
+      setError(`Nội dung tin nhắn (${text.length.toLocaleString('vi-VN')} ký tự) vượt quá giới hạn ${MAX_CHAT_MESSAGE_CHARS.toLocaleString('vi-VN')} ký tự. Vui lòng rút ngắn văn bản trước khi gửi.`);
+      return;
+    }
 
     setInput('');
     setError(null);
@@ -127,10 +172,16 @@ export default function ChatbotWorkspacePage() {
 
     try {
       if (!conversationId) {
+        isCreatingRef.current = true;
+        setIsCreatingConversation(true);
         const response = await api.post<ConversationItem>('/chat/conversations', { title: text.slice(0, 60) });
         conversationId = response.data.id;
+        switchingIdRef.current = conversationId;
         setActiveId(conversationId);
+        setConversations((prev) => [response.data, ...prev.filter((c) => c.id !== conversationId)]);
         router.replace(`/employee/chatbot?conversation=${encodeURIComponent(conversationId)}`);
+        isCreatingRef.current = false;
+        setIsCreatingConversation(false);
       }
 
       const temporaryMessage: ChatMessage = { id: `temporary-${crypto.randomUUID()}`, role: 'user', content: text };
@@ -144,6 +195,8 @@ export default function ChatbotWorkspacePage() {
       setError('Không thể gửi tin nhắn lúc này. Vui lòng thử lại sau.');
     } finally {
       setThinking(false);
+      isCreatingRef.current = false;
+      setIsCreatingConversation(false);
     }
   };
 
@@ -168,8 +221,13 @@ export default function ChatbotWorkspacePage() {
               <p className="mt-0.5 text-[11px] text-slate-500">Lịch sử riêng của bạn</p>
             </div>
           </div>
-          <button type="button" onClick={startNewChat} className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 py-2.5 text-xs font-bold text-white transition hover:bg-slate-700 active:scale-[.98]">
-            <Plus size={15} /> Cuộc trò chuyện mới
+          <button
+            type="button"
+            onClick={() => void startNewChat()}
+            disabled={isCreatingConversation || thinking}
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 py-2.5 text-xs font-bold text-white transition hover:bg-slate-700 active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <Plus size={15} /> {isCreatingConversation ? 'Đang tạo…' : 'Cuộc trò chuyện mới'}
           </button>
         </div>
 
@@ -198,7 +256,16 @@ export default function ChatbotWorkspacePage() {
             <p className="text-sm font-bold text-slate-900">{activeId ? conversations.find((item) => item.id === activeId)?.title ?? 'Cuộc trò chuyện' : 'Cuộc trò chuyện mới'}</p>
             <p className="mt-0.5 text-[11px] text-slate-500">Được lưu an toàn trong lịch sử của bạn</p>
           </div>
-          {activeId && <button type="button" onClick={startNewChat} className="hidden items-center gap-1 text-xs font-semibold text-slate-500 transition hover:text-blue-700 sm:flex">Cuộc trò chuyện mới <ChevronRight size={14} /></button>}
+          {activeId && (
+            <button
+              type="button"
+              onClick={() => void startNewChat()}
+              disabled={isCreatingConversation || thinking}
+              className="hidden items-center gap-1 text-xs font-semibold text-slate-500 transition hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-50 sm:flex"
+            >
+              {isCreatingConversation ? 'Đang tạo…' : 'Cuộc trò chuyện mới'} <ChevronRight size={14} />
+            </button>
+          )}
         </header>
 
         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-8">
@@ -221,7 +288,7 @@ export default function ChatbotWorkspacePage() {
                   <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${isUser ? 'bg-slate-800 text-white' : 'bg-blue-600 text-white'}`}>{isUser ? <UserRound size={15} /> : <Bot size={16} />}</span>
                   <div className={`min-w-0 max-w-[85%] ${isUser ? 'text-right' : ''}`}>
                     <p className="mb-1 text-[11px] font-bold text-slate-400">{isUser ? 'Bạn' : 'AI Copilot'}</p>
-                    <div className={`rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm ${isUser ? 'rounded-tr-sm bg-slate-800 text-white' : 'rounded-tl-sm border border-slate-100 bg-slate-50 text-slate-700'}`}>
+                    <div className={`rounded-2xl px-4 py-3 text-sm leading-6 shadow-sm break-words ${isUser ? 'rounded-tr-sm bg-slate-800 text-white' : 'rounded-tl-sm border border-slate-100 bg-slate-50 text-slate-700'}`}>
                       {isUser ? message.content : <AssistantText content={message.content} />}
                     </div>
                     {!isUser && <button type="button" onClick={() => void copyText(message.id, message.content)} className="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400 transition hover:text-slate-700">
@@ -237,12 +304,53 @@ export default function ChatbotWorkspacePage() {
         </div>
 
         {error && <div className="mx-4 mb-2 rounded-lg border border-rose-100 bg-rose-50 px-3 py-2 text-xs text-rose-700 sm:mx-6">{error}</div>}
-        <form onSubmit={(event) => { event.preventDefault(); void handleSend(); }} className="border-t border-slate-200 bg-white px-4 py-4 sm:px-6">
-          <div className="mx-auto flex max-w-3xl items-end gap-2 rounded-xl border border-slate-300 bg-white p-2 shadow-sm transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-50">
-            <textarea ref={textareaRef} value={input} onChange={(event) => { setInput(event.target.value); event.currentTarget.style.height = 'auto'; event.currentTarget.style.height = `${Math.min(event.currentTarget.scrollHeight, 160)}px`; }} onKeyDown={(event) => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void handleSend(); } }} rows={1} placeholder="Nhắn cho AI Copilot…" className="max-h-40 min-h-9 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400" />
-            <button type="submit" disabled={!input.trim() || thinking} className="grid size-9 place-items-center rounded-lg bg-blue-600 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Gửi tin nhắn"><Send size={16} /></button>
+        <form onSubmit={(event) => { event.preventDefault(); void handleSend(); }} className="border-t border-slate-200 bg-white px-4 py-3 sm:px-6">
+          <div className="mx-auto flex max-w-3xl flex-col gap-1.5">
+            <div className={`flex items-end gap-2 rounded-xl border bg-white p-2 shadow-sm transition ${input.length > MAX_CHAT_MESSAGE_CHARS ? 'border-rose-400 ring-2 ring-rose-100' : 'border-slate-300 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-50'}`}>
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onPaste={(event) => {
+                  const pasteData = event.clipboardData.getData('text');
+                  const totalLen = input.length + pasteData.length;
+                  if (totalLen > MAX_CHAT_MESSAGE_CHARS) {
+                    setError(`Nội dung dán quá dài (${totalLen.toLocaleString('vi-VN')} ký tự, giới hạn là ${MAX_CHAT_MESSAGE_CHARS.toLocaleString('vi-VN')} ký tự). Vui lòng kiểm tra và rút ngắn văn bản.`);
+                  }
+                }}
+                onChange={(event) => {
+                  setInput(event.target.value);
+                  if (event.target.value.length <= MAX_CHAT_MESSAGE_CHARS && error?.includes('quá giới hạn')) {
+                    setError(null);
+                  }
+                  event.currentTarget.style.height = 'auto';
+                  event.currentTarget.style.height = `${Math.min(event.currentTarget.scrollHeight, 160)}px`;
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    void handleSend();
+                  }
+                }}
+                rows={1}
+                placeholder="Nhắn cho AI Copilot…"
+                className="max-h-40 min-h-9 flex-1 resize-none bg-transparent px-2 py-1.5 text-sm leading-6 text-slate-800 outline-none placeholder:text-slate-400"
+              />
+              <button
+                type="submit"
+                disabled={!input.trim() || thinking || input.length > MAX_CHAT_MESSAGE_CHARS}
+                className="grid size-9 place-items-center rounded-lg bg-blue-600 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40"
+                aria-label="Gửi tin nhắn"
+              >
+                <Send size={16} />
+              </button>
+            </div>
+            <div className="flex items-center justify-between px-1 text-[11px]">
+              <span className="text-[10px] text-slate-400">AI có thể mắc sai sót. Hãy kiểm tra lại thông tin quan trọng.</span>
+              <span className={`font-mono text-[10px] ${input.length > MAX_CHAT_MESSAGE_CHARS ? 'font-bold text-rose-600' : input.length >= WARN_CHAT_MESSAGE_CHARS ? 'font-semibold text-amber-600' : 'text-slate-400'}`}>
+                {input.length.toLocaleString('vi-VN')} / {MAX_CHAT_MESSAGE_CHARS.toLocaleString('vi-VN')}
+              </span>
+            </div>
           </div>
-          <p className="mt-2 text-center text-[10px] text-slate-400">AI có thể mắc sai sót. Hãy kiểm tra lại thông tin quan trọng.</p>
         </form>
       </main>
     </section>

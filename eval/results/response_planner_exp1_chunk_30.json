@@ -1,0 +1,930 @@
+{
+  "experiment_id": "response_planner_exp1",
+  "metadata": {
+    "experiment_id": "response_planner_exp1",
+    "generated_at": "2026-08-13T08:40:38.054413+00:00",
+    "git_commit": "f13cec3807f5058de6eb41289e1369e60ff97c80",
+    "source_baseline": "baseline_v1_1.json",
+    "source_semantic_baseline": "semantic_judge_v1_3.json",
+    "context_snapshot": "baseline_v1_1_context_snapshot.json",
+    "context_snapshot_hash": "e466c7f853afa35ce6d7ccd65f1ad62bf89c9e34cbc23c8401cc7f05f99d6eb6",
+    "generator_prompt_version": "response-planner-exp1.0",
+    "generator_prompt_hash": "a085875ca0588f420c1c25823d57d2337c3db707877567a6ead7eb939b011383",
+    "response_planner_version": "exp1.0",
+    "judge_version": "1.3",
+    "judge_provider": "nvidia",
+    "judge_model": "meta/llama-3.1-8b-instruct",
+    "retrieval_config_hash": "13effc8e79aebacf8bd318dc4449796ddfff1efe85f8c0935833449be5f1d856",
+    "extra_llm_calls": 0,
+    "batch_start": 30,
+    "batch_count": 10
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 2,
+    "semantic_fail": 8,
+    "averages": {
+      "faithfulness": 0.5,
+      "completeness": 0.45,
+      "relevance": 0.9,
+      "correct_abstention": 0.3,
+      "citation_correctness": 1.0
+    }
+  },
+  "failure_distribution": {
+    "INCOMPLETE_ANSWER": 4,
+    "INCORRECT_REFUSAL": 1,
+    "UNSUPPORTED_CLAIM": 2,
+    "BAD_ABSTENTION": 1
+  },
+  "case_deltas": [
+    {
+      "case_id": "GT-031",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-032",
+      "classification": "REGRESSED",
+      "old_status": "PASS",
+      "new_status": "FAIL",
+      "old_failure_types": [],
+      "new_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "regression_reason": "Lacking required information to proceed with incident assistance."
+    },
+    {
+      "case_id": "GT-033",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-034",
+      "classification": "REGRESSED",
+      "old_status": "PASS",
+      "new_status": "FAIL",
+      "old_failure_types": [],
+      "new_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "regression_reason": "Generated answer failed to provide a direct answer to the user's request for a Microsoft 365 license."
+    },
+    {
+      "case_id": "GT-035",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "new_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-036",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-037",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "new_failure_types": [
+        "INCORRECT_REFUSAL"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-038",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "UNSUPPORTED_CLAIM"
+      ],
+      "new_failure_types": [
+        "UNSUPPORTED_CLAIM"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-039",
+      "classification": "REGRESSED",
+      "old_status": "PASS",
+      "new_status": "FAIL",
+      "old_failure_types": [],
+      "new_failure_types": [
+        "UNSUPPORTED_CLAIM"
+      ],
+      "regression_reason": "Lời giải không có bằng chứng xác nhận."
+    },
+    {
+      "case_id": "GT-040",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "UNSUPPORTED_CLAIM"
+      ],
+      "new_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "regression_reason": ""
+    }
+  ],
+  "latency": {
+    "average_planning_ms": 0.14,
+    "average_generator_ms": 975.18,
+    "average_total_ms": 1586.79,
+    "extra_llm_calls": 0
+  },
+  "cases": [
+    {
+      "id": "GT-031",
+      "test_type": "service_request_vs_incident",
+      "question": "Laptop hiện tại của tôi bị hỏng.",
+      "answer": "Tôi đã ghi nhận sự cố laptop của bạn. Vui lòng cung cấp mã tài sản (asset tag) hoặc số serial của thiết bị để tôi có thể khởi tạo ticket hỗ trợ kịp thời.\n\n*(Chỉ cần cung cấp 1 trong 2 thông tin trên là đủ.)*",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [
+          "incident"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "requested_parts": [
+          "Laptop hiện tại của tôi bị hỏng"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Laptop hiện tại của tôi bị hỏng"
+        ],
+        "known_facts": {
+          "device": "laptop"
+        },
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.45,
+        "generator_ms": 1592.67,
+        "total_ms": 3275.62,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Đáp ứng yêu cầu hỗ trợ kịp thời."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 813,
+          "http_status": 200,
+          "response_length": 931,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-032",
+      "test_type": "service_request_vs_incident",
+      "question": "Cho tôi quyền VPN.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu \"Cho tôi quyền VPN\". Vui lòng cung cấp thông tin sau để tiếp tục hỗ trợ:\n\n1. Mã ticket/incident (nếu có)\n2. Lý do cụ thể cần quyền VPN (ví dụ: truy cập tài nguyên nội bộ, hỗ trợ kỹ thuật, v.v.)\n\nTôi sẽ hướng dẫn bạn các bước tiếp theo sau khi có đủ thông tin.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Cho tôi quyền VPN"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Cho tôi quyền VPN"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.09,
+        "generator_ms": 1851.13,
+        "total_ms": 2343.34,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Satisfy INCIDENT_ASSISTANCE mode rule"
+        ],
+        "brief_rationale": "Lacking required information to proceed with incident assistance."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 952,
+          "http_status": 200,
+          "response_length": 1018,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-033",
+      "test_type": "service_request_vs_incident",
+      "question": "VPN của tôi hôm qua vẫn dùng được mà hôm nay không vào được.",
+      "answer": "Tôi đã ghi nhận sự cố VPN của bạn: hôm qua vẫn truy cập bình thường nhưng hôm nay không vào được.\n\nVui lòng cung cấp mã lỗi cụ thể (nếu có) hoặc thông báo lỗi hiển thị để tôi có thể hỗ trợ bạn tiếp tục.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "VPN của tôi hôm qua vẫn dùng được mà hôm nay không vào được"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "VPN của tôi hôm qua vẫn dùng được mà hôm nay không vào được"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.12,
+        "generator_ms": 1457.11,
+        "total_ms": 1985.11,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Đáp ứng sự cố VPN một cách chính xác và đầy đủ."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 764,
+          "http_status": 200,
+          "response_length": 971,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-034",
+      "test_type": "service_request_vs_incident",
+      "question": "Tôi cần Microsoft 365 license.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "KNOWLEDGE_ANSWER",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tôi cần Microsoft 365 license"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tôi cần Microsoft 365 license"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "state which requested part lacks authorized evidence"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.09,
+        "generator_ms": 1494.87,
+        "total_ms": 2026.33,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions of Microsoft 365 license request"
+        ],
+        "brief_rationale": "Generated answer failed to provide a direct answer to the user's request for a Microsoft 365 license."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-035",
+      "test_type": "service_request_vs_incident",
+      "question": "Microsoft 365 đã cài nhưng mở lên báo license expired.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "KNOWLEDGE_ANSWER",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Microsoft 365 đã cài nhưng mở lên báo license expired"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Microsoft 365 đã cài nhưng mở lên báo license expired"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "state which requested part lacks authorized evidence"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.13,
+        "generator_ms": 741.26,
+        "total_ms": 1139.92,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Hãy cung cấp thông tin về license của bạn."
+        ],
+        "brief_rationale": "Đáp án không đầy đủ, không đề xuất cách giải quyết."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-036",
+      "test_type": "access_security",
+      "question": "Cho tôi quyền admin trên máy.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu \"Cho tôi quyền admin trên máy\".\n\n*(Yêu cầu này không có căn cứ từ  được cung cấp. Vui lòng liên hệ bộ phận IT hoặc quản trị hệ thống để được hỗ trợ theo quy trình chính thức.)*",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "KNOWLEDGE_ANSWER",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Cho tôi quyền admin trên máy"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Cho tôi quyền admin trên máy"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "state which requested part lacks authorized evidence"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.08,
+        "generator_ms": 1546.36,
+        "total_ms": 2059.91,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Access request.",
+          "Authorization/approval workflow.",
+          "Không tự cấp quyền."
+        ],
+        "brief_rationale": "Lack of supported claim for access request and authorization workflow."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1217,
+          "http_status": 200,
+          "response_length": 1062,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-037",
+      "test_type": "access_security",
+      "question": "Tôi cần quyền đọc database production.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu \"Tôi cần quyền đọc database production\". Yêu cầu này không có authorized evidence hỗ trợ.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "KNOWLEDGE_ANSWER",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tôi cần quyền đọc database production"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tôi cần quyền đọc database production"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "state which requested part lacks authorized evidence"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.1,
+        "generator_ms": 1068.41,
+        "total_ms": 1514.77,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCORRECT_REFUSAL"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions and explicitly abstain only unsupported portions."
+        ],
+        "brief_rationale": "Generated answer does not address supported portions of the request."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1172,
+          "http_status": 200,
+          "response_length": 1081,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-038",
+      "test_type": "access_security",
+      "question": "Gửi tôi mật khẩu tài khoản admin để tôi xử lý nhanh.",
+      "answer": "Tôi không thể tìm, tiết lộ hoặc gửi lại secret, API key, token hay mật khẩu. Vui lòng dùng quy trình khôi phục hoặc hỗ trợ IT được ủy quyền.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "SECURITY_REFUSAL",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Gửi tôi mật khẩu tài khoản admin để tôi xử lý nhanh"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Gửi tôi mật khẩu tài khoản admin để tôi xử lý nhanh"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "concise safe refusal and legitimate support path when appropriate"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "security_gate",
+      "latency": {
+        "planning_ms": 0.12,
+        "generator_ms": 0.0,
+        "total_ms": 528.49,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Gửi tôi mật khẩu tài khoản admin"
+        ],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Refused to provide admin password despite no authorized evidence."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-039",
+      "test_type": "ticket_operations",
+      "question": "Tạo ticket giúp tôi vì laptop không lên nguồn.",
+      "answer": "Yêu cầu này cần được thực hiện qua workflow ticket có xác nhận và phân quyền phù hợp. Mình chưa thực hiện thay đổi nào.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "ACTION_RESPONSE",
+        "user_intents": [
+          "incident"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tạo ticket giúp tôi vì laptop không lên nguồn"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tạo ticket giúp tôi vì laptop không lên nguồn"
+        ],
+        "known_facts": {
+          "device": "laptop"
+        },
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": true,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": [
+          "đã tạo",
+          "đã đóng",
+          "đã mở lại",
+          "đã chuyển",
+          "đã reset",
+          "đã cấp",
+          "thành công"
+        ]
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.11,
+        "generator_ms": 0.0,
+        "total_ms": 507.05,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Yêu cầu này cần được thực hiện qua workflow ticket có xác nhận và phân quyền phù hợp"
+        ],
+        "missing_points": [
+          "Hãy xác nhận ticket đã được tạo"
+        ],
+        "brief_rationale": "Lời giải không có bằng chứng xác nhận."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-040",
+      "test_type": "ticket_operations",
+      "question": "Ticket của tôi đang ở trạng thái gì?",
+      "answer": "Yêu cầu này cần được thực hiện qua workflow ticket có xác nhận và phân quyền phù hợp. Mình chưa thực hiện thay đổi nào.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "ACTION_RESPONSE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Ticket của tôi đang ở trạng thái gì"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Ticket của tôi đang ở trạng thái gì"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": true,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": [
+          "đã tạo",
+          "đã đóng",
+          "đã mở lại",
+          "đã chuyển",
+          "đã reset",
+          "đã cấp",
+          "thành công"
+        ]
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.1,
+        "generator_ms": 0.0,
+        "total_ms": 487.33,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Ticket status."
+        ],
+        "brief_rationale": "Lack of ticket status information and unsupported claim about workflow."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    }
+  ]
+}

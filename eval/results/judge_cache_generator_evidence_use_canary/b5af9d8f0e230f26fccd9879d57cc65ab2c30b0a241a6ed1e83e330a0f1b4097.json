@@ -1,0 +1,27 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "INCOMPLETE_ANSWER"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Tách thành:",
+      "1. VPN issue.",
+      "2. Account lockout.",
+      "3. SLA.",
+      "Trả tất cả phần có evidence.",
+      "Không bỏ vế.",
+      "---"
+    ],
+    "brief_rationale": "Broad refusal despite supported evidence.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

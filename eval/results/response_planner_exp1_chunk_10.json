@@ -1,0 +1,797 @@
+{
+  "experiment_id": "response_planner_exp1",
+  "metadata": {
+    "experiment_id": "response_planner_exp1",
+    "generated_at": "2026-08-13T08:39:20.333436+00:00",
+    "git_commit": "f13cec3807f5058de6eb41289e1369e60ff97c80",
+    "source_baseline": "baseline_v1_1.json",
+    "source_semantic_baseline": "semantic_judge_v1_3.json",
+    "context_snapshot": "baseline_v1_1_context_snapshot.json",
+    "context_snapshot_hash": "e466c7f853afa35ce6d7ccd65f1ad62bf89c9e34cbc23c8401cc7f05f99d6eb6",
+    "generator_prompt_version": "response-planner-exp1.0",
+    "generator_prompt_hash": "a085875ca0588f420c1c25823d57d2337c3db707877567a6ead7eb939b011383",
+    "response_planner_version": "exp1.0",
+    "judge_version": "1.3",
+    "judge_provider": "nvidia",
+    "judge_model": "meta/llama-3.1-8b-instruct",
+    "retrieval_config_hash": "13effc8e79aebacf8bd318dc4449796ddfff1efe85f8c0935833449be5f1d856",
+    "extra_llm_calls": 0,
+    "batch_start": 10,
+    "batch_count": 10
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 9,
+    "semantic_fail": 1,
+    "averages": {
+      "faithfulness": 0.95,
+      "completeness": 0.95,
+      "relevance": 1.0,
+      "correct_abstention": 1.0,
+      "citation_correctness": 1.0
+    }
+  },
+  "failure_distribution": {
+    "INCOMPLETE_ANSWER": 1
+  },
+  "case_deltas": [
+    {
+      "case_id": "GT-011",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-012",
+      "classification": "IMPROVED",
+      "old_status": "FAIL",
+      "new_status": "PASS",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-013",
+      "classification": "IMPROVED",
+      "old_status": "FAIL",
+      "new_status": "PASS",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-014",
+      "classification": "IMPROVED",
+      "old_status": "FAIL",
+      "new_status": "PASS",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-015",
+      "classification": "IMPROVED",
+      "old_status": "FAIL",
+      "new_status": "PASS",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-016",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-017",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-018",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-019",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-020",
+      "classification": "REGRESSED",
+      "old_status": "PASS",
+      "new_status": "FAIL",
+      "old_failure_types": [],
+      "new_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "regression_reason": "Đáp án không đầy đủ, không đưa ra yêu cầu thêm thông tin về sự cố."
+    }
+  ],
+  "latency": {
+    "average_planning_ms": 0.1,
+    "average_generator_ms": 171.19,
+    "average_total_ms": 746.79,
+    "extra_llm_calls": 0
+  },
+  "cases": [
+    {
+      "id": "GT-011",
+      "test_type": "ambiguous_incident",
+      "question": "Máy tôi bị lỗi.",
+      "answer": "Mình cần thêm thông tin để hỗ trợ: thiết bị hay ứng dụng nào gặp lỗi, và dấu hiệu lỗi cụ thể là gì?",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Máy tôi bị lỗi"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Máy tôi bị lỗi"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.41,
+        "generator_ms": 0.0,
+        "total_ms": 438.22,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Answer is faithful, complete, relevant, and correctly abstains from unsupported information."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-012",
+      "test_type": "ambiguous_incident",
+      "question": "Không dùng được.",
+      "answer": "Mình cần thêm thông tin để hỗ trợ: thiết bị hay ứng dụng nào gặp lỗi, và dấu hiệu lỗi cụ thể là gì?",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Không dùng được"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Không dùng được"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.07,
+        "generator_ms": 0.0,
+        "total_ms": 445.89,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct and relevant clarification request."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-013",
+      "test_type": "ambiguous_incident",
+      "question": "Nó cứ bị thế ấy.",
+      "answer": "Mình cần thêm thông tin để hỗ trợ: thiết bị hay ứng dụng nào gặp lỗi, và dấu hiệu lỗi cụ thể là gì?",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Nó cứ bị thế ấy"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Nó cứ bị thế ấy"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.08,
+        "generator_ms": 0.0,
+        "total_ms": 481.28,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct and relevant response, no hallucination, and no unsupported claims."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-014",
+      "test_type": "ambiguous_incident",
+      "question": "App bị ngu rồi.",
+      "answer": "Mình cần thêm thông tin để hỗ trợ: thiết bị hay ứng dụng nào gặp lỗi, và dấu hiệu lỗi cụ thể là gì?",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "App bị ngu rồi"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "App bị ngu rồi"
+        ],
+        "known_facts": {
+          "cause": "physical_impact"
+        },
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.07,
+        "generator_ms": 0.0,
+        "total_ms": 406.46,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Đáp án chính xác và đầy đủ."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-015",
+      "test_type": "out_of_scope_garbage",
+      "question": "asdfghjkl",
+      "answer": "Mình chưa nhận diện được yêu cầu IT. Bạn hãy mô tả thiết bị hoặc dịch vụ đang gặp vấn đề và biểu hiện lỗi.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "asdfghjkl"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "asdfghjkl"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.06,
+        "generator_ms": 0.0,
+        "total_ms": 473.8,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to out-of-scope question."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-016",
+      "test_type": "out_of_scope_garbage",
+      "question": "123456789",
+      "answer": "Mình chưa nhận diện được yêu cầu IT. Bạn hãy mô tả thiết bị hoặc dịch vụ đang gặp vấn đề và biểu hiện lỗi.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "123456789"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "123456789"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.05,
+        "generator_ms": 0.0,
+        "total_ms": 417.81,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to out-of-scope question."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-017",
+      "test_type": "out_of_scope_garbage",
+      "question": "Hôm nay ăn gì?",
+      "answer": "Mình chỉ hỗ trợ các vấn đề IT. Bạn hãy mô tả thiết bị, ứng dụng hoặc dịch vụ IT cần hỗ trợ.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Hôm nay ăn gì"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Hôm nay ăn gì"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.09,
+        "generator_ms": 0.0,
+        "total_ms": 457.12,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to out-of-scope question."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-018",
+      "test_type": "out_of_scope_garbage",
+      "question": "Tôi muốn mua xe máy.",
+      "answer": "Mình chỉ hỗ trợ các vấn đề IT. Bạn hãy mô tả thiết bị, ứng dụng hoặc dịch vụ IT cần hỗ trợ.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tôi muốn mua xe máy"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tôi muốn mua xe máy"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.07,
+        "generator_ms": 0.0,
+        "total_ms": 451.02,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct out-of-scope response."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-019",
+      "test_type": "out_of_scope_garbage",
+      "question": "Tôi buồn quá.",
+      "answer": "Mình chỉ hỗ trợ các vấn đề IT. Bạn hãy mô tả thiết bị, ứng dụng hoặc dịch vụ IT cần hỗ trợ.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "CLARIFICATION",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tôi buồn quá"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tôi buồn quá"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [],
+        "must_not_claim": []
+      },
+      "generation_source": "route_gate",
+      "latency": {
+        "planning_ms": 0.06,
+        "generator_ms": 0.0,
+        "total_ms": 540.68,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to out-of-scope question."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-020",
+      "test_type": "incident_software",
+      "question": "Outlook mở lên là tự tắt.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này. Vui lòng cung cấp thêm thông tin về sự cố (ví dụ: lỗi hiển thị trên màn hình, sự cố xảy ra sau khi cài đặt bản cập nhật nào, hoặc có hư hỏng phần cứng nhìn thấy được).",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Outlook mở lên là tự tắt"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Outlook mở lên là tự tắt"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.08,
+        "generator_ms": 1711.88,
+        "total_ms": 3355.66,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Đưa ra yêu cầu thêm thông tin về sự cố"
+        ],
+        "brief_rationale": "Đáp án không đầy đủ, không đưa ra yêu cầu thêm thông tin về sự cố."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1108,
+          "http_status": 200,
+          "response_length": 1089,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    }
+  ]
+}

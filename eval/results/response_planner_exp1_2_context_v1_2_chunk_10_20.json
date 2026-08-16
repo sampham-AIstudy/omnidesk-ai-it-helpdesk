@@ -1,0 +1,717 @@
+{
+  "arm": "treatment",
+  "metadata": {
+    "evaluation_lock": "evaluation_lock_v1_2_full.json",
+    "golden_hash": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "context_hash": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69",
+    "generator_config_hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_config_hash": "4c0746502cfce861fa12571b50df91f3fd0a147ea0f6992752b25b59d8579c4f",
+    "planner_enabled": true,
+    "retrieval_refreshed": false,
+    "start": 10,
+    "stop": 20,
+    "total_golden_cases": 90
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 3,
+    "semantic_fail": 7,
+    "averages": {
+      "faithfulness": 0.55,
+      "completeness": 0.45,
+      "relevance": 0.9,
+      "correct_abstention": 0.3,
+      "citation_correctness": 1.0
+    },
+    "failure_distribution": {
+      "BAD_ABSTENTION": 2,
+      "INCOMPLETE_ANSWER": 5
+    },
+    "generator_calls": 10,
+    "mean_total_generation_ms": 1040.264
+  },
+  "cases": [
+    {
+      "id": "GT-011",
+      "test_type": "ambiguous_incident",
+      "question": "Máy tôi bị lỗi.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Máy tôi bị lỗi"
+        ],
+        "part_support": {
+          "Máy tôi bị lỗi": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Máy tôi bị lỗi"
+        ],
+        "missing_information": [
+          "Máy tôi bị lỗi"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "biểu hiện lỗi;",
+          "thời điểm hoặc error message nếu cần."
+        ],
+        "brief_rationale": "Không cung cấp đủ thông tin để xác định lỗi."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 921,
+          "http_status": 200,
+          "response_length": 1027,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2139.027
+    },
+    {
+      "id": "GT-012",
+      "test_type": "ambiguous_incident",
+      "question": "Không dùng được.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Không dùng được"
+        ],
+        "part_support": {
+          "Không dùng được": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Không dùng được"
+        ],
+        "missing_information": [
+          "Không dùng được"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Cần làm rõ đối tượng.",
+          "Không classifier thành incident cụ thể."
+        ],
+        "brief_rationale": "Lời khuyên không đầy đủ."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 890,
+          "http_status": 200,
+          "response_length": 1028,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1139.589
+    },
+    {
+      "id": "GT-013",
+      "test_type": "ambiguous_incident",
+      "question": "Nó cứ bị thế ấy.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Nó cứ bị thế ấy"
+        ],
+        "part_support": {
+          "Nó cứ bị thế ấy": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Nó cứ bị thế ấy"
+        ],
+        "missing_information": [
+          "Nó cứ bị thế ấy"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Broad refusal despite support, most answerable content omitted."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 782,
+          "http_status": 200,
+          "response_length": 1014,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1653.443
+    },
+    {
+      "id": "GT-014",
+      "test_type": "ambiguous_incident",
+      "question": "App bị ngu rồi.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "App bị ngu rồi"
+        ],
+        "part_support": {
+          "App bị ngu rồi": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "App bị ngu rồi"
+        ],
+        "missing_information": [
+          "App bị ngu rồi"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Hỏi application nào và symptom."
+        ],
+        "brief_rationale": "Lacking required clarification question."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 828,
+          "http_status": 200,
+          "response_length": 995,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 945.851
+    },
+    {
+      "id": "GT-015",
+      "test_type": "out_of_scope_garbage",
+      "question": "asdfghjkl",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "asdfghjkl"
+        ],
+        "part_support": {
+          "asdfghjkl": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "asdfghjkl"
+        ],
+        "missing_information": [
+          "asdfghjkl"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Broad refusal despite support, most answerable content omitted."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 952,
+          "http_status": 200,
+          "response_length": 1025,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 715.572
+    },
+    {
+      "id": "GT-016",
+      "test_type": "out_of_scope_garbage",
+      "question": "123456789",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "123456789"
+        ],
+        "part_support": {
+          "123456789": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "123456789"
+        ],
+        "missing_information": [
+          "123456789"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to out-of-scope question."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 782,
+          "http_status": 200,
+          "response_length": 972,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 792.791
+    },
+    {
+      "id": "GT-017",
+      "test_type": "out_of_scope_garbage",
+      "question": "Hôm nay ăn gì?",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Hôm nay ăn gì"
+        ],
+        "part_support": {
+          "Hôm nay ăn gì": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Hôm nay ăn gì"
+        ],
+        "missing_information": [
+          "Hôm nay ăn gì"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to out-of-scope question."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 844,
+          "http_status": 200,
+          "response_length": 955,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 759.654
+    },
+    {
+      "id": "GT-018",
+      "test_type": "out_of_scope_garbage",
+      "question": "Tôi muốn mua xe máy.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để hỗ trợ yêu cầu của bạn.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Tôi muốn mua xe máy"
+        ],
+        "part_support": {
+          "Tôi muốn mua xe máy": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Tôi muốn mua xe máy"
+        ],
+        "missing_information": [
+          "Tôi muốn mua xe máy"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Lack of supported answer for requested part."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 875,
+          "http_status": 200,
+          "response_length": 997,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 807.053
+    },
+    {
+      "id": "GT-019",
+      "test_type": "out_of_scope_garbage",
+      "question": "Tôi buồn quá.",
+      "context_ids": [],
+      "answer": "Tôi không thể hỗ trợ phần này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Tôi buồn quá"
+        ],
+        "part_support": {
+          "Tôi buồn quá": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Tôi buồn quá"
+        ],
+        "missing_information": [
+          "Tôi buồn quá"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.0,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions"
+        ],
+        "brief_rationale": "Unsupported interpretation and refusal of supported portions."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 827,
+          "http_status": 200,
+          "response_length": 1014,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 715.84
+    },
+    {
+      "id": "GT-020",
+      "test_type": "incident_software",
+      "question": "Outlook mở lên là tự tắt.",
+      "context_ids": [
+        "kb-004"
+      ],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Outlook mở lên là tự tắt"
+        ],
+        "part_support": {
+          "Outlook mở lên là tự tắt": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Outlook mở lên là tự tắt"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "application",
+          "symptom",
+          "error_message"
+        ],
+        "optional_facts": [
+          "client_platform"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "SOFTWARE_INCIDENT"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions"
+        ],
+        "brief_rationale": "Generated answer is incomplete and does not address supported portions."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 875,
+          "http_status": 200,
+          "response_length": 1012,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 733.825
+    }
+  ]
+}

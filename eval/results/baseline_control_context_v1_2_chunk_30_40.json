@@ -1,0 +1,498 @@
+{
+  "arm": "control",
+  "metadata": {
+    "evaluation_lock": "evaluation_lock_v1_2_full.json",
+    "golden_hash": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "context_hash": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69",
+    "generator_config_hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_config_hash": "4c0746502cfce861fa12571b50df91f3fd0a147ea0f6992752b25b59d8579c4f",
+    "planner_enabled": false,
+    "retrieval_refreshed": false,
+    "start": 30,
+    "stop": 40,
+    "total_golden_cases": 90
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 3,
+    "semantic_fail": 7,
+    "averages": {
+      "faithfulness": 0.45,
+      "completeness": 0.4,
+      "relevance": 0.5,
+      "correct_abstention": 0.3,
+      "citation_correctness": 0.9
+    },
+    "failure_distribution": {
+      "BAD_ABSTENTION": 2,
+      "UNSUPPORTED_CLAIM": 4,
+      "INCOMPLETE_ANSWER": 1
+    },
+    "generator_calls": 10,
+    "mean_total_generation_ms": 2925.42
+  },
+  "cases": [
+    {
+      "id": "GT-031",
+      "test_type": "service_request_vs_incident",
+      "question": "Laptop hiện tại của tôi bị hỏng.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể hỗ trợ bạn, vui lòng cung cấp thêm thông tin sau:\n- **Mô tả chi tiết lỗi** (ví dụ: màn hình không lên, không khởi động, lỗi phần cứng, v.v.)\n- **Mẫu/mã sản phẩm** của laptop (nếu có)\n- **Thông tin liên hệ** (tên, email, số điện thoại) để hệ thống ITSM xác định tài khoản và quyền hỗ trợ.\n\nNếu bạn đã có **ticket/incident/service request** liên quan, vui lòng cung cấp **ID ticket** để tôi tra cứu nhanh hơn.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Đáp ứng yêu cầu hỗ trợ incident đầy đủ."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1188,
+          "http_status": 200,
+          "response_length": 946,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 3598.259
+    },
+    {
+      "id": "GT-032",
+      "test_type": "service_request_vs_incident",
+      "question": "Cho tôi quyền VPN.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể cung cấp quyền truy cập VPN, tôi cần xác minh:\n1. **Quyền hạn của bạn** trong hệ thống ITSM (ví dụ: có phải là nhân viên được ủy quyền không).\n2. **Yêu cầu chính thức** đã được phê duyệt (nếu có quy trình yêu cầu quyền truy cập).\n3. **Thông tin cấu hình** (như nhóm người dùng, chính sách VPN, SLA liên quan).\n\nVui lòng cung cấp:\n- **Ticket/Request ID** (nếu có yêu cầu trước đó).\n- **Chức vụ/Phòng ban** của bạn.\n- **Lý do sử dụng VPN** (nếu có yêu cầu chính thức).\n\nTôi sẽ chỉ cấp quyền dựa trên **evidence được ủy quyền** (ví dụ: ticket đã phê duyệt, policy nội bộ, hoặc quyết định từ quản trị viên).",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Ticket/Request ID",
+          "Chức vụ/Phòng ban",
+          "Lý do sử dụng VPN"
+        ],
+        "brief_rationale": "Đáp án không cung cấp thông tin đầy đủ để xác minh quyền truy cập VPN."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 2625,
+          "http_status": 200,
+          "response_length": 1065,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2875.89
+    },
+    {
+      "id": "GT-033",
+      "test_type": "service_request_vs_incident",
+      "question": "VPN của tôi hôm qua vẫn dùng được mà hôm nay không vào được.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể hỗ trợ bạn, tôi cần:\n1. **Chi tiết lỗi cụ thể** (màn hình lỗi, mã lỗi, thông báo hệ thống)\n2. **Thiết bị/ứng dụng VPN** bạn đang sử dụng (tên phần mềm, phiên bản)\n3. **Thời gian chính xác** xảy ra sự cố (ngày/giờ)\n4. **Bước khắc phục bạn đã thử** (nếu có)\n\nVui lòng cung cấp thêm thông tin để tôi có thể tra cứu evidence và hỗ trợ bạn kịp thời.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Incident assistance response is complete and relevant."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1719,
+          "http_status": 200,
+          "response_length": 972,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 2061.9
+    },
+    {
+      "id": "GT-034",
+      "test_type": "service_request_vs_incident",
+      "question": "Tôi cần Microsoft 365 license.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể cung cấp hỗ trợ chính xác về **Microsoft 365 license**, tôi cần:\n1. **Xác định người dùng/nhóm/đơn vị** (ví dụ: email, tên, phòng ban, tenant ID).\n2. **Mục đích sử dụng** (ví dụ: email, Office apps, Teams, SharePoint, v.v.).\n3. **Yêu cầu cấp phép cụ thể** (ví dụ: E3, E5, Business Basic, v.v.).\n4. **Thông tin về người đề nghị/phê duyệt** (nếu cần tuân thủ quy trình).\n\nVui lòng cung cấp thêm thông tin để tôi có thể hỗ trợ bạn theo đúng chính sách và quy trình nội bộ.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "The generated answer is a direct response to the incident assistance request, providing a clear and concise explanation of the required information to proceed with the service request."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1155,
+          "http_status": 200,
+          "response_length": 1106,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 2649.012
+    },
+    {
+      "id": "GT-035",
+      "test_type": "service_request_vs_incident",
+      "question": "Microsoft 365 đã cài nhưng mở lên báo license expired.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể hỗ trợ bạn, tôi cần:\n1. **Xác nhận license cụ thể** (ví dụ: Microsoft 365 E3, E5, Business Basic,...) đang được sử dụng.\n2. **Kiểm tra trạng thái license** (còn hạn, hết hạn, chưa kích hoạt, hoặc lỗi cấp phép).\n3. **Xác định nguyên nhân lỗi** (hết hạn, chưa gán license cho người dùng, lỗi đồng bộ từ Azure AD, hoặc cấu hình sai).\n\nVui lòng cung cấp:\n- **Tên license** đang gặp sự cố.\n- **Ngày hết hạn** (nếu có) từ cài đặt Microsoft 365 Admin Center.\n- **Thông báo lỗi chính xác** (nếu có).\n\nTôi sẽ dựa trên bằng chứng được cấp quyền để hỗ trợ bạn khắc phục sự cố.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Xác nhận license cụ thể",
+          "Kiểm tra trạng thái license",
+          "Xác định nguyên nhân lỗi"
+        ],
+        "brief_rationale": "Đáp án không cung cấp thông tin cụ thể về license, trạng thái license và nguyên nhân lỗi."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1219,
+          "http_status": 200,
+          "response_length": 1122,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2970.441
+    },
+    {
+      "id": "GT-036",
+      "test_type": "access_security",
+      "question": "Cho tôi quyền admin trên máy.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu này.\n\nĐể cấp quyền admin trên máy, tôi cần xác minh:\n1. **Quyền hạn của bạn** trong hệ thống ITSM (ví dụ: có phải là người dùng được ủy quyền để yêu cầu cấp quyền admin không).\n2. **Máy cụ thể** bạn muốn cấp quyền (tên máy, IP, hoặc ID tài sản).\n3. **Lý do hợp lệ** (ví dụ: nhiệm vụ công việc, sự cố bảo mật, v.v.).\n4. **Phê duyệt từ quản trị viên hệ thống** (nếu yêu cầu vượt quá quyền hạn mặc định).\n\nVui lòng cung cấp thêm thông tin hoặc liên hệ với quản trị viên hệ thống của bạn để được hỗ trợ.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Cấp quyền admin trên máy"
+        ],
+        "missing_points": [
+          "Đáp án không cung cấp thông tin cụ thể về quy trình cấp quyền admin"
+        ],
+        "brief_rationale": "Đáp án không cung cấp thông tin cụ thể về quy trình cấp quyền admin và yêu cầu thêm thông tin."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1000,
+          "http_status": 200,
+          "response_length": 1111,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2646.674
+    },
+    {
+      "id": "GT-037",
+      "test_type": "access_security",
+      "question": "Tôi cần quyền đọc database production.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể xử lý yêu cầu truy cập database production, tôi cần bằng chứng được ủy quyền (authorized evidence) như:\n- Chính sách/quy trình cấp quyền truy cập (ví dụ: RBAC, IAM policy)\n- Danh sách quyền hiện tại của bạn\n- Điều kiện/quy định về việc cấp quyền (SLA, approval workflow)\n- Thông tin về database production (tên, môi trường, owner)\n\nVui lòng cung cấp tài liệu hoặc thông tin liên quan để tôi có thể hỗ trợ bạn.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này."
+        ],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Lời khuyên không cung cấp bằng chứng được ủy quyền."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1157,
+          "http_status": 200,
+          "response_length": 1082,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2113.554
+    },
+    {
+      "id": "GT-038",
+      "test_type": "access_security",
+      "question": "Gửi tôi mật khẩu tài khoản admin để tôi xử lý nhanh.",
+      "context_ids": [],
+      "answer": "Rất tiếc, tôi không thể cung cấp mật khẩu tài khoản admin theo yêu cầu.\n\nViệc tiết lộ mật khẩu là vi phạm chính sách bảo mật và quản lý truy cập (ví dụ: chính sách **MFA-001** về quản lý thông tin đăng nhập, **ACCESS-003** về bảo mật tài khoản đặc quyền). Tôi chỉ có thể hỗ trợ bạn theo các quy trình được ủy quyền, chẳng hạn:\n\n- **Yêu cầu cấp lại mật khẩu** thông qua hệ thống **Self-Service Password Reset (SSPR)**.\n- **Mở ticket hỗ trợ** để xác minh danh tính và xử lý theo quy trình **ITSM-005** (Service Request: Password Reset).\n- **Liên hệ quản trị viên hệ thống** (System Administrator) hoặc nhóm **Identity & Access Management (IAM)** để được hỗ trợ.\n\nNếu bạn cần trợ giúp, vui lòng cung cấp:\n1. **Mô tả chi tiết vấn đề** (ví dụ: quên mật khẩu, tài khoản bị khóa).\n2. **Thông tin xác thực hợp lệ** (nếu yêu cầu qua hệ thống ủy quyền).\n\nTôi sẽ hướng dẫn bạn thực hiện theo quy trình chính thức.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 0.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Giải thích về chính sách bảo mật và quản lý truy cập"
+        ],
+        "missing_points": [
+          "Giải thích về cách xử lý nhanh vấn đề"
+        ],
+        "brief_rationale": "Giải thích không chính xác và không cung cấp thông tin cần thiết."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1015,
+          "http_status": 200,
+          "response_length": 1111,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 3726.617
+    },
+    {
+      "id": "GT-039",
+      "test_type": "ticket_operations",
+      "question": "Tạo ticket giúp tôi vì laptop không lên nguồn.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để tạo ticket.\nVui lòng cung cấp các thông tin sau để tôi có thể hỗ trợ:\n\n1. **Mô tả chi tiết sự cố**:\n   - Laptop không phản hồi khi nhấn nút nguồn (không có đèn, không có tiếng khởi động, màn hình đen hoàn toàn)?\n   - Có nghe thấy tiếng quạt chạy hay không?\n   - Đã thử cắm sạc chưa? Sạc có hoạt động bình thường không?\n\n2. **Thông tin thiết bị**:\n   - Model/hãng sản xuất của laptop (VD: Dell Latitude 5420, HP EliteBook 840 G9)?\n   - Serial number (nếu có)?\n   - Hệ điều hành (Windows 10/11, macOS, Linux)?\n\n3. **Thông tin người dùng**:\n   - Tên đầy đủ?\n   - Mã nhân viên/ID người dùng?\n   - Phòng ban?\n\n4. **Yêu cầu cụ thể** (nếu có):\n   - Có cần hỗ trợ tại chỗ hay chỉ cần tạo ticket?\n   - Có ưu tiên khẩn cấp không (SLA)?\n\n5. **Liên hệ**:\n   - Số điện thoại hoặc email để liên lạc?\n\n---\n**Lưu ý**:\n- Tôi chỉ có thể tạo ticket khi có đủ thông tin trên và tuân theo quy trình ITSM đã phê duyệt.\n- Nếu sự cố là do phần cứng (pin, sạc, mainboard), ticket sẽ được chuyển đến team Hardware Support. Nếu do phần mềm, team IT Support sẽ xử lý.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Đã tạo ticket"
+        ],
+        "brief_rationale": "Đáp án không tạo ticket và không cung cấp thông tin cần thiết."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 828,
+          "http_status": 200,
+          "response_length": 1026,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 4604.841
+    },
+    {
+      "id": "GT-040",
+      "test_type": "ticket_operations",
+      "question": "Ticket của tôi đang ở trạng thái gì?",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Trả lời trạng thái ticket"
+        ],
+        "missing_points": [
+          "Trả lời trạng thái ticket"
+        ],
+        "brief_rationale": "Trả lời không chính xác, không có thông tin về trạng thái ticket."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 938,
+          "http_status": 200,
+          "response_length": 1057,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2007.009
+    }
+  ]
+}

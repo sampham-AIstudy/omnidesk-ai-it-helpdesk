@@ -1,0 +1,21 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 0.5,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "INCOMPLETE_ANSWER"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Mã tài sản (asset tag) hoặc số serial của laptop"
+    ],
+    "brief_rationale": "Lời trả lời không cung cấp đủ thông tin cần thiết để xử lý sự cố.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

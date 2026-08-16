@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.5,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "UNSUPPORTED_CLAIM"
+    ],
+    "unsupported_claims": [
+      "Ticket ID hoặc thông tin định danh ticket",
+      "Hoặc xác nhận từ hệ thống ITSM về ticket cần đóng"
+    ],
+    "missing_points": [
+      "các yêu cầu cụ thể khác"
+    ],
+    "brief_rationale": "Lời khuyên không đủ căn cứ và không cung cấp thông tin cụ thể.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

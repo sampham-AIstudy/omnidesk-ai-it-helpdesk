@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 0.5,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [
+      "Kiểm tra nguồn điện",
+      "Kiểm tra màn hình"
+    ],
+    "missing_points": [
+      "Hướng dẫn cụ thể về cách khắc phục vấn đề phần cứng"
+    ],
+    "brief_rationale": "Đáp án không chỉ tập trung vào các bước khắc phục cơ bản mà còn đưa ra các bước không liên quan và không được hỗ trợ bằng bằng chứng.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

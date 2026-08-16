@@ -19,7 +19,10 @@ processors:
       - service.name
       - service.version
       - deployment.environment.name
+      - service.namespace
+      - service.instance.id
       - http.request.method
+      - http.route
       - url.path
       - http.response.status_code
       - server.address
@@ -29,15 +32,28 @@ processors:
       - db.system.name
       - db.operation.name
       - db.namespace
-      - gen_ai.provider.name
+      - ai.route
+      - ai.retrieval.required
+      - ai.retrieval.used
+      - ai.memory.used
+      - ai.web.used
+      - ai.tool.name
+      - ai.tool.success
+      - ai.model
+      - ai.streaming
       - gen_ai.request.model
       - gen_ai.response.model
       - gen_ai.usage.input_tokens
       - gen_ai.usage.output_tokens
       - helpdesk.guardrail.result
+      - helpdesk.chat.route
+      - helpdesk.chat.retrieval_required
+      - helpdesk.chat.retrieval_decision
+      - helpdesk.chat.memory_required
       - helpdesk.rag.documents_retrieved
       - helpdesk.rag.top_score
-      - helpdesk.ticket.workflow
+      - helpdesk.rag.query_decomposed
+      - helpdesk.rag.sub_query_count
       - error.type
       - operation
       - event

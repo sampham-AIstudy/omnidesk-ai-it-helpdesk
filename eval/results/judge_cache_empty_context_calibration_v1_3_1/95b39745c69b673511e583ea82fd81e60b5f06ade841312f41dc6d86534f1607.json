@@ -1,0 +1,19 @@
+{
+  "result": {
+    "faithfulness": 1.0,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 1.0,
+    "citation_correctness": 1.0,
+    "failure_types": [],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Account sẽ khóa sau bao nhiêu lần nhập sai"
+    ],
+    "brief_rationale": "Abstains safely but does not provide the requested information.",
+    "pass": true
+  },
+  "prompt_version": "1.3.1",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

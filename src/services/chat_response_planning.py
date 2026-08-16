@@ -6,6 +6,8 @@ import unicodedata
 from dataclasses import asdict, dataclass
 from typing import Any
 
+from src.services.incident_fact_profiles import extract_incident_fact_state
+
 _STOPWORDS = {"va", "voi", "la", "thi", "co", "cho", "toi", "ban", "nao", "bao", "nhieu", "dung", "bi"}
 
 
@@ -28,6 +30,8 @@ class ResponsePlan:
     optional_facts: list[str]
     primary_intent: str | None
     secondary_intents: list[str]
+    incident_domain: str | None
+    useful_for_diagnosis: list[str]
 
     def as_prompt_block(self) -> str:
         return (
@@ -40,6 +44,8 @@ class ResponsePlan:
             f"Optional facts: {self.optional_facts or ['none']}\n"
             f"Primary intent: {self.primary_intent or 'none'}\n"
             f"Secondary intents: {self.secondary_intents or ['none']}\n"
+            f"Incident domain: {self.incident_domain or 'none'}\n"
+            f"Useful diagnostic facts: {self.useful_for_diagnosis or ['none']}\n"
             "Answer every answerable claim. Abstain only for unsupported claims. "
             "Never ask again for a known fact. Ask at most two missing required facts. "
             "Do not claim an action succeeded without a trusted tool result."
@@ -50,36 +56,16 @@ class ResponsePlan:
 
 
 def _question_parts(question: str) -> list[str]:
-    parts = [part.strip(" ,?.") for part in re.split(r"\s+(?:và|va|and)\s+", question, flags=re.I)]
-    return [part for part in parts if part]
-
-
-def _incident_facts(question: str) -> dict[str, str]:
-    folded = _fold(question)
-    facts: dict[str, str] = {}
-    if "laptop" in folded:
-        facts["device"] = "laptop"
-    if "man hinh den" in folded or "den xi" in folded:
-        facts["symptom"] = "black_screen"
-    if any(marker in folded for marker in ("dam", "roi", "va dap")):
-        facts["cause"] = "physical_impact"
-    if "gio" in folded or "sau khi" in folded or "xong" in folded:
-        facts["temporal_relation"] = "immediate_or_after_event"
-    serial = re.search(r"\bserial\s+([a-z0-9-]+)", question, re.I)
-    if serial:
-        facts["asset_or_serial"] = serial.group(1)
-    return facts
+    return [part for part in (item.strip(" ,?.") for item in re.split(r"\s+(?:và|va|and)\s+", question, flags=re.I)) if part]
 
 
 def _intents(question: str) -> tuple[str | None, list[str]]:
     folded = _fold(question)
-    incident = "laptop" in folded and any(
-        word in folded for word in ("hong", "loi", "khong len", "vo", "dam", "roi", "va dap", "man hinh den")
-    )
+    state = extract_incident_fact_state(question)
     replacement = bool(re.search(r"(?:xin|can).*(?:laptop.*(?:thay|moi)|thay the)", folded))
-    if incident and replacement:
+    if state.is_incident and replacement:
         return "incident", ["service_request_replacement_device"]
-    if incident:
+    if state.is_incident:
         return "incident", []
     if replacement:
         return "service_request_replacement_device", []
@@ -89,30 +75,26 @@ def _intents(question: str) -> tuple[str | None, list[str]]:
 def build_response_plan(question: str, documents: list[dict[str, Any]]) -> ResponsePlan:
     """Create a minimal answer/clarification contract from authorized context."""
     evidence_terms = _terms("\n".join(str(document.get("content", "")) for document in documents))
-    answerable: list[str] = []
-    unsupported: list[str] = []
+    answerable, unsupported = [], []
     for part in _question_parts(question):
-        if _terms(part) & evidence_terms:
-            answerable.append(part)
-        else:
-            unsupported.append(part)
-    facts = _incident_facts(question)
+        (answerable if _terms(part) & evidence_terms else unsupported).append(part)
+    state = extract_incident_fact_state(question)
     primary, secondary = _intents(question)
-    required_missing = ["device"] if primary == "incident" and "device" not in facts else []
     return ResponsePlan(
         answerable_claims=answerable,
         unsupported_claims=unsupported,
         missing_information=unsupported.copy(),
-        known_facts=facts,
-        missing_required_facts=required_missing,
-        optional_facts=["visible_damage", "asset_or_serial"],
+        known_facts=state.known_facts,
+        missing_required_facts=state.missing_required_facts,
+        optional_facts=list(state.optional_facts),
         primary_intent=primary,
         secondary_intents=secondary,
+        incident_domain=state.domain,
+        useful_for_diagnosis=list(state.useful_for_diagnosis),
     )
 
 
 def minimal_incident_triage_reply(plan: ResponsePlan) -> str | None:
-    """Return a safe no-repeat triage reply when intake facts are already sufficient."""
     facts = plan.known_facts
     if plan.primary_intent != "incident" or plan.missing_required_facts:
         return None
@@ -127,19 +109,12 @@ def minimal_incident_triage_reply(plan: ResponsePlan) -> str | None:
 
 
 def partial_evidence_reply(plan: ResponsePlan, documents: list[dict[str, Any]]) -> str | None:
-    """Produce a bounded answer when evidence covers only part of a multi-part turn."""
     if not plan.answerable_claims or not plan.unsupported_claims:
         return None
     content = " ".join(str(document.get("content", "")) for document in documents)
-    # Keep one factual sentence from supplied evidence rather than synthesizing
-    # a value. This is deliberately narrow and falls back to the generator for
-    # complex cases without a clear evidence sentence.
     sentences = re.split(r"(?<=[.!?])\s+", content)
     answerable_terms = _terms(" ".join(plan.answerable_claims))
-    evidence_sentence = next(
-        (sentence for sentence in sentences if _terms(sentence) & answerable_terms),
-        None,
-    )
+    evidence_sentence = next((sentence for sentence in sentences if _terms(sentence) & answerable_terms), None)
     if not evidence_sentence:
         return None
     return (

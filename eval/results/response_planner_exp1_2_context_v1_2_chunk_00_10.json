@@ -1,0 +1,758 @@
+{
+  "arm": "treatment",
+  "metadata": {
+    "evaluation_lock": "evaluation_lock_v1_2_full.json",
+    "golden_hash": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "context_hash": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69",
+    "generator_config_hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_config_hash": "4c0746502cfce861fa12571b50df91f3fd0a147ea0f6992752b25b59d8579c4f",
+    "planner_enabled": true,
+    "retrieval_refreshed": false,
+    "start": 0,
+    "stop": 10,
+    "total_golden_cases": 90
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 1,
+    "semantic_fail": 9,
+    "averages": {
+      "faithfulness": 0.55,
+      "completeness": 0.4,
+      "relevance": 0.9,
+      "correct_abstention": 0.2,
+      "citation_correctness": 1.0
+    },
+    "failure_distribution": {
+      "INCOMPLETE_ANSWER": 5,
+      "BAD_ABSTENTION": 4
+    },
+    "generator_calls": 9,
+    "mean_total_generation_ms": 1357.531
+  },
+  "cases": [
+    {
+      "id": "GT-001",
+      "test_type": "small_talk",
+      "question": "Chào bạn nhé",
+      "context_ids": [],
+      "answer": "Xin chào! Tôi có thể giúp gì cho bạn không?",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Chào bạn nhé"
+        ],
+        "part_support": {
+          "Chào bạn nhé": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Chào bạn nhé"
+        ],
+        "missing_information": [
+          "Chào bạn nhé"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to small talk."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 905,
+          "http_status": 200,
+          "response_length": 955,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 2274.078
+    },
+    {
+      "id": "GT-002",
+      "test_type": "small_talk",
+      "question": "Bạn khỏe không?",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Bạn khỏe không"
+        ],
+        "part_support": {
+          "Bạn khỏe không": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Bạn khỏe không"
+        ],
+        "missing_information": [
+          "Bạn khỏe không"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.0,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Broad refusal despite support."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 750,
+          "http_status": 200,
+          "response_length": 992,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 710.836
+    },
+    {
+      "id": "GT-003",
+      "test_type": "small_talk",
+      "question": "Cảm ơn bạn nhé",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Cảm ơn bạn nhé"
+        ],
+        "part_support": {
+          "Cảm ơn bạn nhé": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Cảm ơn bạn nhé"
+        ],
+        "missing_information": [
+          "Cảm ơn bạn nhé"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer the question directly"
+        ],
+        "brief_rationale": "Direct response expected but partial answer given."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 907,
+          "http_status": 200,
+          "response_length": 1008,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 826.712
+    },
+    {
+      "id": "GT-004",
+      "test_type": "small_talk",
+      "question": "Ok hiểu rồi",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Ok hiểu rồi"
+        ],
+        "part_support": {
+          "Ok hiểu rồi": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Ok hiểu rồi"
+        ],
+        "missing_information": [
+          "Ok hiểu rồi"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions"
+        ],
+        "brief_rationale": "Lack of supported answer for supported portions."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 969,
+          "http_status": 200,
+          "response_length": 988,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 735.42
+    },
+    {
+      "id": "GT-005",
+      "test_type": "incident_hardware",
+      "question": "Laptop của tôi bật không lên.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này. Vui lòng cung cấp thêm chi tiết về tình trạng laptop (ví dụ: đèn nguồn có sáng không, có tiếng bíp hay thông báo lỗi nào không, laptop đã được cắm sạc chưa, v.v.) để tôi có thể hỗ trợ bạn tốt hơn.",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Laptop của tôi bật không lên"
+        ],
+        "part_support": {
+          "Laptop của tôi bật không lên": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Laptop của tôi bật không lên"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "device": "laptop"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "device",
+          "symptom",
+          "physical_damage",
+          "power_state"
+        ],
+        "optional_facts": [
+          "asset_or_serial",
+          "visible_damage"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions and explicitly abstain only unsupported portions."
+        ],
+        "brief_rationale": "Generated answer does not explicitly abstain unsupported portions."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1389,
+          "http_status": 200,
+          "response_length": 1079,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1489.911
+    },
+    {
+      "id": "GT-006",
+      "test_type": "incident_hardware",
+      "question": "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn.",
+      "context_ids": [],
+      "answer": "Mình đã ghi nhận laptop bị màn hình đen ngay sau va đập. Đây là sự cố phần cứng cần được kỹ thuật viên kiểm tra; bạn nên ngừng tác động thêm lên thiết bị. Mình không cần hỏi lại loại thiết bị, nguyên nhân va đập hoặc thời điểm xảy ra. Nếu tiện, bạn có thể bổ sung serial/mã tài sản hoặc ảnh hư hỏng để hỗ trợ tiếp nhận incident.",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn"
+        ],
+        "part_support": {
+          "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "device": "laptop",
+          "symptom": "black_screen",
+          "physical_damage": "physical_impact",
+          "cause": "physical_impact",
+          "temporal_relation": "immediate_or_after_event"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "device",
+          "symptom",
+          "physical_damage",
+          "power_state"
+        ],
+        "optional_facts": [
+          "asset_or_serial",
+          "visible_damage"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Nhận diện đây là sự cố thực tế.",
+          "Không trả generic refusal.",
+          "Không hỏi lại `\"sự cố có xảy ra sau va đập không\"`.",
+          "Hỏi tối thiểu thông tin còn thiếu phục vụ xử lý.",
+          "Hướng tới Incident / technician nếu workflow yêu cầu."
+        ],
+        "brief_rationale": "Lỗi abstention và không đầy đủ các yêu cầu của Incident Assistance."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1782,
+          "http_status": 200,
+          "response_length": 1226,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 0,
+      "generation_ms": 0.136
+    },
+    {
+      "id": "GT-007",
+      "test_type": "incident_hardware",
+      "question": "Laptop rơi xuống đất xong giờ màn hình nhấp nháy.",
+      "context_ids": [],
+      "answer": "Dựa trên thông tin bạn cung cấp, laptop bị rơi xuống đất có thể gây ra hư hỏng vật lý, dẫn đến hiện tượng màn hình nhấp nháy. Đây có thể là dấu hiệu của:\n\n- **Màn hình bị hỏng** (cáp kết nối lỏng, màn hình bị va đập, hoặc đèn nền gặp sự cố).\n- **Card đồ họa hoặc kết nối bị ảnh hưởng** (do va đập mạnh).\n- **Lỗi phần cứng khác** (như bo mạch chủ hoặc RAM bị tác động).\n\n**Khuyến nghị:**\n1. **Tắt laptop ngay** để tránh hư hỏng nặng hơn.\n2. **Kiểm tra cáp màn hình** (nếu có thể tháo rời) xem có bị lỏng hay không.\n3. **Kết nối laptop với màn hình ngoài** để xác định xem lỗi có phải do màn hình hay không.\n4. **Mang đến trung tâm sửa chữa uy tín** để kiểm tra phần cứng.\n\n*Nếu bạn có thể cung cấp thêm thông tin như: laptop bị rơi từ độ cao bao nhiêu, có nghe thấy tiếng lạ từ máy không, hay đã thử kết nối màn hình ngoài chưa, tôi có thể hỗ trợ chi tiết hơn.*",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Laptop rơi xuống đất xong giờ màn hình nhấp nháy"
+        ],
+        "part_support": {
+          "Laptop rơi xuống đất xong giờ màn hình nhấp nháy": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Laptop rơi xuống đất xong giờ màn hình nhấp nháy"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "device": "laptop",
+          "physical_damage": "physical_impact",
+          "cause": "physical_impact",
+          "temporal_relation": "immediate_or_after_event"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "device",
+          "symptom",
+          "physical_damage",
+          "power_state"
+        ],
+        "optional_facts": [
+          "asset_or_serial",
+          "visible_damage"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Khuyến nghị cụ thể cho việc kiểm tra và sửa chữa laptop."
+        ],
+        "brief_rationale": "Đáp án không đủ chi tiết và cụ thể về việc kiểm tra và sửa chữa laptop."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 2030,
+          "http_status": 200,
+          "response_length": 1067,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 5069.455
+    },
+    {
+      "id": "GT-008",
+      "test_type": "incident_hardware",
+      "question": "Máy tính của tôi phát tiếng lạ rồi tự tắt.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Máy tính của tôi phát tiếng lạ rồi tự tắt"
+        ],
+        "part_support": {
+          "Máy tính của tôi phát tiếng lạ rồi tự tắt": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Máy tính của tôi phát tiếng lạ rồi tự tắt"
+        ],
+        "missing_information": [
+          "Máy tính của tôi phát tiếng lạ rồi tự tắt"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.0,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions and explicitly abstain only unsupported portions"
+        ],
+        "brief_rationale": "Lack of supported information in the answer."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1061,
+          "http_status": 200,
+          "response_length": 1042,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 910.746
+    },
+    {
+      "id": "GT-009",
+      "test_type": "incident_hardware",
+      "question": "Bàn phím laptop bị liệt phím A với S.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Bàn phím laptop bị liệt phím A với S"
+        ],
+        "part_support": {
+          "Bàn phím laptop bị liệt phím A với S": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Bàn phím laptop bị liệt phím A với S"
+        ],
+        "missing_information": [
+          "Bàn phím laptop bị liệt phím A với S"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions and explicitly abstain only unsupported portions."
+        ],
+        "brief_rationale": "Generated answer is incomplete and does not address the user's question."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 969,
+          "http_status": 200,
+          "response_length": 1087,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 750.772
+    },
+    {
+      "id": "GT-010",
+      "test_type": "incident_hardware",
+      "question": "Màn hình ngoài của tôi không nhận tín hiệu nhưng laptop vẫn chạy.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Màn hình ngoài của tôi không nhận tín hiệu nhưng laptop vẫn chạy"
+        ],
+        "part_support": {
+          "Màn hình ngoài của tôi không nhận tín hiệu nhưng laptop vẫn chạy": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Màn hình ngoài của tôi không nhận tín hiệu nhưng laptop vẫn chạy"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "device": "laptop"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "device",
+          "symptom",
+          "physical_damage",
+          "power_state"
+        ],
+        "optional_facts": [
+          "asset_or_serial",
+          "visible_damage"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions and explicitly abstain only unsupported portions."
+        ],
+        "brief_rationale": "Generated answer does not provide a clear solution or further assistance."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1953,
+          "http_status": 200,
+          "response_length": 1092,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 807.246
+    }
+  ]
+}

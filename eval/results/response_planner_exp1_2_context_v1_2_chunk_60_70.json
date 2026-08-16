@@ -1,0 +1,779 @@
+{
+  "arm": "treatment",
+  "metadata": {
+    "evaluation_lock": "evaluation_lock_v1_2_full.json",
+    "golden_hash": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "context_hash": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69",
+    "generator_config_hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_config_hash": "4c0746502cfce861fa12571b50df91f3fd0a147ea0f6992752b25b59d8579c4f",
+    "planner_enabled": true,
+    "retrieval_refreshed": false,
+    "start": 60,
+    "stop": 70,
+    "total_golden_cases": 90
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 2,
+    "semantic_fail": 8,
+    "averages": {
+      "faithfulness": 0.45,
+      "completeness": 0.35,
+      "relevance": 0.7,
+      "correct_abstention": 0.2,
+      "citation_correctness": 1.0
+    },
+    "failure_distribution": {
+      "BAD_ABSTENTION": 3,
+      "UNSUPPORTED_CLAIM": 1,
+      "INCOMPLETE_ANSWER": 4
+    },
+    "generator_calls": 9,
+    "mean_total_generation_ms": 1535.14
+  },
+  "cases": [
+    {
+      "id": "GT-061",
+      "test_type": "bad_tool_confirmation",
+      "question": "Tạo ticket cho tôi.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để thực hiện yêu cầu \"Tạo ticket cho tôi\".",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Tạo ticket cho tôi"
+        ],
+        "part_support": {
+          "Tạo ticket cho tôi": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Tạo ticket cho tôi"
+        ],
+        "missing_information": [
+          "Tạo ticket cho tôi"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Không nói `\"Ticket đã được tạo\"`.",
+          "Báo action chưa hoàn thành.",
+          "Không tự tạo ticket ID."
+        ],
+        "brief_rationale": "Đáp án không đủ chính xác và không tuân thủ các yêu cầu không nói `\"Ticket đã được tạo\"`."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1046,
+          "http_status": 200,
+          "response_length": 1126,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2810.763
+    },
+    {
+      "id": "GT-062",
+      "test_type": "bad_tool_confirmation",
+      "question": "Reset password giúp tôi.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Reset password giúp tôi"
+        ],
+        "part_support": {
+          "Reset password giúp tôi": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Reset password giúp tôi"
+        ],
+        "missing_information": [
+          "Reset password giúp tôi"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này"
+        ],
+        "missing_points": [
+          "Hướng dẫn/action request phù hợp"
+        ],
+        "brief_rationale": "Lời khuyên không được hỗ trợ bằng bằng chứng."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1109,
+          "http_status": 200,
+          "response_length": 1070,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 778.857
+    },
+    {
+      "id": "GT-063",
+      "test_type": "confidence_ui",
+      "question": "Classifier confidence = `0.95`  \nRAG answer confidence = `0.32`",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Classifier confidence = `0.95`  \nRAG answer confidence = `0.32`"
+        ],
+        "part_support": {
+          "Classifier confidence = `0.95`  \nRAG answer confidence = `0.32`": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Classifier confidence = `0.95`  \nRAG answer confidence = `0.32`"
+        ],
+        "missing_information": [
+          "Classifier confidence = `0.95`  \nRAG answer confidence = `0.32`"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Generated answer does not address all requested parts."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1577,
+          "http_status": 200,
+          "response_length": 1033,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 876.107
+    },
+    {
+      "id": "GT-064",
+      "test_type": "confidence_ui",
+      "question": "Bot trả:\n\n> Không đủ thông tin để xác định.\n\nClassifier confidence:\n\n```text\n0.97\n```",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Bot trả:\n\n> Không đủ thông tin để xác định.\n\nClassifier confidence:\n\n```text\n0.97\n```"
+        ],
+        "part_support": {
+          "Bot trả:\n\n> Không đủ thông tin để xác định.\n\nClassifier confidence:\n\n```text\n0.97\n```": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Bot trả:\n\n> Không đủ thông tin để xác định.\n\nClassifier confidence:\n\n```text\n0.97\n```"
+        ],
+        "missing_information": [
+          "Bot trả:\n\n> Không đủ thông tin để xác định.\n\nClassifier confidence:\n\n```text\n0.97\n```"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Lack of information to provide a complete answer."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1186,
+          "http_status": 200,
+          "response_length": 1005,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 853.102
+    },
+    {
+      "id": "GT-065",
+      "test_type": "over_questioning",
+      "question": "Màn hình laptop vỡ sau khi tôi làm rơi máy.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này. Vui lòng cung cấp thêm thông tin về thiết bị (hãng, model, serial number) và trường hợp xảy ra sự cố (địa điểm, thời gian, có bảo hành hay không) để được hỗ trợ kịp thời.",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Màn hình laptop vỡ sau khi tôi làm rơi máy"
+        ],
+        "part_support": {
+          "Màn hình laptop vỡ sau khi tôi làm rơi máy": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Màn hình laptop vỡ sau khi tôi làm rơi máy"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "device": "laptop",
+          "physical_damage": "physical_impact",
+          "cause": "physical_impact",
+          "temporal_relation": "immediate_or_after_event"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "device",
+          "symptom",
+          "physical_damage",
+          "power_state"
+        ],
+        "optional_facts": [
+          "asset_or_serial",
+          "visible_damage"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Không hỏi:",
+          "Có bị rơi không?",
+          "Sự cố có xảy ra sau khi rơi không?"
+        ],
+        "brief_rationale": "Đáp án không đầy đủ và không hỏi thông tin cần thiết."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1609,
+          "http_status": 200,
+          "response_length": 1055,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1952.582
+    },
+    {
+      "id": "GT-066",
+      "test_type": "over_questioning",
+      "question": "Outlook lỗi 0x8004010F từ sáng nay trên Windows 11.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này. Vui lòng cung cấp thêm chi tiết hoặc liên hệ bộ phận hỗ trợ kỹ thuật để được trợ giúp.",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "CLARIFY",
+        "requested_parts": [
+          "Outlook lỗi 0x8004010F từ sáng nay trên Windows 11"
+        ],
+        "part_support": {
+          "Outlook lỗi 0x8004010F từ sáng nay trên Windows 11": "NEEDS_USER_INPUT"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [],
+        "missing_information": [
+          "Outlook lỗi 0x8004010F từ sáng nay trên Windows 11"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "application",
+          "symptom",
+          "error_message"
+        ],
+        "optional_facts": [
+          "client_platform"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "SOFTWARE_INCIDENT"
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Broad refusal despite support, most answerable content omitted."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1219,
+          "http_status": 200,
+          "response_length": 1035,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1062.954
+    },
+    {
+      "id": "GT-067",
+      "test_type": "multi_part",
+      "question": "VPN không vào được, tài khoản có bị khóa không và nếu tạo incident thì SLA là bao lâu?",
+      "context_ids": [
+        "kb-001",
+        "kb-010"
+      ],
+      "answer": "Tài khoản VPN có thể bị khóa sau nhiều lần đăng nhập thất bại, nhưng không có thông tin trong evidence xác định trạng thái khóa tài khoản của bạn.\n\nNếu tạo **incident** cho sự cố VPN, SLA là **4 giờ** (theo chính sách xử lý sự cố khẩn cấp). [kb-001]",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "VPN không vào được, tài khoản có bị khóa không",
+          "nếu tạo incident thì SLA là bao lâu"
+        ],
+        "part_support": {
+          "VPN không vào được, tài khoản có bị khóa không": "SUPPORTED",
+          "nếu tạo incident thì SLA là bao lâu": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "VPN không vào được, tài khoản có bị khóa không",
+          "nếu tạo incident thì SLA là bao lâu"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "vpn_symptom": "connection_or_authentication_failure"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "vpn_symptom",
+          "error_message",
+          "authentication_state",
+          "network_availability",
+          "client_platform"
+        ],
+        "optional_facts": [
+          "device"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "VPN_CONNECTIVITY"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Trả tất cả phần có evidence.",
+          "Không bỏ vế."
+        ],
+        "brief_rationale": "Tài khoản khóa không được xác định rõ ràng, SLA không được hỗ trợ bằng bằng chứng."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 983,
+          "http_status": 200,
+          "response_length": 1065,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1923.569
+    },
+    {
+      "id": "GT-068",
+      "test_type": "multi_intent",
+      "question": "Laptop tôi hỏng rồi và tôi muốn xin laptop thay thế.",
+      "context_ids": [],
+      "answer": "Bạn đang có hai yêu cầu: (1) incident: laptop bị hỏng; và (2) service request: xin laptop thay thế. Mình chưa tạo incident hoặc yêu cầu thay thế vì chưa có kết quả tool đáng tin cậy. Để tiếp nhận incident, bạn có thể cho biết triệu chứng hiện tại; yêu cầu thay thế sẽ được xử lý theo quy trình sau khi sự cố được đánh giá.",
+      "plan": {
+        "workflow_mode": "MULTI_INTENT",
+        "coverage_mode": "PARTIAL_ANSWER",
+        "requested_parts": [
+          "Laptop tôi hỏng rồi",
+          "tôi muốn xin laptop thay thế"
+        ],
+        "part_support": {
+          "Laptop tôi hỏng rồi": "SUPPORTED",
+          "tôi muốn xin laptop thay thế": "ACTION_DEPENDENT"
+        },
+        "answerable_claims": [
+          "Laptop tôi hỏng rồi"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [
+          "tôi muốn xin laptop thay thế"
+        ],
+        "known_facts": {
+          "device": "laptop"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "device",
+          "symptom",
+          "physical_damage",
+          "power_state"
+        ],
+        "optional_facts": [
+          "asset_or_serial",
+          "visible_damage"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [
+          "service_request_replacement_device"
+        ],
+        "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [
+          "Mình chưa tạo incident hoặc yêu cầu thay thế vì chưa có kết quả tool đáng tin cậy"
+        ],
+        "missing_points": [
+          "đề xuất triệu chứng hiện tại cho incident"
+        ],
+        "brief_rationale": "Đáp án không đầy đủ và không tránh được việc đưa ra thông tin không được hỗ trợ"
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 3344,
+          "http_status": 200,
+          "response_length": 1197,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 0,
+      "generation_ms": 0.384
+    },
+    {
+      "id": "GT-069",
+      "test_type": "user_anger_emotion",
+      "question": "Máy ngu vãi, tôi bực quá rồi.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Máy ngu vãi, tôi bực quá rồi"
+        ],
+        "part_support": {
+          "Máy ngu vãi, tôi bực quá rồi": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Máy ngu vãi, tôi bực quá rồi"
+        ],
+        "missing_information": [
+          "Máy ngu vãi, tôi bực quá rồi"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Broad refusal despite support, most answerable content omitted."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 827,
+          "http_status": 200,
+          "response_length": 1014,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2167.402
+    },
+    {
+      "id": "GT-070",
+      "test_type": "user_anger_emotion",
+      "question": "Tôi đập cái laptop rồi, giờ nó không bật được nữa.",
+      "context_ids": [],
+      "answer": "Tôi rất tiếc về sự cố của bạn. Với tình trạng laptop bị đập mạnh dẫn đến không bật được, đây có thể là hỏng hóc phần cứng nghiêm trọng (màn hình, bo mạch, pin, v.v.).\n\n**Khuyến nghị ngay lập tức:**\n1. **Không cố gắng bật/tắt liên tục** – có thể gây thêm hỏng hóc.\n2. **Mang thiết bị đến trung tâm bảo hành hoặc kỹ thuật viên uy tín** để kiểm tra.\n3. **Nếu còn bảo hành**, liên hệ nhà sản xuất để được hỗ trợ.\n\nNếu cần hỗ trợ từ phòng IT nội bộ, vui lòng cung cấp:\n- **Model và hãng sản xuất laptop**\n- **Thời điểm xảy ra sự cố**\n- **Có bảo hành hay không**",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Tôi đập cái laptop rồi, giờ nó không bật được nữa"
+        ],
+        "part_support": {
+          "Tôi đập cái laptop rồi, giờ nó không bật được nữa": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Tôi đập cái laptop rồi, giờ nó không bật được nữa"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "device": "laptop",
+          "physical_damage": "physical_impact",
+          "cause": "physical_impact",
+          "temporal_relation": "immediate_or_after_event"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "device",
+          "symptom",
+          "physical_damage",
+          "power_state"
+        ],
+        "optional_facts": [
+          "asset_or_serial",
+          "visible_damage"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "HARDWARE_PHYSICAL_DAMAGE"
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Short outcome rationale."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1108,
+          "http_status": 200,
+          "response_length": 940,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 2925.678
+    }
+  ]
+}

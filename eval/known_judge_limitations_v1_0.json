@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "limitations": [
+    {
+      "id": "KNOWN_JUDGE_LIMITATION_EMPTY_CONTEXT",
+      "affected_case_ids": ["GT-046", "GT-077", "GT-087"],
+      "finding": "Human contract review confirms that a precise evidence-boundary abstention does not hallucinate when it merely references the user-requested subject. Judge v1.3 showed false-positive or unstable labels on this pattern.",
+      "decision": "Do not change production to satisfy the Judge. Do not promote Judge v1.3.1 because it introduced dangerous false passes. Production retains the generic safe fallback.",
+      "reporting_policy": "Report raw Judge v1.3 outputs unchanged and list this limitation separately; do not silently adjust scores or remove cases."
+    }
+  ]
+}

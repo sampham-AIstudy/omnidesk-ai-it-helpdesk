@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Tên repo Git cụ thể (nếu có nhiều repo)",
+      "Vai trò/mức độ quyền cần xin (read, write, admin, etc.)",
+      "Lý do xin quyền (mục đích sử dụng)",
+      "Người phê duyệt (nếu có quy trình phê duyệt nội bộ)"
+    ],
+    "brief_rationale": "Đáp án không đầy đủ và không đề xuất cách giải quyết cụ thể.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

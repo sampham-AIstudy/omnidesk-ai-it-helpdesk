@@ -1,0 +1,21 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "INCOMPLETE_ANSWER"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Đề cập cụ thể về lỗi hoặc triệu chứng của laptop"
+    ],
+    "brief_rationale": "Đáp án không đề cập cụ thể về lỗi hoặc triệu chứng của laptop, dẫn đến không đủ thông tin để xử lý yêu cầu.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

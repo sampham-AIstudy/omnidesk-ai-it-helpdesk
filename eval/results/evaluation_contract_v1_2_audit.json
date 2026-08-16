@@ -1,0 +1,792 @@
+{
+  "evaluation_contract_version": "enterprise-golden-v1.2",
+  "lock_errors": [],
+  "routing_reporting": {
+    "canonical_name": "routing_contract_pass",
+    "canonical_denominator": 21,
+    "all_expected_route_assertions_name": "route_assertion_pass",
+    "all_expected_route_assertions_denominator": 22,
+    "additional_noncanonical_case": "GT-033"
+  },
+  "global_v1_1_fixture_audit": {
+    "total": 90,
+    "passed": 66,
+    "eval_fixture_error_count": 24,
+    "error_count_by_type": {
+      "SUPPORTED_CONTEXT_MISSING": 23,
+      "PARTIAL_CONTEXT_MISSING": 1
+    },
+    "cases": [
+      {
+        "id": "GT-001",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-002",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-003",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-004",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-005",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-006",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-007",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-008",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-009",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-010",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-011",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-012",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-013",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-014",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-015",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-016",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-017",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-018",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-019",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-020",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-021",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-022",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-023",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-024",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-025",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-026",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-027",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-028",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-029",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-030",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-031",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-032",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-033",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-034",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-035",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-036",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-037",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-038",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-039",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-040",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-041",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-042",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-043",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-044",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-045",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-046",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-047",
+        "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+        "context_source_ids": [
+          "eval-gt047-vpn-port"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-048",
+        "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "PARTIAL_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-049",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-050",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-051",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-052",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-053",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-054",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-055",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-056",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-057",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-058",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-059",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-060",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-061",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-062",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-063",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-064",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-065",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-066",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-067",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-068",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-069",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-070",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-071",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-072",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-073",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-074",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-075",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-076",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-077",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-078",
+        "expected_evidence_mode": "UNSUPPORTED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-079",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-080",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-081",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-082",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-083",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-084",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-085",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-086",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-087",
+        "expected_evidence_mode": "UNSUPPORTED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-088",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [],
+        "integrity": "EVAL_FIXTURE_ERROR",
+        "errors": [
+          "SUPPORTED_CONTEXT_MISSING"
+        ]
+      },
+      {
+        "id": "GT-089",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-090",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      }
+    ]
+  },
+  "canary_contract_v1_2": {
+    "context_snapshot": {
+      "path": "eval/snapshots/canary_contract_v1_2_context_snapshot.json",
+      "sha256": "7e34b0c829dfd844936da252bfe912f5247f80312a9ff44439f51a6b3993d486"
+    },
+    "cases": [
+      {
+        "id": "GT-006",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-023",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-001"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-047",
+        "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+        "context_source_ids": [
+          "eval-gt047-vpn-port"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-048",
+        "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+        "context_source_ids": [
+          "eval-gt048-replacement-conditions"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-068",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      }
+    ]
+  },
+  "domain_fact_normalization": {
+    "GT-023": {
+      "domain": "VPN_CONNECTIVITY",
+      "known_facts": {
+        "vpn_symptom": "connection_or_authentication_failure"
+      },
+      "missing_required_facts": [],
+      "useful_for_diagnosis": [
+        "vpn_symptom",
+        "error_message",
+        "authentication_state",
+        "network_availability",
+        "client_platform"
+      ]
+    },
+    "GT-068": {
+      "domain": "HARDWARE_PHYSICAL_DAMAGE",
+      "known_facts": {
+        "device": "laptop"
+      },
+      "missing_required_facts": []
+    }
+  },
+  "GT-006": {
+    "classification": "JUDGE_CALIBRATION_EDGE_CASE",
+    "reason": "Incident is workflow-actionable despite no complete root-cause diagnosis; the answer contains triage rather than an abstention.",
+    "judge_failure_type": "BAD_ABSTENTION",
+    "judge_rationale": "Lỗi abstention và hỏi lại thông tin không cần thiết."
+  },
+  "canary_preconditions": {
+    "cases": {
+      "GT-006": true,
+      "GT-023": true,
+      "GT-047": true,
+      "GT-048": true,
+      "GT-068": true
+    },
+    "passed": 5,
+    "total": 5,
+    "status": "PASS"
+  }
+}

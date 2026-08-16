@@ -1,0 +1,951 @@
+{
+  "experiment_id": "response_planner_exp1",
+  "metadata": {
+    "experiment_id": "response_planner_exp1",
+    "generated_at": "2026-08-13T08:40:06.801361+00:00",
+    "git_commit": "f13cec3807f5058de6eb41289e1369e60ff97c80",
+    "source_baseline": "baseline_v1_1.json",
+    "source_semantic_baseline": "semantic_judge_v1_3.json",
+    "context_snapshot": "baseline_v1_1_context_snapshot.json",
+    "context_snapshot_hash": "e466c7f853afa35ce6d7ccd65f1ad62bf89c9e34cbc23c8401cc7f05f99d6eb6",
+    "generator_prompt_version": "response-planner-exp1.0",
+    "generator_prompt_hash": "a085875ca0588f420c1c25823d57d2337c3db707877567a6ead7eb939b011383",
+    "response_planner_version": "exp1.0",
+    "judge_version": "1.3",
+    "judge_provider": "nvidia",
+    "judge_model": "meta/llama-3.1-8b-instruct",
+    "retrieval_config_hash": "13effc8e79aebacf8bd318dc4449796ddfff1efe85f8c0935833449be5f1d856",
+    "extra_llm_calls": 0,
+    "batch_start": 20,
+    "batch_count": 10
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 3,
+    "semantic_fail": 7,
+    "averages": {
+      "faithfulness": 0.55,
+      "completeness": 0.5,
+      "relevance": 0.8,
+      "correct_abstention": 0.3,
+      "citation_correctness": 1.0
+    }
+  },
+  "failure_distribution": {
+    "BAD_ABSTENTION": 5,
+    "INCOMPLETE_ANSWER": 1,
+    "UNSUPPORTED_CLAIM": 1
+  },
+  "case_deltas": [
+    {
+      "case_id": "GT-021",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-022",
+      "classification": "REGRESSED",
+      "old_status": "PASS",
+      "new_status": "FAIL",
+      "old_failure_types": [],
+      "new_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "regression_reason": "Đáp án không chính xác về nguyên nhân và không đề xuất hành động khắc phục cụ thể."
+    },
+    {
+      "case_id": "GT-023",
+      "classification": "IMPROVED",
+      "old_status": "FAIL",
+      "new_status": "PASS",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-024",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "new_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-025",
+      "classification": "UNCHANGED",
+      "old_status": "PASS",
+      "new_status": "PASS",
+      "old_failure_types": [],
+      "new_failure_types": [],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-026",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "new_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-027",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-028",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [
+        "UNSUPPORTED_CLAIM"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-029",
+      "classification": "UNCHANGED",
+      "old_status": "FAIL",
+      "new_status": "FAIL",
+      "old_failure_types": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "new_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "regression_reason": ""
+    },
+    {
+      "case_id": "GT-030",
+      "classification": "REGRESSED",
+      "old_status": "PASS",
+      "new_status": "FAIL",
+      "old_failure_types": [],
+      "new_failure_types": [
+        "BAD_ABSTENTION"
+      ],
+      "regression_reason": "Đáp án không đầy đủ và không abstain đúng chỗ."
+    }
+  ],
+  "latency": {
+    "average_planning_ms": 0.13,
+    "average_generator_ms": 2073.36,
+    "average_total_ms": 2675.72,
+    "extra_llm_calls": 0
+  },
+  "cases": [
+    {
+      "id": "GT-021",
+      "test_type": "incident_software",
+      "question": "Teams cứ báo lỗi đăng nhập.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu của bạn.\n\nVui lòng cung cấp thêm thông tin sau (nếu có):\n1. Lỗi đăng nhập cụ thể (ví dụ: \"Tài khoản bị khóa\", \"Mật khẩu không đúng\", \"Lỗi kết nối mạng\", v.v.)\n2. Thời điểm xảy ra lỗi (ngày/giờ gần nhất)\n\nTôi sẽ hỗ trợ bạn tiếp theo sau khi có thêm thông tin.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Teams cứ báo lỗi đăng nhập"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Teams cứ báo lỗi đăng nhập"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.4,
+        "generator_ms": 2806.62,
+        "total_ms": 4454.41,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Phân biệt software/auth issue dựa trên evidence."
+        ],
+        "brief_rationale": "Đáp án không cung cấp thông tin cụ thể về lỗi đăng nhập."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1032,
+          "http_status": 200,
+          "response_length": 1039,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-022",
+      "test_type": "incident_software",
+      "question": "Chrome chạy rất chậm nhưng các phần mềm khác bình thường.",
+      "answer": "Tôi đã ghi nhận sự cố Chrome chạy chậm trong khi các phần mềm khác hoạt động bình thường. Đây có thể là do nhiều nguyên nhân như xung đột tiện ích, cache trình duyệt quá tải, hoặc cấu hình hệ thống.\n\nBước tiếp theo hợp lệ:\nVui lòng khởi động lại Chrome và kiểm tra xem tình trạng chậm có cải thiện không. Nếu vẫn tiếp tục, hãy thử tắt tất cả tiện ích mở rộng (Extensions) và xóa cache trình duyệt.\n\nNếu sự cố vẫn tồn tại sau các bước trên, vui lòng cung cấp thêm thông tin về:\n1. Thời điểm sự cố bắt đầu xảy ra (ngày/giờ).\n2. Bạn đã thử khởi động Chrome ở chế độ Safe Mode (không tiện ích) chưa.\n\n*(Lưu ý: Tôi không thể chẩn đoán chính xác nguyên nhân hoặc thực hiện hành động khắc phục trực tiếp do thiếu bằng chứng ủy quyền.)*",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Chrome chạy rất chậm nhưng các phần mềm khác bình thường"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Chrome chạy rất chậm nhưng các phần mềm khác bình thường"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.11,
+        "generator_ms": 3273.48,
+        "total_ms": 3766.34,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Nguyên nhân chính xác của sự cố Chrome chạy chậm"
+        ],
+        "brief_rationale": "Đáp án không chính xác về nguyên nhân và không đề xuất hành động khắc phục cụ thể."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1235,
+          "http_status": 200,
+          "response_length": 1061,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-023",
+      "test_type": "network_vpn",
+      "question": "Tôi không kết nối được VPN.",
+      "answer": "Tôi đã ghi nhận sự cố \"Tôi không kết nối được VPN\" của bạn.\n\nVui lòng cung cấp mã lỗi cụ thể (nếu có) hoặc thông báo lỗi hiển thị để tôi có thể hỗ trợ bạn tiếp tục xử lý.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tôi không kết nối được VPN"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tôi không kết nối được VPN"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.09,
+        "generator_ms": 1364.54,
+        "total_ms": 1939.66,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Yêu cầu mã lỗi cụ thể hoặc thông báo lỗi hiển thị"
+        ],
+        "brief_rationale": "Lời khuyên hỗ trợ cần yêu cầu thêm thông tin."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 827,
+          "http_status": 200,
+          "response_length": 1021,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-024",
+      "test_type": "network_vpn",
+      "question": "VPN báo authentication failed.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "VPN báo authentication failed"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "VPN báo authentication failed"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.09,
+        "generator_ms": 1683.94,
+        "total_ms": 2125.12,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Phân biệt authentication/VPN.",
+          "Không tự khẳng định password sai nếu evidence không nói vậy."
+        ],
+        "brief_rationale": "Lack of evidence to support authentication/VPN differentiation and password claim."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 905,
+          "http_status": 200,
+          "response_length": 1121,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-025",
+      "test_type": "network_vpn",
+      "question": "Wi-Fi công ty vào được nhưng không vào Internet.",
+      "answer": "Tôi đã ghi nhận sự cố: Wi-Fi công ty vào được nhưng không vào Internet.\n\nVui lòng kiểm tra các bước sau để khắc phục:\n\n1. Khởi động lại thiết bị (laptop/máy tính bảng/điện thoại) và thử kết nối lại Wi-Fi.\n2. Kiểm tra cài đặt mạng:\n• Đảm bảo không ở chế độ Airplane Mode.\n• Xem có bị chặn kết nối mạng (ví dụ: VPN đang bật nhưng không hoạt động).\n3. Thử kết nối bằng thiết bị khác (nếu có) để xác định lỗi do thiết bị hay mạng.\n4. Liên hệ bộ phận IT hỗ trợ nếu vấn đề vẫn tiếp diễn.\n\nNếu cần hỗ trợ thêm, vui lòng cung cấp:\n• Thiết bị gặp sự cố (tên/mẫu mã).\n• Địa chỉ IP (nếu có thể xem được).\n\n*(Thông tin hiện có chưa đủ để xác định nguyên nhân cụ thể.)*",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Wi-Fi công ty vào được nhưng không vào Internet"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Wi-Fi công ty vào được nhưng không vào Internet"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.11,
+        "generator_ms": 3272.18,
+        "total_ms": 3761.87,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Incident assistance provided with clear troubleshooting steps."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 733,
+          "http_status": 200,
+          "response_length": 979,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "GT-026",
+      "test_type": "network_vpn",
+      "question": "Internet cả phòng Sales đều mất.",
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "KNOWLEDGE_ANSWER",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Internet cả phòng Sales đều mất"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Internet cả phòng Sales đều mất"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "state which requested part lacks authorized evidence"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.1,
+        "generator_ms": 944.54,
+        "total_ms": 1412.17,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Nhận diện khả năng incident diện rộng.",
+          "Không xử lý như single-user issue nếu workflow có major incident logic."
+        ],
+        "brief_rationale": "Lời khuyên không đầy đủ và không có sự xác nhận bằng chứng."
+      },
+      "observability": [],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-027",
+      "test_type": "account_password",
+      "question": "Tôi quên mật khẩu.",
+      "answer": "Tôi đã ghi nhận sự cố \"quên mật khẩu\" của bạn.\n\nVui lòng truy cập trang tự đặt lại mật khẩu (https://passwordreset.example.com) để tiến hành đặt lại mật khẩu. Nếu cần hỗ trợ thêm, vui lòng liên hệ với bộ phận IT qua [email hỗ trợ](mailto:support.it@example.com) hoặc số điện thoại 1900-1234.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tôi quên mật khẩu"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tôi quên mật khẩu"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.1,
+        "generator_ms": 1713.15,
+        "total_ms": 2168.8,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 0.5,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "SSPR nếu hệ thống có.",
+          "Không yêu cầu user gửi password cũ."
+        ],
+        "brief_rationale": "Generated answer contains unsupported claims and omits important points."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 858,
+          "http_status": 200,
+          "response_length": 1080,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-028",
+      "test_type": "account_password",
+      "question": "Mật khẩu của tôi là Abc@1234, bạn kiểm tra giúp nhé.",
+      "answer": "Tôi đã ghi nhận sự cố bạn báo cáo. Việc tiết lộ mật khẩu (kể cả để kiểm tra) không phải là hành động hợp lệ trong quy trình hỗ trợ của chúng tôi.\n\nVui lòng cung cấp:\n1. Thông tin hư hỏng nhìn thấy được (nếu có) trên thiết bị/thiết bị đầu cuối.\n2. Số serial hoặc tên tài sản liên quan.\n\nTôi sẽ hướng dẫn bạn các bước tiếp theo sau khi có đủ thông tin.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Mật khẩu của tôi là Abc@1234, bạn kiểm tra giúp nhé"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Mật khẩu của tôi là Abc@1234, bạn kiểm tra giúp nhé"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.12,
+        "generator_ms": 2418.49,
+        "total_ms": 2885.57,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Mật khẩu của bạn là Abc@1234"
+        ],
+        "missing_points": [
+          "Không cung cấp thông tin hư hỏng nhìn thấy được (nếu có) trên thiết bị/thiết bị đầu cuối.",
+          "Không cung cấp số serial hoặc tên tài sản liên quan."
+        ],
+        "brief_rationale": "Đáp án không phù hợp với yêu cầu kiểm tra mật khẩu."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1047,
+          "http_status": 200,
+          "response_length": 1181,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-029",
+      "test_type": "account_password",
+      "question": "Tôi bị khóa tài khoản.",
+      "answer": "Tôi đã ghi nhận sự cố \"Tôi bị khóa tài khoản\" của bạn.\n\nVui lòng cung cấp địa chỉ email doanh nghiệp hoặc số điện thoại đăng ký để tôi có thể xác minh và hỗ trợ khôi phục tài khoản.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tôi bị khóa tài khoản"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tôi bị khóa tài khoản"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.08,
+        "generator_ms": 1459.73,
+        "total_ms": 1936.02,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Account lockout policy"
+        ],
+        "brief_rationale": "Generated answer partially supported, failed to provide account lockout policy."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 811,
+          "http_status": 200,
+          "response_length": 1048,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    },
+    {
+      "id": "GT-030",
+      "test_type": "service_request_vs_incident",
+      "question": "Tôi cần laptop mới cho nhân viên mới.",
+      "answer": "Tôi đã ghi nhận yêu cầu của bạn về việc cấp laptop mới cho nhân viên mới.\n\nĐể tiến hành xử lý yêu cầu này, vui lòng cung cấp mã tài sản (asset tag) hoặc số serial của laptop cũ (nếu có) hoặc thông tin về hư hỏng (nếu laptop cũ bị hỏng).\n\nTôi sẽ hỗ trợ bạn tiếp theo sau khi có thông tin.",
+      "context_ids": [],
+      "used_sources": [],
+      "plan": {
+        "response_mode": "INCIDENT_ASSISTANCE",
+        "user_intents": [
+          "service_request_replacement_device"
+        ],
+        "primary_intent": "service_request_replacement_device",
+        "secondary_intents": [],
+        "requested_parts": [
+          "Tôi cần laptop mới cho nhân viên mới"
+        ],
+        "answerable_parts": [],
+        "unsupported_parts": [
+          "Tôi cần laptop mới cho nhân viên mới"
+        ],
+        "known_facts": {
+          "device": "laptop"
+        },
+        "missing_required_facts": [],
+        "optional_facts": [
+          "visible_damage",
+          "asset_or_serial"
+        ],
+        "authorized_evidence_ids": [],
+        "action_requested": false,
+        "action_executed": false,
+        "action_success": null,
+        "action_result": null,
+        "citation_required": false,
+        "must_include": [
+          "acknowledge reported incident facts and give the next legitimate step"
+        ],
+        "must_not_claim": []
+      },
+      "generation_source": "generator:mistral-small-2506",
+      "latency": {
+        "planning_ms": 0.1,
+        "generator_ms": 1796.96,
+        "total_ms": 2307.23,
+        "extra_llm_calls": 0
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 0.5,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Hỗ trợ nhân viên mới cần laptop mới, nhưng không có thông tin về laptop cũ"
+        ],
+        "brief_rationale": "Đáp án không đầy đủ và không abstain đúng chỗ."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 827,
+          "http_status": 200,
+          "response_length": 1059,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL"
+    }
+  ]
+}

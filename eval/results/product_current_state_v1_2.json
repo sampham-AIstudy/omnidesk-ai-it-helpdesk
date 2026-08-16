@@ -1,0 +1,44 @@
+{
+  "version": "v1_2",
+  "recorded_at": "2026-08-14",
+  "supersedes": "product_current_state_v1_1",
+  "completed": {
+    "incident_lifecycle": "done_unchanged",
+    "direct_service_request_fulfillment": "done_unchanged",
+    "service_request_approval_lifecycle": {
+      "status": "done",
+      "capabilities": [
+        "server_owned_catalog_approval_policy",
+        "manager_admin_pending_queue",
+        "approved_to_existing_fulfillment_queue",
+        "terminal_rejection_with_reason",
+        "tenant_scoped_rbac",
+        "compare_and_set_decisions",
+        "approval_audit"
+      ]
+    },
+    "admin_user_lifecycle_c1": "done_unchanged",
+    "otel": "done_unchanged"
+  },
+  "frozen": [
+    "ai_rag_baseline",
+    "routing_security_action_grounding"
+  ],
+  "scoring_contract": {
+    "scope": "service_request_lifecycle_only",
+    "denominator": 100,
+    "rules": "An area earns its full weight only when its real persisted API, RBAC, audit, and E2E path are complete; otherwise it earns zero.",
+    "areas": [
+      {"name": "direct_fulfillment_branch", "weight": 50, "before_c2": "done", "after_c2": "done"},
+      {"name": "approval_gated_branch", "weight": 50, "before_c2": "not_done", "after_c2": "done"}
+    ],
+    "score_before_percent": 50,
+    "score_after_percent": 100,
+    "portfolio_wide_percent": null,
+    "portfolio_note": "No comparable whole-product percentage is reported because the complete historical denominator was unavailable."
+  },
+  "remaining_verified_p1": [
+    "technician_fulfillment_group_membership_eligibility_administration"
+  ],
+  "recommended_c3": "technician_fulfillment_group_membership_eligibility_administration"
+}

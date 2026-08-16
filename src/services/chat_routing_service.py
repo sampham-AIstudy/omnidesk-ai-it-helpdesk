@@ -71,7 +71,7 @@ _NON_IT_SOCIAL = re.compile(
     r"\b(?:hom nay an gi|mua xe may|toi buon qua|ban buon qua|am sad|what should i eat)\b"
 )
 _VAGUE_INCIDENT = re.compile(
-    r"^(?:may(?: tinh)? toi bi loi|khong dung duoc|no cu bi the ay|app bi ngu roi)[!., ]*$"
+    r"^(?:may(?: tinh)? toi bi loi|khong dung duoc|khong duoc|no cu bi the ay|app bi ngu roi)[!., ]*$"
 )
 _STATUS = re.compile(
     r"\b(?:trang thai|tinh trang|status|kiem tra).*\b(?:ticket|incident|yeu cau|request)\b|"
@@ -84,6 +84,23 @@ _TICKET_REFERENCE_STATUS = re.compile(
 _ACTION = re.compile(
     r"\b(?:tao|mo|dong|cap nhat|reset|doi|yeu cau|chuyen|escalate)\b.*"
     r"\b(?:ticket|incident|request|tai khoan|quyen|approval)\b"
+)
+# A process/policy question may mention the verb used by a real workflow
+# (for example, "quy trinh tao Service Request"). It is still retrieval work,
+# not an instruction to mutate a resource. Keep this narrow and run it before
+# execution matching below.
+_KNOWLEDGE_QUESTION = re.compile(
+    r"^(?:(?:cho toi biet|toi muon biet)\s+)?(?:quy trinh|cach|huong dan|chinh sach|dieu kien)\b|"
+    r"\b(?:la gi|nghia la gi|ai duyet|can nhung thong tin gi|gom nhung buoc nao|"
+    r"hoat dong (?:the nao|ra sao)|mat bao lau)\b"
+)
+_EXECUTION_ACTION = re.compile(
+    r"^(?:(?:hay|vui long)\s+)?(?:tao|gui|dang ky)\b|"
+    r"^(?:toi|minh|em)\s+(?:muon|can)\s+(?:xin|dang ky|tao|gui)\b|"
+    r"^xin(?:\s+cap)?\b.*\b(?:cho|giup)\s+(?:toi|minh|em|to)\b|"
+    r"^lam\s+(?:giup|cho)\s+(?:toi|minh|em)\b.*\b(?:yeu cau|request|don)\b|"
+    r"^yeu cau\b.*\b(?:cho|giup)\s+(?:toi|minh|em)\b|"
+    r"^cap\b.*\bcho\s+(?:toi|minh|em)\b"
 )
 _INCIDENT = re.compile(
     r"\b(?:loi|khong len|khong mo|khong dung|mat ket noi|man hinh|laptop|may tinh|may in|ban phim|"
@@ -142,7 +159,9 @@ def route_chat_message(message: str) -> ChatRouteDecision:
         )
     if _STATUS.search(folded) or _TICKET_REFERENCE_STATUS.search(folded):
         return ChatRouteDecision("ticket_status", "tool_required", 0.96)
-    if _ACTION.search(folded):
+    if _KNOWLEDGE_QUESTION.search(folded):
+        return ChatRouteDecision("knowledge", "evidence_required", 0.88)
+    if _EXECUTION_ACTION.search(folded) or _ACTION.search(folded):
         return ChatRouteDecision("action_request", "tool_required", 0.92)
     if _INCIDENT.search(folded):
         return ChatRouteDecision("incident", "evidence_required", 0.82)

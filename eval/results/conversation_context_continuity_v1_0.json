@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "status": "NOT_READY",
+  "workspace": {
+    "before": "persisted per conversation but no direct LLM history",
+    "after": "owner-scoped chronological recent history on the persisted conversation endpoint",
+    "limit_messages": 8,
+    "per_message_char_cap": 1200,
+    "stateless_paths": ["POST /chat", "POST /chat/stream"]
+  },
+  "ticket": {
+    "before": "metadata plus Zero-Mem, no direct linear transcript",
+    "after": "same-ticket chronological user/agent/technician recent history plus retained Zero-Mem",
+    "limit_messages": 5,
+    "per_message_char_cap": 1200,
+    "excluded_sender_types": ["system"]
+  },
+  "security": {
+    "workspace_owner_join": true,
+    "current_message_excluded_by_id": true,
+    "history_untrusted": true,
+    "ticket_episodic_dedup_by_message_id": true
+  },
+  "validation": {
+    "context_and_c4_regressions": "47 passed",
+    "frozen_eval": "93 passed",
+    "lint_and_compile": "pass",
+    "manual_runtime": "not run",
+    "business_e2e": "not run",
+    "broad_api_group": "host timeout; no assertion result recorded"
+  },
+  "deferred": ["query rewrite", "dynamic token budgeting", "summarization"]
+}
