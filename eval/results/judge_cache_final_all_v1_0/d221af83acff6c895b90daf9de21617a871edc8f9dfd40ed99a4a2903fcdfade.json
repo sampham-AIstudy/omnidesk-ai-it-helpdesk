@@ -1,0 +1,21 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Hướng dẫn cấu hình chi tiết VPN nội bộ công ty"
+    ],
+    "brief_rationale": "Đáp án không cung cấp thông tin cấu hình chi tiết VPN nội bộ công ty, mặc dù có thể dựa trên [kb-001].",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

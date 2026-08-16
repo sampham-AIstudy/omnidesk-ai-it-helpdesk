@@ -1,0 +1,56 @@
+{
+  "version": "runtime_routing_fix_c4_2",
+  "recorded_at": "2026-08-15",
+  "scope": "C4.2 Service Request knowledge-vs-action routing only",
+  "source_artifacts": [
+    "eval/results/product_current_state_v1_5.md",
+    "eval/results/runtime_stability_audit_v1_0.md",
+    "eval/results/runtime_action_grounding_fix_c4_1.md"
+  ],
+  "verified_reproduction": {
+    "message": "Quy trình tạo Service Request là gì?",
+    "normalized_input": "quy trinh tao service request la gi?",
+    "matched_rule": "_ACTION: tao … request",
+    "route_before": "action_request",
+    "confidence_before": 0.92,
+    "retrieval_before": false,
+    "tool_intent_before": true,
+    "http_before": "200 NOT_INVOKED no-change reply"
+  },
+  "root_cause": "The broad legacy action matcher ran before any process/policy question distinction. The Service Request domain noun alone was not the cause.",
+  "routing_after": {
+    "precedence": ["ticket_status", "knowledge_question", "execution_action", "legacy_action", "incident", "knowledge"],
+    "knowledge_route": "knowledge",
+    "action_route": "action_request",
+    "llm_classifier_added": false,
+    "prompts_or_retrieval_changed": false,
+    "service_request_workflow_changed": false
+  },
+  "runtime_after_fix": {
+    "process_question": {"route": "knowledge", "retrieval_required": true, "http_status": 200},
+    "approval_question": {"route": "knowledge", "retrieval_required": true, "http_status": 200},
+    "execution_request": {"route": "action_request", "retrieval_required": false, "action_state": "NOT_INVOKED", "http_status": 200},
+    "c4_1_handoff": "safe NOT_INVOKED response preserved"
+  },
+  "validation": {
+    "python_compile": "pass",
+    "ruff_changed_scope": "pass",
+    "routing_action_grounding_access": "50 passed",
+    "auth": "8 passed",
+    "test_eval": "93 passed",
+    "full_service_request_e2e": "23 passed",
+    "production_plus_c1_e2e": "18 passed",
+    "full_e2e": "41 passed"
+  },
+  "legacy_test_expectation_drift": {
+    "classification": "LEGACY_TEST_EXPECTATION_DRIFT",
+    "test_file": "tests/test_api/test_guardrail_pipeline.py",
+    "expected_old_values": ["Matched local injection patterns", "response body contains blocked"],
+    "actual_safe_values": ["DUAL_USE_SECURITY_REQUEST", "HTTP 400 specific Vietnamese safe refusal"],
+    "security_regression": false,
+    "recommended_follow_up": "Reconcile guardrail test assertions in a separately authorized contract task."
+  },
+  "resolved_error_ids": ["RTE-005"],
+  "remaining_release_blockers": ["RTE-003 Chroma persisted embedding backend drift"],
+  "verdict": "C4.2 PASS; overall release NOT_READY"
+}

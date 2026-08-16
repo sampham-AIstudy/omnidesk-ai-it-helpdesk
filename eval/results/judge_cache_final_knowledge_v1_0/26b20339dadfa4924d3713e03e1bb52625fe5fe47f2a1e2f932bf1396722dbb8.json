@@ -1,0 +1,22 @@
+{
+  "result": {
+    "faithfulness": 1.0,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 1.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "INCOMPLETE_ANSWER"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Retrieve account lockout policy nếu có.",
+      "Không tự bịa số lần failed login."
+    ],
+    "brief_rationale": "Missing required information and unsupported claim.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

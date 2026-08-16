@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [
+      "Tôi đã ghi nhận sự cố màn hình laptop bị vỡ sau khi bạn làm rơi máy."
+    ],
+    "missing_points": [
+      "Mã tài sản (Asset Tag) hoặc số serial của laptop"
+    ],
+    "brief_rationale": "Sự cố đã được ghi nhận nhưng không có đủ thông tin để xác định mức độ hư hỏng hay chi phí sửa chữa.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

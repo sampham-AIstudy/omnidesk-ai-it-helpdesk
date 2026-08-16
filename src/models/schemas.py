@@ -67,19 +67,51 @@ class UserSelfUpdate(BaseModel):
     phone: str | None = Field(None, max_length=30, pattern=r"^[0-9+().\-\s]*$")
 
 
+class AdminUserUpdate(BaseModel):
+    """Explicit allow-list for admin lifecycle changes; passwords stay separate."""
+    model_config = ConfigDict(extra="forbid")
+
+    full_name: str | None = Field(None, min_length=2, max_length=100)
+    email: str | None = Field(None, min_length=5, max_length=100, pattern=r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
+    phone: str | None = Field(None, max_length=30, pattern=r"^[0-9+().\-\s]*$")
+    role: UserRole | None = None
+    company_unit: CompanyUnit | None = None
+    department: str | None = Field(None, max_length=100)
+    is_vip: bool | None = None
+    is_active: bool | None = None
+
+
+class FulfillmentGroupListResponse(BaseModel):
+    """Fixed, catalog-derived fulfillment groups; these are not dynamic entities."""
+
+    items: list[str]
+
+
+class TechnicianFulfillmentGroupsUpdate(BaseModel):
+    """Replace a technician's explicit eligibility set; unknown groups are rejected server-side."""
+    model_config = ConfigDict(extra="forbid")
+
+    fulfillment_groups: list[str] = Field(default_factory=list, max_length=50)
+
+
+class TechnicianFulfillmentGroupsResponse(BaseModel):
+    technician_id: int
+    fulfillment_groups: list[str]
+
+
 # ─── Ticket Schemas ──────────────────────────────────────────────────────────
 
 class TicketCreate(BaseModel):
-    title: str = Field(min_length=5, max_length=255)
-    description: str = Field(min_length=10, max_length=100_000)
+    title: str = Field(min_length=5, max_length=200)
+    description: str = Field(min_length=10, max_length=5000)
     is_production_impact: bool = False
     duplicate_decision: Literal["create_anyway"] | None = None
     duplicate_of_ticket_id: int | None = None
 
 
 class DuplicateCheckRequest(BaseModel):
-    title: str = Field(min_length=5, max_length=255)
-    description: str = Field(min_length=10, max_length=100_000)
+    title: str = Field(min_length=5, max_length=200)
+    description: str = Field(min_length=10, max_length=5000)
 
 
 class DuplicateTicketCandidate(BaseModel):
@@ -182,13 +214,13 @@ class TicketRatingRequest(BaseModel):
 
 
 class TicketMessageCreate(BaseModel):
-    message: str = Field(min_length=1, max_length=4000)
+    message: str = Field(min_length=1, max_length=8000)
 
 
-# â”€â”€â”€ Service Request Schemas â”€â”€â”€
+# ─── Service Request Schemas ──────────────────────────────────────────────────
 
 class ServiceRequestCreate(BaseModel):
-    service_name: str = Field(min_length=2, max_length=255)
+    service_name: str = Field(min_length=2, max_length=200)
     category: str = Field(min_length=2, max_length=50)
     form_data: dict[str, str] = Field(default_factory=dict)
 
@@ -219,8 +251,17 @@ class ServiceRequestResponse(BaseModel):
     sla_hours: int
     form_data: str
     rejection_reason: str | None
+    approval_comment: str | None = None
     submitter_id: int
     requested_for_id: int | None
+    approved_by_id: int | None = None
+    approved_at: datetime | None = None
+    rejected_by_id: int | None = None
+    rejected_at: datetime | None = None
+    assignee_id: int | None = None
+    assigned_at: datetime | None = None
+    fulfilled_at: datetime | None = None
+    fulfilled_by_id: int | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -229,6 +270,37 @@ class ServiceRequestResponse(BaseModel):
 
 class ServiceRequestListResponse(BaseModel):
     items: list[ServiceRequestResponse]
+
+
+class ServiceRequestAuditResponse(BaseModel):
+    action: AuditAction
+    actor_id: int | None
+    actor_name: str | None
+    description: str
+    metadata_json: str | None
+    created_at: datetime
+
+
+class ServiceRequestDetailResponse(ServiceRequestResponse):
+    requester_name: str | None = None
+    assignee_name: str | None = None
+    activity: list[ServiceRequestAuditResponse] = Field(default_factory=list)
+
+
+class ServiceRequestApprovalQueueResponse(BaseModel):
+    items: list[ServiceRequestDetailResponse]
+
+
+class ServiceRequestTransition(BaseModel):
+    target_status: ServiceRequestStatus
+
+
+class ServiceRequestApprovalDecision(BaseModel):
+    comment: str | None = Field(None, max_length=2000)
+
+
+class ServiceRequestRejectionDecision(BaseModel):
+    reason: str = Field(min_length=3, max_length=2000)
 
 
 
@@ -270,10 +342,10 @@ class AuditLogResponse(BaseModel):
 # ─── Knowledge Base Schemas ──────────────────────────────────────────────────
 
 class KBEntryCreate(BaseModel):
-    title: str = Field(min_length=5, max_length=255)
-    content: str = Field(min_length=10)
-    solution: str | None = None
-    runbook: str | None = None
+    title: str = Field(min_length=5, max_length=200)
+    content: str = Field(min_length=10, max_length=50000)
+    solution: str | None = Field(None, max_length=50000)
+    runbook: str | None = Field(None, max_length=50000)
     category: str
     tags: str | None = None
     company_unit: str | None = None
@@ -282,10 +354,10 @@ class KBEntryCreate(BaseModel):
 
 
 class KBEntryUpdate(BaseModel):
-    title: str | None = Field(default=None, min_length=5, max_length=255)
-    content: str | None = Field(default=None, min_length=10)
-    solution: str | None = None
-    runbook: str | None = None
+    title: str | None = Field(default=None, min_length=5, max_length=200)
+    content: str | None = Field(default=None, min_length=10, max_length=50000)
+    solution: str | None = Field(None, max_length=50000)
+    runbook: str | None = Field(None, max_length=50000)
     category: str | None = None
     tags: str | None = None
     company_unit: str | None = None

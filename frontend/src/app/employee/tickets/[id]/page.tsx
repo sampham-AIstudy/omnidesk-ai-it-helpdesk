@@ -163,6 +163,10 @@ export default function RiotStyleTicketDetailPage() {
   const handleSend = async () => {
     const trimmed = message.trim();
     if (!trimmed || isTicketStreaming) return;
+    if (trimmed.length > 8000) {
+      toast.error(`Nội dung tin nhắn (${trimmed.length.toLocaleString('vi-VN')} ký tự) vượt quá giới hạn 8.000 ký tự. Vui lòng rút ngắn văn bản trước khi gửi.`);
+      return;
+    }
 
     // Optimistically render user's message immediately on screen
     const tempMsg: TicketMessage = {
@@ -472,28 +476,42 @@ export default function RiotStyleTicketDetailPage() {
                 </div>
 
                 {/* Input Textarea & Send Buttons */}
-                <div className="flex gap-2 items-end">
-                  <textarea
-                    rows={2}
-                    placeholder={
-                      isHumanActive
-                        ? 'Nhập phản hồi gửi chuyên viên hỗ trợ...'
-                        : 'Nhập câu hỏi hoặc phản hồi tiếp theo...'
-                    }
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyDown={handleKeyDown}
-                    disabled={isTicketStreaming}
-                    className="flex-1 p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all resize-none"
-                  />
-                  <button
-                    onClick={handleSend}
-                    disabled={!message.trim() || isTicketStreaming}
-                    className="px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm h-[52px]"
-                  >
-                    {isTicketStreaming ? <Spinner size={16} /> : <Send size={16} />}
-                    <span className="hidden sm:inline">Gửi</span>
-                  </button>
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex gap-2 items-end">
+                    <textarea
+                      rows={2}
+                      placeholder={
+                        isHumanActive
+                          ? 'Nhập phản hồi gửi chuyên viên hỗ trợ...'
+                          : 'Nhập câu hỏi hoặc phản hồi tiếp theo...'
+                      }
+                      value={message}
+                      onPaste={(e) => {
+                        const pasteData = e.clipboardData.getData('text');
+                        const totalLen = message.length + pasteData.length;
+                        if (totalLen > 8000) {
+                          toast.error(`Nội dung dán quá dài (${totalLen.toLocaleString('vi-VN')} ký tự, giới hạn là 8.000 ký tự). Vui lòng rút ngắn văn bản.`);
+                        }
+                      }}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      disabled={isTicketStreaming}
+                      className={`flex-1 p-3 bg-slate-50 border rounded-2xl text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:bg-white transition-all resize-none ${message.length > 8000 ? 'border-rose-400 focus:ring-2 focus:ring-rose-400' : 'border-slate-200 focus:ring-2 focus:ring-blue-500'}`}
+                    />
+                    <button
+                      onClick={handleSend}
+                      disabled={!message.trim() || isTicketStreaming || message.length > 8000}
+                      className="px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-2xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm h-[52px]"
+                    >
+                      {isTicketStreaming ? <Spinner size={16} /> : <Send size={16} />}
+                      <span className="hidden sm:inline">Gửi</span>
+                    </button>
+                  </div>
+                  <div className="flex items-center justify-end px-1">
+                    <span className={`font-mono text-[10px] ${message.length > 8000 ? 'font-bold text-rose-600' : message.length >= 7000 ? 'font-semibold text-amber-600' : 'text-slate-400'}`}>
+                      {message.length.toLocaleString('vi-VN')} / 8.000
+                    </span>
+                  </div>
                 </div>
               </div>
             ) : (

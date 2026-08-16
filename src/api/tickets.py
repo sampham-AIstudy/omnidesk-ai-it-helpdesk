@@ -30,6 +30,7 @@ from src.models.schemas import (
     TicketResponse,
     TicketStatusUpdate,
 )
+from src.guardrails.ai_abuse_guard import validate_chat_message_size
 from src.models.ticket import Ticket, TicketStatus
 from src.models.user import CompanyUnit, User, UserRole
 from src.observability.tracing import record_business_event
@@ -480,6 +481,7 @@ async def post_ticket_message(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
+    validate_chat_message_size(payload.message)
     ticket = await ticket_service.get_ticket(db, ticket_id)
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket không tồn tại")
@@ -526,6 +528,7 @@ async def stream_ticket_message(
     current_user: User = Depends(get_current_active_user),
 ):
     """Stream token output for the ticket conversation, then persist the final message once."""
+    validate_chat_message_size(payload.message)
     ticket = await ticket_service.get_ticket(db, ticket_id)
     if not ticket:
         raise HTTPException(status_code=404, detail="Ticket không tồn tại")

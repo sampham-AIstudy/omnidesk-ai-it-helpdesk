@@ -31,9 +31,10 @@ export default function HITLModal({ ticket, onClose }: Props) {
     onError: (err) => toast.error(getErrorMessage(err)),
   });
 
-  let ragSources: string[] = [];
+  let ragSources: Array<string | { label?: string; url?: string; kind?: string }> = [];
   try {
-    ragSources = JSON.parse(ticket.rag_sources ?? '[]');
+    const parsed = JSON.parse(ticket.rag_sources ?? '[]');
+    ragSources = Array.isArray(parsed) ? parsed : [];
   } catch {
     ragSources = [];
   }
@@ -91,7 +92,14 @@ export default function HITLModal({ ticket, onClose }: Props) {
             <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{ticket.suggested_solution}</p>
             {ragSources.length > 0 && (
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
-                {ragSources.map((source) => <span key={source} className="badge badge-in_progress">{source}</span>)}
+                {ragSources.map((source, idx) => {
+                  const label = typeof source === 'string' ? source : source?.label || source?.url || 'Nguồn RAG';
+                  return (
+                    <span key={idx} className="badge badge-in_progress">
+                      {label}
+                    </span>
+                  );
+                })}
               </div>
             )}
           </div>

@@ -17,7 +17,9 @@ Path("./data").mkdir(exist_ok=True)
 
 engine = create_async_engine(
     settings.database_url,
-    echo=(settings.app_env == "development"),
+    # SQL echo includes bound values and ticket/KB text; SQLAlchemy spans record
+    # operation metadata instead, never raw statements or parameters.
+    echo=False,
     connect_args={"check_same_thread": False, "timeout": 15} if "sqlite" in settings.database_url else {},
 )
 
@@ -114,6 +116,30 @@ def _auto_migrate_sqlite(connection):
         if a_cols:
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_audit_logs_ticket_created ON audit_logs (ticket_id, created_at DESC)"))
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_audit_logs_action_created ON audit_logs (action, created_at DESC)"))
+            if "service_request_id" not in a_cols:
+                connection.execute(text("ALTER TABLE audit_logs ADD COLUMN service_request_id INTEGER"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_audit_logs_service_request_created ON audit_logs (service_request_id, created_at DESC)"))
+
+        # 2c. Service Request fulfillment ownership and completion dates.
+        res_sr = connection.execute(text("PRAGMA table_info(service_requests)"))
+        sr_cols = {row[1] for row in res_sr.fetchall()}
+        if sr_cols:
+            sr_new_cols = {
+                "assignee_id": "INTEGER",
+                "assigned_at": "DATETIME",
+                "fulfilled_at": "DATETIME",
+                "fulfilled_by_id": "INTEGER",
+                "approval_comment": "TEXT",
+                "approved_by_id": "INTEGER",
+                "approved_at": "DATETIME",
+                "rejected_by_id": "INTEGER",
+                "rejected_at": "DATETIME",
+            }
+            for col_name, col_type in sr_new_cols.items():
+                if col_name not in sr_cols:
+                    connection.execute(text(f"ALTER TABLE service_requests ADD COLUMN {col_name} {col_type}"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_service_requests_group_status_created ON service_requests (fulfillment_group, status, created_at, id)"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_service_requests_assignee_status ON service_requests (assignee_id, status)"))
 
         # 2b. The FTS table is an index only; raw ticket/message text remains
         # authoritative.  SQLite builds without FTS5 simply use dense+entity retrieval.
@@ -161,6 +187,7 @@ async def init_db():
         hitl_approval,
         knowledge_base,
         service_request,
+        technician_fulfillment_group,
         ticket,
         ticket_message,
         user,

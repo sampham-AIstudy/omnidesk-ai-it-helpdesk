@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 0.5,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [
+      "Thông tin chi tiết về cấu hình VPN (địa chỉ server, loại VPN, hướng dẫn cài đặt) có thể khác nhau tùy theo chính sách của công ty."
+    ],
+    "missing_points": [
+      "Hướng dẫn cụ thể cho từng loại VPN như Cisco AnyConnect hay FortiClient."
+    ],
+    "brief_rationale": "Hướng dẫn kết nối VPN công ty không đầy đủ và có thể gây hiểu lầm.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

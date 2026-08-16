@@ -28,3 +28,10 @@ retrieved document bodies must not be added as span attributes. The application
 only emits allow-listed operational metadata, and the Collector has a fail-closed
 attribute allow-list as a second line of defence. Database analytics, audit logs,
 and optional LangSmith tracing remain separate systems.
+
+The provisioned Grafana dashboard is **P-236 Production Observability v1.0**.
+It contains API health, AI pipeline latency, tool reliability, and ticket workflow
+panels.  Tempo retains traces; Prometheus scrapes the Collector exporter at
+`otel-collector:9464`.  Trace sampling is configured through `OTEL_TRACES_SAMPLER`
+and `OTEL_TRACES_SAMPLER_ARG`; production should select a measured ratio rather
+than relying on the development default of `1.0`.

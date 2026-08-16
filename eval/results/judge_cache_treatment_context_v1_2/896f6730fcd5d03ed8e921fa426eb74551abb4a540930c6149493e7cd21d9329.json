@@ -1,0 +1,25 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "UNSUPPORTED_CLAIM"
+    ],
+    "unsupported_claims": [
+      "Generated answer không có thông tin hỗ trợ từ bất kỳ nguồn nào"
+    ],
+    "missing_points": [
+      "Giải thích đúng workflow:",
+      "AI chỉ dừng/takeover theo trạng thái thực tế khi technician nhận ticket nếu đó là logic hệ thống.",
+      "Không nói ticket sync lỗi nếu data không cho thấy."
+    ],
+    "brief_rationale": "Generated answer không có thông tin hỗ trợ từ bất kỳ nguồn nào.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

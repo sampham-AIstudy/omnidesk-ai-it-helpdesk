@@ -23,6 +23,11 @@ def get_gemini_api_key() -> str:
     return settings.gemini_api_key or os.getenv("GEMINI_API_KEY", "")
 
 
+def get_groq_api_key() -> str:
+    """Read Groq fallback credentials through Settings, including the project .env."""
+    return getattr(settings, "groq_api_key", "") or os.getenv("GROQ_API_KEY", "")
+
+
 def get_provider_llm(model_type: str = "rag", temperature: float = 0.0, max_tokens: int = 1024):
     """
     Multi-Provider LLM Fallback Factory:
@@ -91,7 +96,7 @@ def _attach_fallback(primary_llm):
     fallbacks = []
 
     # 1. Fallback 1: Groq (Llama 3.1 8B Instant)
-    groq_key = os.getenv("GROQ_API_KEY")
+    groq_key = get_groq_api_key()
     if groq_key and ChatGroq:
         try:
             fallbacks.append(

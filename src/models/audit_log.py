@@ -3,14 +3,19 @@ from __future__ import annotations
 
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, Enum, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
 
+if TYPE_CHECKING:
+    from src.models.ticket import Ticket
+    from src.models.user import User
 
-class AuditAction(str, enum.Enum):
+
+class AuditAction(enum.StrEnum):
     TICKET_CREATED = "ticket_created"
     TICKET_CLASSIFIED = "ticket_classified"
     TICKET_ROUTED = "ticket_routed"
@@ -37,6 +42,18 @@ class AuditAction(str, enum.Enum):
     DUPLICATE_CONFIRMED = "duplicate_confirmed"
     DUPLICATE_FALSE_POSITIVE = "duplicate_false_positive"
     MEMORY_RETRIEVED = "memory_retrieved"
+    SERVICE_REQUEST_CREATED = "service_request_created"
+    SERVICE_REQUEST_ASSIGNED = "service_request_assigned"
+    SERVICE_REQUEST_STATUS_CHANGED = "service_request_status_changed"
+    SERVICE_REQUEST_FULFILLED = "service_request_fulfilled"
+    SERVICE_REQUEST_APPROVAL_REQUIRED = "service_request_approval_required"
+    SERVICE_REQUEST_APPROVED = "service_request_approved"
+    SERVICE_REQUEST_REJECTED = "service_request_rejected"
+    USER_CREATED = "user_created"
+    USER_UPDATED = "user_updated"
+    USER_DEACTIVATED = "user_deactivated"
+    USER_REACTIVATED = "user_reactivated"
+    TECHNICIAN_FULFILLMENT_GROUPS_UPDATED = "technician_fulfillment_groups_updated"
 
 
 class AuditLog(Base):
@@ -46,6 +63,9 @@ class AuditLog(Base):
 
     ticket_id: Mapped[int | None] = mapped_column(
         ForeignKey("tickets.id"), nullable=True, index=True
+    )
+    service_request_id: Mapped[int | None] = mapped_column(
+        ForeignKey("service_requests.id"), nullable=True, index=True
     )
     actor_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"), nullable=True
@@ -67,8 +87,8 @@ class AuditLog(Base):
     )
 
     # Relationships
-    ticket: Mapped["Ticket | None"] = relationship("Ticket", back_populates="audit_logs")
-    actor: Mapped["User | None"] = relationship("User", back_populates="audit_logs")
+    ticket: Mapped[Ticket | None] = relationship("Ticket", back_populates="audit_logs")
+    actor: Mapped[User | None] = relationship("User", back_populates="audit_logs")
 
     def __repr__(self) -> str:
         return f"<AuditLog ticket={self.ticket_id} action={self.action}>"

@@ -1,0 +1,43 @@
+{
+  "milestone": "SEC-GATE-1",
+  "audit_date": "2026-08-16",
+  "action": "PRODUCTION_DEMO_ACCOUNT_AND_SECRET_HARDENING",
+  "verdict": {
+    "sec_gate_1": "PASS",
+    "production_deploy_ready": true
+  },
+  "hardening_rules": {
+    "demo_seeding_in_production": "DISABLED_BY_DEFAULT",
+    "demo_seeding_in_development": "ENABLED",
+    "initial_admin_provisioning": "ENVIRONMENT_DRIVEN_NO_HARDCODED_SECRETS",
+    "jwt_secret_validation": "ENFORCED_MIN_32_CHARS_NO_PLACEHOLDERS",
+    "cors_origins_validation": "EXPLICIT_ORIGINS_REQUIRED_NO_WILDCARD",
+    "frontend_demo_login_ui": "HIDDEN_IN_PRODUCTION"
+  },
+  "tests": {
+    "sec_prod_tests": "7/7 PASS",
+    "auth_api_tests": "8/8 PASS",
+    "production_e2e": "18/18 PASS",
+    "full_service_request_e2e": "25/25 PASS",
+    "frozen_eval": "93/93 PASS",
+    "python_compileall": "PASS",
+    "frontend_lint": "0 errors",
+    "frontend_typecheck": "PASS",
+    "frontend_product_guards": "PASS",
+    "frontend_webpack_build": "PASS"
+  },
+  "files_modified": [
+    "src/config.py",
+    "src/main.py",
+    "frontend/src/app/login/page.tsx",
+    "frontend/next.config.ts"
+  ],
+  "files_created": [
+    "scripts/audit_demo_accounts.py",
+    "tests/test_security_gate_prod.py",
+    "eval/results/production_security_gate_v1_10.md",
+    "eval/results/production_security_gate_v1_10.json",
+    "eval/results/product_current_state_v1_10_1.md",
+    "eval/results/product_current_state_v1_10_1.json"
+  ]
+}

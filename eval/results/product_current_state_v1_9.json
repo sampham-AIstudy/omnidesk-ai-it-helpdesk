@@ -1,0 +1,41 @@
+{
+  "version": "1.9",
+  "status": "RUNTIME_STABLE",
+  "release_gate": {
+    "c4_1_action_grounding": "RESOLVED",
+    "c4_2_service_request_routing": "RESOLVED",
+    "c4_3_embedding_provenance": "RESOLVED",
+    "ctx_fix_1_conversation_context": "RESOLVED",
+    "ctx_fix_2_context_aware_retrieval_query": "RESOLVED"
+  },
+  "context_continuity": {
+    "workspace_recent_history": "DONE",
+    "ticket_recent_history": "DONE",
+    "context_aware_retrieval_query": "DONE",
+    "structural_context_recall": "100%",
+    "cross_scope_leaks": 0,
+    "current_question_duplicates": 0,
+    "stateless_endpoints_preserved": ["POST /chat", "POST /chat/stream"]
+  },
+  "registered_features": {
+    "WORKSPACE_RECENT_CONVERSATION_CONTEXT": "DONE / DO_NOT_REIMPLEMENT",
+    "TICKET_RECENT_CONVERSATION_CONTEXT": "DONE / DO_NOT_REIMPLEMENT",
+    "CONTEXT_AWARE_RETRIEVAL_QUERY": "DONE / DO_NOT_REIMPLEMENT"
+  },
+  "evaluations": {
+    "frozen_eval": "93/93 passed (100%)",
+    "services_suite": "112/112 passed (100%)",
+    "context_aware_retrieval_suite": "13/13 passed (100%)",
+    "context_structural_suite": "18/18 passed (100%)",
+    "api_suite": "72/74 passed (2 known legacy wording drift, blocks safe)"
+  },
+  "performance": {
+    "query_rewrite_avg_latency_ms": 0.0066,
+    "query_rewrite_p95_latency_ms": 0.0071,
+    "target_latency_ms": 2.0
+  },
+  "deferred": [
+    "dynamic_token_budgeting",
+    "summarization"
+  ]
+}

@@ -105,10 +105,9 @@ export default function ServiceHealthDetailPage() {
       return;
     }
 
-    setService((prev) => (prev ? { ...prev, openIncidents: prev.openIncidents + 1 } : null));
-    setShowCreateIncModal(false);
-    setIncTitleInput('');
-    toast.success(`Đã khởi tạo incident mới tự động gán vào ${service.name}!`);
+    // This manager service-health view has no incident creation endpoint.
+    // Never mutate a local counter or claim that an incident was created.
+    toast.error('Tạo incident từ trang sức khỏe dịch vụ chưa được kết nối với workflow đã persist.');
   };
 
   const scrollToIncidents = () => {

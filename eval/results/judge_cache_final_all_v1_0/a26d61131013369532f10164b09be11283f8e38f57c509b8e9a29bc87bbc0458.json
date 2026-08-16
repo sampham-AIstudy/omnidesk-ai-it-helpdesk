@@ -1,0 +1,25 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "HALLUCINATION"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Không hỏi lại: thiết bị nào?",
+      "có bị rơi không?",
+      "màn hình có hỏng không?",
+      "serial?",
+      "Chỉ hỏi field thực sự còn thiếu để workflow tiếp tục."
+    ],
+    "brief_rationale": "Đáp án không đáp ứng yêu cầu CLARIFICATION, không cung cấp thông tin cần thiết để tiếp tục workflow.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

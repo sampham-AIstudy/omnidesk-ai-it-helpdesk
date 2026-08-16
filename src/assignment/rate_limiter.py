@@ -44,3 +44,8 @@ def is_rate_limited(identifier: str) -> Dict[str, Any]:
         "decision": "ALLOW",
         "current_count": len(history),
     }
+
+
+def reset_rate_limiter() -> None:
+    """Reset rate limiter state (useful for tests)."""
+    _request_history.clear()

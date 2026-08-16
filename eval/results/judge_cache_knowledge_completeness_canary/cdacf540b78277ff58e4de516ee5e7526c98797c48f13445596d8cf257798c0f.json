@@ -1,0 +1,22 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "INCOMPLETE_ANSWER"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Trả tất cả phần có evidence.",
+      "Không bỏ vế."
+    ],
+    "brief_rationale": "Đáp án không đầy đủ và bỏ qua một số phần quan trọng.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

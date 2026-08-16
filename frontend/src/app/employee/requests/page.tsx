@@ -77,8 +77,8 @@ export default function ServiceRequestsListPage() {
     let active = true;
     api.get('/service-requests/mine').then(({ data }) => {
       if (!active) return;
-      setLiveRequests(data.items.map((item: { request_number: string; service_name: string; category: string; status: string; risk_level: string; created_at: string; fulfillment_group: string }) => {
-        const status = API_STATUS_TO_UI[item.status] || 'SUBMITTED';
+      setLiveRequests(data.items.map((item: { request_number: string; service_name: string; category: string; status: string; risk_level: string; created_at: string; fulfillment_group: string; approved_at?: string | null }) => {
+        const status = item.approved_at && item.status === 'submitted' ? 'IT_APPROVAL' : (API_STATUS_TO_UI[item.status] || 'SUBMITTED');
         return {
           id: item.request_number, title: item.service_name, category: item.category, status,
           priority: item.risk_level === 'high' ? 'P1' : item.risk_level === 'medium' ? 'P2' : 'P3',

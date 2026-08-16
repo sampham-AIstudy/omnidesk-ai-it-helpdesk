@@ -1,0 +1,494 @@
+{
+  "arm": "control",
+  "metadata": {
+    "evaluation_lock": "evaluation_lock_v1_2_full.json",
+    "golden_hash": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "context_hash": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69",
+    "generator_config_hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_config_hash": "4c0746502cfce861fa12571b50df91f3fd0a147ea0f6992752b25b59d8579c4f",
+    "planner_enabled": false,
+    "retrieval_refreshed": false,
+    "start": 70,
+    "stop": 80,
+    "total_golden_cases": 90
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 5,
+    "semantic_fail": 5,
+    "averages": {
+      "faithfulness": 0.5,
+      "completeness": 0.5,
+      "relevance": 0.65,
+      "correct_abstention": 0.6,
+      "citation_correctness": 1.0
+    },
+    "failure_distribution": {
+      "BAD_ABSTENTION": 2,
+      "UNSUPPORTED_CLAIM": 1,
+      "INCOMPLETE_ANSWER": 1,
+      "HALLUCINATION": 1
+    },
+    "generator_calls": 10,
+    "mean_total_generation_ms": 2326.549
+  },
+  "cases": [
+    {
+      "id": "GT-071",
+      "test_type": "search_source_quality",
+      "question": "Cách reset password công ty?",
+      "context_ids": [
+        "kb-010"
+      ],
+      "answer": "Dựa trên [kb-010], cách reset mật khẩu công ty được thực hiện theo các bước sau:\n\n1. **Self-service (tự phục vụ)**:\n   Truy cập **SSPR portal** tại [https://sspr.company.local](https://sspr.company.local) để tự reset mật khẩu.\n\n2. **Reset bởi IT**:\n   - Xác thực danh tính (identity).\n   - Sử dụng **Active Directory Users and Computers** (ADUC) để reset mật khẩu.\n   - Bắt buộc thay đổi mật khẩu tại lần đăng nhập tiếp theo (Enforce change at next logon).\n   - Mở khóa tài khoản (Unlock account) nếu tài khoản bị khóa do nhập sai mật khẩu nhiều lần.\n\nNguồn: [kb-010]",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Generated answer fully supports the expected route and behavior."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1061,
+          "http_status": 200,
+          "response_length": 962,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 3367.179
+    },
+    {
+      "id": "GT-072",
+      "test_type": "search_source_quality",
+      "question": "Chính sách nội bộ về shared mailbox là gì?",
+      "context_ids": [
+        "kb-006"
+      ],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nTôi chỉ có thể cung cấp thông tin về quy trình cấp quyền cho shared mailbox/ditribution list từ [kb-006], nhưng không có chính sách nội bộ (policy) chi tiết về shared mailbox trong evidence đã cung cấp.\n\nNếu bạn cần thông tin về chính sách nội bộ, vui lòng cung cấp nguồn evidence có chứa chính sách đó.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Chính sách nội bộ về shared mailbox"
+        ],
+        "brief_rationale": "Không có thông tin chính sách nội bộ về shared mailbox."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 828,
+          "http_status": 200,
+          "response_length": 994,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 1747.904
+    },
+    {
+      "id": "GT-073",
+      "test_type": "source_relevance",
+      "question": "Laptop tôi không lên nguồn.",
+      "context_ids": [
+        "kb-015"
+      ],
+      "answer": "Dựa trên [kb-015], laptop không lên nguồn là triệu chứng đầu tiên được đề cập. Bạn có thể thực hiện các bước sau:\n\n1. **Hard reset**:\n   - Tắt laptop hoàn toàn.\n   - Giữ nút nguồn trong **10 giây** để xả hết điện tích còn lại.\n   - Sau đó thử bật lại.\n\n2. **Kiểm tra nguồn điện**:\n   - Đảm bảo adapter sạc được cắm chặt vào laptop và ổ cắm điện hoạt động (thử ổ cắm khác hoặc thiết bị khác).\n   - Nếu dùng pin, thử cắm adapter vào.\n\n3. **Kiểm tra màn hình**:\n   - Nếu laptop bật nhưng màn hình không sáng, thử kết nối với màn hình ngoài (HDMI/DisplayPort) để xác nhận laptop có khởi động hay không.\n\nNếu sau các bước trên laptop vẫn không lên nguồn, có thể vấn đề là phần cứng (mainboard, adapter, pin,...) và cần gửi kỹ thuật theo hướng dẫn trong [kb-015].\n\n**Lưu ý**: Nếu bạn đã thử các bước trên nhưng không khắc phục được, vui lòng cung cấp thêm thông tin (ví dụ: laptop có bật đèn nguồn không, có tiếng bíp hay không, model laptop) để hỗ trợ xác định nguyên nhân chính xác hơn.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 0.5,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [
+          "Kiểm tra nguồn điện",
+          "Kiểm tra màn hình"
+        ],
+        "missing_points": [
+          "Hướng dẫn cụ thể về cách khắc phục vấn đề phần cứng"
+        ],
+        "brief_rationale": "Đáp án không chỉ tập trung vào các bước khắc phục cơ bản mà còn đưa ra các bước không liên quan và không được hỗ trợ bằng bằng chứng."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1313,
+          "http_status": 200,
+          "response_length": 1223,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 4602.466
+    },
+    {
+      "id": "GT-074",
+      "test_type": "source_relevance",
+      "question": "Xin chào",
+      "context_ids": [],
+      "answer": "Xin chào! Tôi có thể giúp gì cho bạn về vấn đề CNTT không?",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct greeting and offer of help."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 813,
+          "http_status": 200,
+          "response_length": 955,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 964.037
+    },
+    {
+      "id": "GT-075",
+      "test_type": "duplicate_sources",
+      "question": "Retriever trả cùng Ticket #65:\n\n```text\nticket root\nmessage 26\nsame content duplicated\n```",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Lý do:**\n- Không có [AUTHORIZED_EVIDENCE] nào được cung cấp để xác minh nội dung của Ticket #65, message 26 hoặc ngữ cảnh liên quan.\n- Dữ liệu \"retriever trả cùng Ticket #65\" không kèm theo bất kỳ nguồn evidence hợp lệ (như log, ticket system, hoặc tool result) để xác định hành động hoặc trạng thái thực tế.\n\n**Cần bổ sung:**\n- Nội dung đầy đủ của Ticket #65 (message 26 hoặc toàn bộ ticket).\n- Trích xuất từ hệ thống ITSM (ví dụ: trạng thái ticket, SLA, người xử lý, hoặc log hành động).\n- Bất kỳ evidence nào chứng minh hành động \"same content duplicated\" (ví dụ: log hệ thống, phản hồi từ tool, hoặc ghi chú xử lý).\n\nVui lòng cung cấp evidence hợp lệ để tôi có thể hỗ trợ chính xác.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "UNSUPPORTED_CLAIM"
+        ],
+        "unsupported_claims": [
+          "Không có [AUTHORIZED_EVIDENCE] nào được cung cấp để xác minh nội dung của Ticket #65, message 26 hoặc ngữ cảnh liên quan.",
+          "Dữ liệu 'retriever trả cùng Ticket #65' không kèm theo bất kỳ nguồn evidence hợp lệ (như log, ticket system, hoặc tool result) để xác định hành động hoặc trạng thái thực tế."
+        ],
+        "missing_points": [
+          "Citation deduplication.",
+          "Không hiện cùng ticket lặp nhiều lần nếu không cần."
+        ],
+        "brief_rationale": "Không có evidence hợp lệ để hỗ trợ câu trả lời."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1390,
+          "http_status": 200,
+          "response_length": 1364,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "UNSUPPORTED_CLAIM"
+        ]
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 3060.761
+    },
+    {
+      "id": "GT-076",
+      "test_type": "internet_search_policy",
+      "question": "VPN nội bộ công ty cấu hình thế nào?",
+      "context_ids": [
+        "kb-001"
+      ],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nTài liệu tham khảo [kb-001] chỉ cung cấp hướng dẫn khắc phục sự cố kết nối VPN (lỗi authentication failed, connection timeout) mà không đề cập đến cấu hình chi tiết của VPN nội bộ công ty (ví dụ: loại xác thực, giao thức, cài đặt MFA, profile cấu hình, v.v.).\n\nNếu bạn cần thông tin về cấu hình VPN, vui lòng cung cấp:\n- Loại VPN (Cisco AnyConnect/FortiClient/khác)\n- Hoặc ticket/incident/service request liên quan (nếu có)\n- Hoặc yêu cầu truy cập tài liệu cấu hình (nếu được ủy quyền).",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Cấu hình chi tiết của VPN nội bộ công ty"
+        ],
+        "brief_rationale": "Đáp án không cung cấp thông tin về cấu hình chi tiết của VPN nội bộ công ty."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1094,
+          "http_status": 200,
+          "response_length": 1020,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 2849.816
+    },
+    {
+      "id": "GT-077",
+      "test_type": "internet_search_policy",
+      "question": "Phiên bản mới nhất của Microsoft Teams hiện tại là gì?",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Phiên bản mới nhất của Microsoft Teams hiện tại là gì?"
+        ],
+        "brief_rationale": "Chưa cung cấp thông tin đầy đủ về phiên bản mới nhất của Microsoft Teams."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1015,
+          "http_status": 200,
+          "response_length": 1069,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 891.718
+    },
+    {
+      "id": "GT-078",
+      "test_type": "no_answer_context",
+      "question": "Công ty có hỗ trợ mua màn hình 4K cá nhân không?",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Đáp ứng yêu cầu OUT_OF_SCOPE."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 811,
+          "http_status": 200,
+          "response_length": 951,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 967.066
+    },
+    {
+      "id": "GT-079",
+      "test_type": "wrong_classification_guard",
+      "question": "Màn hình laptop bị vỡ.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này. Để hỗ trợ bạn, vui lòng cung cấp thêm thông tin sau:\n\n- **Thiết bị cụ thể**: Model, hãng sản xuất của laptop.\n- **Mức độ hư hỏng**: Màn hình bị nứt, vỡ hoàn toàn hay chỉ hỏng một phần?\n- **Yêu cầu hỗ trợ**: Bạn muốn báo cáo sự cố, yêu cầu sửa chữa hay thay thế màn hình?\n- **Thông tin liên hệ**: Tên, email hoặc số điện thoại để liên hệ (nếu có).\n\nNếu đây là sự cố thuộc phạm vi hỗ trợ doanh nghiệp, vui lòng cung cấp **ID ticket** (nếu đã có) hoặc thông tin về đơn vị/phòng ban của bạn để tôi có thể hỗ trợ chính xác hơn.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Đưa ra thông tin cụ thể về mức độ hư hỏng màn hình"
+        ],
+        "brief_rationale": "Đáp án không cung cấp thông tin cụ thể về mức độ hư hỏng màn hình."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1046,
+          "http_status": 200,
+          "response_length": 1064,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 2919.565
+    },
+    {
+      "id": "GT-080",
+      "test_type": "wrong_classification_guard",
+      "question": "Xin quyền Git repo team Backend.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu \"Xin quyền Git repo team Backend\".\n\n**Thông tin cần thiết:**\n- Tên/ID của Git repo cụ thể (nếu có nhiều repo)\n- Vai trò/mức độ quyền mong muốn (read/write/admin)\n- Lý do xin quyền (bắt buộc theo chính sách)\n- Người phê duyệt (nếu có quy trình phê duyệt nội bộ)\n\nVui lòng cung cấp đầy đủ thông tin trên để tôi có thể hỗ trợ bạn theo đúng quy trình.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "HALLUCINATION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Generated answer is a generic refusal without addressing any requested point."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 922,
+          "http_status": 200,
+          "response_length": 1041,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "HARD_GATE",
+        "hard_gates": [
+          "HALLUCINATION"
+        ]
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1894.979
+    }
+  ]
+}

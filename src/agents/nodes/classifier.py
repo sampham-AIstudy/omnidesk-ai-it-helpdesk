@@ -9,9 +9,9 @@ from langchain_core.messages import HumanMessage, SystemMessage
 
 from src.agents.state import TicketAgentState
 from src.config import get_settings
+from src.observability.tracing import set_current_attributes, traced_async_operation
 from src.services.llm import get_classifier_llm
 from src.services.ticket_text import user_report
-from src.observability.tracing import set_current_attributes, traced_async_operation
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -55,7 +55,7 @@ Trả về JSON theo format sau (KHÔNG thêm text ngoài JSON):
 }"""
 
 
-@traced_async_operation("ai.classify")
+@traced_async_operation("ai.route")
 async def classify_node(state: TicketAgentState) -> TicketAgentState:
     """Phân loại ticket sử dụng Mistral LLM."""
     logger.info(f"[Classifier] Classifying ticket #{state.get('ticket_number')}")

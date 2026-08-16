@@ -8,7 +8,7 @@ If a security policy violation (Prompt Injection, Off-topic content, Bot attack)
 - Instantly short-circuits the pipeline to END (0 LLM calls, 0 RAG searches).
 """
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from src.agents.state import TicketAgentState
 from src.guardrails.input_guardrails import InputGuardrailPlugin
@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 guardrail_plugin = InputGuardrailPlugin()
 
 
-@traced_async_operation("guardrail.input")
-async def input_guardrail_node(state: TicketAgentState) -> Dict[str, Any]:
+@traced_async_operation("ai.guardrail")
+async def input_guardrail_node(state: TicketAgentState) -> dict[str, Any]:
     """Step 1 Input Guardrail Node."""
     title = state.get("title", "")
     description = state.get("description", "")

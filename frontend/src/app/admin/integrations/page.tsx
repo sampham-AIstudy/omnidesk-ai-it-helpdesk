@@ -1,120 +1,52 @@
 'use client';
 
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { ShieldCheck, Cpu, Mail, MessageSquare, CheckCircle2, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { PageHeader } from '@/components/ui';
 
 interface IntegrationItem {
   id: string;
   name: string;
   category: string;
-  desc: string;
-  status: 'Connected' | 'Disconnected' | 'Pending Config';
-  icon: string;
+  description: string;
 }
 
+const INTEGRATIONS: readonly IntegrationItem[] = [
+  { id: 'ad_sso', name: 'Microsoft Entra ID / Active Directory SSO', category: 'Xác thực & đồng bộ người dùng', description: 'Kết nối SSO và đồng bộ danh tính cần được cấu hình qua backend được kiểm soát.' },
+  { id: 'smtp_mail', name: 'SMTP Email Gateway & Exchange Server', category: 'Thông báo & email', description: 'Kết nối gửi email cần được cấu hình qua backend được kiểm soát.' },
+  { id: 'teams_bot', name: 'Microsoft Teams & Zalo OA Bot Integrations', category: 'Kênh trao đổi', description: 'Kết nối bot và thông báo cần được cấu hình qua backend được kiểm soát.' },
+  { id: 'chroma_rag', name: 'ChromaDB Vector Store & AI Engine', category: 'AI / tri thức', description: 'Cấu hình hạ tầng AI không được suy ra từ giao diện và không thể thay đổi cục bộ.' },
+];
+
+/**
+ * There is currently no persisted integration-management API.  This page is
+ * intentionally read-only until that API and its audit/RBAC contract exist.
+ */
 export default function AdminIntegrationsPage() {
-  const [integrations, setIntegrations] = useState<IntegrationItem[]>([
-    {
-      id: 'ad_sso',
-      name: 'Microsoft Entra ID / Active Directory SSO',
-      category: 'Xác Thực & Đồng Bộ Người Dùng',
-      desc: 'Đồng bộ danh sách nhân viên toàn công ty, phòng ban và tài khoản Microsoft 365 tự động.',
-      status: 'Connected',
-      icon: '🔑',
-    },
-    {
-      id: 'smtp_mail',
-      name: 'SMTP Email Gateway & Exchange Server',
-      category: 'Thông Báo & Gửi Thư Auto',
-      desc: 'Tự động gửi email cập nhật trạng thái ticket, cảnh báo SLA quá hạn cho người dùng và IT Agent.',
-      status: 'Connected',
-      icon: '📧',
-    },
-    {
-      id: 'teams_bot',
-      name: 'Microsoft Teams & Zalo OA Bot Integrations',
-      category: 'Kênh Trao Đổi Tức Thì',
-      desc: 'Gửi tin nhắn thông báo sự cố khẩn cấp trực tiếp vào kênh Telegram/Teams của đội ngũ IT ca trực.',
-      status: 'Connected',
-      icon: '💬',
-    },
-    {
-      id: 'chroma_rag',
-      name: 'ChromaDB Vector Store & Mistral AI Engine',
-      category: 'Trí Tuệ Nhân Tạo RAG Engine',
-      desc: 'Kết nối 392+ tài liệu KB chuẩn Microsoft để phục vụ AI Agent tự động giải đáp cho End-User.',
-      status: 'Connected',
-      icon: '🤖',
-    },
-  ]);
-
-  const handleToggleConnect = (id: string) => {
-    setIntegrations((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? { ...item, status: item.status === 'Connected' ? 'Disconnected' : 'Connected' }
-          : item
-      )
-    );
-    toast.success('Đã cập nhật trạng thái kết nối tích hợp!');
-  };
-
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Quản Lý Tích Hợp Hệ Thống Bên Thứ Ba (System Integrations)"
-        subtitle="Dành riêng cho System Administrator: Cấu hình kết nối Active Directory/SSO, Email Gateway, Zalo/Teams Bot & AI Vector Store."
+        title="Quản lý tích hợp hệ thống bên thứ ba"
+        subtitle="Trạng thái và cấu hình tích hợp chỉ được hiển thị khi có nguồn backend đã xác thực."
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {integrations.map((item) => (
-          <div key={item.id} className="glass-card-light rounded-3xl p-6 space-y-4 border border-slate-200">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl bg-blue-50 text-2xl flex items-center justify-center border border-blue-100">
-                  {item.icon}
-                </div>
-                <div>
-                  <h3 className="font-bold text-slate-900 text-sm" style={{ fontFamily: 'Outfit, sans-serif' }}>
-                    {item.name}
-                  </h3>
-                  <div className="text-[11px] font-semibold text-slate-500">{item.category}</div>
-                </div>
+      <section className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950" aria-label="Trạng thái cấu hình">
+        <AlertCircle className="mt-0.5 shrink-0 text-amber-700" size={18} aria-hidden="true" />
+        <p>Giao diện quản trị tích hợp chưa được kết nối với API cấu hình có lưu vết. Không có thay đổi nào có thể được thực hiện từ trang này.</p>
+      </section>
+
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        {INTEGRATIONS.map((item) => (
+          <article key={item.id} className="glass-card-light space-y-4 rounded-3xl border border-slate-200 p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-sm font-bold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>{item.name}</h2>
+                <p className="mt-1 text-[11px] font-semibold text-slate-500">{item.category}</p>
               </div>
-
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  item.status === 'Connected'
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                    : 'bg-slate-100 text-slate-600 border border-slate-200'
-                }`}
-              >
-                {item.status === 'Connected' ? '● Đang Tích Hợp' : '○ Tạm Dừng'}
-              </span>
+              <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">Chưa xác minh</span>
             </div>
-
-            <p className="text-xs text-slate-600 leading-relaxed font-medium">
-              {item.desc}
-            </p>
-
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-              <button
-                onClick={() => toast.success(`Mở trang cấu hình chi tiết cho ${item.name}`)}
-                className="text-xs font-bold text-blue-600 hover:text-blue-700"
-              >
-                Cấu hình tham số API $\rightarrow$
-              </button>
-
-              <button
-                onClick={() => handleToggleConnect(item.id)}
-                className="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
-              >
-                {item.status === 'Connected' ? 'Tắt Tích Hợp' : 'Bật Kết Nối'}
-              </button>
-            </div>
-          </div>
+            <p className="text-xs font-medium leading-relaxed text-slate-600">{item.description}</p>
+            <div className="border-t border-slate-100 pt-3 text-xs font-medium text-slate-500">Cấu hình và bật/tắt tích hợp hiện chưa khả dụng trong giao diện.</div>
+          </article>
         ))}
       </div>
     </div>

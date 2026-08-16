@@ -24,11 +24,12 @@ from src.config import get_settings
 from src.models.audit_log import AuditAction, AuditLog
 from src.models.ticket import Ticket, TicketStatus
 from src.models.user import User
-from src.services.rag_service import embed_query, get_ticket_duplicate_collection
+from src.services.rag_service import embed_query_for_collection, get_ticket_duplicate_collection
 from src.services.ticket_service import write_audit_log
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
+embed_query = embed_query_for_collection
 
 ACTIVE_STATUSES = {
     TicketStatus.OPEN, TicketStatus.CLASSIFYING, TicketStatus.NEEDS_CLARIFICATION,
@@ -85,7 +86,7 @@ def normalize_ticket_text(value: str) -> str:
 
 
 def ticket_fingerprint(title: str, description: str) -> str:
-    return hashlib.sha256(f"{normalize_ticket_text(title)}\n{normalize_ticket_text(description)}".encode("utf-8")).hexdigest()
+    return hashlib.sha256(f"{normalize_ticket_text(title)}\n{normalize_ticket_text(description)}".encode()).hexdigest()
 
 
 def _extract_error_codes(value: str) -> set[str]:
@@ -207,8 +208,10 @@ def index_ticket_for_duplicate_detection(ticket: Ticket, user: User | None = Non
     if user is None and not ticket.submitter:
         raise ValueError("Ticket submitter is required to index duplicate metadata")
     doc_id, document, metadata = _index_payload(ticket, user)
-    get_ticket_duplicate_collection().upsert(
-        ids=[doc_id], documents=[document], embeddings=[embed_query(document)], metadatas=[metadata]
+    collection = get_ticket_duplicate_collection()
+    collection.upsert(
+        ids=[doc_id], documents=[document],
+        embeddings=[embed_query_for_collection(document, collection)], metadatas=[metadata]
     )
 
 
@@ -228,9 +231,10 @@ async def check_duplicate_tickets(db: AsyncSession, title: str, description: str
     query_text = f"{title}\n{description}"
     normalized_title, normalized_description = normalize_ticket_text(title), normalize_ticket_text(description)
     try:
+        collection = get_ticket_duplicate_collection()
         result = await asyncio.to_thread(
-            lambda: get_ticket_duplicate_collection().query(
-                query_embeddings=[embed_query(query_text)],
+            lambda: collection.query(
+                query_embeddings=[embed_query_for_collection(query_text, collection)],
                 n_results=settings.duplicate_search_candidates,
                 include=["metadatas", "distances"],
             )

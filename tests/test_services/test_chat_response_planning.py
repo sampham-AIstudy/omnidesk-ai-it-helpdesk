@@ -22,6 +22,7 @@ def test_incident_plan_preserves_known_facts_and_asks_no_required_question() -> 
     plan = build_response_plan("Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn.", [])
     assert plan.known_facts == {
         "device": "laptop", "symptom": "black_screen", "cause": "physical_impact",
+        "physical_damage": "physical_impact",
         "temporal_relation": "immediate_or_after_event",
     }
     assert plan.missing_required_facts == []

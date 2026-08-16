@@ -57,7 +57,7 @@ export default function ServiceRequestDetailPage() {
         .filter(([, value]) => value)
         .map(([key, value]) => `${key}: ${value}`)
         .join('\n');
-      const uiStatus = API_STATUS_TO_UI[data.status as keyof typeof API_STATUS_TO_UI] || 'SUBMITTED';
+      const uiStatus = data.approved_at && data.status === 'submitted' ? 'IT_APPROVAL' : (API_STATUS_TO_UI[data.status as keyof typeof API_STATUS_TO_UI] || 'SUBMITTED');
       setRequest({
         id: data.request_number,
         title: data.service_name,

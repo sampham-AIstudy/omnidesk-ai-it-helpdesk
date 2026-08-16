@@ -1,0 +1,3330 @@
+{
+  "experiment": "knowledge_evidence_salience_slice",
+  "decision": "REJECT",
+  "metadata": {
+    "evaluation_contract": "enterprise-golden-v1.2",
+    "evaluation_lock": "eval\\snapshots\\evaluation_lock_v1_2_full.json",
+    "golden_hash": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "context_hash": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69",
+    "generator_config_hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "generator_model": "mistral-small-2506",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_refreshed": false,
+    "extra_llm_calls": 0,
+    "treatment_generator_calls": 20,
+    "full_90_run": false
+  },
+  "knowledge_case_ids": [
+    "GT-020",
+    "GT-021",
+    "GT-022",
+    "GT-023",
+    "GT-024",
+    "GT-025",
+    "GT-026",
+    "GT-027",
+    "GT-029",
+    "GT-045",
+    "GT-046",
+    "GT-047",
+    "GT-048",
+    "GT-049",
+    "GT-067",
+    "GT-071",
+    "GT-072",
+    "GT-073",
+    "GT-076",
+    "GT-077",
+    "GT-086",
+    "GT-087",
+    "GT-088"
+  ],
+  "treatment_eligible_case_ids": [
+    "GT-020",
+    "GT-021",
+    "GT-022",
+    "GT-023",
+    "GT-024",
+    "GT-025",
+    "GT-026",
+    "GT-027",
+    "GT-029",
+    "GT-045",
+    "GT-047",
+    "GT-048",
+    "GT-049",
+    "GT-067",
+    "GT-071",
+    "GT-072",
+    "GT-073",
+    "GT-076",
+    "GT-086",
+    "GT-088"
+  ],
+  "untouched_empty_context_case_ids": [
+    "GT-046",
+    "GT-077",
+    "GT-087"
+  ],
+  "diagnostic_only_case_ids": [
+    "GT-067"
+  ],
+  "structural_change": "USER QUESTION first, then the same verbatim authorized evidence inside AUTHORIZED_SOURCE_DATA; no policy instructions added.",
+  "fixture_integrity": {
+    "total": 90,
+    "passed": 90,
+    "eval_fixture_error_count": 0,
+    "error_count_by_type": {},
+    "cases": [
+      {
+        "id": "GT-001",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-002",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-003",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-004",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-005",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-006",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-007",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-008",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-009",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-010",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-011",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-012",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-013",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-014",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-015",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-016",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-017",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-018",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-019",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-020",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-004"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-021",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-033"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-022",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-009"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-023",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-001"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-024",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-001"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-025",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-002",
+          "kb-003"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-026",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-003"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-027",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-010"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-028",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-029",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-010"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-030",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-031",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-032",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-033",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-034",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-035",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-036",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-037",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-038",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-039",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-040",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-041",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-042",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-043",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-044",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-045",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-001"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-046",
+        "expected_evidence_mode": "UNSUPPORTED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-047",
+        "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+        "context_source_ids": [
+          "eval-gt047-vpn-port"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-048",
+        "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+        "context_source_ids": [
+          "eval-gt048-replacement-conditions"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-049",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "eval-gt049-sla-a",
+          "eval-gt049-sla-b"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-050",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-051",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-052",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-053",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-054",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-055",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-056",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-057",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-058",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-059",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-060",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-061",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-062",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-063",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-064",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-065",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-066",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-067",
+        "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+        "context_source_ids": [
+          "kb-001",
+          "kb-010"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-068",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-069",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-070",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-071",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-010"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-072",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-006"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-073",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-015"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-074",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-075",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-076",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "kb-001"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-077",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-078",
+        "expected_evidence_mode": "UNSUPPORTED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-079",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-080",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-081",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-082",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-083",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-084",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-085",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-086",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "eval-kb-12-password-policy"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-087",
+        "expected_evidence_mode": "UNSUPPORTED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-088",
+        "expected_evidence_mode": "SUPPORTED",
+        "context_source_ids": [
+          "eval-gt047-vpn-port"
+        ],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-089",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      },
+      {
+        "id": "GT-090",
+        "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+        "context_source_ids": [],
+        "integrity": "PASS",
+        "errors": []
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "GT-020",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-004"
+      ],
+      "context_characters": 321,
+      "context_approx_tokens": 59,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 469,
+          "approx_tokens": 80,
+          "question_position": 428,
+          "evidence_position": 0,
+          "sha256": "49d06b43545f21e1a35e2915144a9c4892989856b67467babee531953ec99ae7"
+        },
+        "treatment": {
+          "characters": 558,
+          "approx_tokens": 86,
+          "question_position": 0,
+          "evidence_position": 43,
+          "sha256": "e234ab981ab20298a8b4871a00ff8858d44889b1b1eb2856560b8338f93dc131"
+        }
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Nguyên nhân có thể** (dựa trên [kb-004]):\n- Lỗi kết nối Exchange Server (Outlook báo Disconnected).\n- Lỗi file OST bị hỏng.\n- Lỗi profile Outlook.\n\n**Để xử lý trường hợp \"Outlook mở lên là tự tắt\"**, cần thêm thông tin sau:\n1. **Lỗi hiển thị khi Outlook tự tắt** (nếu có): Thông báo lỗi cụ thể (ví dụ: \"Outlook has encountered a problem and needs to close\").\n2. **Kiểm tra trạng thái kết nối** (góc dưới Outlook) khi mở ứng dụng.\n3. **Có email nào kẹt trong Outbox không** (kiểm tra ngay khi mở Outlook).\n4. **Đã thử các bước khắc phục nào** (nếu có).\n\nVui lòng cung cấp thêm chi tiết để tôi có thể hỗ trợ chính xác hơn.",
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 0.5,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Lỗi hiển thị khi Outlook tự tắt",
+            "Kiểm tra trạng thái kết nối khi mở ứng dụng",
+            "Có email nào kẹt trong Outbox không",
+            "Đã thử các bước khắc phục nào"
+          ],
+          "brief_rationale": "Đáp án không đầy đủ và không abstain đúng chỗ."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 3036.837
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Rất tiếc, thông tin hiện có chưa đủ để xác định nguyên nhân cụ thể khiến Outlook tự tắt khi mở lên.\n\nDựa trên [kb-004], bạn có thể thử các bước sau để khắc phục sự cố:\n\n1. **Kiểm tra kết nối mạng** (góc dưới Outlook) xem có hiển thị trạng thái \"Connected\" hay không.\n2. **Kiểm tra cài đặt tài khoản** (File → Account Settings → Server Settings) để đảm bảo cấu hình Exchange Server chính xác.\n3. **Xóa email bị kẹt trong Outbox** nếu có.\n4. **Sửa chữa file OST** (Account Settings → Data Files → Repair).\n5. **Tạo profile Outlook mới** nếu sự cố vẫn tiếp diễn.\n\nNếu sự cố vẫn không được giải quyết, vui lòng cung cấp thêm thông tin chi tiết (ví dụ: lỗi hiển thị, phiên bản Outlook, môi trường sử dụng) để hỗ trợ sâu hơn.",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để xác định nguyên nhân cụ thể khiến Outlook tự tắt khi mở lên.\n\nDựa trên [kb-004], bạn có thể thử các bước sau để khắc phục sự cố:\n\n1. **Kiểm tra kết nối mạng** (góc dưới Outlook) xem có hiển thị trạng thái \"Connected\" hay không.\n2. **Kiểm tra cài đặt tài khoản** (File → Account Settings → Server Settings) để đảm bảo cấu hình Exchange Server chính xác.\n3. **Xóa email bị kẹt trong Outbox** nếu có.\n4. **Sửa chữa file OST** (Account Settings → Data Files → Repair).\n5. **Tạo profile Outlook mới** nếu sự cố vẫn tiếp diễn.\n\nNếu sự cố vẫn không được giải quyết, vui lòng cung cấp thêm thông tin chi tiết (ví dụ: lỗi hiển thị, phiên bản Outlook, môi trường sử dụng) để hỗ trợ sâu hơn.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer accurately addresses the incident and provides a clear step-by-step solution based on the provided knowledge base article."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 3132.574
+      },
+      "movement": "IMPROVED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-021",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-033"
+      ],
+      "context_characters": 348,
+      "context_approx_tokens": 61,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 496,
+          "approx_tokens": 81,
+          "question_position": 453,
+          "evidence_position": 0,
+          "sha256": "8a350126cc035410480b9a6ba034b2a8c05989bd642ea1172443230ba25c5024"
+        },
+        "treatment": {
+          "characters": 585,
+          "approx_tokens": 87,
+          "question_position": 0,
+          "evidence_position": 45,
+          "sha256": "83a7b17601ae1b2a25764f785e6c43944c966ef51343730959309e4afe333dad"
+        }
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Nguyên nhân có thể:**\n- Lỗi đăng nhập Teams có thể do nhiều yếu tố (mật khẩu hết hạn, tài khoản bị khóa, lỗi mạng, cấu hình proxy, v.v.).\n- [kb-033] chỉ đề cập đến vấn đề mic/camera/âm thanh khi họp online, không bao gồm lỗi đăng nhập.\n\n**Để xử lý lỗi đăng nhập Teams, bạn vui lòng cung cấp thêm thông tin:**\n1. **Lỗi cụ thể** Teams báo là gì? (Ví dụ: \"We couldn't sign you in\", \"Your account is locked\", v.v.)\n2. **Bạn đã thử** những bước nào để khắc phục? (Reset mật khẩu, đăng nhập trên web, v.v.)\n3. **Môi trường** bạn đang dùng: Máy cá nhân hay máy thuộc doanh nghiệp (có domain/Intune quản lý)?\n\nTôi sẽ hỗ trợ bạn dựa trên thông tin bổ sung.",
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 0.5,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Phân biệt software/auth issue dựa trên evidence."
+          ],
+          "brief_rationale": "Đáp án không cung cấp thông tin cụ thể về nguyên nhân lỗi đăng nhập Teams và không phân biệt được giữa lỗi software và auth."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 3384.953
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "**Microsoft Teams báo lỗi đăng nhập — Khắc phục nhanh**\n\nDựa trên nguồn [kb-033], lỗi đăng nhập Teams thường liên quan đến kết nối mạng, phiên bản phần mềm hoặc quyền truy cập mic/camera. Hãy thử các bước sau:\n\n1. **Kiểm tra kết nối mạng**\n   - Đảm bảo mạng ổn định (Teams yêu cầu tối thiểu 2Mbps [kb-033]).\n   - Thử chuyển sang mạng khác (Wi-Fi → 4G/5G) hoặc khởi động lại router.\n\n2. **Cập nhật Teams**\n   - Mở **Microsoft Store** (Windows) hoặc **App Store** (macOS), cập nhật Teams lên phiên bản mới nhất [kb-033].\n\n3. **Kiểm tra quyền mic/camera**\n   - Vào **Windows Settings → Privacy → Microphone/Camera** và bật quyền cho Teams [kb-033].\n\n4. **Thử đăng nhập qua trình duyệt**\n   - Truy cập [https://teams.microsoft.com](https://teams.microsoft.com) (sử dụng Edge/Chrome) để loại trừ lỗi ứng dụng [kb-033].\n\n5. **Khởi động lại thiết bị**\n   - Tắt bật lại máy tính/điện thoại sau khi thực hiện các bước trên.\n\n---\n**Nếu vẫn lỗi:**\n- Vui lòng cung cấp **thông báo lỗi cụ thể** (mã lỗi, ảnh chụp màn hình) hoặc **thời điểm xảy ra** (sáng/trưa/chiều) để hỗ trợ sâu hơn.",
+        "answer": "**Microsoft Teams báo lỗi đăng nhập — Khắc phục nhanh**\n\nDựa trên nguồn [kb-033], lỗi đăng nhập Teams thường liên quan đến kết nối mạng, phiên bản phần mềm hoặc quyền truy cập mic/camera. Hãy thử các bước sau:\n\n1. **Kiểm tra kết nối mạng**\n   - Đảm bảo mạng ổn định (Teams yêu cầu tối thiểu 2Mbps [kb-033]).\n   - Thử chuyển sang mạng khác (Wi-Fi → 4G/5G) hoặc khởi động lại router.\n\n2. **Cập nhật Teams**\n   - Mở **Microsoft Store** (Windows) hoặc **App Store** (macOS), cập nhật Teams lên phiên bản mới nhất [kb-033].\n\n3. **Kiểm tra quyền mic/camera**\n   - Vào **Windows Settings → Privacy → Microphone/Camera** và bật quyền cho Teams [kb-033].\n\n4. **Thử đăng nhập qua trình duyệt**\n   - Truy cập [https://teams.microsoft.com](https://teams.microsoft.com) (sử dụng Edge/Chrome) để loại trừ lỗi ứng dụng [kb-033].\n\n5. **Khởi động lại thiết bị**\n   - Tắt bật lại máy tính/điện thoại sau khi thực hiện các bước trên.\n\n---\n**Nếu vẫn lỗi:**\n- Vui lòng cung cấp **thông báo lỗi cụ thể** (mã lỗi, ảnh chụp màn hình) hoặc **thời điểm xảy ra** (sáng/trưa/chiều) để hỗ trợ sâu hơn.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer accurately addresses the incident and provides relevant troubleshooting steps based on the authorized context and trusted tool results."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 4062.827
+      },
+      "movement": "IMPROVED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-022",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-009"
+      ],
+      "context_characters": 306,
+      "context_approx_tokens": 56,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 467,
+          "approx_tokens": 80,
+          "question_position": 394,
+          "evidence_position": 0,
+          "sha256": "69dd54a51c5c9ec7655076badeb08dd4b1a83b2f90c7f9c9e7aaf93e8e965574"
+        },
+        "treatment": {
+          "characters": 556,
+          "approx_tokens": 86,
+          "question_position": 0,
+          "evidence_position": 75,
+          "sha256": "7627b532f395fe8501131e520c5c51a793149831974864614b2847650b43e1b4"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [kb-009], triệu chứng \"Chrome chạy rất chậm nhưng các phần mềm khác bình thường\" không hoàn toàn trùng khớp với trường hợp chung \"Máy tính chạy chậm / lag\" (CPU/RAM cao, khởi động lâu). Tuy nhiên, có thể áp dụng các bước kiểm tra chung cho Chrome:\n\n1. **Kiểm tra Task Manager** (Ctrl+Shift+Esc) → Tab *Processes*:\n   - Xem liệu **Chrome** có chiếm dụng CPU/RAM cao bất thường không.\n   - Nếu có, kiểm tra các tab/extension nào đang chạy trong Chrome.\n\n2. **Tắt các extension không cần thiết**:\n   - Mở Chrome → `chrome://extensions` → Vô hiệu hóa các extension không sử dụng.\n\n3. **Xóa bộ nhớ cache và dữ liệu duyệt web**:\n   - `chrome://settings/clearBrowserData` → Chọn *Cached images and files* + *Cookies and other site data* → Xóa.\n\n4. **Kiểm tra virus/phần mềm độc hại**:\n   - Chạy quét bằng **Windows Defender** (hoặc công cụ diệt virus khác) để loại trừ nguy cơ nhiễm malware.\n\n5. **Cập nhật Chrome**:\n   - Vào `chrome://settings/help` để kiểm tra phiên bản mới nhất.\n\n---\n**Lưu ý**:\n- Nếu sau các bước trên Chrome vẫn chậm, có thể do cấu hình phần cứng (RAM <8GB) hoặc vấn đề riêng lẻ của Chrome. Trong trường hợp này, đề xuất nâng cấp RAM (nếu <8GB) hoặc thử cài đặt lại Chrome.\n- Thông tin được cung cấp hiện chưa đủ để xác định nguyên nhân cụ thể (ví dụ: phiên bản Chrome, dung lượng RAM, phiên bản Windows). Nếu cần hỗ trợ sâu hơn, vui lòng cung cấp thêm chi tiết.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Đáp ứng đầy đủ yêu cầu hỗ trợ và cung cấp các bước kiểm tra cụ thể cho trường hợp Chrome chạy chậm."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 4980.723
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dựa trên triệu chứng \"Chrome chạy rất chậm nhưng các phần mềm khác bình thường\" và [kb-009], có thể do Chrome tiêu tốn nhiều tài nguyên hệ thống. Hãy thực hiện theo các bước sau:\n\n1. **Kiểm tra tài nguyên hệ thống khi Chrome chạy chậm**\n   - Mở **Task Manager** (Ctrl+Shift+Esc).\n   - Xem xét tab **Processes** để xác định:\n     - Chrome có chiếm **CPU/RAM cao** không?\n     - Có process nào khác bất thường không?\n   *(Nếu Chrome chiếm tài nguyên cao, nguyên nhân có thể từ tab mở nhiều, extension nặng, hoặc cache quá lớn.)*\n\n2. **Xử lý Chrome cụ thể**\n   - **Tắt tab không cần thiết** trong Chrome.\n   - **Xóa cache và dữ liệu duyệt web**:\n     - Vào `chrome://settings/clearBrowserData` → Chọn \"All time\" → Xóa \"Cached images and files\" + \"Cookies and other site data\".\n   - **Tắt extension không cần thiết**:\n     - Vào `chrome://extensions` → Vô hiệu hóa các extension không sử dụng.\n   - **Cập nhật Chrome** lên phiên bản mới nhất (nếu có bản cập nhật).\n\n3. **Kiểm tra phần mềm diệt virus**\n   - Chạy **Windows Defender** (hoặc phần mềm diệt virus khác) để quét malware:\n     - Mở **Windows Security** → **Virus & threat protection** → **Quick scan**.\n\n4. **Giảm tải khởi động hệ thống**\n   - Vào **Task Manager** → Tab **Startup** → Vô hiệu hóa các chương trình không cần thiết khởi động cùng hệ thống.\n\n---\n**Lưu ý**:\n- Nếu sau các bước trên Chrome vẫn chậm, có thể do **RAM thấp** (<8GB) hoặc **ổ cứng (HDD) chậm** (nên cân nhắc nâng cấp RAM/ổ SSD).\n- Nếu triệu chứng không cải thiện, vui lòng cung cấp thêm thông tin:\n  - **Mức sử dụng CPU/RAM** khi Chrome chạy (từ Task Manager).\n  - **Số lượng tab/extension** đang mở trong Chrome.\n  - **Thời gian khởi động máy tính** có lâu không?\n\n*[SOURCE: kb-009]*",
+        "answer": "Dựa trên triệu chứng \"Chrome chạy rất chậm nhưng các phần mềm khác bình thường\" và [kb-009], có thể do Chrome tiêu tốn nhiều tài nguyên hệ thống. Hãy thực hiện theo các bước sau:\n\n1. **Kiểm tra tài nguyên hệ thống khi Chrome chạy chậm**\n   - Mở **Task Manager** (Ctrl+Shift+Esc).\n   - Xem xét tab **Processes** để xác định:\n     - Chrome có chiếm **CPU/RAM cao** không?\n     - Có process nào khác bất thường không?\n   *(Nếu Chrome chiếm tài nguyên cao, nguyên nhân có thể từ tab mở nhiều, extension nặng, hoặc cache quá lớn.)*\n\n2. **Xử lý Chrome cụ thể**\n   - **Tắt tab không cần thiết** trong Chrome.\n   - **Xóa cache và dữ liệu duyệt web**:\n     - Vào `chrome://settings/clearBrowserData` → Chọn \"All time\" → Xóa \"Cached images and files\" + \"Cookies and other site data\".\n   - **Tắt extension không cần thiết**:\n     - Vào `chrome://extensions` → Vô hiệu hóa các extension không sử dụng.\n   - **Cập nhật Chrome** lên phiên bản mới nhất (nếu có bản cập nhật).\n\n3. **Kiểm tra phần mềm diệt virus**\n   - Chạy **Windows Defender** (hoặc phần mềm diệt virus khác) để quét malware:\n     - Mở **Windows Security** → **Virus & threat protection** → **Quick scan**.\n\n4. **Giảm tải khởi động hệ thống**\n   - Vào **Task Manager** → Tab **Startup** → Vô hiệu hóa các chương trình không cần thiết khởi động cùng hệ thống.\n\n---\n**Lưu ý**:\n- Nếu sau các bước trên Chrome vẫn chậm, có thể do **RAM thấp** (<8GB) hoặc **ổ cứng (HDD) chậm** (nên cân nhắc nâng cấp RAM/ổ SSD).\n- Nếu triệu chứng không cải thiện, vui lòng cung cấp thêm thông tin:\n  - **Mức sử dụng CPU/RAM** khi Chrome chạy (từ Task Manager).\n  - **Số lượng tab/extension** đang mở trong Chrome.\n  - **Thời gian khởi động máy tính** có lâu không?\n\n*[SOURCE: kb-009]*",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer fully addresses the incident assistance request."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 5425.248
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-023",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-001"
+      ],
+      "context_characters": 386,
+      "context_approx_tokens": 70,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 523,
+          "approx_tokens": 90,
+          "question_position": 480,
+          "evidence_position": 0,
+          "sha256": "a153f035bcb4023a07f40e93d74ae61f09de26fff851edd65dd8d78573bd78e9"
+        },
+        "treatment": {
+          "characters": 612,
+          "approx_tokens": 96,
+          "question_position": 0,
+          "evidence_position": 45,
+          "sha256": "f9ec25502c411fde981f02ffab28f1afbbd57df4a94b58d79793873edd500eda"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [kb-001], đây là các bước khắc phục sự cố kết nối VPN:\n\n1. **Kiểm tra username/password VPN**\n   - Đảm bảo bạn đang sử dụng **username/password VPN riêng** (thường khác email công ty).\n   - Thử đăng nhập lại cẩn thận, tránh lỗi gõ sai.\n\n2. **Xóa profile VPN cũ và tạo mới**\n   - Vào cài đặt VPN (Cisco AnyConnect/FortiClient) → Xóa profile kết nối hiện tại.\n   - Tải lại profile mới từ hệ thống VPN (nếu có hướng dẫn) hoặc liên hệ IT để cung cấp.\n\n3. **Kiểm tra firewall máy tính local**\n   - Tạm thời tắt tường lửa (Windows Defender Firewall/phần mềm thứ 3) để kiểm tra.\n   - Nếu thành công, cấu hình lại firewall để cho phép kết nối VPN.\n\n4. **Thử đổi network (4G thay WiFi)**\n   - Kết nối qua mạng di động (4G/5G) thay vì WiFi công ty/nhà riêng để loại trừ lỗi mạng.\n\n5. **Reset MFA app (nếu dùng 2FA)**\n   - Nếu VPN yêu cầu xác thực 2 yếu tố (MFA), reset app xác thực (Microsoft Authenticator/Google Authenticator) và đăng ký lại.\n\n6. **Liên hệ IT reset VPN account**\n   - Nếu vẫn lỗi sau các bước trên, yêu cầu IT **reset tài khoản VPN** của bạn.\n\n---\n**Nguồn:** [kb-001]",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer fully addresses the incident assistance request, following the expected behavior and using the provided knowledge base article as a citation."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 3820.724
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dựa trên evidence được cung cấp, đây là các bước khắc phục sự cố kết nối VPN theo [kb-001]:\n\n1. **Kiểm tra username/password VPN**\n   - Đảm bảo bạn đang sử dụng đúng username/password dành riêng cho VPN (thường khác với email công ty).\n   - [SOURCE: kb-001]\n\n2. **Xóa profile VPN cũ và tạo mới**\n   - Gỡ bỏ cấu hình VPN cũ trên thiết bị (Cisco AnyConnect/FortiClient) và cài đặt lại profile mới.\n   - [SOURCE: kb-001]\n\n3. **Kiểm tra firewall trên máy local**\n   - Tạm thời vô hiệu hóa tường lửa (firewall) trên máy tính để kiểm tra xem có bị chặn kết nối VPN không.\n   - [SOURCE: kb-001]\n\n4. **Thử đổi network (4G thay WiFi)**\n   - Kết nối qua mạng di động (4G/5G) thay vì WiFi để loại trừ lỗi do mạng nội bộ.\n   - [SOURCE: kb-001]\n\n5. **Reset MFA app (nếu dùng 2FA)**\n   - Nếu VPN yêu cầu xác thực 2 yếu tố (MFA), hãy reset ứng dụng MFA (e.g., Microsoft Authenticator, FortiToken) và thử lại.\n   - [SOURCE: kb-001]\n\n6. **Liên hệ IT để reset tài khoản VPN**\n   - Nếu vẫn lỗi sau các bước trên, vui lòng liên hệ bộ phận IT để được hỗ trợ reset tài khoản VPN.\n   - [SOURCE: kb-001]\n\n---\n**Lưu ý:**\n- Nếu bạn đã thử các bước trên nhưng vẫn không kết nối được, vui lòng cung cấp thêm thông tin sau để hỗ trợ sâu hơn:\n  - Thông báo lỗi cụ thể (e.g., \"authentication failed\", \"connection timeout\").\n  - Thiết bị sử dụng (Windows/macOS) và phiên bản VPN (Cisco AnyConnect/FortiClient).\n  - Mạng đang sử dụng (WiFi/có dây/4G).\n  *(Thông tin này chưa có trong evidence hiện tại.)*",
+        "answer": "Dựa trên evidence được cung cấp, đây là các bước khắc phục sự cố kết nối VPN theo [kb-001]:\n\n1. **Kiểm tra username/password VPN**\n   - Đảm bảo bạn đang sử dụng đúng username/password dành riêng cho VPN (thường khác với email công ty).\n   - [SOURCE: kb-001]\n\n2. **Xóa profile VPN cũ và tạo mới**\n   - Gỡ bỏ cấu hình VPN cũ trên thiết bị (Cisco AnyConnect/FortiClient) và cài đặt lại profile mới.\n   - [SOURCE: kb-001]\n\n3. **Kiểm tra firewall trên máy local**\n   - Tạm thời vô hiệu hóa tường lửa (firewall) trên máy tính để kiểm tra xem có bị chặn kết nối VPN không.\n   - [SOURCE: kb-001]\n\n4. **Thử đổi network (4G thay WiFi)**\n   - Kết nối qua mạng di động (4G/5G) thay vì WiFi để loại trừ lỗi do mạng nội bộ.\n   - [SOURCE: kb-001]\n\n5. **Reset MFA app (nếu dùng 2FA)**\n   - Nếu VPN yêu cầu xác thực 2 yếu tố (MFA), hãy reset ứng dụng MFA (e.g., Microsoft Authenticator, FortiToken) và thử lại.\n   - [SOURCE: kb-001]\n\n6. **Liên hệ IT để reset tài khoản VPN**\n   - Nếu vẫn lỗi sau các bước trên, vui lòng liên hệ bộ phận IT để được hỗ trợ reset tài khoản VPN.\n   - [SOURCE: kb-001]\n\n---\n**Lưu ý:**\n- Nếu bạn đã thử các bước trên nhưng vẫn không kết nối được, vui lòng cung cấp thêm thông tin sau để hỗ trợ sâu hơn:\n  - Thông báo lỗi cụ thể (e.g., \"authentication failed\", \"connection timeout\").\n  - Thiết bị sử dụng (Windows/macOS) và phiên bản VPN (Cisco AnyConnect/FortiClient).\n  - Mạng đang sử dụng (WiFi/có dây/4G).\n  *(Thông tin này chưa có trong evidence hiện tại.)*",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Tất cả các bước khắc phục sự cố kết nối VPN đều được hỗ trợ bởi KB [kb-001] và không có bất kỳ thông tin nào không được hỗ trợ."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 4857.115
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-024",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-001"
+      ],
+      "context_characters": 386,
+      "context_approx_tokens": 70,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 526,
+          "approx_tokens": 88,
+          "question_position": 480,
+          "evidence_position": 0,
+          "sha256": "4f1eb9483acc79e23f5d750b68c6d311e751c1122108d16dd8470580a56bbafa"
+        },
+        "treatment": {
+          "characters": 615,
+          "approx_tokens": 94,
+          "question_position": 0,
+          "evidence_position": 48,
+          "sha256": "b68d486d6ef9aa1584f9ac7180a000a59955cb0e43bd0cadfb6fe77e359b03ae"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [kb-001], khi VPN báo lỗi **authentication failed**, bạn có thể thực hiện các bước sau để khắc phục:\n\n1. **Kiểm tra username/password VPN**\n   - Đảm bảo bạn đang sử dụng đúng **username/password** (thường khác email công ty).\n   - Thử đăng nhập lại cẩn thận, tránh lỗi gõ sai.\n\n2. **Reset MFA app (nếu sử dụng 2FA)**\n   - Nếu hệ thống VPN yêu cầu xác thực 2 yếu tố (MFA), hãy reset ứng dụng MFA (ví dụ: Microsoft Authenticator, Google Authenticator) và thử lại.\n\n3. **Liên hệ IT để reset VPN account (nếu vẫn lỗi)**\n   - Nếu sau các bước trên vẫn không kết nối được, vui lòng cung cấp thông tin chi tiết (tên tài khoản, thời gian lỗi, thông báo cụ thể) để IT hỗ trợ reset tài khoản VPN.\n\n---\n**Lưu ý:**\n- Nếu bạn chưa chắc chắn về **username/password VPN**, hãy liên hệ với bộ phận IT để xác nhận.\n- Không thử đoán mật khẩu nhiều lần để tránh khóa tài khoản.\n\nNếu cần hỗ trợ thêm, vui lòng cung cấp:\n- Tên tài khoản VPN.\n- Thời gian xảy ra lỗi.\n- Thông báo lỗi chính xác (nếu có).",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Đáp án chính xác và đầy đủ theo yêu cầu."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 3690.158
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dựa trên thông tin được cung cấp, lỗi **authentication failed** khi kết nối VPN có thể do nhiều nguyên nhân. Dưới đây là hướng dẫn khắc phục theo thứ tự ưu tiên từ [kb-001]:\n\n### **Các bước khắc phục lỗi Authentication Failed VPN**\n1. **Kiểm tra username/password VPN**\n   - Đảm bảo bạn đang sử dụng **tài khoản VPN riêng** (thường khác email công ty).\n   - Thử đăng nhập lại cẩn thận (phân biệt chữ hoa/thường, ký tự đặc biệt).\n   - Nếu quên mật khẩu, liên hệ IT để reset.\n\n2. **Xóa profile VPN cũ và tạo mới**\n   - Gỡ bỏ cấu hình VPN cũ trên thiết bị.\n   - Tải lại profile VPN mới từ hệ thống (thường có sẵn trong cổng dịch vụ nội bộ).\n\n3. **Kiểm tra firewall/mạng cục bộ**\n   - Tắt tạm thời **tường lửa cá nhân** (Windows Defender Firewall, phần mềm diệt virus).\n   - Đảm bảo không có **chặn cổng** (UDP 443/1194 tùy loại VPN).\n   - Thử kết nối qua **mạng 4G** thay vì WiFi (loại trừ lỗi mạng nội bộ).\n\n4. **Reset MFA (nếu dùng 2FA)**\n   - Nếu VPN yêu cầu xác thực 2 lớp (MFA), thử:\n     - Reset app MFA (Microsoft Authenticator, Google Authenticator).\n     - Sử dụng mã dự phòng (backup code).\n\n5. **Liên hệ IT để reset tài khoản VPN**\n   - Nếu sau các bước trên vẫn lỗi, tài khoản có thể bị khóa/khóa tạm thời.\n   - Yêu cầu IT **reset mật khẩu** hoặc **mở khóa tài khoản VPN**.\n\n---\n**Lưu ý:**\n- Nếu lỗi vẫn tiếp diễn sau khi thử tất cả bước trên, vui lòng cung cấp thêm thông tin:\n  - **Loại VPN** (Cisco AnyConnect/FortiClient).\n  - **Thông báo lỗi chính xác** (nếu có).\n  - **Môi trường kết nối** (mạng công ty, mạng riêng, VPN qua internet).\n→ Tôi sẽ hỗ trợ xác định nguyên nhân cụ thể hơn.\n\n*[Trích dẫn: kb-001]*",
+        "answer": "Dựa trên thông tin được cung cấp, lỗi **authentication failed** khi kết nối VPN có thể do nhiều nguyên nhân. Dưới đây là hướng dẫn khắc phục theo thứ tự ưu tiên từ [kb-001]:\n\n### **Các bước khắc phục lỗi Authentication Failed VPN**\n1. **Kiểm tra username/password VPN**\n   - Đảm bảo bạn đang sử dụng **tài khoản VPN riêng** (thường khác email công ty).\n   - Thử đăng nhập lại cẩn thận (phân biệt chữ hoa/thường, ký tự đặc biệt).\n   - Nếu quên mật khẩu, liên hệ IT để reset.\n\n2. **Xóa profile VPN cũ và tạo mới**\n   - Gỡ bỏ cấu hình VPN cũ trên thiết bị.\n   - Tải lại profile VPN mới từ hệ thống (thường có sẵn trong cổng dịch vụ nội bộ).\n\n3. **Kiểm tra firewall/mạng cục bộ**\n   - Tắt tạm thời **tường lửa cá nhân** (Windows Defender Firewall, phần mềm diệt virus).\n   - Đảm bảo không có **chặn cổng** (UDP 443/1194 tùy loại VPN).\n   - Thử kết nối qua **mạng 4G** thay vì WiFi (loại trừ lỗi mạng nội bộ).\n\n4. **Reset MFA (nếu dùng 2FA)**\n   - Nếu VPN yêu cầu xác thực 2 lớp (MFA), thử:\n     - Reset app MFA (Microsoft Authenticator, Google Authenticator).\n     - Sử dụng mã dự phòng (backup code).\n\n5. **Liên hệ IT để reset tài khoản VPN**\n   - Nếu sau các bước trên vẫn lỗi, tài khoản có thể bị khóa/khóa tạm thời.\n   - Yêu cầu IT **reset mật khẩu** hoặc **mở khóa tài khoản VPN**.\n\n---\n**Lưu ý:**\n- Nếu lỗi vẫn tiếp diễn sau khi thử tất cả bước trên, vui lòng cung cấp thêm thông tin:\n  - **Loại VPN** (Cisco AnyConnect/FortiClient).\n  - **Thông báo lỗi chính xác** (nếu có).\n  - **Môi trường kết nối** (mạng công ty, mạng riêng, VPN qua internet).\n→ Tôi sẽ hỗ trợ xác định nguyên nhân cụ thể hơn.\n\n*[Trích dẫn: kb-001]*",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Đáp ứng đầy đủ yêu cầu và không có lỗi."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 6277.718
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-025",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-002",
+        "kb-003"
+      ],
+      "context_characters": 709,
+      "context_approx_tokens": 138,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 976,
+          "approx_tokens": 177,
+          "question_position": 912,
+          "evidence_position": 0,
+          "sha256": "13cb2c49485df0f0e098a6c4d47ab619f6e46d516c111d470fb3b185de38f89e"
+        },
+        "treatment": {
+          "characters": 1065,
+          "approx_tokens": 183,
+          "question_position": 0,
+          "evidence_position": 66,
+          "sha256": "f85b69765ea4df1c8a815c110d590b6c809c59a0a9476fde3bca363768e985e7"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [kb-002] và [kb-003], trường hợp Wi-Fi vào được mạng nội bộ nhưng không vào được Internet thường không phải lỗi Wi-Fi (vì Wi-Fi vẫn hoạt động), mà liên quan đến cấu hình mạng, DNS, proxy hoặc firewall.\n\n**Các bước khắc phục theo [kb-003]:**\n\n1. **Kiểm tra kết nối Internet cơ bản:**\n   - Mở Command Prompt (Win + R → `cmd` → Enter).\n   - Gõ lệnh:\n     ```bash\n     ping 8.8.8.8\n     ```\n   - Nếu **ping 8.8.8.8 thành công** → Lỗi không phải do kết nối mạng (có thể DNS, proxy, firewall).\n   - Nếu **ping 8.8.8.8 thất bại** → Lỗi kết nối mạng (cần kiểm tra cáp, modem, router, hoặc liên hệ IT).\n\n2. **Kiểm tra cấu hình proxy (nếu có):**\n   - Vào **Internet Options** (Win + R → `inetcpl.cpl` → Enter).\n   - Chọn tab **Connections** → **LAN Settings**.\n   - Bỏ chọn **\"Use a proxy server for your LAN\"** nếu có bật.\n   - Chọn **\"Automatically detect settings\"** và **\"Use automatic configuration script\"** (nếu có).\n\n3. **Kiểm tra DNS:**\n   - Mở Command Prompt, gõ:\n     ```bash\n     nslookup google.com\n     ```\n   - Nếu trả về lỗi **\"Non-existent domain\"** hoặc timeout → DNS bị lỗi.\n   - **Flush DNS cache**:\n     ```bash\n     ipconfig /flushdns\n     ```\n\n4. **Kiểm tra firewall/antivirus:**\n   - Tạm thời tắt **tường lửa (Windows Defender Firewall)** hoặc **antivirus** (nếu có) để kiểm tra.\n   - Nếu sau khi tắt, Internet hoạt động → cấu hình lại firewall/antivirus.\n\n---\n**Lưu ý:**\n- Nếu sau các bước trên vẫn không vào được Internet, vui lòng cung cấp kết quả của `ping 8.8.8.8` và `nslookup google.com` để IT hỗ trợ sâu hơn.\n- **Không phải lỗi Wi-Fi** (theo [kb-002]), vì Wi-Fi vẫn vào được mạng nội bộ.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer accurately addresses the incident assistance request, providing a clear troubleshooting plan based on the provided knowledge base articles."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 6881.355
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dựa trên triệu chứng \"Wi-Fi công ty vào được nhưng không vào Internet\" và authorized evidence, đây là các bước khắc phục theo thứ tự ưu tiên:\n\n---\n\n### **1. Kiểm tra kết nối Internet cơ bản**\n- **Ping 8.8.8.8** (Google DNS) để xác định lỗi kết nối Internet:\n  ```cmd\n  ping 8.8.8.8\n  ```\n  - **Nếu thành công**: Lỗi có thể do **DNS** hoặc **proxy**.\n  - **Nếu thất bại**: Lỗi kết nối mạng (xem bước 2).\n\n---\n\n### **2. Kiểm tra cấu hình proxy (nếu có)**\n- Vào **Internet Options** → **Connections** → **LAN Settings**:\n  - Đảm bảo **Use a proxy server for your LAN** **không được chọn** (hoặc cấu hình proxy đúng nếu bắt buộc).\n  - Nếu proxy được bật nhưng không hoạt động, liên hệ IT để kiểm tra cấu hình proxy server.\n\n---\n\n### **3. Kiểm tra DNS**\n- **Nslookup google.com** để kiểm tra DNS resolution:\n  ```cmd\n  nslookup google.com\n  ```\n  - **Nếu trả về địa chỉ IP**: DNS hoạt động.\n  - **Nếu lỗi \"Non-existent domain\"**: Thực hiện **flush DNS**:\n    ```cmd\n    ipconfig /flushdns\n    ```\n  - Nếu vẫn lỗi, thử đổi DNS tạm thời sang **8.8.8.8** (Google DNS) hoặc **1.1.1.1** (Cloudflare).\n\n---\n\n### **4. Kiểm tra firewall/antivirus**\n- Tạm thời **tắt firewall/antivirus** (nếu có quyền) để kiểm tra chặn kết nối.\n- Nếu sau khi tắt firewall/antivirus mà Internet hoạt động, cấu hình lại chính sách bảo mật.\n\n---\n### **5. Khởi động lại thiết bị (nếu cần)**\n- **Restart máy tính** hoặc **khởi động lại card mạng**:\n  ```cmd\n  netsh interface set interface \"Wi-Fi\" disable\n  netsh interface set interface \"Wi-Fi\" enable\n  ```\n\n---\n### **6. Kiểm tra cấu hình mạng khác (nếu lỗi vẫn còn)**\n- **Đặt IP tĩnh** (nếu đang dùng DHCP) hoặc **xóa cache mạng**:\n  ```cmd\n  netsh winsock reset\n  netsh int ip reset\n  ```\n- **Khởi động lại router/modem** (nếu có quyền).\n\n---\n### **Lưu ý**\n- Nếu lỗi ảnh hưởng **nhiều người**, báo cáo IT để kiểm tra **AP controller** hoặc **kênh WiFi nhiễu** (tham khảo [kb-002]).\n- Nếu lỗi chỉ xảy ra với **một người**, kiểm tra cấu hình **proxy/DNS/firewall** trên máy đó.\n\n---\n**Nguồn tham khảo**:\n- [kb-003] cho các bước kiểm tra kết nối Internet.\n- [kb-002] tham khảo nếu lỗi liên quan đến WiFi (mặc dù triệu chứng chính là mất Internet).",
+        "answer": "Dựa trên triệu chứng \"Wi-Fi công ty vào được nhưng không vào Internet\" và authorized evidence, đây là các bước khắc phục theo thứ tự ưu tiên:\n\n---\n\n### **1. Kiểm tra kết nối Internet cơ bản**\n- **Ping 8.8.8.8** (Google DNS) để xác định lỗi kết nối Internet:\n  ```cmd\n  ping 8.8.8.8\n  ```\n  - **Nếu thành công**: Lỗi có thể do **DNS** hoặc **proxy**.\n  - **Nếu thất bại**: Lỗi kết nối mạng (xem bước 2).\n\n---\n\n### **2. Kiểm tra cấu hình proxy (nếu có)**\n- Vào **Internet Options** → **Connections** → **LAN Settings**:\n  - Đảm bảo **Use a proxy server for your LAN** **không được chọn** (hoặc cấu hình proxy đúng nếu bắt buộc).\n  - Nếu proxy được bật nhưng không hoạt động, liên hệ IT để kiểm tra cấu hình proxy server.\n\n---\n\n### **3. Kiểm tra DNS**\n- **Nslookup google.com** để kiểm tra DNS resolution:\n  ```cmd\n  nslookup google.com\n  ```\n  - **Nếu trả về địa chỉ IP**: DNS hoạt động.\n  - **Nếu lỗi \"Non-existent domain\"**: Thực hiện **flush DNS**:\n    ```cmd\n    ipconfig /flushdns\n    ```\n  - Nếu vẫn lỗi, thử đổi DNS tạm thời sang **8.8.8.8** (Google DNS) hoặc **1.1.1.1** (Cloudflare).\n\n---\n\n### **4. Kiểm tra firewall/antivirus**\n- Tạm thời **tắt firewall/antivirus** (nếu có quyền) để kiểm tra chặn kết nối.\n- Nếu sau khi tắt firewall/antivirus mà Internet hoạt động, cấu hình lại chính sách bảo mật.\n\n---\n### **5. Khởi động lại thiết bị (nếu cần)**\n- **Restart máy tính** hoặc **khởi động lại card mạng**:\n  ```cmd\n  netsh interface set interface \"Wi-Fi\" disable\n  netsh interface set interface \"Wi-Fi\" enable\n  ```\n\n---\n### **6. Kiểm tra cấu hình mạng khác (nếu lỗi vẫn còn)**\n- **Đặt IP tĩnh** (nếu đang dùng DHCP) hoặc **xóa cache mạng**:\n  ```cmd\n  netsh winsock reset\n  netsh int ip reset\n  ```\n- **Khởi động lại router/modem** (nếu có quyền).\n\n---\n### **Lưu ý**\n- Nếu lỗi ảnh hưởng **nhiều người**, báo cáo IT để kiểm tra **AP controller** hoặc **kênh WiFi nhiễu** (tham khảo [kb-002]).\n- Nếu lỗi chỉ xảy ra với **một người**, kiểm tra cấu hình **proxy/DNS/firewall** trên máy đó.\n\n---\n**Nguồn tham khảo**:\n- [kb-003] cho các bước kiểm tra kết nối Internet.\n- [kb-002] tham khảo nếu lỗi liên quan đến WiFi (mặc dù triệu chứng chính là mất Internet).",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "The generated answer is faithful, complete, relevant, and correctly abstains from unsupported claims, with correct citations and no unsupported claims."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 6696.569
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-026",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-003"
+      ],
+      "context_characters": 354,
+      "context_approx_tokens": 64,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 506,
+          "approx_tokens": 85,
+          "question_position": 458,
+          "evidence_position": 0,
+          "sha256": "5a4753128e16524a624de7ca0e44656fd30b317e10cf1d3c4abe9dd769835e92"
+        },
+        "treatment": {
+          "characters": 595,
+          "approx_tokens": 91,
+          "question_position": 0,
+          "evidence_position": 50,
+          "sha256": "1400290f5660547f4d3b3173579ea6823fea11646a03b1af3bc5e44e577c2091"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để xác định nguyên nhân cụ thể.\n\nTuy nhiên, theo [kb-003], khi Internet bị mất trên diện rộng (như cả phòng Sales), bạn có thể thực hiện các bước sau để khắc phục:\n\n### **Các bước kiểm tra và khắc phục nhanh**\n1. **Kiểm tra kết nối mạng cục bộ**\n   - Xác nhận máy tính có thể ping được gateway nội bộ (ví dụ: `ping 192.168.1.1`).\n   - Nếu không ping được gateway, vấn đề có thể là:\n     - Cáp mạng bị lỗi.\n     - Switch/Router bị down.\n     - Cấu hình IP sai (IP tĩnh trùng lặp, DHCP không hoạt động).\n\n2. **Kiểm tra cấu hình proxy (nếu có)**\n   - Vào **Internet Options → Connections → LAN Settings** (trên IE/Edge).\n   - Đảm bảo:\n     - **\"Use a proxy server for your LAN\"** không được chọn (hoặc cấu hình proxy đúng nếu có).\n     - **\"Automatically detect settings\"** được bật.\n\n3. **Kiểm tra DNS**\n   - Chạy lệnh:\n     ```cmd\n     nslookup google.com\n     ```\n   - Nếu trả về lỗi `Non-existent domain` hoặc timeout, thử:\n     - Đổi DNS sang `8.8.8.8` (Google DNS) hoặc `1.1.1.1` (Cloudflare DNS).\n     - Flush DNS:\n       ```cmd\n       ipconfig /flushdns\n       ```\n\n4. **Kiểm tra firewall/antivirus**\n   - Tạm thời tắt tường lửa/antivirus (nếu có quyền) để kiểm tra xem có bị chặn không.\n   - Nếu sau khi tắt, Internet hoạt động → cấu hình lại firewall/antivirus.\n\n5. **Kiểm tra cài đặt mạng**\n   - Đảm bảo chế độ mạng không bị đặt thành **\"Public\"** (nên là **\"Private\"**).\n   - Vào **Settings → Network & Internet → Status** → Kiểm tra trạng thái kết nối.\n\n---\n### **Nếu vấn đề vẫn còn**\n- **Liên hệ IT Helpdesk** để kiểm tra:\n  - Switch/Router phòng Sales.\n  - Cấu hình firewall của công ty (nếu proxy/firewall toàn công ty bị lỗi).\n  - Kiểm tra log hệ thống (nếu có sự cố từ phía nhà cung cấp Internet).\n\n**Cần thêm thông tin:**\n- Bạn có thể ping được gateway nội bộ không?\n- Máy tính có nhận IP tự động (DHCP) hay không?\n- Có thông báo lỗi cụ thể nào không? (Ví dụ: \"Limited connectivity\", \"No Internet access\")",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer is faithful, complete, relevant, and correctly abstains from unsupported claims, with correct citations."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 6555.223
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Dựa trên thông tin được cung cấp, sự cố \"Internet cả phòng Sales đều mất\" có thể do nhiều nguyên nhân. Dưới đây là hướng dẫn khắc phục sự cố theo thứ tự ưu tiên:\n\n### **1. Kiểm tra kết nối mạng cơ bản**\n- **Ping 8.8.8.8** (Google DNS) để xác nhận kết nối Internet:\n  - Nếu **ping thành công** → Vấn đề có thể liên quan đến **DNS** hoặc **proxy**.\n  - Nếu **ping thất bại** → Vấn đề có thể là **mất kết nối mạng** (cáp, switch, router, ISP).\n\n### **2. Kiểm tra cấu hình proxy (nếu có)**\n- Vào **Internet Options → Connections → LAN Settings** trên máy tính:\n  - Đảm bảo **Automatically detect settings** được bật.\n  - Nếu sử dụng proxy, kiểm tra địa chỉ proxy có chính xác không.\n  - Nếu không chắc, thử **bỏ chọn \"Use a proxy server for your LAN\"**.\n\n### **3. Kiểm tra DNS**\n- Chạy lệnh **`nslookup google.com`** trong Command Prompt:\n  - Nếu trả về địa chỉ IP → DNS hoạt động.\n  - Nếu lỗi **\"Non-existent domain\"** → Thử **flush DNS** bằng lệnh:\n    ```cmd\n    ipconfig /flushdns\n    ```\n  - Nếu vẫn lỗi, thử đổi DNS sang **8.8.8.8 (Google DNS)** hoặc **1.1.1.1 (Cloudflare DNS)**.\n\n### **4. Kiểm tra firewall/antivirus**\n- Tạm thời **tắt tường lửa (firewall)** hoặc **phần mềm diệt virus** để xem có chặn kết nối không.\n- Nếu sau khi tắt, Internet hoạt động → Cần cấu hình lại firewall/antivirus.\n\n### **5. Kiểm tra switch/router (nếu phòng Sales dùng chung mạng)**\n- Nếu **ping 8.8.8.8 thất bại**, có thể do:\n  - **Switch bị lỗi** (thử cắm lại cáp hoặc đổi cổng).\n  - **Router bị lỗi** (khởi động lại router).\n  - **ISP gặp sự cố** (liên hệ nhà cung cấp dịch vụ).\n\n---\n**Cần thêm thông tin để xác định chính xác nguyên nhân:**\n- Kết quả **ping 8.8.8.8** (thành công/thất bại)?\n- Có sử dụng **proxy** không? Nếu có, cấu hình proxy như thế nào?\n- Có lỗi **DNS** khi chạy `nslookup google.com` không?\n- Có phần mềm **firewall/antivirus** nào đang chặn kết nối không?\n\nNếu có thể cung cấp thêm chi tiết, tôi sẽ hỗ trợ chi tiết hơn.",
+        "answer": "Dựa trên thông tin được cung cấp, sự cố \"Internet cả phòng Sales đều mất\" có thể do nhiều nguyên nhân. Dưới đây là hướng dẫn khắc phục sự cố theo thứ tự ưu tiên:\n\n### **1. Kiểm tra kết nối mạng cơ bản**\n- **Ping 8.8.8.8** (Google DNS) để xác nhận kết nối Internet:\n  - Nếu **ping thành công** → Vấn đề có thể liên quan đến **DNS** hoặc **proxy**.\n  - Nếu **ping thất bại** → Vấn đề có thể là **mất kết nối mạng** (cáp, switch, router, ISP).\n\n### **2. Kiểm tra cấu hình proxy (nếu có)**\n- Vào **Internet Options → Connections → LAN Settings** trên máy tính:\n  - Đảm bảo **Automatically detect settings** được bật.\n  - Nếu sử dụng proxy, kiểm tra địa chỉ proxy có chính xác không.\n  - Nếu không chắc, thử **bỏ chọn \"Use a proxy server for your LAN\"**.\n\n### **3. Kiểm tra DNS**\n- Chạy lệnh **`nslookup google.com`** trong Command Prompt:\n  - Nếu trả về địa chỉ IP → DNS hoạt động.\n  - Nếu lỗi **\"Non-existent domain\"** → Thử **flush DNS** bằng lệnh:\n    ```cmd\n    ipconfig /flushdns\n    ```\n  - Nếu vẫn lỗi, thử đổi DNS sang **8.8.8.8 (Google DNS)** hoặc **1.1.1.1 (Cloudflare DNS)**.\n\n### **4. Kiểm tra firewall/antivirus**\n- Tạm thời **tắt tường lửa (firewall)** hoặc **phần mềm diệt virus** để xem có chặn kết nối không.\n- Nếu sau khi tắt, Internet hoạt động → Cần cấu hình lại firewall/antivirus.\n\n### **5. Kiểm tra switch/router (nếu phòng Sales dùng chung mạng)**\n- Nếu **ping 8.8.8.8 thất bại**, có thể do:\n  - **Switch bị lỗi** (thử cắm lại cáp hoặc đổi cổng).\n  - **Router bị lỗi** (khởi động lại router).\n  - **ISP gặp sự cố** (liên hệ nhà cung cấp dịch vụ).\n\n---\n**Cần thêm thông tin để xác định chính xác nguyên nhân:**\n- Kết quả **ping 8.8.8.8** (thành công/thất bại)?\n- Có sử dụng **proxy** không? Nếu có, cấu hình proxy như thế nào?\n- Có lỗi **DNS** khi chạy `nslookup google.com` không?\n- Có phần mềm **firewall/antivirus** nào đang chặn kết nối không?\n\nNếu có thể cung cấp thêm chi tiết, tôi sẽ hỗ trợ chi tiết hơn.",
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 0.5,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Nhận diện khả năng incident diện rộng.",
+            "Không xử lý như single-user issue nếu workflow có major incident logic."
+          ],
+          "brief_rationale": "Đáp án không đáp ứng được yêu cầu của mode 'INCIDENT_ASSISTANCE' và không có đủ thông tin để xác định chính xác nguyên nhân sự cố."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": false,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 6357.099
+      },
+      "movement": "REGRESSED",
+      "regression_cause": "OVER_ABSTENTION"
+    },
+    {
+      "id": "GT-027",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-010"
+      ],
+      "context_characters": 314,
+      "context_approx_tokens": 53,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 452,
+          "approx_tokens": 72,
+          "question_position": 418,
+          "evidence_position": 0,
+          "sha256": "4a79c71dea40a36139db90bc9ceb878f32865ab57c89a1c56a3130b313cc1b87"
+        },
+        "treatment": {
+          "characters": 541,
+          "approx_tokens": 78,
+          "question_position": 0,
+          "evidence_position": 36,
+          "sha256": "54d30750ae678d2229722486b5cdb78a776b37c105c1a8345f4e844bcccda4d0"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Bạn có thể tự đặt lại mật khẩu theo các bước sau:\n\n1. **Truy cập cổng SSPR (Self-Service Password Reset)**:\n   Mở trình duyệt và truy cập: [https://sspr.company.local](https://sspr.company.local)\n\n2. **Thực hiện đặt lại mật khẩu**:\n   - Xác thực danh tính theo hướng dẫn trên portal.\n   - Đặt mật khẩu mới tuân thủ chính sách mật khẩu của công ty.\n\n3. **Sau khi đặt lại**:\n   - Mật khẩu mới sẽ có hiệu lực ngay lập tức.\n   - Nếu tài khoản bị khóa do nhập sai mật khẩu nhiều lần, hãy sử dụng tính năng **Unlock Account** trên portal.\n\nNếu không thể tự đặt lại mật khẩu hoặc gặp lỗi, vui lòng liên hệ **IT Help Desk** để được hỗ trợ reset bởi nhân viên IT.\n\n*[kb-010]*",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer fully addresses the user's intent and is supported by the authorized context."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 2568.176
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Bạn có thể tự đặt lại mật khẩu bằng **Self-Service Password Reset (SSPR)** theo các bước sau:\n\n1. Truy cập [SSPR portal](https://sspr.company.local).\n2. Xác thực danh tính (theo hướng dẫn trên portal).\n3. Đặt mật khẩu mới.\n4. Sau khi đặt lại, hệ thống sẽ yêu cầu đổi mật khẩu tại lần đăng nhập tiếp theo.\n\nNếu không thể tự đặt lại, vui lòng liên hệ bộ phận IT để được hỗ trợ reset mật khẩu qua **AD Users and Computers** (yêu cầu xác thực danh tính).\n\n*[kb-010]*",
+        "answer": "Bạn có thể tự đặt lại mật khẩu bằng **Self-Service Password Reset (SSPR)** theo các bước sau:\n\n1. Truy cập [SSPR portal](https://sspr.company.local).\n2. Xác thực danh tính (theo hướng dẫn trên portal).\n3. Đặt mật khẩu mới.\n4. Sau khi đặt lại, hệ thống sẽ yêu cầu đổi mật khẩu tại lần đăng nhập tiếp theo.\n\nNếu không thể tự đặt lại, vui lòng liên hệ bộ phận IT để được hỗ trợ reset mật khẩu qua **AD Users and Computers** (yêu cầu xác thực danh tính).\n\n*[kb-010]*",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer fully addresses the user's intent and is supported by the provided evidence."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 1888.567
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-029",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "PARTIALLY_SUPPORTED",
+      "context_source_ids": [
+        "kb-010"
+      ],
+      "context_characters": 314,
+      "context_approx_tokens": 53,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 456,
+          "approx_tokens": 73,
+          "question_position": 418,
+          "evidence_position": 0,
+          "sha256": "3fb94269f3b1fb4885f7338ac8e33f7a37e6cb087a1c4483882d7d75077b12cc"
+        },
+        "treatment": {
+          "characters": 545,
+          "approx_tokens": 79,
+          "question_position": 0,
+          "evidence_position": 40,
+          "sha256": "227f26849037967e2b3cc8d231989ea372b28b266099b84601a377c7f11a52cd"
+        }
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Cần xác định:**\n- Bạn đã thử tự mở khóa tài khoản qua [kb-010] SSPR portal (https://sspr.company.local) chưa?\n- Nếu chưa, vui lòng thử bước 1: truy cập SSPR portal để mở khóa tài khoản.\n- Nếu đã thử nhưng không được, vui lòng cung cấp thông tin:\n  - Bạn đã xác thực identity thành công trên SSPR chưa?\n  - Bạn có quyền truy cập vào **AD Users and Computers** để IT reset mật khẩu không?\n\n*[SOURCE_ID: kb-010]*",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Account incident.",
+            "Retrieve account lockout policy nếu có.",
+            "Không tự bịa số lần failed login."
+          ],
+          "brief_rationale": "Lack of direct answer to account incident and lockout policy."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 2005.102
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dựa trên thông tin được cung cấp, tài khoản của bạn có thể đã bị khóa do nhập sai mật khẩu nhiều lần. Bạn có thể tự mở khóa tài khoản bằng cách sử dụng **Self-Service Password Reset (SSPR)** hoặc yêu cầu bộ phận IT hỗ trợ.\n\n### **Cách tự mở khóa tài khoản (nếu được phép):**\n1. Truy cập **SSPR Portal**: [https://sspr.company.local](https://sspr.company.local)\n2. Xác thực danh tính (theo hướng dẫn trên portal).\n3. Thực hiện **Unlock Account** (nếu tính năng này khả dụng).\n4. Đặt lại mật khẩu mới.\n\n### **Nếu không thể tự mở khóa:**\n- Liên hệ **IT Help Desk** để được hỗ trợ reset mật khẩu và unlock tài khoản.\n\n**Lưu ý:**\n- Nếu tài khoản bị khóa do chính sách bảo mật (ví dụ: sau 5 lần nhập sai), bạn cần đợi **30 phút** trước khi thử lại hoặc liên hệ IT để hỗ trợ ngay lập tức.\n- Nếu bạn không có quyền truy cập SSPR, vui lòng cung cấp thông tin xác thực (tên đăng nhập, email công ty) để IT xác minh và hỗ trợ.\n\n---\n*Thông tin được cung cấp dựa trên [kb-010]. Nếu tình trạng không được cải thiện, vui lòng cung cấp thêm chi tiết (tên đăng nhập, lỗi cụ thể, thời gian xảy ra) để được hỗ trợ chính xác hơn.*",
+        "answer": "Dựa trên thông tin được cung cấp, tài khoản của bạn có thể đã bị khóa do nhập sai mật khẩu nhiều lần. Bạn có thể tự mở khóa tài khoản bằng cách sử dụng **Self-Service Password Reset (SSPR)** hoặc yêu cầu bộ phận IT hỗ trợ.\n\n### **Cách tự mở khóa tài khoản (nếu được phép):**\n1. Truy cập **SSPR Portal**: [https://sspr.company.local](https://sspr.company.local)\n2. Xác thực danh tính (theo hướng dẫn trên portal).\n3. Thực hiện **Unlock Account** (nếu tính năng này khả dụng).\n4. Đặt lại mật khẩu mới.\n\n### **Nếu không thể tự mở khóa:**\n- Liên hệ **IT Help Desk** để được hỗ trợ reset mật khẩu và unlock tài khoản.\n\n**Lưu ý:**\n- Nếu tài khoản bị khóa do chính sách bảo mật (ví dụ: sau 5 lần nhập sai), bạn cần đợi **30 phút** trước khi thử lại hoặc liên hệ IT để hỗ trợ ngay lập tức.\n- Nếu bạn không có quyền truy cập SSPR, vui lòng cung cấp thông tin xác thực (tên đăng nhập, email công ty) để IT xác minh và hỗ trợ.\n\n---\n*Thông tin được cung cấp dựa trên [kb-010]. Nếu tình trạng không được cải thiện, vui lòng cung cấp thêm chi tiết (tên đăng nhập, lỗi cụ thể, thời gian xảy ra) để được hỗ trợ chính xác hơn.*",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Tài khoản bị khóa do nhập sai mật khẩu nhiều lần, có thể tự mở khóa bằng SSPR hoặc yêu cầu IT hỗ trợ."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 4082.804
+      },
+      "movement": "IMPROVED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-045",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-001"
+      ],
+      "context_characters": 386,
+      "context_approx_tokens": 70,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 533,
+          "approx_tokens": 93,
+          "question_position": 480,
+          "evidence_position": 0,
+          "sha256": "a76b2b7856094510e78bad30ca96bb1a0c6378f077f1d7e99f72d3152f63a3ec"
+        },
+        "treatment": {
+          "characters": 622,
+          "approx_tokens": 99,
+          "question_position": 0,
+          "evidence_position": 55,
+          "sha256": "7707b7b2081acabb003fcd6293deb9e408f8ca451fc10fc616bda603d73edd76"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [kb-001], đây là quy trình kết nối VPN công ty (Cisco AnyConnect/FortiClient) khi đã có cấu hình sẵn:\n\n### **Cách kết nối VPN công ty**\n1. **Kiểm tra thông tin đăng nhập**\n   - Sử dụng **username/password VPN** (thường khác email công ty).\n   - Đảm bảo **MFA (2FA)** được kích hoạt nếu áp dụng.\n\n2. **Cài đặt/khởi động ứng dụng VPN**\n   - Mở **Cisco AnyConnect** hoặc **FortiClient** đã cài đặt sẵn.\n   - Nhập **địa chỉ server VPN** (do IT cung cấp, ví dụ: `vpn.company.com`).\n\n3. **Đăng nhập**\n   - Nhập **username** và **password VPN**.\n   - Nếu bật MFA, nhập mã từ ứng dụng xác thực (Google Authenticator, Microsoft Authenticator, v.v.).\n\n4. **Kết nối thành công**\n   - Sau khi xác thực, trạng thái sẽ hiển thị **\"Connected\"** và bạn có thể truy cập tài nguyên nội bộ.\n\n---\n### **Lưu ý khắc phục sự cố (nếu kết nối thất bại)**\n- **Lỗi \"Authentication Failed\"**:\n  - Kiểm tra lại **username/password** (thường không phải email công ty).\n  - Reset MFA app nếu dùng 2FA.\n  - Liên hệ IT để **reset tài khoản VPN** nếu vẫn lỗi.\n\n- **Lỗi \"Connection Timeout\"**:\n  - Thử đổi **network** (sử dụng 4G thay WiFi).\n  - Kiểm tra **tường lửa (firewall)** trên máy tính.\n  - Xóa profile VPN cũ và tạo mới.\n\n---\n**Nguồn:** [kb-001]",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer fully addresses the question and follows the authorized context."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 4263.29
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Dựa trên thông tin được cung cấp, đây là hướng dẫn chung để kết nối VPN công ty (không có chi tiết cấu hình cụ thể cho từng loại VPN như Cisco AnyConnect hay FortiClient trong evidence):\n\n### **Cách kết nối VPN công ty**\n1. **Chuẩn bị thông tin đăng nhập**\n   - Sử dụng **username/password VPN** (thường khác email công ty).\n   - Nếu sử dụng **2FA (MFA)**, đảm bảo ứng dụng MFA (như Microsoft Authenticator, Google Authenticator) đã được cài đặt và kích hoạt.\n\n2. **Cài đặt phần mềm VPN (nếu chưa có)**\n   - Tải và cài đặt phần mềm VPN phù hợp (ví dụ: **Cisco AnyConnect**, **FortiClient**, hoặc phần mềm VPN nội bộ khác) từ nguồn chính thức của công ty.\n\n3. **Cấu hình kết nối VPN**\n   - Mở phần mềm VPN đã cài đặt.\n   - Nhập **địa chỉ server VPN** (ví dụ: `vpn.congty.com` hoặc địa chỉ IP do IT cung cấp).\n   - Nhập **username** và **password** VPN.\n   - Nếu yêu cầu **2FA**, nhập mã từ ứng dụng MFA.\n\n4. **Kết nối VPN**\n   - Nhấn **Connect** (Kết nối).\n   - Chờ xác thực thành công (thông báo \"Connected\" xuất hiện).\n\n5. **Xử lý lỗi (nếu có)**\n   - Nếu gặp lỗi **authentication failed** hoặc **connection timeout**, thử:\n     - Kiểm tra lại **username/password**.\n     - Xóa profile VPN cũ và tạo mới (nếu cần).\n     - Kiểm tra **tường lửa** trên máy tính.\n     - Thử đổi **mạng** (sử dụng 4G thay WiFi).\n     - Reset ứng dụng **MFA** nếu dùng 2FA.\n     - Liên hệ **IT Support** để reset tài khoản VPN nếu vẫn lỗi.\n\n---\n**Lưu ý:**\n- Thông tin chi tiết về cấu hình VPN (địa chỉ server, loại VPN, hướng dẫn cài đặt) có thể khác nhau tùy theo chính sách của công ty.\n- Nếu cần hỗ trợ cụ thể, vui lòng cung cấp thêm thông tin về loại VPN đang sử dụng (Cisco AnyConnect, FortiClient, v.v.) hoặc liên hệ trực tiếp với **IT Helpdesk** của công ty.\n\n[SOURCE: kb-001]",
+        "answer": "Dựa trên thông tin được cung cấp, đây là hướng dẫn chung để kết nối VPN công ty (không có chi tiết cấu hình cụ thể cho từng loại VPN như Cisco AnyConnect hay FortiClient trong evidence):\n\n### **Cách kết nối VPN công ty**\n1. **Chuẩn bị thông tin đăng nhập**\n   - Sử dụng **username/password VPN** (thường khác email công ty).\n   - Nếu sử dụng **2FA (MFA)**, đảm bảo ứng dụng MFA (như Microsoft Authenticator, Google Authenticator) đã được cài đặt và kích hoạt.\n\n2. **Cài đặt phần mềm VPN (nếu chưa có)**\n   - Tải và cài đặt phần mềm VPN phù hợp (ví dụ: **Cisco AnyConnect**, **FortiClient**, hoặc phần mềm VPN nội bộ khác) từ nguồn chính thức của công ty.\n\n3. **Cấu hình kết nối VPN**\n   - Mở phần mềm VPN đã cài đặt.\n   - Nhập **địa chỉ server VPN** (ví dụ: `vpn.congty.com` hoặc địa chỉ IP do IT cung cấp).\n   - Nhập **username** và **password** VPN.\n   - Nếu yêu cầu **2FA**, nhập mã từ ứng dụng MFA.\n\n4. **Kết nối VPN**\n   - Nhấn **Connect** (Kết nối).\n   - Chờ xác thực thành công (thông báo \"Connected\" xuất hiện).\n\n5. **Xử lý lỗi (nếu có)**\n   - Nếu gặp lỗi **authentication failed** hoặc **connection timeout**, thử:\n     - Kiểm tra lại **username/password**.\n     - Xóa profile VPN cũ và tạo mới (nếu cần).\n     - Kiểm tra **tường lửa** trên máy tính.\n     - Thử đổi **mạng** (sử dụng 4G thay WiFi).\n     - Reset ứng dụng **MFA** nếu dùng 2FA.\n     - Liên hệ **IT Support** để reset tài khoản VPN nếu vẫn lỗi.\n\n---\n**Lưu ý:**\n- Thông tin chi tiết về cấu hình VPN (địa chỉ server, loại VPN, hướng dẫn cài đặt) có thể khác nhau tùy theo chính sách của công ty.\n- Nếu cần hỗ trợ cụ thể, vui lòng cung cấp thêm thông tin về loại VPN đang sử dụng (Cisco AnyConnect, FortiClient, v.v.) hoặc liên hệ trực tiếp với **IT Helpdesk** của công ty.\n\n[SOURCE: kb-001]",
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 0.5,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [
+            "Thông tin chi tiết về cấu hình VPN (địa chỉ server, loại VPN, hướng dẫn cài đặt) có thể khác nhau tùy theo chính sách của công ty."
+          ],
+          "missing_points": [
+            "Hướng dẫn cụ thể cho từng loại VPN như Cisco AnyConnect hay FortiClient."
+          ],
+          "brief_rationale": "Hướng dẫn kết nối VPN công ty không đầy đủ và có thể gây hiểu lầm."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": false,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 5788.229
+      },
+      "movement": "REGRESSED",
+      "regression_cause": "OVER_ABSTENTION"
+    },
+    {
+      "id": "GT-046",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "UNSUPPORTED",
+      "context_source_ids": [],
+      "context_characters": 0,
+      "context_approx_tokens": 0,
+      "treatment_applied": false,
+      "treatment_reason": "INTENTIONALLY_EMPTY_CONTEXT_PRESERVED",
+      "template": {
+        "version": "control-retained-empty-context",
+        "control": {
+          "characters": 109,
+          "approx_tokens": 14,
+          "question_position": 46,
+          "evidence_position": 0,
+          "sha256": "f539750c9f29742644887fa07a2d89cb465039c8c2fda22b79572f596381d673"
+        },
+        "treatment": null
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 0.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Password công ty cần tối thiểu bao nhiêu ký tự"
+          ],
+          "brief_rationale": "Không có thông tin về yêu cầu ký tự tối thiểu cho password công ty."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "citation_status": 1.0,
+        "generation_ms": 877.253
+      },
+      "treatment": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 0.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Password công ty cần tối thiểu bao nhiêu ký tự"
+          ],
+          "brief_rationale": "Không có thông tin về yêu cầu ký tự tối thiểu cho password công ty."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "citation_status": 1.0,
+        "generation_ms": 877.253,
+        "raw_answer": "CONTROL_REUSED_INTENTIONALLY_EMPTY_CONTEXT",
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "unsupported_detail_added": false
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-047",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "PARTIAL_ANSWER",
+      "context_mode": "PARTIALLY_SUPPORTED",
+      "context_source_ids": [
+        "eval-gt047-vpn-port"
+      ],
+      "context_characters": 85,
+      "context_approx_tokens": 13,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 264,
+          "approx_tokens": 38,
+          "question_position": 182,
+          "evidence_position": 0,
+          "sha256": "1c0c7fa5c3fd38c6ad23efbde0fada107ec2c9a9f80005bde742b23e731d5f8d"
+        },
+        "treatment": {
+          "characters": 353,
+          "approx_tokens": 44,
+          "question_position": 0,
+          "evidence_position": 84,
+          "sha256": "bc04d25efb5c0220a9e3a3fa4300aabc53c42d4cde158287fc20b6352b8d62b2"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [AUTHORIZED_EVIDENCE] được cung cấp:\n\n- **VPN sử dụng cổng 443** [eval-gt047-vpn-port]\n- **Thông tin về chính sách khóa tài khoản sau bao nhiêu lần nhập sai không được đề cập trong evidence.** [eval-gt047-vpn-port]",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Phần account lockout: nói chưa đủ thông tin."
+          ],
+          "brief_rationale": "Phần account lockout không được đề cập trong evidence."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 1280.586
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dựa trên evidence được cung cấp:\n\n- **VPN sử dụng cổng 443** [eval-gt047-vpn-port].\n- **Thông tin về số lần nhập sai tài khoản bị khóa không được đề cập** trong evidence.",
+        "answer": "Dựa trên evidence được cung cấp:\n\n- **VPN sử dụng cổng 443** [eval-gt047-vpn-port].\n- **Thông tin về số lần nhập sai tài khoản bị khóa không được đề cập** trong evidence.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Số lần nhập sai tài khoản bị khóa"
+          ],
+          "brief_rationale": "Phần về số lần nhập sai tài khoản bị khóa không được đề cập trong evidence."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 1337.696
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-048",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "PARTIAL_ANSWER",
+      "context_mode": "PARTIALLY_SUPPORTED",
+      "context_source_ids": [
+        "eval-gt048-replacement-conditions"
+      ],
+      "context_characters": 233,
+      "context_approx_tokens": 32,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 451,
+          "approx_tokens": 58,
+          "question_position": 377,
+          "evidence_position": 0,
+          "sha256": "80b467d545f35e0e814f3cea37464980c55ce89371b6fe8be6c578d7a2a285ed"
+        },
+        "treatment": {
+          "characters": 540,
+          "approx_tokens": 64,
+          "question_position": 0,
+          "evidence_position": 76,
+          "sha256": "1a382ebc823e10d83d67dd466e7cf73fff57540a747bbaa1c271bc60342d4d5b"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [eval-gt048-replacement-conditions]:\n\n**Điều kiện xin laptop mới:**\n- Có nhu cầu công việc được phê duyệt (approved business need)\n- Được sự chấp thuận của quản lý (manager approval)\n- Xác nhận nhân viên cần thiết bị của công ty cho vai trò được giao (needs a company device for the assigned role)\n\n**Thời gian cấp phát:**\nThông tin về thời gian cấp phát (fulfillment time) không được cung cấp trong tài liệu này.\n\n[SOURCE_ID: eval-gt048-replacement-conditions]",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Thời gian cấp phát"
+          ],
+          "brief_rationale": "Missing fulfillment time in partial answer."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 1868.783
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dưới đây là câu trả lời dựa trên **evidence được cấp phép**:\n\n### **Điều kiện xin laptop mới**\nĐể đủ điều kiện xin laptop mới, nhân viên cần đáp ứng **3 điều kiện sau**:\n1. **Có nhu cầu công việc được phê duyệt** (approved business need).\n2. **Được sự chấp thuận của quản lý** (manager approval).\n3. **Xác nhận nhân viên cần thiết bị của công ty cho vai trò được giao** (needs a company device for the assigned role).\n\n### **Thời gian cấp phát**\nHiện tại, **thời gian thực hiện (fulfillment time) không được cung cấp** trong tài liệu quy định.\n\n---\n*Nếu bạn cần hỗ trợ thêm về quy trình hoặc thông tin chi tiết, vui lòng cung cấp thêm ngữ cảnh (ví dụ: vai trò, phòng ban, hoặc trường hợp cụ thể).*",
+        "answer": "Dưới đây là câu trả lời dựa trên **evidence được cấp phép**:\n\n### **Điều kiện xin laptop mới**\nĐể đủ điều kiện xin laptop mới, nhân viên cần đáp ứng **3 điều kiện sau**:\n1. **Có nhu cầu công việc được phê duyệt** (approved business need).\n2. **Được sự chấp thuận của quản lý** (manager approval).\n3. **Xác nhận nhân viên cần thiết bị của công ty cho vai trò được giao** (needs a company device for the assigned role).\n\n### **Thời gian cấp phát**\nHiện tại, **thời gian thực hiện (fulfillment time) không được cung cấp** trong tài liệu quy định.\n\n---\n*Nếu bạn cần hỗ trợ thêm về quy trình hoặc thông tin chi tiết, vui lòng cung cấp thêm ngữ cảnh (ví dụ: vai trò, phòng ban, hoặc trường hợp cụ thể).*",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Thời gian cấp phát"
+          ],
+          "brief_rationale": "Phần thời gian cấp phát không được cung cấp trong tài liệu quy định."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": false,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 2992.522
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-049",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED_CONFLICT",
+      "context_source_ids": [
+        "eval-gt049-sla-a",
+        "eval-gt049-sla-b"
+      ],
+      "context_characters": 106,
+      "context_approx_tokens": 22,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 371,
+          "approx_tokens": 55,
+          "question_position": 337,
+          "evidence_position": 0,
+          "sha256": "015d8810daf120599026e4daa6c9deca1142edb3f5381779c368abcff9ece148"
+        },
+        "treatment": {
+          "characters": 460,
+          "approx_tokens": 61,
+          "question_position": 0,
+          "evidence_position": 36,
+          "sha256": "a1d6ceafb1b34bcb9839b72dcb29b7597897d116d47352bb23bc958f357ec3b7"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nCó hai nguồn thông tin mâu thuẫn:\n- [eval-gt049-sla-a]: P1 incidents có SLA là 2 giờ\n- [eval-gt049-sla-b]: P1 incidents có SLA là 4 giờ\n\nVui lòng cung cấp nguồn thông tin chính thức hoặc xác định nguồn nào là nguồn có thẩm quyền cao nhất để có thể đưa ra câu trả lời chính xác.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Đã xác định được nguồn thông tin mâu thuẫn nhưng chưa đưa ra câu trả lời chính xác."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 2361.229
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này do mâu thuẫn giữa các nguồn dữ liệu:\n\n- [eval-gt049-sla-a]: P1 incidents có SLA 2 giờ.\n- [eval-gt049-sla-b]: P1 incidents có SLA 4 giờ.\n\nVui lòng cung cấp nguồn có thẩm quyền cao hơn hoặc xác định phiên bản chính thức của chính sách SLA để giải quyết mâu thuẫn.",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này do mâu thuẫn giữa các nguồn dữ liệu:\n\n- [eval-gt049-sla-a]: P1 incidents có SLA 2 giờ.\n- [eval-gt049-sla-b]: P1 incidents có SLA 4 giờ.\n\nVui lòng cung cấp nguồn có thẩm quyền cao hơn hoặc xác định phiên bản chính thức của chính sách SLA để giải quyết mâu thuẫn.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Đáp án chính xác và đầy đủ, nhưng cần xác định nguồn có thẩm quyền cao hơn để giải quyết mâu thuẫn."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 1542.47
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-067",
+      "live_route": "action_request",
+      "live_route_applicability": false,
+      "diagnostic_only": true,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "PARTIALLY_SUPPORTED",
+      "context_source_ids": [
+        "kb-001",
+        "kb-010"
+      ],
+      "context_characters": 700,
+      "context_approx_tokens": 123,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 1005,
+          "approx_tokens": 173,
+          "question_position": 903,
+          "evidence_position": 0,
+          "sha256": "4dcf955b9e6bb54f96a684df9f6214638bcef8c064a4e9a3439f533ddf3a6894"
+        },
+        "treatment": {
+          "characters": 1094,
+          "approx_tokens": 179,
+          "question_position": 0,
+          "evidence_position": 104,
+          "sha256": "3f6f338d30e1efdcba85b8531e40948dd7c82724804bd38633e9dd2f297858ab"
+        }
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Lý do:**\n- [kb-001] cung cấp quy trình xử lý lỗi VPN nhưng không đề cập đến cách kiểm tra trạng thái tài khoản (bị khóa hay không) hay SLA cho việc tạo incident.\n- [kb-010] liên quan đến quên mật khẩu Windows/domain, không áp dụng cho trường hợp lỗi VPN.\n\n**Đề xuất:**\nVui lòng cung cấp:\n1. **Kết quả kiểm tra trạng thái tài khoản VPN** (nếu có) hoặc yêu cầu IT kiểm tra giúp.\n2. **Loại ticket** (Incident/Service Request) và **mô tả lỗi cụ thể** để xác định SLA phù hợp (nếu có policy SLA cho từng loại ticket).\n\n*Ghi chú:* Nếu bạn đã thử các bước trong [kb-001] nhưng vẫn lỗi, hãy cung cấp chi tiết lỗi (authentication failed/time out) và môi trường kết nối (WiFi/4G, phiên bản AnyConnect/FortiClient) để hỗ trợ sâu hơn.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Kết quả kiểm tra trạng thái tài khoản VPN",
+            "Loại ticket và mô tả lỗi cụ thể"
+          ],
+          "brief_rationale": "Đáp án không trả lời đầy đủ các phần yêu cầu."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 3228.962
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Lý do:**\n- Không có evidence nào trong [AUTHORIZED_EVIDENCE] cung cấp thông tin về:\n  - Cách kiểm tra trạng thái tài khoản VPN (bị khóa hay không).\n  - Chính sách SLA (Service Level Agreement) cho việc tạo incident liên quan đến VPN.\n\n**Đề xuất:**\nVui lòng cung cấp thêm thông tin hoặc liên hệ trực tiếp với bộ phận IT Support để:\n1. Kiểm tra trạng thái tài khoản VPN (có bị khóa hay không).\n2. Hỏi về SLA cho incident liên quan đến VPN.",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Lý do:**\n- Không có evidence nào trong  cung cấp thông tin về:\n  - Cách kiểm tra trạng thái tài khoản VPN (bị khóa hay không).\n  - Chính sách SLA (Service Level Agreement) cho việc tạo incident liên quan đến VPN.\n\n**Đề xuất:**\nVui lòng cung cấp thêm thông tin hoặc liên hệ trực tiếp với bộ phận IT Support để:\n1. Kiểm tra trạng thái tài khoản VPN (có bị khóa hay không).\n2. Hỏi về SLA cho incident liên quan đến VPN.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 0.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Tách thành:",
+            "1. VPN issue.",
+            "2. Account lockout.",
+            "3. SLA.",
+            "Trả tất cả phần có evidence.",
+            "Không bỏ vế.",
+            "---"
+          ],
+          "brief_rationale": "Broad refusal despite supported evidence."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 2066.414
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-071",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-010"
+      ],
+      "context_characters": 314,
+      "context_approx_tokens": 53,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 462,
+          "approx_tokens": 73,
+          "question_position": 418,
+          "evidence_position": 0,
+          "sha256": "81e56e903c9737e23deb8d0e4d50bd078422b3a547c6e2e185645b29279dd5e1"
+        },
+        "treatment": {
+          "characters": 551,
+          "approx_tokens": 79,
+          "question_position": 0,
+          "evidence_position": 46,
+          "sha256": "9fb2de99ef9fac78062327f105355367474d77fea17ff93940523e999801c53b"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [kb-010], cách reset mật khẩu công ty được thực hiện theo các bước sau:\n\n1. **Self-service (tự phục vụ)**:\n   Truy cập **SSPR portal** tại [https://sspr.company.local](https://sspr.company.local) để tự reset mật khẩu.\n\n2. **Reset bởi IT**:\n   - Xác thực danh tính (identity).\n   - Sử dụng **Active Directory Users and Computers** (ADUC) để reset mật khẩu.\n   - Bắt buộc thay đổi mật khẩu tại lần đăng nhập tiếp theo (Enforce change at next logon).\n   - Mở khóa tài khoản (Unlock account) nếu tài khoản bị khóa do nhập sai mật khẩu nhiều lần.\n\nNguồn: [kb-010]",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer fully supports the expected route and behavior."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 3367.179
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dựa trên nguồn [kb-010], có 2 cách reset password công ty:\n\n### 1. **Tự reset mật khẩu (Self-service)**\n- Truy cập **SSPR portal**: [https://sspr.company.local](https://sspr.company.local)\n  *(Lưu ý: URL chỉ hoạt động trong mạng nội bộ công ty)*\n\n### 2. **Reset bởi IT (yêu cầu xác thực danh tính)**\n- **Bước 1**: Xác thực danh tính (ví dụ: xuất trình thẻ nhân viên, xác nhận qua điện thoại nội bộ).\n- **Bước 2**: Nhân viên IT sử dụng **Active Directory Users and Computers** để:\n  - Reset mật khẩu.\n  - **Bắt buộc đổi mật khẩu lần đăng nhập tiếp theo** (Enforce change at next logon).\n  - **Mở khóa tài khoản** nếu bị khóa do nhập sai mật khẩu nhiều lần.\n\n---\n**Lưu ý**:\n- Cả hai phương thức đều yêu cầu tài khoản hợp lệ (không bị khóa) và quyền truy cập vào hệ thống.\n- Nếu quên mật khẩu **và không thể truy cập SSPR**, liên hệ trực tiếp phòng IT để được hỗ trợ.",
+        "answer": "Dựa trên nguồn [kb-010], có 2 cách reset password công ty:\n\n### 1. **Tự reset mật khẩu (Self-service)**\n- Truy cập **SSPR portal**: [https://sspr.company.local](https://sspr.company.local)\n  *(Lưu ý: URL chỉ hoạt động trong mạng nội bộ công ty)*\n\n### 2. **Reset bởi IT (yêu cầu xác thực danh tính)**\n- **Bước 1**: Xác thực danh tính (ví dụ: xuất trình thẻ nhân viên, xác nhận qua điện thoại nội bộ).\n- **Bước 2**: Nhân viên IT sử dụng **Active Directory Users and Computers** để:\n  - Reset mật khẩu.\n  - **Bắt buộc đổi mật khẩu lần đăng nhập tiếp theo** (Enforce change at next logon).\n  - **Mở khóa tài khoản** nếu bị khóa do nhập sai mật khẩu nhiều lần.\n\n---\n**Lưu ý**:\n- Cả hai phương thức đều yêu cầu tài khoản hợp lệ (không bị khóa) và quyền truy cập vào hệ thống.\n- Nếu quên mật khẩu **và không thể truy cập SSPR**, liên hệ trực tiếp phòng IT để được hỗ trợ.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Đáp án chính xác và đầy đủ theo yêu cầu."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 3480.343
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-072",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-006"
+      ],
+      "context_characters": 267,
+      "context_approx_tokens": 45,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 437,
+          "approx_tokens": 69,
+          "question_position": 379,
+          "evidence_position": 0,
+          "sha256": "9a3fe70ec2afdebcb24764abaafe430c4653b831f8e84ee12e88732e726e5f8a"
+        },
+        "treatment": {
+          "characters": 526,
+          "approx_tokens": 75,
+          "question_position": 0,
+          "evidence_position": 60,
+          "sha256": "dc766ed7a6603ee08b7fd98b2ade748e2d5385d09df4de605eaa04380a0e9a9e"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nTôi chỉ có thể cung cấp thông tin về quy trình cấp quyền cho shared mailbox/ditribution list từ [kb-006], nhưng không có chính sách nội bộ (policy) chi tiết về shared mailbox trong evidence đã cung cấp.\n\nNếu bạn cần thông tin về chính sách nội bộ, vui lòng cung cấp nguồn evidence có chứa chính sách đó.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Chính sách nội bộ về shared mailbox"
+          ],
+          "brief_rationale": "Không có thông tin chính sách nội bộ về shared mailbox."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 1747.904
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi về **chính sách nội bộ về shared mailbox** một cách đầy đủ.\n\nChỉ có thông tin sau được cung cấp:\n- Quy trình cấp quyền truy cập shared mailbox **yêu cầu manager approval** trước khi thực hiện các bước cấu hình trong Exchange Admin Center [kb-006].\n\n**Thông tin được cung cấp hiện chưa đủ để xác định:**\n- Các điều khoản, điều kiện, hạn chế hoặc quyền hạn cụ thể khi sử dụng shared mailbox.\n- Chính sách quản lý, giám sát, hoặc trách nhiệm của người dùng đối với shared mailbox.\n- Quy định về thời hạn, gia hạn, hoặc thu hồi quyền truy cập.\n- Chính sách bảo mật, chia sẻ dữ liệu, hoặc tuân thủ liên quan đến shared mailbox.\n\nNếu bạn cần thông tin chi tiết hơn, vui lòng cung cấp nguồn evidence bổ sung hoặc liên hệ với quản trị hệ thống.",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi về **chính sách nội bộ về shared mailbox** một cách đầy đủ.\n\nChỉ có thông tin sau được cung cấp:\n- Quy trình cấp quyền truy cập shared mailbox **yêu cầu manager approval** trước khi thực hiện các bước cấu hình trong Exchange Admin Center [kb-006].\n\n**Thông tin được cung cấp hiện chưa đủ để xác định:**\n- Các điều khoản, điều kiện, hạn chế hoặc quyền hạn cụ thể khi sử dụng shared mailbox.\n- Chính sách quản lý, giám sát, hoặc trách nhiệm của người dùng đối với shared mailbox.\n- Quy định về thời hạn, gia hạn, hoặc thu hồi quyền truy cập.\n- Chính sách bảo mật, chia sẻ dữ liệu, hoặc tuân thủ liên quan đến shared mailbox.\n\nNếu bạn cần thông tin chi tiết hơn, vui lòng cung cấp nguồn evidence bổ sung hoặc liên hệ với quản trị hệ thống.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Các điều khoản, điều kiện, hạn chế hoặc quyền hạn cụ thể khi sử dụng shared mailbox.",
+            "Chính sách quản lý, giám sát, hoặc trách nhiệm của người dùng đối với shared mailbox.",
+            "Quy định về thời hạn, gia hạn, hoặc thu hồi quyền truy cập.",
+            "Chính sách bảo mật, chia sẻ dữ liệu, hoặc tuân thủ liên quan đến shared mailbox."
+          ],
+          "brief_rationale": "Đáp án không đầy đủ về chính sách nội bộ về shared mailbox."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 3079.185
+      },
+      "movement": "REGRESSED",
+      "regression_cause": "QUESTION_FIRST_ATTENTION_SHIFT"
+    },
+    {
+      "id": "GT-073",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-015"
+      ],
+      "context_characters": 286,
+      "context_approx_tokens": 58,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 427,
+          "approx_tokens": 77,
+          "question_position": 384,
+          "evidence_position": 0,
+          "sha256": "63d2020a87974f7212897709bcd291d2396660cacf6e5a84c0a71a011d9b45db"
+        },
+        "treatment": {
+          "characters": 516,
+          "approx_tokens": 83,
+          "question_position": 0,
+          "evidence_position": 45,
+          "sha256": "39e3984fdcb04ed3aaab36390ac5bd9c044960839bb6536a7a490384afdd465a"
+        }
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Dựa trên [kb-015], laptop không lên nguồn là triệu chứng đầu tiên được đề cập. Bạn có thể thực hiện các bước sau:\n\n1. **Hard reset**:\n   - Tắt laptop hoàn toàn.\n   - Giữ nút nguồn trong **10 giây** để xả hết điện tích còn lại.\n   - Sau đó thử bật lại.\n\n2. **Kiểm tra nguồn điện**:\n   - Đảm bảo adapter sạc được cắm chặt vào laptop và ổ cắm điện hoạt động (thử ổ cắm khác hoặc thiết bị khác).\n   - Nếu dùng pin, thử cắm adapter vào.\n\n3. **Kiểm tra màn hình**:\n   - Nếu laptop bật nhưng màn hình không sáng, thử kết nối với màn hình ngoài (HDMI/DisplayPort) để xác nhận laptop có khởi động hay không.\n\nNếu sau các bước trên laptop vẫn không lên nguồn, có thể vấn đề là phần cứng (mainboard, adapter, pin,...) và cần gửi kỹ thuật theo hướng dẫn trong [kb-015].\n\n**Lưu ý**: Nếu bạn đã thử các bước trên nhưng không khắc phục được, vui lòng cung cấp thêm thông tin (ví dụ: laptop có bật đèn nguồn không, có tiếng bíp hay không, model laptop) để hỗ trợ xác định nguyên nhân chính xác hơn.",
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 0.5,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [
+            "Kiểm tra nguồn điện",
+            "Kiểm tra màn hình"
+          ],
+          "missing_points": [
+            "Hướng dẫn cụ thể về cách khắc phục vấn đề phần cứng"
+          ],
+          "brief_rationale": "Đáp án không chỉ tập trung vào các bước khắc phục cơ bản mà còn đưa ra các bước không liên quan và không được hỗ trợ bằng bằng chứng."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 4602.466
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "Dựa trên evidence được cung cấp, tôi đề xuất các bước khắc phục sự cố laptop không lên nguồn theo thứ tự ưu tiên:\n\n1. **Hard reset**\n   Giữ nút nguồn laptop trong **10 giây** để xả hết điện tích dư [kb-015].\n\n2. **Kiểm tra khởi động cơ bản**\n   Sau khi hard reset, thử bật nguồn lại. Nếu màn hình vẫn không lên, tiến hành:\n   - **Boot vào Safe Mode**: Nhấn **F8** liên tục khi khởi động (áp dụng cho Windows cũ hơn Windows 10) [kb-015].\n   - **Chạy Startup Repair**: Từ Windows Recovery, chọn tùy chọn sửa lỗi khởi động [kb-015].\n\n3. **Xử lý lỗi BSOD (nếu có)**\n   Nếu màn hình xanh (BSOD) xuất hiện:\n   - Ghi lại **error code** (ví dụ: `CRITICAL_PROCESS_DIED`, `IRQL_NOT_LESS_OR_EQUAL`).\n   - Kiểm tra **RAM** (tháo/lắp lại hoặc thử từng thanh) [kb-015].\n\n4. **Lỗi phần cứng**\n   Nếu sau các bước trên laptop vẫn không khởi động:\n   - Gửi yêu cầu hỗ trợ kỹ thuật kèm theo **error code** (nếu có) [kb-015].\n\n---\n**Lưu ý**:\n- Nếu laptop có biểu hiện **boot loop** (khởi động lặp vô tận), hãy tắt hoàn toàn bằng hard reset trước khi thử lại [kb-015].\n- Nếu bạn không thể truy cập Windows Recovery, vui lòng cung cấp thêm chi tiết (model laptop, hệ điều hành, triệu chứng cụ thể) để tôi hỗ trợ chi tiết hơn.\n\n*Nguồn: [kb-015]*",
+        "answer": "Dựa trên evidence được cung cấp, tôi đề xuất các bước khắc phục sự cố laptop không lên nguồn theo thứ tự ưu tiên:\n\n1. **Hard reset**\n   Giữ nút nguồn laptop trong **10 giây** để xả hết điện tích dư [kb-015].\n\n2. **Kiểm tra khởi động cơ bản**\n   Sau khi hard reset, thử bật nguồn lại. Nếu màn hình vẫn không lên, tiến hành:\n   - **Boot vào Safe Mode**: Nhấn **F8** liên tục khi khởi động (áp dụng cho Windows cũ hơn Windows 10) [kb-015].\n   - **Chạy Startup Repair**: Từ Windows Recovery, chọn tùy chọn sửa lỗi khởi động [kb-015].\n\n3. **Xử lý lỗi BSOD (nếu có)**\n   Nếu màn hình xanh (BSOD) xuất hiện:\n   - Ghi lại **error code** (ví dụ: `CRITICAL_PROCESS_DIED`, `IRQL_NOT_LESS_OR_EQUAL`).\n   - Kiểm tra **RAM** (tháo/lắp lại hoặc thử từng thanh) [kb-015].\n\n4. **Lỗi phần cứng**\n   Nếu sau các bước trên laptop vẫn không khởi động:\n   - Gửi yêu cầu hỗ trợ kỹ thuật kèm theo **error code** (nếu có) [kb-015].\n\n---\n**Lưu ý**:\n- Nếu laptop có biểu hiện **boot loop** (khởi động lặp vô tận), hãy tắt hoàn toàn bằng hard reset trước khi thử lại [kb-015].\n- Nếu bạn không thể truy cập Windows Recovery, vui lòng cung cấp thêm chi tiết (model laptop, hệ điều hành, triệu chứng cụ thể) để tôi hỗ trợ chi tiết hơn.\n\n*Nguồn: [kb-015]*",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Short outcome rationale."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 4825.174
+      },
+      "movement": "IMPROVED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-076",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "UNSUPPORTED",
+      "context_source_ids": [
+        "kb-001"
+      ],
+      "context_characters": 386,
+      "context_approx_tokens": 70,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 532,
+          "approx_tokens": 93,
+          "question_position": 480,
+          "evidence_position": 0,
+          "sha256": "fc5490c09b074386a7cde6800f7501faa9a2564e3a5a040d420a1dfc7837f434"
+        },
+        "treatment": {
+          "characters": 621,
+          "approx_tokens": 99,
+          "question_position": 0,
+          "evidence_position": 54,
+          "sha256": "173086a94581d828a80fd954355d200a05af2453484e8d7411e690717f153c28"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nTài liệu tham khảo [kb-001] chỉ cung cấp hướng dẫn khắc phục sự cố kết nối VPN (lỗi authentication failed, connection timeout) mà không đề cập đến cấu hình chi tiết của VPN nội bộ công ty (ví dụ: loại xác thực, giao thức, cài đặt MFA, profile cấu hình, v.v.).\n\nNếu bạn cần thông tin về cấu hình VPN, vui lòng cung cấp:\n- Loại VPN (Cisco AnyConnect/FortiClient/khác)\n- Hoặc ticket/incident/service request liên quan (nếu có)\n- Hoặc yêu cầu truy cập tài liệu cấu hình (nếu được ủy quyền).",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Cấu hình chi tiết của VPN nội bộ công ty"
+          ],
+          "brief_rationale": "Đáp án không cung cấp thông tin về cấu hình chi tiết của VPN nội bộ công ty."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 2849.816
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi về cấu hình VPN nội bộ công ty.\n\nCác tài liệu được cung cấp chỉ đề cập đến quy trình khắc phục sự cố khi kết nối VPN thất bại (lỗi authentication failed, connection timeout) mà không chứa thông tin chi tiết về cấu hình kỹ thuật của VPN (ví dụ: giao thức, thuật toán, cài đặt server, policy, certificate, hay thông số mạng).\n\nNếu bạn cần cấu hình cụ thể, vui lòng cung cấp:\n- Tên giải pháp VPN (Cisco AnyConnect, FortiClient, OpenVPN, v.v.)\n- Hoặc ticket/incident/service-request liên quan đến cấu hình VPN\n- Hoặc tài liệu cấu hình đã được phê duyệt (nếu có trong hệ thống ITSM)",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi về cấu hình VPN nội bộ công ty.\n\nCác tài liệu được cung cấp chỉ đề cập đến quy trình khắc phục sự cố khi kết nối VPN thất bại (lỗi authentication failed, connection timeout) mà không chứa thông tin chi tiết về cấu hình kỹ thuật của VPN (ví dụ: giao thức, thuật toán, cài đặt server, policy, certificate, hay thông số mạng).\n\nNếu bạn cần cấu hình cụ thể, vui lòng cung cấp:\n- Tên giải pháp VPN (Cisco AnyConnect, FortiClient, OpenVPN, v.v.)\n- Hoặc ticket/incident/service-request liên quan đến cấu hình VPN\n- Hoặc tài liệu cấu hình đã được phê duyệt (nếu có trong hệ thống ITSM)",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "cấu hình kỹ thuật của VPN"
+          ],
+          "brief_rationale": "Không cung cấp thông tin chi tiết về cấu hình VPN."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 2519.309
+      },
+      "movement": "REGRESSED",
+      "regression_cause": "QUESTION_FIRST_ATTENTION_SHIFT"
+    },
+    {
+      "id": "GT-077",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "UNSUPPORTED",
+      "context_source_ids": [],
+      "context_characters": 0,
+      "context_approx_tokens": 0,
+      "treatment_applied": false,
+      "treatment_reason": "INTENTIONALLY_EMPTY_CONTEXT_PRESERVED",
+      "template": {
+        "version": "control-retained-empty-context",
+        "control": {
+          "characters": 116,
+          "approx_tokens": 15,
+          "question_position": 46,
+          "evidence_position": 0,
+          "sha256": "8ecd30c517bd1430bddd1f9778e390a6ef4372c6ec1101e22a53507db34c4787"
+        },
+        "treatment": null
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 0.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Phiên bản mới nhất của Microsoft Teams hiện tại là gì?"
+          ],
+          "brief_rationale": "Chưa cung cấp thông tin đầy đủ về phiên bản mới nhất của Microsoft Teams."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "citation_status": 1.0,
+        "generation_ms": 891.718
+      },
+      "treatment": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 0.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Phiên bản mới nhất của Microsoft Teams hiện tại là gì?"
+          ],
+          "brief_rationale": "Chưa cung cấp thông tin đầy đủ về phiên bản mới nhất của Microsoft Teams."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "citation_status": 1.0,
+        "generation_ms": 891.718,
+        "raw_answer": "CONTROL_REUSED_INTENTIONALLY_EMPTY_CONTEXT",
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "unsupported_detail_added": false
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-086",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "eval-kb-12-password-policy"
+      ],
+      "context_characters": 82,
+      "context_approx_tokens": 14,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 267,
+          "approx_tokens": 34,
+          "question_position": 211,
+          "evidence_position": 0,
+          "sha256": "30136bb7ab4134aebaa5f6a43779684231e7fc75d64e7fbbc20eddb1eeea23b8"
+        },
+        "treatment": {
+          "characters": 356,
+          "approx_tokens": 40,
+          "question_position": 0,
+          "evidence_position": 58,
+          "sha256": "5d8ef915492e87c72b4f17e1b86f933c3ba58853dc13f302a354d558bbd9c0f0"
+        }
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n[eval-kb-12-password-policy] cho biết chính sách mật khẩu KB-12 không yêu cầu đổi mật khẩu mỗi 90 ngày. Tuy nhiên, không có evidence nào xác nhận liệu chính sách mật khẩu toàn hệ thống có yêu cầu đổi mật khẩu mỗi 90 ngày hay không.",
+        "failure_types": [
+          "HALLUCINATION"
+        ],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 0.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "HALLUCINATION"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Password phải đổi mỗi 90 ngày"
+          ],
+          "brief_rationale": "Generated answer contains unsupported claim about system-wide password policy."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 1501.462
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nTheo [eval-kb-12-password-policy], chính sách mật khẩu KB-12 không yêu cầu đổi mật khẩu mỗi 90 ngày.",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nTheo [eval-kb-12-password-policy], chính sách mật khẩu KB-12 không yêu cầu đổi mật khẩu mỗi 90 ngày.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "answer supported requested part"
+          ],
+          "brief_rationale": "Generated answer does not fully address the question, but correctly abstains from unsupported claims and uses a valid citation."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 950.557
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-087",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "UNSUPPORTED",
+      "context_source_ids": [],
+      "context_characters": 0,
+      "context_approx_tokens": 0,
+      "treatment_applied": false,
+      "treatment_reason": "INTENTIONALLY_EMPTY_CONTEXT_PRESERVED",
+      "template": {
+        "version": "control-retained-empty-context",
+        "control": {
+          "characters": 105,
+          "approx_tokens": 13,
+          "question_position": 46,
+          "evidence_position": 0,
+          "sha256": "82621a507013f3abd1652fee2375add53543f6b8c19ad9b8d84073bb8873b379"
+        },
+        "treatment": null
+      },
+      "control": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 1.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Account sẽ khóa sau bao nhiêu lần nhập sai"
+          ],
+          "brief_rationale": "Không có thông tin về số lần khóa."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "citation_status": 1.0,
+        "generation_ms": 813.75
+      },
+      "treatment": {
+        "status": "FAIL",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.0,
+          "completeness": 0.0,
+          "relevance": 1.0,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Account sẽ khóa sau bao nhiêu lần nhập sai"
+          ],
+          "brief_rationale": "Không có thông tin về số lần khóa."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "citation_status": 1.0,
+        "generation_ms": 813.75,
+        "raw_answer": "CONTROL_REUSED_INTENTIONALLY_EMPTY_CONTEXT",
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "unsupported_detail_added": false
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    },
+    {
+      "id": "GT-088",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "eval-gt047-vpn-port"
+      ],
+      "context_characters": 85,
+      "context_approx_tokens": 13,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 216,
+          "approx_tokens": 27,
+          "question_position": 182,
+          "evidence_position": 0,
+          "sha256": "c1be132278d895280de10a6a52b7fdc3d209d2b09418497fab8df5f8d1de7cf6"
+        },
+        "treatment": {
+          "characters": 305,
+          "approx_tokens": 33,
+          "question_position": 0,
+          "evidence_position": 36,
+          "sha256": "b29a48784543270853ed4d5d45b94c4783a5b804e228dcbd7cfe055f6cb46bf8"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "VPN gateway sử dụng port **443**.\n\n[SOURCE_ID: eval-gt047-vpn-port]",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Correct answer with supported port number."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 1173.91
+      },
+      "treatment": {
+        "status": "PASS",
+        "raw_answer": "**VPN sử dụng port 443.**\n\n[SOURCE_ID: eval-gt047-vpn-port]",
+        "answer": "**VPN sử dụng port 443.**\n\n[SOURCE_ID: eval-gt047-vpn-port]",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Direct factual answer."
+        },
+        "final_pass": {
+          "passed": true,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "PASS",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 763.675
+      },
+      "movement": "UNCHANGED",
+      "regression_cause": null
+    }
+  ],
+  "full_slice": {
+    "control": {
+      "case_count": 23,
+      "semantic_pass": 14,
+      "semantic_fail": 9,
+      "infra_error": 0,
+      "averages": {
+        "faithfulness": 0.6522,
+        "completeness": 0.6304,
+        "relevance": 0.8043,
+        "correct_abstention": 0.6087,
+        "citation_correctness": 1.0
+      },
+      "failure_counts": {
+        "BAD_ABSTENTION": 3,
+        "INCOMPLETE_ANSWER": 5,
+        "HALLUCINATION": 1
+      },
+      "generic_fallback_count": 11
+    },
+    "treatment": {
+      "case_count": 23,
+      "semantic_pass": 14,
+      "semantic_fail": 9,
+      "infra_error": 0,
+      "averages": {
+        "faithfulness": 0.7174,
+        "completeness": 0.6522,
+        "relevance": 0.8261,
+        "correct_abstention": 0.7391,
+        "citation_correctness": 1.0
+      },
+      "failure_counts": {
+        "BAD_ABSTENTION": 2,
+        "INCOMPLETE_ANSWER": 7
+      },
+      "generic_fallback_count": 8
+    }
+  },
+  "eligible_subset": {
+    "control": {
+      "case_count": 20,
+      "semantic_pass": 14,
+      "semantic_fail": 6,
+      "infra_error": 0,
+      "averages": {
+        "faithfulness": 0.75,
+        "completeness": 0.725,
+        "relevance": 0.875,
+        "correct_abstention": 0.7,
+        "citation_correctness": 1.0
+      },
+      "failure_counts": {
+        "BAD_ABSTENTION": 3,
+        "INCOMPLETE_ANSWER": 2,
+        "HALLUCINATION": 1
+      },
+      "generic_fallback_count": 8
+    },
+    "treatment": {
+      "case_count": 20,
+      "semantic_pass": 14,
+      "semantic_fail": 6,
+      "infra_error": 0,
+      "averages": {
+        "faithfulness": 0.825,
+        "completeness": 0.75,
+        "relevance": 0.9,
+        "correct_abstention": 0.85,
+        "citation_correctness": 1.0
+      },
+      "failure_counts": {
+        "BAD_ABSTENTION": 2,
+        "INCOMPLETE_ANSWER": 4
+      },
+      "generic_fallback_count": 5
+    }
+  },
+  "movements": {
+    "IMPROVED": 4,
+    "UNCHANGED": 15,
+    "REGRESSED": 4
+  },
+  "regressions": [
+    {
+      "id": "GT-026",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "INCIDENT_ASSISTANCE",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-003"
+      ],
+      "context_characters": 354,
+      "context_approx_tokens": 64,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 506,
+          "approx_tokens": 85,
+          "question_position": 458,
+          "evidence_position": 0,
+          "sha256": "5a4753128e16524a624de7ca0e44656fd30b317e10cf1d3c4abe9dd769835e92"
+        },
+        "treatment": {
+          "characters": 595,
+          "approx_tokens": 91,
+          "question_position": 0,
+          "evidence_position": 50,
+          "sha256": "1400290f5660547f4d3b3173579ea6823fea11646a03b1af3bc5e44e577c2091"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để xác định nguyên nhân cụ thể.\n\nTuy nhiên, theo [kb-003], khi Internet bị mất trên diện rộng (như cả phòng Sales), bạn có thể thực hiện các bước sau để khắc phục:\n\n### **Các bước kiểm tra và khắc phục nhanh**\n1. **Kiểm tra kết nối mạng cục bộ**\n   - Xác nhận máy tính có thể ping được gateway nội bộ (ví dụ: `ping 192.168.1.1`).\n   - Nếu không ping được gateway, vấn đề có thể là:\n     - Cáp mạng bị lỗi.\n     - Switch/Router bị down.\n     - Cấu hình IP sai (IP tĩnh trùng lặp, DHCP không hoạt động).\n\n2. **Kiểm tra cấu hình proxy (nếu có)**\n   - Vào **Internet Options → Connections → LAN Settings** (trên IE/Edge).\n   - Đảm bảo:\n     - **\"Use a proxy server for your LAN\"** không được chọn (hoặc cấu hình proxy đúng nếu có).\n     - **\"Automatically detect settings\"** được bật.\n\n3. **Kiểm tra DNS**\n   - Chạy lệnh:\n     ```cmd\n     nslookup google.com\n     ```\n   - Nếu trả về lỗi `Non-existent domain` hoặc timeout, thử:\n     - Đổi DNS sang `8.8.8.8` (Google DNS) hoặc `1.1.1.1` (Cloudflare DNS).\n     - Flush DNS:\n       ```cmd\n       ipconfig /flushdns\n       ```\n\n4. **Kiểm tra firewall/antivirus**\n   - Tạm thời tắt tường lửa/antivirus (nếu có quyền) để kiểm tra xem có bị chặn không.\n   - Nếu sau khi tắt, Internet hoạt động → cấu hình lại firewall/antivirus.\n\n5. **Kiểm tra cài đặt mạng**\n   - Đảm bảo chế độ mạng không bị đặt thành **\"Public\"** (nên là **\"Private\"**).\n   - Vào **Settings → Network & Internet → Status** → Kiểm tra trạng thái kết nối.\n\n---\n### **Nếu vấn đề vẫn còn**\n- **Liên hệ IT Helpdesk** để kiểm tra:\n  - Switch/Router phòng Sales.\n  - Cấu hình firewall của công ty (nếu proxy/firewall toàn công ty bị lỗi).\n  - Kiểm tra log hệ thống (nếu có sự cố từ phía nhà cung cấp Internet).\n\n**Cần thêm thông tin:**\n- Bạn có thể ping được gateway nội bộ không?\n- Máy tính có nhận IP tự động (DHCP) hay không?\n- Có thông báo lỗi cụ thể nào không? (Ví dụ: \"Limited connectivity\", \"No Internet access\")",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer is faithful, complete, relevant, and correctly abstains from unsupported claims, with correct citations."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 6555.223
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Dựa trên thông tin được cung cấp, sự cố \"Internet cả phòng Sales đều mất\" có thể do nhiều nguyên nhân. Dưới đây là hướng dẫn khắc phục sự cố theo thứ tự ưu tiên:\n\n### **1. Kiểm tra kết nối mạng cơ bản**\n- **Ping 8.8.8.8** (Google DNS) để xác nhận kết nối Internet:\n  - Nếu **ping thành công** → Vấn đề có thể liên quan đến **DNS** hoặc **proxy**.\n  - Nếu **ping thất bại** → Vấn đề có thể là **mất kết nối mạng** (cáp, switch, router, ISP).\n\n### **2. Kiểm tra cấu hình proxy (nếu có)**\n- Vào **Internet Options → Connections → LAN Settings** trên máy tính:\n  - Đảm bảo **Automatically detect settings** được bật.\n  - Nếu sử dụng proxy, kiểm tra địa chỉ proxy có chính xác không.\n  - Nếu không chắc, thử **bỏ chọn \"Use a proxy server for your LAN\"**.\n\n### **3. Kiểm tra DNS**\n- Chạy lệnh **`nslookup google.com`** trong Command Prompt:\n  - Nếu trả về địa chỉ IP → DNS hoạt động.\n  - Nếu lỗi **\"Non-existent domain\"** → Thử **flush DNS** bằng lệnh:\n    ```cmd\n    ipconfig /flushdns\n    ```\n  - Nếu vẫn lỗi, thử đổi DNS sang **8.8.8.8 (Google DNS)** hoặc **1.1.1.1 (Cloudflare DNS)**.\n\n### **4. Kiểm tra firewall/antivirus**\n- Tạm thời **tắt tường lửa (firewall)** hoặc **phần mềm diệt virus** để xem có chặn kết nối không.\n- Nếu sau khi tắt, Internet hoạt động → Cần cấu hình lại firewall/antivirus.\n\n### **5. Kiểm tra switch/router (nếu phòng Sales dùng chung mạng)**\n- Nếu **ping 8.8.8.8 thất bại**, có thể do:\n  - **Switch bị lỗi** (thử cắm lại cáp hoặc đổi cổng).\n  - **Router bị lỗi** (khởi động lại router).\n  - **ISP gặp sự cố** (liên hệ nhà cung cấp dịch vụ).\n\n---\n**Cần thêm thông tin để xác định chính xác nguyên nhân:**\n- Kết quả **ping 8.8.8.8** (thành công/thất bại)?\n- Có sử dụng **proxy** không? Nếu có, cấu hình proxy như thế nào?\n- Có lỗi **DNS** khi chạy `nslookup google.com` không?\n- Có phần mềm **firewall/antivirus** nào đang chặn kết nối không?\n\nNếu có thể cung cấp thêm chi tiết, tôi sẽ hỗ trợ chi tiết hơn.",
+        "answer": "Dựa trên thông tin được cung cấp, sự cố \"Internet cả phòng Sales đều mất\" có thể do nhiều nguyên nhân. Dưới đây là hướng dẫn khắc phục sự cố theo thứ tự ưu tiên:\n\n### **1. Kiểm tra kết nối mạng cơ bản**\n- **Ping 8.8.8.8** (Google DNS) để xác nhận kết nối Internet:\n  - Nếu **ping thành công** → Vấn đề có thể liên quan đến **DNS** hoặc **proxy**.\n  - Nếu **ping thất bại** → Vấn đề có thể là **mất kết nối mạng** (cáp, switch, router, ISP).\n\n### **2. Kiểm tra cấu hình proxy (nếu có)**\n- Vào **Internet Options → Connections → LAN Settings** trên máy tính:\n  - Đảm bảo **Automatically detect settings** được bật.\n  - Nếu sử dụng proxy, kiểm tra địa chỉ proxy có chính xác không.\n  - Nếu không chắc, thử **bỏ chọn \"Use a proxy server for your LAN\"**.\n\n### **3. Kiểm tra DNS**\n- Chạy lệnh **`nslookup google.com`** trong Command Prompt:\n  - Nếu trả về địa chỉ IP → DNS hoạt động.\n  - Nếu lỗi **\"Non-existent domain\"** → Thử **flush DNS** bằng lệnh:\n    ```cmd\n    ipconfig /flushdns\n    ```\n  - Nếu vẫn lỗi, thử đổi DNS sang **8.8.8.8 (Google DNS)** hoặc **1.1.1.1 (Cloudflare DNS)**.\n\n### **4. Kiểm tra firewall/antivirus**\n- Tạm thời **tắt tường lửa (firewall)** hoặc **phần mềm diệt virus** để xem có chặn kết nối không.\n- Nếu sau khi tắt, Internet hoạt động → Cần cấu hình lại firewall/antivirus.\n\n### **5. Kiểm tra switch/router (nếu phòng Sales dùng chung mạng)**\n- Nếu **ping 8.8.8.8 thất bại**, có thể do:\n  - **Switch bị lỗi** (thử cắm lại cáp hoặc đổi cổng).\n  - **Router bị lỗi** (khởi động lại router).\n  - **ISP gặp sự cố** (liên hệ nhà cung cấp dịch vụ).\n\n---\n**Cần thêm thông tin để xác định chính xác nguyên nhân:**\n- Kết quả **ping 8.8.8.8** (thành công/thất bại)?\n- Có sử dụng **proxy** không? Nếu có, cấu hình proxy như thế nào?\n- Có lỗi **DNS** khi chạy `nslookup google.com` không?\n- Có phần mềm **firewall/antivirus** nào đang chặn kết nối không?\n\nNếu có thể cung cấp thêm chi tiết, tôi sẽ hỗ trợ chi tiết hơn.",
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 0.5,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Nhận diện khả năng incident diện rộng.",
+            "Không xử lý như single-user issue nếu workflow có major incident logic."
+          ],
+          "brief_rationale": "Đáp án không đáp ứng được yêu cầu của mode 'INCIDENT_ASSISTANCE' và không có đủ thông tin để xác định chính xác nguyên nhân sự cố."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": false,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 6357.099
+      },
+      "movement": "REGRESSED",
+      "regression_cause": "OVER_ABSTENTION"
+    },
+    {
+      "id": "GT-045",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-001"
+      ],
+      "context_characters": 386,
+      "context_approx_tokens": 70,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 533,
+          "approx_tokens": 93,
+          "question_position": 480,
+          "evidence_position": 0,
+          "sha256": "a76b2b7856094510e78bad30ca96bb1a0c6378f077f1d7e99f72d3152f63a3ec"
+        },
+        "treatment": {
+          "characters": 622,
+          "approx_tokens": 99,
+          "question_position": 0,
+          "evidence_position": 55,
+          "sha256": "7707b7b2081acabb003fcd6293deb9e408f8ca451fc10fc616bda603d73edd76"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Dựa trên [kb-001], đây là quy trình kết nối VPN công ty (Cisco AnyConnect/FortiClient) khi đã có cấu hình sẵn:\n\n### **Cách kết nối VPN công ty**\n1. **Kiểm tra thông tin đăng nhập**\n   - Sử dụng **username/password VPN** (thường khác email công ty).\n   - Đảm bảo **MFA (2FA)** được kích hoạt nếu áp dụng.\n\n2. **Cài đặt/khởi động ứng dụng VPN**\n   - Mở **Cisco AnyConnect** hoặc **FortiClient** đã cài đặt sẵn.\n   - Nhập **địa chỉ server VPN** (do IT cung cấp, ví dụ: `vpn.company.com`).\n\n3. **Đăng nhập**\n   - Nhập **username** và **password VPN**.\n   - Nếu bật MFA, nhập mã từ ứng dụng xác thực (Google Authenticator, Microsoft Authenticator, v.v.).\n\n4. **Kết nối thành công**\n   - Sau khi xác thực, trạng thái sẽ hiển thị **\"Connected\"** và bạn có thể truy cập tài nguyên nội bộ.\n\n---\n### **Lưu ý khắc phục sự cố (nếu kết nối thất bại)**\n- **Lỗi \"Authentication Failed\"**:\n  - Kiểm tra lại **username/password** (thường không phải email công ty).\n  - Reset MFA app nếu dùng 2FA.\n  - Liên hệ IT để **reset tài khoản VPN** nếu vẫn lỗi.\n\n- **Lỗi \"Connection Timeout\"**:\n  - Thử đổi **network** (sử dụng 4G thay WiFi).\n  - Kiểm tra **tường lửa (firewall)** trên máy tính.\n  - Xóa profile VPN cũ và tạo mới.\n\n---\n**Nguồn:** [kb-001]",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 1.0,
+          "completeness": 1.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [],
+          "brief_rationale": "Generated answer fully addresses the question and follows the authorized context."
+        },
+        "generic_fallback_used": false,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 4263.29
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Dựa trên thông tin được cung cấp, đây là hướng dẫn chung để kết nối VPN công ty (không có chi tiết cấu hình cụ thể cho từng loại VPN như Cisco AnyConnect hay FortiClient trong evidence):\n\n### **Cách kết nối VPN công ty**\n1. **Chuẩn bị thông tin đăng nhập**\n   - Sử dụng **username/password VPN** (thường khác email công ty).\n   - Nếu sử dụng **2FA (MFA)**, đảm bảo ứng dụng MFA (như Microsoft Authenticator, Google Authenticator) đã được cài đặt và kích hoạt.\n\n2. **Cài đặt phần mềm VPN (nếu chưa có)**\n   - Tải và cài đặt phần mềm VPN phù hợp (ví dụ: **Cisco AnyConnect**, **FortiClient**, hoặc phần mềm VPN nội bộ khác) từ nguồn chính thức của công ty.\n\n3. **Cấu hình kết nối VPN**\n   - Mở phần mềm VPN đã cài đặt.\n   - Nhập **địa chỉ server VPN** (ví dụ: `vpn.congty.com` hoặc địa chỉ IP do IT cung cấp).\n   - Nhập **username** và **password** VPN.\n   - Nếu yêu cầu **2FA**, nhập mã từ ứng dụng MFA.\n\n4. **Kết nối VPN**\n   - Nhấn **Connect** (Kết nối).\n   - Chờ xác thực thành công (thông báo \"Connected\" xuất hiện).\n\n5. **Xử lý lỗi (nếu có)**\n   - Nếu gặp lỗi **authentication failed** hoặc **connection timeout**, thử:\n     - Kiểm tra lại **username/password**.\n     - Xóa profile VPN cũ và tạo mới (nếu cần).\n     - Kiểm tra **tường lửa** trên máy tính.\n     - Thử đổi **mạng** (sử dụng 4G thay WiFi).\n     - Reset ứng dụng **MFA** nếu dùng 2FA.\n     - Liên hệ **IT Support** để reset tài khoản VPN nếu vẫn lỗi.\n\n---\n**Lưu ý:**\n- Thông tin chi tiết về cấu hình VPN (địa chỉ server, loại VPN, hướng dẫn cài đặt) có thể khác nhau tùy theo chính sách của công ty.\n- Nếu cần hỗ trợ cụ thể, vui lòng cung cấp thêm thông tin về loại VPN đang sử dụng (Cisco AnyConnect, FortiClient, v.v.) hoặc liên hệ trực tiếp với **IT Helpdesk** của công ty.\n\n[SOURCE: kb-001]",
+        "answer": "Dựa trên thông tin được cung cấp, đây là hướng dẫn chung để kết nối VPN công ty (không có chi tiết cấu hình cụ thể cho từng loại VPN như Cisco AnyConnect hay FortiClient trong evidence):\n\n### **Cách kết nối VPN công ty**\n1. **Chuẩn bị thông tin đăng nhập**\n   - Sử dụng **username/password VPN** (thường khác email công ty).\n   - Nếu sử dụng **2FA (MFA)**, đảm bảo ứng dụng MFA (như Microsoft Authenticator, Google Authenticator) đã được cài đặt và kích hoạt.\n\n2. **Cài đặt phần mềm VPN (nếu chưa có)**\n   - Tải và cài đặt phần mềm VPN phù hợp (ví dụ: **Cisco AnyConnect**, **FortiClient**, hoặc phần mềm VPN nội bộ khác) từ nguồn chính thức của công ty.\n\n3. **Cấu hình kết nối VPN**\n   - Mở phần mềm VPN đã cài đặt.\n   - Nhập **địa chỉ server VPN** (ví dụ: `vpn.congty.com` hoặc địa chỉ IP do IT cung cấp).\n   - Nhập **username** và **password** VPN.\n   - Nếu yêu cầu **2FA**, nhập mã từ ứng dụng MFA.\n\n4. **Kết nối VPN**\n   - Nhấn **Connect** (Kết nối).\n   - Chờ xác thực thành công (thông báo \"Connected\" xuất hiện).\n\n5. **Xử lý lỗi (nếu có)**\n   - Nếu gặp lỗi **authentication failed** hoặc **connection timeout**, thử:\n     - Kiểm tra lại **username/password**.\n     - Xóa profile VPN cũ và tạo mới (nếu cần).\n     - Kiểm tra **tường lửa** trên máy tính.\n     - Thử đổi **mạng** (sử dụng 4G thay WiFi).\n     - Reset ứng dụng **MFA** nếu dùng 2FA.\n     - Liên hệ **IT Support** để reset tài khoản VPN nếu vẫn lỗi.\n\n---\n**Lưu ý:**\n- Thông tin chi tiết về cấu hình VPN (địa chỉ server, loại VPN, hướng dẫn cài đặt) có thể khác nhau tùy theo chính sách của công ty.\n- Nếu cần hỗ trợ cụ thể, vui lòng cung cấp thêm thông tin về loại VPN đang sử dụng (Cisco AnyConnect, FortiClient, v.v.) hoặc liên hệ trực tiếp với **IT Helpdesk** của công ty.\n\n[SOURCE: kb-001]",
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 0.5,
+          "correct_abstention": 0.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "BAD_ABSTENTION"
+          ],
+          "unsupported_claims": [
+            "Thông tin chi tiết về cấu hình VPN (địa chỉ server, loại VPN, hướng dẫn cài đặt) có thể khác nhau tùy theo chính sách của công ty."
+          ],
+          "missing_points": [
+            "Hướng dẫn cụ thể cho từng loại VPN như Cisco AnyConnect hay FortiClient."
+          ],
+          "brief_rationale": "Hướng dẫn kết nối VPN công ty không đầy đủ và có thể gây hiểu lầm."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": false,
+        "supported_evidence_used": false,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 5788.229
+      },
+      "movement": "REGRESSED",
+      "regression_cause": "OVER_ABSTENTION"
+    },
+    {
+      "id": "GT-072",
+      "live_route": "knowledge",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "SUPPORTED",
+      "context_source_ids": [
+        "kb-006"
+      ],
+      "context_characters": 267,
+      "context_approx_tokens": 45,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 437,
+          "approx_tokens": 69,
+          "question_position": 379,
+          "evidence_position": 0,
+          "sha256": "9a3fe70ec2afdebcb24764abaafe430c4653b831f8e84ee12e88732e726e5f8a"
+        },
+        "treatment": {
+          "characters": 526,
+          "approx_tokens": 75,
+          "question_position": 0,
+          "evidence_position": 60,
+          "sha256": "dc766ed7a6603ee08b7fd98b2ade748e2d5385d09df4de605eaa04380a0e9a9e"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nTôi chỉ có thể cung cấp thông tin về quy trình cấp quyền cho shared mailbox/ditribution list từ [kb-006], nhưng không có chính sách nội bộ (policy) chi tiết về shared mailbox trong evidence đã cung cấp.\n\nNếu bạn cần thông tin về chính sách nội bộ, vui lòng cung cấp nguồn evidence có chứa chính sách đó.",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Chính sách nội bộ về shared mailbox"
+          ],
+          "brief_rationale": "Không có thông tin chính sách nội bộ về shared mailbox."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 1747.904
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi về **chính sách nội bộ về shared mailbox** một cách đầy đủ.\n\nChỉ có thông tin sau được cung cấp:\n- Quy trình cấp quyền truy cập shared mailbox **yêu cầu manager approval** trước khi thực hiện các bước cấu hình trong Exchange Admin Center [kb-006].\n\n**Thông tin được cung cấp hiện chưa đủ để xác định:**\n- Các điều khoản, điều kiện, hạn chế hoặc quyền hạn cụ thể khi sử dụng shared mailbox.\n- Chính sách quản lý, giám sát, hoặc trách nhiệm của người dùng đối với shared mailbox.\n- Quy định về thời hạn, gia hạn, hoặc thu hồi quyền truy cập.\n- Chính sách bảo mật, chia sẻ dữ liệu, hoặc tuân thủ liên quan đến shared mailbox.\n\nNếu bạn cần thông tin chi tiết hơn, vui lòng cung cấp nguồn evidence bổ sung hoặc liên hệ với quản trị hệ thống.",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi về **chính sách nội bộ về shared mailbox** một cách đầy đủ.\n\nChỉ có thông tin sau được cung cấp:\n- Quy trình cấp quyền truy cập shared mailbox **yêu cầu manager approval** trước khi thực hiện các bước cấu hình trong Exchange Admin Center [kb-006].\n\n**Thông tin được cung cấp hiện chưa đủ để xác định:**\n- Các điều khoản, điều kiện, hạn chế hoặc quyền hạn cụ thể khi sử dụng shared mailbox.\n- Chính sách quản lý, giám sát, hoặc trách nhiệm của người dùng đối với shared mailbox.\n- Quy định về thời hạn, gia hạn, hoặc thu hồi quyền truy cập.\n- Chính sách bảo mật, chia sẻ dữ liệu, hoặc tuân thủ liên quan đến shared mailbox.\n\nNếu bạn cần thông tin chi tiết hơn, vui lòng cung cấp nguồn evidence bổ sung hoặc liên hệ với quản trị hệ thống.",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Các điều khoản, điều kiện, hạn chế hoặc quyền hạn cụ thể khi sử dụng shared mailbox.",
+            "Chính sách quản lý, giám sát, hoặc trách nhiệm của người dùng đối với shared mailbox.",
+            "Quy định về thời hạn, gia hạn, hoặc thu hồi quyền truy cập.",
+            "Chính sách bảo mật, chia sẻ dữ liệu, hoặc tuân thủ liên quan đến shared mailbox."
+          ],
+          "brief_rationale": "Đáp án không đầy đủ về chính sách nội bộ về shared mailbox."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 3079.185
+      },
+      "movement": "REGRESSED",
+      "regression_cause": "QUESTION_FIRST_ATTENTION_SHIFT"
+    },
+    {
+      "id": "GT-076",
+      "live_route": "incident",
+      "live_route_applicability": true,
+      "diagnostic_only": false,
+      "evaluation_mode": "KNOWLEDGE_ANSWER",
+      "context_mode": "UNSUPPORTED",
+      "context_source_ids": [
+        "kb-001"
+      ],
+      "context_characters": 386,
+      "context_approx_tokens": 70,
+      "treatment_applied": true,
+      "treatment_reason": "NONEMPTY_AUTHORIZED_SOURCE_CONTEXT",
+      "template": {
+        "version": "evidence-salience-v1",
+        "control": {
+          "characters": 532,
+          "approx_tokens": 93,
+          "question_position": 480,
+          "evidence_position": 0,
+          "sha256": "fc5490c09b074386a7cde6800f7501faa9a2564e3a5a040d420a1dfc7837f434"
+        },
+        "treatment": {
+          "characters": 621,
+          "approx_tokens": 99,
+          "question_position": 0,
+          "evidence_position": 54,
+          "sha256": "173086a94581d828a80fd954355d200a05af2453484e8d7411e690717f153c28"
+        }
+      },
+      "control": {
+        "status": "PASS",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nTài liệu tham khảo [kb-001] chỉ cung cấp hướng dẫn khắc phục sự cố kết nối VPN (lỗi authentication failed, connection timeout) mà không đề cập đến cấu hình chi tiết của VPN nội bộ công ty (ví dụ: loại xác thực, giao thức, cài đặt MFA, profile cấu hình, v.v.).\n\nNếu bạn cần thông tin về cấu hình VPN, vui lòng cung cấp:\n- Loại VPN (Cisco AnyConnect/FortiClient/khác)\n- Hoặc ticket/incident/service request liên quan (nếu có)\n- Hoặc yêu cầu truy cập tài liệu cấu hình (nếu được ủy quyền).",
+        "failure_types": [],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.5,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": true,
+          "failure_types": [],
+          "unsupported_claims": [],
+          "missing_points": [
+            "Cấu hình chi tiết của VPN nội bộ công ty"
+          ],
+          "brief_rationale": "Đáp án không cung cấp thông tin về cấu hình chi tiết của VPN nội bộ công ty."
+        },
+        "generic_fallback_used": true,
+        "supported_evidence_used": true,
+        "citation_status": 1.0,
+        "generation_ms": 2849.816
+      },
+      "treatment": {
+        "status": "FAIL",
+        "raw_answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi về cấu hình VPN nội bộ công ty.\n\nCác tài liệu được cung cấp chỉ đề cập đến quy trình khắc phục sự cố khi kết nối VPN thất bại (lỗi authentication failed, connection timeout) mà không chứa thông tin chi tiết về cấu hình kỹ thuật của VPN (ví dụ: giao thức, thuật toán, cài đặt server, policy, certificate, hay thông số mạng).\n\nNếu bạn cần cấu hình cụ thể, vui lòng cung cấp:\n- Tên giải pháp VPN (Cisco AnyConnect, FortiClient, OpenVPN, v.v.)\n- Hoặc ticket/incident/service-request liên quan đến cấu hình VPN\n- Hoặc tài liệu cấu hình đã được phê duyệt (nếu có trong hệ thống ITSM)",
+        "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi về cấu hình VPN nội bộ công ty.\n\nCác tài liệu được cung cấp chỉ đề cập đến quy trình khắc phục sự cố khi kết nối VPN thất bại (lỗi authentication failed, connection timeout) mà không chứa thông tin chi tiết về cấu hình kỹ thuật của VPN (ví dụ: giao thức, thuật toán, cài đặt server, policy, certificate, hay thông số mạng).\n\nNếu bạn cần cấu hình cụ thể, vui lòng cung cấp:\n- Tên giải pháp VPN (Cisco AnyConnect, FortiClient, OpenVPN, v.v.)\n- Hoặc ticket/incident/service-request liên quan đến cấu hình VPN\n- Hoặc tài liệu cấu hình đã được phê duyệt (nếu có trong hệ thống ITSM)",
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "judge": {
+          "faithfulness": 0.5,
+          "completeness": 0.0,
+          "relevance": 1.0,
+          "correct_abstention": 1.0,
+          "citation_correctness": 1.0,
+          "passed": false,
+          "failure_types": [
+            "INCOMPLETE_ANSWER"
+          ],
+          "unsupported_claims": [],
+          "missing_points": [
+            "cấu hình kỹ thuật của VPN"
+          ],
+          "brief_rationale": "Không cung cấp thông tin chi tiết về cấu hình VPN."
+        },
+        "final_pass": {
+          "passed": false,
+          "policy_version": "semantic-hard-gates-v1",
+          "decision": "SEMANTIC_FAILURE",
+          "hard_gates": []
+        },
+        "infra_error_type": null,
+        "generation_error": null,
+        "generic_fallback_used": true,
+        "supported_evidence_used": false,
+        "unsupported_detail_added": false,
+        "citation_status": 1.0,
+        "generation_ms": 2519.309
+      },
+      "movement": "REGRESSED",
+      "regression_cause": "QUESTION_FIRST_ATTENTION_SHIFT"
+    }
+  ],
+  "hard_gates": {
+    "fixture_integrity_90_90": true,
+    "gt_027_retained": true,
+    "gt_047_retained": true,
+    "gt_048_retained": true,
+    "unsupported_claim_not_increased": true,
+    "hallucination_not_increased": true,
+    "bad_abstention_not_increased": true,
+    "citation_error_not_increased": true,
+    "no_dangerous_regression": false,
+    "no_infra_error": true
+  }
+}

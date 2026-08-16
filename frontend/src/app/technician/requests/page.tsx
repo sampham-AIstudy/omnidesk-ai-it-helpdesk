@@ -1,335 +1,50 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  ChevronRight,
-  PackageCheck,
-  Search,
-  Filter,
-  UserRound,
-  RefreshCw,
-} from 'lucide-react';
-import {
-  MOCK_WORKBENCH_REQUESTS,
-  TASK_STATUS_META,
-  PRIORITY_META,
-  deriveRequestStatus,
-} from '@/lib/fulfillmentData';
+import { useEffect, useState } from 'react';
+import { AlertCircle, ClipboardList, LoaderCircle, PackageOpen } from 'lucide-react';
+import api from '@/lib/api';
+import { formatVietnamTime } from '@/lib/utils';
 
-const STATUS_FILTER_OPTIONS = [
-  { value: 'all', label: 'Tất cả trạng thái' },
-  { value: 'need_action', label: 'Cần xử lý' },
-  { value: 'IN_PROGRESS', label: 'Đang xử lý' },
-  { value: 'BLOCKED', label: 'Bị chặn' },
-  { value: 'COMPLETED', label: 'Hoàn tất' },
-];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.05 },
-  },
+type ServiceRequest = {
+  request_number: string;
+  service_name: string;
+  status: string;
+  fulfillment_group: string;
+  created_at: string;
+  assignee_name?: string | null;
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
-  exit: { opacity: 0, scale: 0.96, transition: { duration: 0.2 } },
-} as const;
+const statusLabel: Record<string, string> = {
+  submitted: 'Đã vào hàng chờ', assigned: 'Đã nhận', in_progress: 'Đang xử lý',
+  waiting_for_user: 'Đang chờ người dùng', fulfilled: 'Đã hoàn tất',
+};
 
-export default function FulfillmentWorkbenchListPage() {
-  const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [onlyMine, setOnlyMine] = useState(false);
-  const [sortP0First, setSortP0First] = useState(true);
+export default function TechnicianRequestsPage() {
+  const [items, setItems] = useState<ServiceRequest[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    document.title = 'Request Fulfillment Workbench — IT Support';
+    let active = true;
+    api.get<{ items: ServiceRequest[] }>('/service-requests/technician/queue')
+      .then(({ data }) => { if (active) setItems(data.items); })
+      .catch(() => { if (active) setError('Không thể tải hàng chờ Service Request. Vui lòng thử lại.'); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
   }, []);
 
-  const filteredRequests = useMemo(() => {
-    let result = MOCK_WORKBENCH_REQUESTS.filter((req) => {
-      const derivedStatus = deriveRequestStatus(req.tasks);
-
-      // Search query filter
-      const q = searchQuery.trim().toLowerCase();
-      const matchesSearch =
-        !q ||
-        req.id.toLowerCase().includes(q) ||
-        req.title.toLowerCase().includes(q) ||
-        req.requester.toLowerCase().includes(q) ||
-        req.department.toLowerCase().includes(q) ||
-        req.tasks.some((t) => t.name.toLowerCase().includes(q));
-
-      // Status filter
-      let matchesStatus = true;
-      if (statusFilter === 'need_action') {
-        matchesStatus = derivedStatus === 'PENDING' || derivedStatus === 'IN_PROGRESS';
-      } else if (statusFilter !== 'all') {
-        matchesStatus = derivedStatus === statusFilter;
-      }
-
-      // Assignee filter
-      const matchesAssignee = !onlyMine || req.assignee === 'Lê Minh Công';
-
-      return matchesSearch && matchesStatus && matchesAssignee;
-    });
-
-    if (sortP0First) {
-      const pOrder: Record<string, number> = { P0: 0, P1: 1, P2: 2, P3: 3 };
-      result = [...result].sort((a, b) => pOrder[a.priority] - pOrder[b.priority]);
-    }
-
-    return result;
-  }, [searchQuery, statusFilter, onlyMine, sortP0First]);
-
-  const handleCardClick = (id: string) => {
-    router.push(`/technician/requests/${id}`);
-  };
-
   return (
-    <div className="enterprise-console min-h-screen bg-[#05070d] text-white selection:bg-cyan-500/35 selection:text-white p-6 lg:p-10 relative overflow-hidden font-sans rounded-3xl">
-      {/* Background radial glow accents */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
-      <div className="absolute bottom-10 right-10 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl animate-pulse pointer-events-none" />
-
-      {/* HEADER */}
-      <header className="pt-2 pb-8 relative z-10">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-xs text-white/45 font-mono tracking-wide">
-          <Link href="/technician/queue" className="hover:text-white transition-colors">
-            Home
-          </Link>
-          <ChevronRight size={14} className="text-white/30" />
-          <span className="text-white/70">Fulfillment Workbench</span>
-        </div>
-
-        {/* Header Title Row */}
-        <div className="mt-4 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl xl:text-4xl font-semibold text-white tracking-tight">
-              Request Fulfillment Workbench
-            </h1>
-            <p className="mt-2 text-sm text-white/50 leading-relaxed max-w-2xl">
-              Xử lý các Service Request được giao — hoàn thành từng fulfillment task theo đúng workflow. Khác với Incident Resolution: mỗi request có thể chứa nhiều task cấp phát, chạy tuần tự hoặc song song.
-            </p>
-          </div>
-
-          {/* Right Stat Chips */}
-          <div className="hidden md:flex items-center gap-3 shrink-0">
-            <div className="font-mono text-[10px] uppercase tracking-[0.15em] text-cyan-300 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-4 py-2 flex items-center gap-2 backdrop-blur">
-              <span className="size-2 rounded-full bg-cyan-400 animate-pulse" />
-              <span>3 ĐANG XỬ LÝ</span>
-            </div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.15em] text-emerald-300 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 flex items-center gap-2 backdrop-blur">
-              <span className="size-2 rounded-full bg-emerald-400" />
-              <span>12 ĐÃ HOÀN TẤT</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* FILTER BAR */}
-      <div className="mb-6 flex flex-col md:flex-row gap-3 relative z-10">
-        {/* Search input */}
-        <div className="flex-1 relative">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm REQ, tên nhân viên, phòng ban..."
-            className="w-full rounded-xl border border-white/10 bg-white/[0.04] py-3 pl-12 pr-4 text-sm text-white placeholder:text-white/30 focus:border-cyan-400/60 focus:outline-none focus:ring-2 focus:ring-cyan-400/20 transition font-sans"
-          />
-        </div>
-
-        {/* Status select */}
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-xl border border-white/10 bg-[#0c101c] px-4 py-3 text-sm text-white/70 focus:border-cyan-400/60 focus:outline-none cursor-pointer"
-        >
-          {STATUS_FILTER_OPTIONS.map((opt) => (
-            <option key={opt.value} value={opt.value} className="bg-[#05070d] text-white">
-              {opt.label}
-            </option>
-          ))}
-        </select>
-
-        {/* Toggle "Của tôi" */}
-        <button
-          type="button"
-          onClick={() => setOnlyMine(!onlyMine)}
-          className={`rounded-xl border px-4 py-3 text-sm flex items-center justify-center gap-2 transition cursor-pointer ${
-            onlyMine
-              ? 'border-cyan-400/60 bg-cyan-400/10 text-cyan-300 font-semibold'
-              : 'border-white/10 bg-white/[0.04] text-white/60 hover:text-white'
-          }`}
-        >
-          <Filter size={15} />
-          <span>Của tôi</span>
-        </button>
-
-        {/* Priority Sort Toggle */}
-        <button
-          type="button"
-          onClick={() => setSortP0First(!sortP0First)}
-          className={`rounded-xl border px-4 py-3 font-mono text-[10px] tracking-[0.15em] uppercase transition cursor-pointer ${
-            sortP0First
-              ? 'border-cyan-400/40 bg-white/[0.04] text-cyan-300'
-              : 'border-white/10 bg-white/[0.02] text-white/40'
-          }`}
-        >
-          SẮP XẾP: P0 → P3
-        </button>
-      </div>
-
-      {/* REQUEST CARDS LIST */}
-      <div className="relative z-10">
-        <AnimatePresence mode="wait">
-          {filteredRequests.length > 0 ? (
-            <motion.div
-              key="list"
-              variants={containerVariants}
-              initial="hidden"
-              animate="show"
-              className="space-y-4"
-            >
-              {filteredRequests.map((req) => {
-                const derivedStatus = deriveRequestStatus(req.tasks);
-                const statusMeta = TASK_STATUS_META[derivedStatus];
-                const priorityMeta = PRIORITY_META[req.priority];
-                const completedTasks = req.tasks.filter((t) => t.status === 'COMPLETED').length;
-                const totalTasks = req.tasks.length;
-                const progressPct = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-                return (
-                  <motion.div
-                    key={req.id}
-                    variants={cardVariants}
-                    layout
-                    onClick={() => handleCardClick(req.id)}
-                    className="group rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-5 hover:border-cyan-400/40 hover:bg-white/[0.05] transition-all duration-300 cursor-pointer flex flex-col gap-4"
-                  >
-                    {/* Row 1: Request Header & Status */}
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                      <div>
-                        <div className="font-mono text-[11px] tracking-[0.1em] text-cyan-300/80 font-medium">
-                          {req.id}
-                        </div>
-                        <h2 className="text-white font-medium text-base mt-1 group-hover:text-cyan-300 transition-colors">
-                          {req.title}
-                        </h2>
-                        <div className="mt-1.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-white/45 font-sans">
-                          <span>Người yêu cầu: {req.requester}</span>
-                          <span>•</span>
-                          <span>Phòng: {req.department}</span>
-                          <span>•</span>
-                          <span>Bắt đầu: {req.startDate}</span>
-                        </div>
-                      </div>
-
-                      {/* Right Badges */}
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-md ${priorityMeta.classNames}`}>
-                          {priorityMeta.label}
-                        </span>
-
-                        <span
-                          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border ${statusMeta.borderClass} ${statusMeta.bgClass} ${statusMeta.textClass} font-medium`}
-                        >
-                          <span className={`size-1.5 rounded-full ${statusMeta.dotClass}`} />
-                          <span>{statusMeta.label}</span>
-                        </span>
-
-                        <ChevronRight
-                          size={16}
-                          className="text-white/25 group-hover:text-cyan-300 group-hover:translate-x-0.5 transition-all ml-1"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Row 2: Fulfillment Progress */}
-                    <div className="mt-1">
-                      <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-white/45">Hoàn thành</span>
-                        <span className="font-mono text-white/70 font-medium">
-                          {completedTasks}/{totalTasks} TASKS
-                        </span>
-                      </div>
-
-                      {/* Progress bar */}
-                      <div className="mt-2 h-1.5 w-full rounded-full bg-white/10 overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full transition-all duration-700"
-                          style={{ width: `${progressPct}%` }}
-                        />
-                      </div>
-
-                      {/* Sub-task Chips */}
-                      <div className="mt-3 flex flex-wrap gap-1.5">
-                        {req.tasks.map((task) => {
-                          const tMeta = TASK_STATUS_META[task.status];
-                          const TaskIcon = tMeta.icon;
-
-                          return (
-                            <div
-                              key={task.id}
-                              className={`rounded-md border px-2 py-1 text-[10px] inline-flex items-center gap-1.5 font-sans ${tMeta.borderClass} ${tMeta.bgClass} ${tMeta.textClass}`}
-                            >
-                              <TaskIcon
-                                size={12}
-                                className={task.status === 'IN_PROGRESS' ? 'animate-spin' : ''}
-                              />
-                              <span>{task.name}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    {/* Row 3: Assignee Footer */}
-                    <div className="pt-3 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs text-white/35">
-                      <div className="flex items-center gap-1.5">
-                        <UserRound size={12} className="text-white/40" />
-                        <span>Giao cho: {req.assignee}</span>
-                      </div>
-                      <span>Cập nhật: {req.updatedAt}</span>
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-          ) : (
-            /* EMPTY STATE */
-            <motion.div
-              key="empty"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="py-20 text-center flex flex-col items-center justify-center rounded-3xl border border-white/10 bg-white/[0.02]"
-            >
-              <PackageCheck size={40} className="text-white/20 mx-auto" />
-              <p className="mt-4 text-white/70 font-medium text-base">Không có request nào cần xử lý</p>
-              <p className="mt-1 text-sm text-white/45">Các request mới được giao sẽ hiện ở đây.</p>
-              <button
-                type="button"
-                onClick={() => setSearchQuery('')}
-                className="mt-5 rounded-xl border border-white/10 bg-white/[0.05] px-5 py-2.5 text-sm text-white/70 hover:text-white transition cursor-pointer inline-flex items-center gap-2"
-              >
-                <RefreshCw size={14} />
-                <span>Làm mới</span>
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
+    <main className="mx-auto max-w-6xl space-y-6 p-6 lg:p-10">
+      <div className="flex items-center gap-3"><ClipboardList className="text-cyan-300" size={28} /><div><h1 className="text-2xl font-bold">Service Request Workbench</h1><p className="mt-1 text-sm text-slate-400">Hàng chờ fulfillment được tải từ hệ thống.</p></div></div>
+      {loading && <div className="flex items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900 p-6 text-sm text-slate-300"><LoaderCircle className="animate-spin" size={18} />Đang tải hàng chờ…</div>}
+      {error && <div role="alert" className="flex items-center gap-2 rounded-2xl border border-red-400/40 bg-red-400/10 p-5 text-sm text-red-100"><AlertCircle size={18} />{error}</div>}
+      {!loading && !error && items.length === 0 && <div className="rounded-2xl border border-slate-700 bg-slate-900 p-12 text-center text-slate-400"><PackageOpen className="mx-auto mb-3" size={34} />Không có Service Request phù hợp trong hàng chờ.</div>}
+      {!loading && !error && items.length > 0 && <div className="grid gap-3">
+        {items.map((request) => <Link key={request.request_number} href={`/technician/requests/${request.request_number}`} className="rounded-2xl border border-slate-700 bg-slate-900 p-5 transition hover:border-cyan-500/70">
+          <div className="flex flex-wrap items-start justify-between gap-3"><div><p className="font-mono text-xs text-cyan-300">{request.request_number}</p><h2 className="mt-1 font-semibold text-white">{request.service_name}</h2><p className="mt-2 text-sm text-slate-400">{request.fulfillment_group} · tạo {formatVietnamTime(request.created_at)}</p></div><div className="text-right text-sm"><p className="font-medium text-cyan-100">{statusLabel[request.status] ?? request.status}</p><p className="mt-1 text-slate-400">{request.assignee_name ? `Người xử lý: ${request.assignee_name}` : 'Chưa có người nhận'}</p></div></div>
+        </Link>)}
+      </div>}
+    </main>
   );
 }

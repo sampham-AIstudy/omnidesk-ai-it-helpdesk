@@ -1,0 +1,35 @@
+{
+  "version": "v1.10.1",
+  "date": "2026-08-16",
+  "status": "HARDENED",
+  "runtime_stable": true,
+  "ai_core_stable": true,
+  "business_core_stable": true,
+  "release_lock_v1_10": "PASS (IMMUTABLE_BASELINE)",
+  "sec_gate_1": "PASS",
+  "canonical_metrics": {
+    "sec_gate_tests": "7/7 PASS",
+    "production_e2e": "18/18 PASS",
+    "service_request_e2e": "25/25 PASS",
+    "frozen_eval": "93/93 PASS",
+    "auth_api": "8/8 PASS",
+    "frontend_lint_errors": 0,
+    "frontend_typecheck_errors": 0,
+    "product_guards": "PASS",
+    "webpack_production_build": "PASS (46 pages)",
+    "python_compileall": "PASS"
+  },
+  "capabilities": {
+    "admin_user_lifecycle": "DO_NOT_REIMPLEMENT",
+    "service_request_approval": "DO_NOT_REIMPLEMENT",
+    "technician_fulfillment_groups": "DO_NOT_REIMPLEMENT",
+    "action_grounding": "DO_NOT_REIMPLEMENT",
+    "sr_routing": "DO_NOT_REIMPLEMENT",
+    "canonical_chroma_embedding": "DO_NOT_REIMPLEMENT",
+    "workspace_recent_context": "DO_NOT_REIMPLEMENT",
+    "ticket_recent_context": "DO_NOT_REIMPLEMENT",
+    "context_aware_retrieval_query": "DO_NOT_REIMPLEMENT",
+    "service_request_process_knowledge": "DO_NOT_REIMPLEMENT",
+    "production_secret_hardening": "DO_NOT_REIMPLEMENT"
+  }
+}

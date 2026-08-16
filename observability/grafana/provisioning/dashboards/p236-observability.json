@@ -1,0 +1,58 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "panels": [
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "reqps"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "title": "API request rate",
+      "targets": [{"expr": "sum(rate(helpdesk_http_server_requests_total[5m]))", "refId": "A"}],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "ms"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "title": "API p95 latency",
+      "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(helpdesk_http_server_duration_milliseconds_bucket[5m])))", "refId": "A"}],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {"unit": "ms"}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "id": 3,
+      "title": "AI pipeline latency",
+      "targets": [{"expr": "histogram_quantile(0.95, sum by (le, operation) (rate(helpdesk_operation_duration_milliseconds_bucket[5m])))", "refId": "A"}],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "id": 4,
+      "title": "Tool failure rate",
+      "targets": [{"expr": "sum(rate(helpdesk_ai_tool_failures_total[5m])) / clamp_min(sum(rate(helpdesk_ai_tool_calls_total[5m])), 1)", "refId": "A"}],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {"type": "prometheus", "uid": "Prometheus"},
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 16},
+      "id": 5,
+      "title": "Ticket workflow events",
+      "targets": [{"expr": "sum by (event) (rate(helpdesk_workflow_events_total[5m]))", "refId": "A"}],
+      "type": "timeseries"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": ["p236", "operations"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "title": "P-236 Production Observability v1.0",
+  "uid": "p236-production-observability",
+  "version": 1
+}

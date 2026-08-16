@@ -1,0 +1,34 @@
+{
+  "version": "1.8",
+  "status": "RUNTIME_STABLE",
+  "release_gate": {
+    "c4_1_action_grounding": "RESOLVED",
+    "c4_2_service_request_routing": "RESOLVED",
+    "c4_3_embedding_provenance": "RESOLVED",
+    "ctx_fix_1_conversation_context": "RESOLVED"
+  },
+  "context_continuity": {
+    "workspace_recent_history": "DONE",
+    "ticket_recent_history": "DONE",
+    "structural_context_recall": "100%",
+    "cross_scope_leaks": 0,
+    "current_question_duplicates": 0,
+    "stateless_endpoints_preserved": ["POST /chat", "POST /chat/stream"]
+  },
+  "registered_features": {
+    "WORKSPACE_RECENT_CONVERSATION_CONTEXT": "DONE / DO_NOT_REIMPLEMENT",
+    "TICKET_RECENT_CONVERSATION_CONTEXT": "DONE / DO_NOT_REIMPLEMENT"
+  },
+  "evaluations": {
+    "frozen_eval": "93/93 passed (100%)",
+    "production_e2e": "18/18 passed",
+    "service_request_e2e": "25/25 passed",
+    "context_structural_suite": "15/15 passed",
+    "security_and_c4_suite": "71/73 passed (2 known legacy wording drift, blocks safe)"
+  },
+  "deferred": [
+    "query_rewrite",
+    "dynamic_token_budgeting",
+    "summarization"
+  ]
+}

@@ -10,6 +10,7 @@ import threading
 import unicodedata
 from functools import lru_cache
 from pathlib import Path
+from typing import Any
 
 import chromadb
 from chromadb.config import Settings as ChromaSettings
@@ -126,36 +127,87 @@ class _HashingEmbedder:
         return self._embed(text)
 
 
-def _active_embedding_backend() -> str:
-    if _collection is not None:
-        metadata = _collection.metadata or {}
-        return str(metadata.get("embedding_backend", settings.embedding_backend))
-    return settings.embedding_backend
+from dataclasses import dataclass
 
 
-def _get_embedder() -> HuggingFaceEmbeddings | _HashingEmbedder:
-    global _embedder
-    if _embedder is None:
+class EmbeddingProvenanceError(RuntimeError):
+    """Raised when collection embedding provenance conflicts with runtime expectations."""
+
+
+class EmbeddingInitializationError(RuntimeError):
+    """Raised when the configured embedding backend cannot be initialized."""
+
+
+@dataclass(frozen=True)
+class EmbeddingProvenance:
+    backend: str
+    provider: str
+    model: str
+    dimension: int
+    normalized: bool = True
+
+
+def effective_embedding_provenance() -> EmbeddingProvenance:
+    backend = settings.embedding_backend
+    if backend == "sentence_transformer":
+        return EmbeddingProvenance(
+            backend="sentence_transformer",
+            provider="sentence_transformers",
+            model=settings.embedding_model,
+            dimension=384,
+            normalized=True,
+        )
+    elif backend == "hashing":
+        return EmbeddingProvenance(
+            backend="hashing",
+            provider="local_hashing",
+            model="blake2b-token-hashing-v1",
+            dimension=384,
+            normalized=True,
+        )
+    raise EmbeddingProvenanceError(f"Unsupported embedding backend: {backend}")
+
+
+def validate_collection_embedding_provenance(
+    collection: Any, expected: EmbeddingProvenance | None = None
+) -> EmbeddingProvenance:
+    expected = expected or effective_embedding_provenance()
+    metadata = getattr(collection, "metadata", None) or {}
+    collection_backend = metadata.get("embedding_backend")
+    if collection_backend and collection_backend != expected.backend:
+        raise EmbeddingProvenanceError(
+            f"Collection '{getattr(collection, 'name', 'unknown')}' embedding backend '{collection_backend}' does not match expected backend '{expected.backend}'"
+        )
+    return expected
+
+
+_embedders: dict[str, Any] = {}
+_embedder_lock = threading.Lock()
+
+
+def _get_embedder(backend: str | None = None) -> Any:
+    requested_backend = backend or settings.embedding_backend
+    if requested_backend not in {"sentence_transformer", "hashing"}:
+        raise EmbeddingProvenanceError(f"Unsupported embedding backend: {requested_backend}")
+
+    if requested_backend not in _embedders:
         with _embedder_lock:
-            if _embedder is None:
-                if _active_embedding_backend() == "hashing":
-                    logger.warning("Using low-memory hashing embeddings for RAG retrieval")
-                    _embedder = _HashingEmbedder()
-                    return _embedder
-                logger.info("Loading embedding model (%s)...", settings.embedding_model)
-                try:
-                    _embedder = HuggingFaceEmbeddings(
-                        model_name=settings.embedding_model,
-                        model_kwargs={"device": "cpu", "local_files_only": not settings.embedding_allow_network_downloads},
-                        encode_kwargs={"normalize_embeddings": True},
-                    )
-                except Exception as exc:
-                    # Retrieval must remain available in offline/self-hosted
-                    # deployments.  The deterministic fallback has the same
-                    # vector size and is also used by duplicate/Zero-Mem index.
-                    logger.warning("Embedding model unavailable; using hashing fallback: %s", exc)
-                    _embedder = _HashingEmbedder()
-    return _embedder
+            if requested_backend not in _embedders:
+                if requested_backend == "hashing":
+                    _embedders[requested_backend] = _HashingEmbedder()
+                else:
+                    logger.info("Loading embedding model (%s)...", settings.embedding_model)
+                    try:
+                        _embedders[requested_backend] = HuggingFaceEmbeddings(
+                            model_name=settings.embedding_model,
+                            model_kwargs={"device": "cpu", "local_files_only": not settings.embedding_allow_network_downloads},
+                            encode_kwargs={"normalize_embeddings": True},
+                        )
+                    except Exception as exc:
+                        raise EmbeddingInitializationError(
+                            f"Configured sentence-transformer is unavailable: {settings.embedding_model}"
+                        ) from exc
+    return _embedders[requested_backend]
 
 
 def get_chroma_client() -> chromadb.ClientAPI:
@@ -174,14 +226,19 @@ def get_collection() -> chromadb.Collection:
     global _collection
     if _collection is None:
         client = get_chroma_client()
-        _collection = client.get_or_create_collection(
+        col = client.get_or_create_collection(
             name=settings.chroma_collection_name,
             metadata={
                 "hnsw:space": "cosine",
                 "embedding_model": settings.embedding_model,
                 "embedding_backend": settings.embedding_backend,
+                "embedding_provider": "sentence_transformers" if settings.embedding_backend == "sentence_transformer" else "local_hashing",
+                "embedding_dimension": 384,
+                "embedding_normalized": True,
             },
         )
+        validate_collection_embedding_provenance(col)
+        _collection = col
     return _collection
 
 
@@ -194,7 +251,7 @@ def get_ticket_duplicate_collection() -> chromadb.Collection:
             metadata={
                 "hnsw:space": "cosine",
                 "embedding_model": settings.embedding_model,
-                "embedding_backend": _active_embedding_backend(),
+                "embedding_backend": settings.embedding_backend,
                 "purpose": "semantic_duplicate_detection",
             },
         )
@@ -210,7 +267,7 @@ def get_episodic_memory_collection() -> chromadb.Collection:
             metadata={
                 "hnsw:space": "cosine",
                 "embedding_model": settings.embedding_model,
-                "embedding_backend": _active_embedding_backend(),
+                "embedding_backend": settings.embedding_backend,
                 "purpose": "zero_token_episodic_memory",
             },
         )
@@ -225,6 +282,18 @@ def embed_texts(texts: list[str]) -> list[list[float]]:
 @lru_cache(maxsize=1024)
 def embed_query(text: str) -> list[float]:
     embedder = _get_embedder()
+    return embedder.embed_query(text)
+
+
+def embed_query_for_collection(text: str, collection: Any = None) -> list[float]:
+    """Embed query using the collection's backend, falling back to configured embedder."""
+    if collection is None:
+        return embed_query(text)
+    metadata = getattr(collection, "metadata", None) or {}
+    backend = metadata.get("embedding_backend") or settings.embedding_backend
+    if backend not in {"sentence_transformer", "hashing"}:
+        raise EmbeddingProvenanceError(f"Collection has no supported embedding backend: {backend}")
+    embedder = _get_embedder(backend)
     return embedder.embed_query(text)
 
 
@@ -328,7 +397,12 @@ def search_similar(
     if cache_key in _rag_query_cache:
         return _rag_query_cache[cache_key]
 
-    collection = get_collection()
+    try:
+        collection = get_collection()
+    except EmbeddingProvenanceError as exc:
+        logger.warning(f"Incompatible KB collection embedding provenance: {exc}")
+        return []
+
     expanded_query = _expand_query(query)
     query_embedding = embed_query(expanded_query)
 
@@ -521,6 +595,8 @@ async def search_similar_async(
 
 def get_collection_count() -> int:
     try:
-        return get_collection().count()
+        client = get_chroma_client()
+        col = client.get_collection(COLLECTION_NAME)
+        return col.count()
     except Exception:
         return 0

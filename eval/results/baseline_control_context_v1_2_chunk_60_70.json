@@ -1,0 +1,482 @@
+{
+  "arm": "control",
+  "metadata": {
+    "evaluation_lock": "evaluation_lock_v1_2_full.json",
+    "golden_hash": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "context_hash": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69",
+    "generator_config_hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_config_hash": "4c0746502cfce861fa12571b50df91f3fd0a147ea0f6992752b25b59d8579c4f",
+    "planner_enabled": false,
+    "retrieval_refreshed": false,
+    "start": 60,
+    "stop": 70,
+    "total_golden_cases": 90
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 5,
+    "semantic_fail": 5,
+    "averages": {
+      "faithfulness": 0.6,
+      "completeness": 0.6,
+      "relevance": 0.75,
+      "correct_abstention": 0.5,
+      "citation_correctness": 1.0
+    },
+    "failure_distribution": {
+      "INCOMPLETE_ANSWER": 3,
+      "BAD_ABSTENTION": 2
+    },
+    "generator_calls": 10,
+    "mean_total_generation_ms": 2210.993
+  },
+  "cases": [
+    {
+      "id": "GT-061",
+      "test_type": "bad_tool_confirmation",
+      "question": "Tạo ticket cho tôi.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để tạo ticket.\nVui lòng cung cấp:\n- Loại sự cố (incident) hoặc yêu cầu (service request)\n- Mô tả chi tiết vấn đề\n- Mức độ ưu tiên (nếu biết)\n- Thông tin liên hệ (tên, email, số điện thoại)\n\nTôi sẽ hỗ trợ tạo ticket ngay khi có đủ thông tin.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to action request without unsupported claim."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 811,
+          "http_status": 200,
+          "response_length": 950,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 2977.657
+    },
+    {
+      "id": "GT-062",
+      "test_type": "bad_tool_confirmation",
+      "question": "Reset password giúp tôi.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu \"Reset password giúp tôi\".\n\nĐể hỗ trợ bạn, vui lòng cung cấp:\n- **Tên đăng nhập** (username) hoặc **email** liên kết với tài khoản\n- **Lý do** cần reset (nếu có yêu cầu xác thực bổ sung)\n\nSau khi có đủ thông tin, tôi sẽ hướng dẫn bạn các bước tiếp theo theo quy trình được phê duyệt.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to reset password request, asking for required information without providing instructions."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1094,
+          "http_status": 200,
+          "response_length": 1010,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 1847.423
+    },
+    {
+      "id": "GT-063",
+      "test_type": "confidence_ui",
+      "question": "Classifier confidence = `0.95`  \nRAG answer confidence = `0.32`",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Generated answer does not address all requested parts."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 905,
+          "http_status": 200,
+          "response_length": 1031,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 872.346
+    },
+    {
+      "id": "GT-064",
+      "test_type": "confidence_ui",
+      "question": "Bot trả:\n\n> Không đủ thông tin để xác định.\n\nClassifier confidence:\n\n```text\n0.97\n```",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Không đủ thông tin để xác định, nhưng đã abstain đúng chỗ."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1155,
+          "http_status": 200,
+          "response_length": 1013,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 712.188
+    },
+    {
+      "id": "GT-065",
+      "test_type": "over_questioning",
+      "question": "Màn hình laptop vỡ sau khi tôi làm rơi máy.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể hỗ trợ bạn, vui lòng cung cấp thêm thông tin sau:\n- **Mô hình laptop** (hãng, model, năm sản xuất)\n- **Hệ điều hành** (Windows, macOS, Linux, v.v.)\n- **Bảo hành còn hiệu lực hay không** (nếu có)\n- **Lỗi cụ thể sau khi va chạm** (màn hình không hiển thị, hiển thị nhưng bị nhiễu, v.v.)\n\nNếu đây là sự cố phần cứng, bạn có thể:\n1. **Kiểm tra bảo hành** (nếu có) để yêu cầu hỗ trợ từ nhà sản xuất.\n2. **Liên hệ bộ phận IT/Helpdesk** của tổ chức (nếu máy thuộc sở hữu doanh nghiệp) để được hỗ trợ sửa chữa hoặc thay thế.\n\nNếu bạn cần hướng dẫn khẩn cấp, hãy cung cấp thêm chi tiết để tôi có thể trợ giúp chính xác hơn.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 0.5,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported portions and explicitly abstain only unsupported portions"
+        ],
+        "brief_rationale": "Refused to answer supported portions."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 875,
+          "http_status": 200,
+          "response_length": 1023,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 4501.452
+    },
+    {
+      "id": "GT-066",
+      "test_type": "over_questioning",
+      "question": "Outlook lỗi 0x8004010F từ sáng nay trên Windows 11.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\nĐể hỗ trợ bạn khắc phục lỗi Outlook 0x8004010F, tôi cần bằng chứng được ủy quyền (như log lỗi, SOP xử lý sự cố, hoặc dữ liệu ticket liên quan). Vui lòng cung cấp:\n\n1. **Mã lỗi đầy đủ** (nếu có)\n2. **Thời điểm chính xác** lỗi xảy ra\n3. **Bước tái hiện lỗi** (nếu có)\n4. **Môi trường cụ thể** (Outlook phiên bản nào, cấu hình mail server, v.v.)\n\nHoặc bạn có thể:\n- Kiểm tra **Event Viewer** (Windows Logs > Application) để lấy mã lỗi chi tiết\n- Chụp màn hình lỗi và gửi kèm\n- Liên hệ bộ phận IT nội bộ để truy cập log hệ thống\n\nTôi sẽ hỗ trợ ngay khi có đủ bằng chứng hợp lệ.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 0.5,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Mã lỗi đầy đủ",
+          "Thời điểm chính xác lỗi xảy ra",
+          "Bước tái hiện lỗi",
+          "Môi trường cụ thể"
+        ],
+        "brief_rationale": "Đáp án không cung cấp thông tin đầy đủ để khắc phục lỗi."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1188,
+          "http_status": 200,
+          "response_length": 1061,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 3196.468
+    },
+    {
+      "id": "GT-067",
+      "test_type": "multi_part",
+      "question": "VPN không vào được, tài khoản có bị khóa không và nếu tạo incident thì SLA là bao lâu?",
+      "context_ids": [
+        "kb-001",
+        "kb-010"
+      ],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Lý do:**\n- [kb-001] cung cấp quy trình xử lý lỗi VPN nhưng không đề cập đến cách kiểm tra trạng thái tài khoản (bị khóa hay không) hay SLA cho việc tạo incident.\n- [kb-010] liên quan đến quên mật khẩu Windows/domain, không áp dụng cho trường hợp lỗi VPN.\n\n**Đề xuất:**\nVui lòng cung cấp:\n1. **Kết quả kiểm tra trạng thái tài khoản VPN** (nếu có) hoặc yêu cầu IT kiểm tra giúp.\n2. **Loại ticket** (Incident/Service Request) và **mô tả lỗi cụ thể** để xác định SLA phù hợp (nếu có policy SLA cho từng loại ticket).\n\n*Ghi chú:* Nếu bạn đã thử các bước trong [kb-001] nhưng vẫn lỗi, hãy cung cấp chi tiết lỗi (authentication failed/time out) và môi trường kết nối (WiFi/4G, phiên bản AnyConnect/FortiClient) để hỗ trợ sâu hơn.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Kết quả kiểm tra trạng thái tài khoản VPN",
+          "Loại ticket và mô tả lỗi cụ thể"
+        ],
+        "brief_rationale": "Đáp án không trả lời đầy đủ các phần yêu cầu."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1125,
+          "http_status": 200,
+          "response_length": 1067,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 3228.962
+    },
+    {
+      "id": "GT-068",
+      "test_type": "multi_intent",
+      "question": "Laptop tôi hỏng rồi và tôi muốn xin laptop thay thế.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để xử lý yêu cầu của bạn.\nĐể hỗ trợ xin laptop thay thế, tôi cần xác định:\n\n1. **Quy trình/Service Catalog** cho yêu cầu laptop thay thế (ví dụ: có phải là \"Service Request\" trong hệ thống ITSM không?).\n2. **Điều kiện đủ điều kiện** (ví dụ: laptop hỏng do lỗi phần cứng/phần mềm, thời hạn bảo hành, chính sách doanh nghiệp).\n3. **Cách thức nộp yêu cầu** (ví dụ: form online, ticket, email, phê duyệt từ quản lý).\n4. **Thông tin liên quan** (số serial laptop hỏng, model, lý do hỏng, vị trí sử dụng).\n\nVui lòng cung cấp thêm thông tin hoặc liên hệ với **IT Help Desk chính thức** của tổ chức để được hỗ trợ theo quy trình nội bộ.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 0.5,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Quy trình/Service Catalog cho yêu cầu laptop thay thế",
+          "Điều kiện đủ điều kiện",
+          "Cách thức nộp yêu cầu"
+        ],
+        "brief_rationale": "Đáp án không đầy đủ và không chính xác."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1734,
+          "http_status": 200,
+          "response_length": 1075,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 3025.022
+    },
+    {
+      "id": "GT-069",
+      "test_type": "user_anger_emotion",
+      "question": "Máy ngu vãi, tôi bực quá rồi.",
+      "context_ids": [],
+      "answer": "Rất tiếc, tôi không thể hỗ trợ theo cách đó. Vui lòng cung cấp chi tiết cụ thể về vấn đề kỹ thuật bạn đang gặp phải để tôi có thể giúp đỡ.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Direct response to user's anger, asking for specific technical issue details."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 828,
+          "http_status": 200,
+          "response_length": 991,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 1070.285
+    },
+    {
+      "id": "GT-070",
+      "test_type": "user_anger_emotion",
+      "question": "Tôi đập cái laptop rồi, giờ nó không bật được nữa.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": null,
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer every supported requested part"
+        ],
+        "brief_rationale": "Generated answer is incomplete and does not address the user's concern."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 828,
+          "http_status": 200,
+          "response_length": 1031,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 678.13
+    }
+  ]
+}

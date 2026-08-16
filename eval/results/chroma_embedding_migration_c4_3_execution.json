@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-08-15T17:08:21.391394+00:00",
+  "persist_dir": "C:\\Users\\Admin\\Python Advanced\\VinAI Lab\\P-236\\data\\chroma",
+  "backup_dir": "C:\\Users\\Admin\\Python Advanced\\VinAI Lab\\P-236\\data\\chroma_backups\\c4_3_20260816_0001",
+  "source_collection": "helpdesk_kb_multilingual_v1",
+  "target_collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+  "source_count": 432,
+  "target_count": 432,
+  "source_digest": "abc9e7e570cdabd81537ec9092873df159ddf0e9b5719542747bae5d78eb85b9",
+  "target_digest": "abc9e7e570cdabd81537ec9092873df159ddf0e9b5719542747bae5d78eb85b9",
+  "missing_ids": [],
+  "extra_ids": [],
+  "target_metadata": {
+    "embedding_backend": "sentence_transformer",
+    "source_collection": "helpdesk_kb_multilingual_v1",
+    "embedding_provider": "sentence_transformers",
+    "embedding_dimension": 384,
+    "created_at": "2026-08-15T17:06:56.927411+00:00",
+    "embedding_normalized": true,
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "hnsw:space": "cosine",
+    "migration": "c4_3_reembedding",
+    "embedding_version": "c4_3"
+  },
+  "target_dimension": 384,
+  "legacy_hashing_metadata_normalized": [
+    "helpdesk_ticket_duplicates_v1",
+    "helpdesk_episodic_memory_v1"
+  ]
+}

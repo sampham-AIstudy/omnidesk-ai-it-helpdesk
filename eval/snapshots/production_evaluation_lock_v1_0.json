@@ -1,0 +1,111 @@
+{
+  "version": "production-evaluation-lock-v1.0",
+  "git_commit": "f13cec3807f5058de6eb41289e1369e60ff97c80",
+  "evaluation_contract_version": "enterprise-golden-v1.2",
+  "golden": {
+    "path": "eval/golden_testset_enterprise.json",
+    "sha256": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b"
+  },
+  "manifest": {
+    "path": "eval/evaluation_manifest.json",
+    "sha256": "fa4f577ef6f6ea80354ab0b28694d0b50729260ffaef2b7bf21d2353a2caf2f3"
+  },
+  "context_snapshot": {
+    "path": "eval/snapshots/enterprise_context_snapshot_v1_2.json",
+    "sha256": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69"
+  },
+  "source_mapping": {
+    "path": "eval/source_mappings_enterprise_v1_2.json",
+    "sha256": "3f47beadbc08c90c80a1ebd183775fd87785c32bef91452b3ee002218ec5fc35"
+  },
+  "knowledge_base_fixture": {
+    "path": "src/data/knowledge_base.py",
+    "sha256": "610ed1661e076400bd866e2ff83e34443d744054129289e33089964c97684499"
+  },
+  "ticket_fixture": {
+    "path": "tests/conftest.py",
+    "sha256": "2c9acfc5c62a5f272c621d2e66f86d2dc1d065304865ccb74d988d77049529f8"
+  },
+  "generator_config": {
+    "hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "temperature": 0,
+    "max_tokens": 2048,
+    "model": "configured production default"
+  },
+  "production_prompt_hash": "1915f4969c7e1427b9344c84e594c321f1c7da9ab33c16adc292a7091ce5d2c4",
+  "judge": {
+    "version": "1.3",
+    "prompt_hash": "9427665990cfcf638cd16ec2b7d5236f1d988433b8b9e464533f164290c2aaaf",
+    "implementation_sha256": "c9624919be17eca5b1a4c0d7f534e5037e88932ab47e91b15807c88f637a21db"
+  },
+  "routing_contract_ids": [
+    "GT-001",
+    "GT-002",
+    "GT-003",
+    "GT-004",
+    "GT-005",
+    "GT-006",
+    "GT-007",
+    "GT-008",
+    "GT-009",
+    "GT-010",
+    "GT-011",
+    "GT-012",
+    "GT-013",
+    "GT-014",
+    "GT-015",
+    "GT-016",
+    "GT-017",
+    "GT-018",
+    "GT-019",
+    "GT-040",
+    "GT-055"
+  ],
+  "route_assertion_ids": [
+    "GT-001",
+    "GT-002",
+    "GT-003",
+    "GT-004",
+    "GT-005",
+    "GT-006",
+    "GT-007",
+    "GT-008",
+    "GT-009",
+    "GT-010",
+    "GT-011",
+    "GT-012",
+    "GT-013",
+    "GT-014",
+    "GT-015",
+    "GT-016",
+    "GT-017",
+    "GT-018",
+    "GT-019",
+    "GT-040",
+    "GT-055",
+    "GT-033"
+  ],
+  "retrieval_config": {
+    "hash": "4c0746502cfce861fa12571b50df91f3fd0a147ea0f6992752b25b59d8579c4f",
+    "top_k": 5,
+    "category_filter": true,
+    "acl_filter": true
+  },
+  "known_limitations": {
+    "path": "eval\\known_judge_limitations_v1_0.json",
+    "sha256": "0d86797aebe12f0654862788992cccf7e72fab0a2e6d071eaf11cad684f7e44a",
+    "items": [
+      {
+        "id": "KNOWN_JUDGE_LIMITATION_EMPTY_CONTEXT",
+        "affected_case_ids": [
+          "GT-046",
+          "GT-077",
+          "GT-087"
+        ],
+        "finding": "Human contract review confirms that a precise evidence-boundary abstention does not hallucinate when it merely references the user-requested subject. Judge v1.3 showed false-positive or unstable labels on this pattern.",
+        "decision": "Do not change production to satisfy the Judge. Do not promote Judge v1.3.1 because it introduced dangerous false passes. Production retains the generic safe fallback.",
+        "reporting_policy": "Report raw Judge v1.3 outputs unchanged and list this limitation separately; do not silently adjust scores or remove cases."
+      }
+    ]
+  }
+}

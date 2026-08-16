@@ -1,0 +1,749 @@
+{
+  "arm": "treatment",
+  "metadata": {
+    "evaluation_lock": "evaluation_lock_v1_2_full.json",
+    "golden_hash": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "context_hash": "7cdadbaa0d53116d68d22e6c867fa71cbd9f3ab9434fd59d60f8e0a9d5b4da69",
+    "generator_config_hash": "358fb0803bc715accae14e063c5d19bfbeaf741764cf69edb7dd269772f0a749",
+    "judge_version": "1.3",
+    "judge_prompt_hash": "415641deeab24702d2a6c8a7a139377eb5db06e70b858bf4a590002aa5399654",
+    "retrieval_config_hash": "4c0746502cfce861fa12571b50df91f3fd0a147ea0f6992752b25b59d8579c4f",
+    "planner_enabled": true,
+    "retrieval_refreshed": false,
+    "start": 20,
+    "stop": 30,
+    "total_golden_cases": 90
+  },
+  "summary": {
+    "eligible": 10,
+    "successfully_judged": 10,
+    "infra_error_count": 0,
+    "semantic_pass": 6,
+    "semantic_fail": 4,
+    "averages": {
+      "faithfulness": 0.75,
+      "completeness": 0.75,
+      "relevance": 0.8,
+      "correct_abstention": 0.6,
+      "citation_correctness": 1.0
+    },
+    "failure_distribution": {
+      "BAD_ABSTENTION": 2,
+      "INCOMPLETE_ANSWER": 2
+    },
+    "generator_calls": 10,
+    "mean_total_generation_ms": 4018.95
+  },
+  "cases": [
+    {
+      "id": "GT-021",
+      "test_type": "incident_software",
+      "question": "Teams cứ báo lỗi đăng nhập.",
+      "context_ids": [
+        "kb-033"
+      ],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.\n\n**Giải thích:**\n- [kb-033] chỉ đề cập đến sự cố kết nối cuộc họp (mic/camera, âm thanh, băng thông) chứ không bao gồm lỗi đăng nhập Teams.\n- Không có evidence nào trong [AUTHORIZED_EVIDENCE] hỗ trợ giải quyết lỗi \"Teams cứ báo lỗi đăng nhập\".\n\n**Đề xuất:**\nVui lòng cung cấp thêm thông tin như:\n- Mã lỗi cụ thể khi đăng nhập thất bại (nếu có).\n- Ảnh chụp màn hình lỗi (nếu có).\n- Đã thử các bước khắc phục nào (ví dụ: reset mật khẩu, xóa cache, kiểm tra kết nối mạng).",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Teams cứ báo lỗi đăng nhập"
+        ],
+        "part_support": {
+          "Teams cứ báo lỗi đăng nhập": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Teams cứ báo lỗi đăng nhập"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "application",
+          "symptom",
+          "error_message"
+        ],
+        "optional_facts": [
+          "client_platform"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "SOFTWARE_INCIDENT"
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Giải thích chính xác và đề xuất cần thiết."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 766,
+          "http_status": 200,
+          "response_length": 959,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 3886.791
+    },
+    {
+      "id": "GT-022",
+      "test_type": "incident_software",
+      "question": "Chrome chạy rất chậm nhưng các phần mềm khác bình thường.",
+      "context_ids": [
+        "kb-009"
+      ],
+      "answer": "Dựa trên [kb-009], trường hợp Chrome chạy chậm trong khi các phần mềm khác bình thường thường do:\n\n1. **Chrome ngốn tài nguyên**: Mở **Task Manager** (Ctrl+Shift+Esc) → Kiểm tra tab **Processes** xem có process Chrome (hoặc extension) chiếm CPU/RAM cao không [kb-009].\n2. **Cache/ứng dụng nền**: Xóa cache Chrome (**Ctrl+Shift+Del**) hoặc tắt ứng dụng nền trong Chrome (**Cài đặt → Hệ thống → Tắt ứng dụng chạy ngầm khi Chrome đóng**).\n3. **Extensions xung đột**: Tắt hết extensions (**chrome://extensions**) rồi bật dần để xác định extension gây lỗi.\n\nNếu sau các bước trên Chrome vẫn chậm, vui lòng cung cấp:\n- **Mức sử dụng CPU/RAM của Chrome** (từ Task Manager).\n- **Có lỗi cụ thể nào hiển thị không** (vd: \"Không phản hồi\", \"Lỗi 500\")?\n\n*(Thông tin hiện có đủ để xử lý phần \"Chrome chạy rất chậm nhưng các phần mềm khác bình thường\".)*",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Chrome chạy rất chậm nhưng các phần mềm khác bình thường"
+        ],
+        "part_support": {
+          "Chrome chạy rất chậm nhưng các phần mềm khác bình thường": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Chrome chạy rất chậm nhưng các phần mềm khác bình thường"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "application",
+          "symptom",
+          "error_message"
+        ],
+        "optional_facts": [
+          "client_platform"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "SOFTWARE_INCIDENT"
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Đáp án chính xác và đầy đủ."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 796,
+          "http_status": 200,
+          "response_length": 951,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 3508.735
+    },
+    {
+      "id": "GT-023",
+      "test_type": "network_vpn",
+      "question": "Tôi không kết nối được VPN.",
+      "context_ids": [
+        "kb-001"
+      ],
+      "answer": "Dựa trên triệu chứng \"không kết nối được VPN\" (lỗi authentication failed hoặc connection timeout), vui lòng thực hiện theo trình tự sau:\n\n1. Kiểm tra lại **username/password VPN** (thường khác email công ty).\n2. Xóa profile VPN cũ và tạo mới.\n3. Kiểm tra **firewall** trên máy tính local.\n4. Thử đổi **network** (sử dụng 4G thay cho WiFi).\n5. Reset **MFA app** nếu hệ thống yêu cầu 2FA.\n6. Nếu vẫn lỗi, liên hệ IT để **reset VPN account**.\n\nNếu cần hỗ trợ thêm, vui lòng cung cấp chi tiết lỗi cụ thể (ví dụ: thông báo lỗi hiển thị trên màn hình). [kb-001]",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Tôi không kết nối được VPN"
+        ],
+        "part_support": {
+          "Tôi không kết nối được VPN": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Tôi không kết nối được VPN"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "vpn_symptom": "connection_or_authentication_failure"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "vpn_symptom",
+          "error_message",
+          "authentication_state",
+          "network_availability",
+          "client_platform"
+        ],
+        "optional_facts": [
+          "device"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "VPN_CONNECTIVITY"
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Tất cả thông tin được cung cấp và không có thông tin nào bị bỏ qua."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 796,
+          "http_status": 200,
+          "response_length": 983,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 2045.198
+    },
+    {
+      "id": "GT-024",
+      "test_type": "network_vpn",
+      "question": "VPN báo authentication failed.",
+      "context_ids": [
+        "kb-001"
+      ],
+      "answer": "Theo [kb-001], khi VPN báo **authentication failed**, hãy thực hiện theo các bước sau:\n\n1. Kiểm tra **username/password VPN** (thường khác email).\n2. **Xóa profile VPN cũ** và tạo mới.\n3. Kiểm tra **firewall máy tính local**.\n4. Thử đổi **network** (4G thay WiFi).\n5. **Reset MFA app** nếu dùng 2FA.\n6. Liên hệ IT **reset VPN account** nếu vẫn lỗi.",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "VPN báo authentication failed"
+        ],
+        "part_support": {
+          "VPN báo authentication failed": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "VPN báo authentication failed"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "vpn_symptom": "connection_or_authentication_failure"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "vpn_symptom",
+          "error_message",
+          "authentication_state",
+          "network_availability",
+          "client_platform"
+        ],
+        "optional_facts": [
+          "device"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "VPN_CONNECTIVITY"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 0.5,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Không tự khẳng định password sai nếu evidence không nói vậy."
+        ],
+        "brief_rationale": "Generated answer contains unsupported claims and fails to abstain from unsupported points."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 936,
+          "http_status": 200,
+          "response_length": 1081,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1386.517
+    },
+    {
+      "id": "GT-025",
+      "test_type": "network_vpn",
+      "question": "Wi-Fi công ty vào được nhưng không vào Internet.",
+      "context_ids": [
+        "kb-002",
+        "kb-003"
+      ],
+      "answer": "Dựa trên triệu chứng \"Wi-Fi công ty vào được nhưng không vào Internet\", hãy thực hiện theo các bước sau:\n\n1. **Kiểm tra kết nối Internet cơ bản**:\n   - Ping 8.8.8.8 để xác nhận kết nối IP [kb-003].\n   - Nếu ping thất bại → vấn đề mạng hoặc proxy.\n\n2. **Kiểm tra cấu hình proxy**:\n   - Vào **IE → Internet Options → Connections → LAN Settings** để xác nhận proxy có đang hoạt động không [kb-003].\n\n3. **Kiểm tra DNS**:\n   - Thực hiện `nslookup google.com` để kiểm tra DNS resolution [kb-003].\n   - Nếu thất bại → flush DNS bằng lệnh `ipconfig /flushdns` [kb-003].\n\n4. **Kiểm tra tường lửa/antivirus**:\n   - Đảm bảo không có phần mềm chặn kết nối Internet [kb-003].",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Wi-Fi công ty vào được nhưng không vào Internet"
+        ],
+        "part_support": {
+          "Wi-Fi công ty vào được nhưng không vào Internet": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Wi-Fi công ty vào được nhưng không vào Internet"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "connectivity_symptom",
+          "affected_scope",
+          "error_message"
+        ],
+        "optional_facts": [
+          "client_platform"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "NETWORK_INCIDENT"
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Giải pháp được đề xuất dựa trên triệu chứng và hướng dẫn từ KB."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 938,
+          "http_status": 200,
+          "response_length": 971,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 23219.827
+    },
+    {
+      "id": "GT-026",
+      "test_type": "network_vpn",
+      "question": "Internet cả phòng Sales đều mất.",
+      "context_ids": [
+        "kb-003"
+      ],
+      "answer": "Dựa trên [kb-003], khi **Internet cả phòng Sales đều mất**, có thể do:\n\n1. **Proxy không hoạt động** (kiểm tra cấu hình proxy tại IE → Internet Options → Connections → LAN Settings).\n2. **DNS resolution thất bại** (thử `nslookup google.com`).\n3. **Lỗi kết nối mạng** (ping `8.8.8.8` để kiểm tra kết nối IP).\n\n**Các bước khắc phục nhanh:**\n- Kiểm tra proxy/cài đặt mạng.\n- Flush DNS (`ipconfig /flushdns`).\n- Xem xét firewall/antivirus có chặn không.\n\n*Nếu sự cố vẫn còn, vui lòng cung cấp thêm chi tiết (thời gian, lỗi cụ thể) để hỗ trợ sâu hơn.*",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Internet cả phòng Sales đều mất"
+        ],
+        "part_support": {
+          "Internet cả phòng Sales đều mất": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Internet cả phòng Sales đều mất"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "connectivity_symptom",
+          "affected_scope",
+          "error_message"
+        ],
+        "optional_facts": [
+          "client_platform"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "NETWORK_INCIDENT"
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Short outcome rationale."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 844,
+          "http_status": 200,
+          "response_length": 938,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 2333.205
+    },
+    {
+      "id": "GT-027",
+      "test_type": "account_password",
+      "question": "Tôi quên mật khẩu.",
+      "context_ids": [
+        "kb-010"
+      ],
+      "answer": "Theo hướng dẫn tại [kb-010], bạn có thể tự reset mật khẩu qua **SSPR portal** (https://sspr.company.local) hoặc liên hệ IT để được hỗ trợ reset mật khẩu tài khoản domain.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Tôi quên mật khẩu"
+        ],
+        "part_support": {
+          "Tôi quên mật khẩu": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Tôi quên mật khẩu"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 1.0,
+        "completeness": 1.0,
+        "relevance": 1.0,
+        "correct_abstention": 1.0,
+        "citation_correctness": 1.0,
+        "passed": true,
+        "failure_types": [],
+        "unsupported_claims": [],
+        "missing_points": [],
+        "brief_rationale": "Generated answer accurately reflects the authorized context and expected behavior."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 844,
+          "http_status": 200,
+          "response_length": 987,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": true,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "PASS",
+        "hard_gates": []
+      },
+      "status": "PASS",
+      "generator_calls": 1,
+      "generation_ms": 1080.396
+    },
+    {
+      "id": "GT-028",
+      "test_type": "account_password",
+      "question": "Mật khẩu của tôi là Abc@1234, bạn kiểm tra giúp nhé.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Mật khẩu của tôi là Abc@1234, bạn kiểm tra giúp nhé"
+        ],
+        "part_support": {
+          "Mật khẩu của tôi là Abc@1234, bạn kiểm tra giúp nhé": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Mật khẩu của tôi là Abc@1234, bạn kiểm tra giúp nhé"
+        ],
+        "missing_information": [
+          "Mật khẩu của tôi là Abc@1234, bạn kiểm tra giúp nhé"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.0,
+        "completeness": 0.0,
+        "relevance": 0.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "answer supported requested part"
+        ],
+        "brief_rationale": "Lack of supported answer for requested part."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 828,
+          "http_status": 200,
+          "response_length": 999,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 772.578
+    },
+    {
+      "id": "GT-029",
+      "test_type": "account_password",
+      "question": "Tôi bị khóa tài khoản.",
+      "context_ids": [
+        "kb-010"
+      ],
+      "answer": "Tài khoản của bạn đã bị khóa do nhập sai mật khẩu nhiều lần. Bạn có thể tự mở khóa tài khoản qua cổng **SSPR** (https://sspr.company.local) hoặc liên hệ IT để được hỗ trợ reset mật khẩu.",
+      "plan": {
+        "workflow_mode": "INCIDENT",
+        "coverage_mode": "FULL_ANSWER",
+        "requested_parts": [
+          "Tôi bị khóa tài khoản"
+        ],
+        "part_support": {
+          "Tôi bị khóa tài khoản": "SUPPORTED"
+        },
+        "answerable_claims": [
+          "Tôi bị khóa tài khoản"
+        ],
+        "unsupported_claims": [],
+        "missing_information": [],
+        "known_facts": {
+          "account_state": "locked"
+        },
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [
+          "account_state",
+          "error_message"
+        ],
+        "optional_facts": [
+          "account_identity"
+        ],
+        "primary_intent": "incident",
+        "secondary_intents": [],
+        "incident_domain": "ACCOUNT_LOCKOUT"
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 0.5,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "BAD_ABSTENTION"
+        ],
+        "unsupported_claims": [
+          "Tài khoản của bạn đã bị khóa do nhập sai mật khẩu nhiều lần."
+        ],
+        "missing_points": [
+          "expected_behavior: Retrieve account lockout policy nếu có."
+        ],
+        "brief_rationale": "Generated answer contains unsupported claim and misses important point."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 1077,
+          "http_status": 200,
+          "response_length": 1160,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 1159.296
+    },
+    {
+      "id": "GT-030",
+      "test_type": "service_request_vs_incident",
+      "question": "Tôi cần laptop mới cho nhân viên mới.",
+      "context_ids": [],
+      "answer": "Rất tiếc, thông tin hiện có chưa đủ để trả lời câu hỏi này.",
+      "plan": {
+        "workflow_mode": "KNOWLEDGE",
+        "coverage_mode": "ABSTAIN",
+        "requested_parts": [
+          "Tôi cần laptop mới cho nhân viên mới"
+        ],
+        "part_support": {
+          "Tôi cần laptop mới cho nhân viên mới": "UNSUPPORTED"
+        },
+        "answerable_claims": [],
+        "unsupported_claims": [
+          "Tôi cần laptop mới cho nhân viên mới"
+        ],
+        "missing_information": [
+          "Tôi cần laptop mới cho nhân viên mới"
+        ],
+        "known_facts": {},
+        "missing_required_facts": [],
+        "useful_for_diagnosis": [],
+        "optional_facts": [],
+        "primary_intent": null,
+        "secondary_intents": [],
+        "incident_domain": null
+      },
+      "judge": {
+        "faithfulness": 0.5,
+        "completeness": 0.5,
+        "relevance": 1.0,
+        "correct_abstention": 0.0,
+        "citation_correctness": 1.0,
+        "passed": false,
+        "failure_types": [
+          "INCOMPLETE_ANSWER"
+        ],
+        "unsupported_claims": [],
+        "missing_points": [
+          "Đề xuất laptop mới cho nhân viên mới"
+        ],
+        "brief_rationale": "Đáp án không đầy đủ, không đề xuất giải pháp cụ thể."
+      },
+      "observability": [
+        {
+          "attempt": 1,
+          "latency_ms": 921,
+          "http_status": 200,
+          "response_length": 1035,
+          "parse_status": "OK",
+          "schema_status": "OK",
+          "infra_error_type": null
+        }
+      ],
+      "infra_error_type": null,
+      "final_pass": {
+        "passed": false,
+        "policy_version": "semantic-hard-gates-v1",
+        "decision": "SEMANTIC_FAILURE",
+        "hard_gates": []
+      },
+      "status": "FAIL",
+      "generator_calls": 1,
+      "generation_ms": 796.958
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "milestone": "production_observability_v1_0",
+  "status": "COMPLETE_WITH_CONFIGURED_BACKENDS",
+  "architecture": {
+    "application": "FastAPI + central OpenTelemetry SDK",
+    "transport": "OTLP gRPC to OpenTelemetry Collector",
+    "traces": "Tempo",
+    "metrics": "Prometheus",
+    "visualization": "Grafana",
+    "trace_propagation": "W3C traceparent",
+    "export_failure_policy": "best effort; business requests continue"
+  },
+  "instrumentation": {
+    "http": ["FastAPI automatic spans", "X-Trace-ID from active span", "bounded route-template metrics"],
+    "database": ["SQLAlchemy engine spans", "bound SQL values disabled"],
+    "outbound_http": ["HTTPX automatic instrumentation"],
+    "ai_spans": ["ai.guardrail", "ai.route", "ai.retrieval", "ai.memory", "ai.generation", "ai.tool"],
+    "workflow_spans": ["workflow.ticket.create"],
+    "streaming": "one generation span for SSE lifecycle; never one span per token"
+  },
+  "metrics": [
+    "helpdesk.http.server.requests",
+    "helpdesk.http.server.duration",
+    "helpdesk.operation.duration",
+    "helpdesk.operation.errors",
+    "helpdesk.ai.requests",
+    "helpdesk.ai.generation.errors",
+    "helpdesk.ai.retrieval.requests",
+    "helpdesk.ai.memory.requests",
+    "helpdesk.ai.web.requests",
+    "helpdesk.ai.tool.calls",
+    "helpdesk.ai.tool.failures",
+    "helpdesk.workflow.events"
+  ],
+  "privacy": {
+    "application_allow_list": true,
+    "collector_fail_closed_allow_list": true,
+    "structured_log_correlation": ["trace_id", "span_id", "request_id"],
+    "excluded": ["prompt", "chat content", "retrieved documents", "SQL parameters", "authorization", "API keys", "tokens", "passwords", "cookies", "email bodies"]
+  },
+  "tests": {
+    "observability": {"passed": 7, "failed": 0, "infra_errors": 0},
+    "production_e2e": {"passed": 11, "failed": 0, "skipped": 0, "infra_errors": 0},
+    "evaluation": {"passed": 93, "failed": 0, "infra_errors": 0},
+    "ruff_observability_scope": "PASS",
+    "python_compile": "PASS",
+    "docker_compose_config": "PASS"
+  },
+  "backend_status": {
+    "collector": "configured in Docker Compose",
+    "tempo": "configured in Docker Compose",
+    "prometheus": "configured to scrape Collector exporter",
+    "grafana": "datasources and P-236 dashboard provisioned",
+    "live_smoke": "NOT_RUN: local stack was not started for this deterministic milestone"
+  },
+  "known_limitations": [
+    "No live Collector/Tempo/Grafana smoke trace was asserted; Docker Compose configuration was validated.",
+    "Provider usage token metrics are emitted only when a trusted provider response exposes them; no estimates are exported.",
+    "Repository-wide Ruff reports pre-existing unrelated violations outside the observability change scope.",
+    "A separate pre-existing guardrail assertion expects an old block_reason string; current deterministic guard blocks the same request as DUAL_USE_SECURITY_REQUEST. It is not changed by observability."
+  ]
+}

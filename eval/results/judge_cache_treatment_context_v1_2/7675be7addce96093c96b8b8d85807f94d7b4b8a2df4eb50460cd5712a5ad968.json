@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 0.5,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [
+      "Tài khoản của bạn đã bị khóa do nhập sai mật khẩu nhiều lần."
+    ],
+    "missing_points": [
+      "expected_behavior: Retrieve account lockout policy nếu có."
+    ],
+    "brief_rationale": "Generated answer contains unsupported claim and misses important point.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

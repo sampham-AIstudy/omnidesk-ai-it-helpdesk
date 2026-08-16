@@ -1,0 +1,24 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 1.0,
+    "correct_abstention": 1.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [
+      "Hướng dẫn các bước tiếp theo"
+    ],
+    "missing_points": [
+      "Hư hỏng cụ thể",
+      "Số serial/asset của laptop"
+    ],
+    "brief_rationale": "Hướng dẫn các bước tiếp theo là không cần thiết khi chưa có thông tin cụ thể về sự cố laptop.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

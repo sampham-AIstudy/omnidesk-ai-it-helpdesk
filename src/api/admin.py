@@ -2,18 +2,30 @@
 from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import and_, or_, select
+from sqlalchemy import and_, delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.auth import get_current_active_user
 from src.database import get_db
 from src.models.audit_log import AuditAction
 from src.models.knowledge_base import KnowledgeBaseEntry
-from src.models.schemas import KBEntryCreate, KBEntryResponse, KBEntryUpdate, UserCreate, UserResponse
+from src.models.schemas import (
+    AdminUserUpdate,
+    FulfillmentGroupListResponse,
+    KBEntryCreate,
+    KBEntryResponse,
+    KBEntryUpdate,
+    TechnicianFulfillmentGroupsResponse,
+    TechnicianFulfillmentGroupsUpdate,
+    UserCreate,
+    UserResponse,
+)
+from src.models.technician_fulfillment_group import TechnicianFulfillmentGroup
 from src.models.ticket import Ticket
 from src.models.user import User, UserRole
 from src.services import auth_service
 from src.services.rag_service import delete_document, get_collection_count, index_document
+from src.services.service_request_service import canonical_fulfillment_groups
 from src.services.ticket_service import write_audit_log
 
 router = APIRouter(prefix="/admin", tags=["Admin"])
@@ -83,10 +95,195 @@ async def create_user(
     user_data = payload.model_dump()
     user_data["email"] = payload.email.lower()
     user = await auth_service.create_user(db, **user_data)
+    await write_audit_log(
+        db=db, actor_id=_admin.id, actor_type="user", action=AuditAction.USER_CREATED,
+        description=f"User #{user.id} created",
+        metadata={"target_user_id": user.id, "role": user.role.value, "company_unit": user.company_unit.value},
+    )
+    await db.refresh(user)
     return UserResponse.model_validate(user)
 
 
+async def _assert_admin_lifecycle_safe(
+    db: AsyncSession, *, actor: User, target: User, changes: dict[str, object]
+) -> None:
+    next_active = bool(changes.get("is_active", target.is_active))
+    next_role = changes.get("role", target.role)
+    if target.id == actor.id and (not next_active or next_role != UserRole.ADMIN):
+        raise HTTPException(status_code=400, detail="An administrator cannot deactivate or demote their own account.")
+
+    removes_active_admin = (
+        target.role == UserRole.ADMIN
+        and target.is_active
+        and (not next_active or next_role != UserRole.ADMIN)
+    )
+    if removes_active_admin:
+        active_admins = await db.scalar(
+            select(func.count(User.id)).where(User.role == UserRole.ADMIN, User.is_active.is_(True))
+        )
+        if int(active_admins or 0) <= 1:
+            raise HTTPException(status_code=409, detail="The final active administrator cannot be deactivated or demoted.")
+
+
+@router.patch("/users/{user_id}", response_model=UserResponse)
+async def update_user(
+    user_id: int,
+    payload: AdminUserUpdate,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+    """Typed admin update plus soft deactivate/reactivate; never mass assigns."""
+    target = await db.get(User, user_id)
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    changes = payload.model_dump(exclude_unset=True)
+    if not changes:
+        raise HTTPException(status_code=422, detail="At least one editable field is required.")
+    if any(changes.get(field) is None for field in ("full_name", "email", "role", "company_unit") if field in changes):
+        raise HTTPException(status_code=422, detail="Name, email, role and company unit cannot be null.")
+    await _assert_admin_lifecycle_safe(db, actor=admin, target=target, changes=changes)
+
+    if "email" in changes:
+        normalized_email = str(changes["email"]).lower()
+        existing = await auth_service.get_user_by_email(db, normalized_email)
+        if existing and existing.id != target.id:
+            raise HTTPException(status_code=409, detail="Email is already in use")
+        changes["email"] = normalized_email
+    if "full_name" in changes:
+        changes["full_name"] = str(changes["full_name"]).strip()
+    if "phone" in changes:
+        changes["phone"] = str(changes["phone"]).strip() or None
+    if "department" in changes:
+        changes["department"] = str(changes["department"]).strip() or None
+
+    previous_active = target.is_active
+    was_technician = target.role == UserRole.TECHNICIAN
+    for field, value in changes.items():
+        setattr(target, field, value)
+    await db.flush()
+    removed_groups: list[str] = []
+    if was_technician and target.role != UserRole.TECHNICIAN:
+        result = await db.execute(
+            select(TechnicianFulfillmentGroup.fulfillment_group)
+            .where(TechnicianFulfillmentGroup.technician_id == target.id)
+            .order_by(TechnicianFulfillmentGroup.fulfillment_group)
+        )
+        removed_groups = list(result.scalars())
+        if removed_groups:
+            await db.execute(
+                delete(TechnicianFulfillmentGroup).where(TechnicianFulfillmentGroup.technician_id == target.id)
+            )
+            await write_audit_log(
+                db=db, actor_id=admin.id, actor_type="user",
+                action=AuditAction.TECHNICIAN_FULFILLMENT_GROUPS_UPDATED,
+                description=f"Technician #{target.id} fulfillment groups cleared after role change",
+                metadata={
+                    "target_user_id": target.id,
+                    "previous_groups": removed_groups,
+                    "new_groups": [],
+                    "reason": "role_changed_from_technician",
+                },
+            )
+    if "is_active" in changes and target.is_active != previous_active:
+        action = AuditAction.USER_REACTIVATED if target.is_active else AuditAction.USER_DEACTIVATED
+        description = f"User #{target.id} {'reactivated' if target.is_active else 'deactivated'}"
+    else:
+        action = AuditAction.USER_UPDATED
+        description = f"User #{target.id} updated"
+    await write_audit_log(
+        db=db, actor_id=admin.id, actor_type="user", action=action, description=description,
+        metadata={
+            "target_user_id": target.id,
+            "fields": sorted(changes.keys()),
+            "role": target.role.value,
+            "company_unit": target.company_unit.value,
+            "is_active": target.is_active,
+            "removed_fulfillment_groups": removed_groups,
+        },
+    )
+    await db.refresh(target)
+    return UserResponse.model_validate(target)
+
+
 # ─── Knowledge Base Management ────────────────────────────────────────────────
+
+async def _technician_group_response(
+    db: AsyncSession, technician_id: int
+) -> TechnicianFulfillmentGroupsResponse:
+    result = await db.execute(
+        select(TechnicianFulfillmentGroup.fulfillment_group)
+        .where(TechnicianFulfillmentGroup.technician_id == technician_id)
+        .order_by(TechnicianFulfillmentGroup.fulfillment_group)
+    )
+    return TechnicianFulfillmentGroupsResponse(
+        technician_id=technician_id,
+        fulfillment_groups=list(result.scalars()),
+    )
+
+
+async def _require_technician_target(db: AsyncSession, technician_id: int) -> User:
+    target = await db.get(User, technician_id)
+    if not target:
+        raise HTTPException(status_code=404, detail="User not found")
+    if target.role != UserRole.TECHNICIAN:
+        raise HTTPException(status_code=422, detail="Fulfillment groups can only be assigned to a technician.")
+    return target
+
+
+@router.get("/fulfillment-groups", response_model=FulfillmentGroupListResponse)
+async def list_fulfillment_groups(_admin: User = Depends(require_admin)):
+    """Expose fixed, catalog-derived values without building group CRUD."""
+    return FulfillmentGroupListResponse(items=canonical_fulfillment_groups())
+
+
+@router.get("/technicians/{technician_id}/fulfillment-groups", response_model=TechnicianFulfillmentGroupsResponse)
+async def get_technician_fulfillment_groups(
+    technician_id: int,
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    await _require_technician_target(db, technician_id)
+    return await _technician_group_response(db, technician_id)
+
+
+@router.put("/technicians/{technician_id}/fulfillment-groups", response_model=TechnicianFulfillmentGroupsResponse)
+async def replace_technician_fulfillment_groups(
+    technician_id: int,
+    payload: TechnicianFulfillmentGroupsUpdate,
+    db: AsyncSession = Depends(get_db),
+    admin: User = Depends(require_admin),
+):
+    """Atomically replace explicit membership; an empty set grants no queue access."""
+    target = await _require_technician_target(db, technician_id)
+    requested = [group.strip() for group in payload.fulfillment_groups]
+    if len(set(requested)) != len(requested):
+        raise HTTPException(status_code=422, detail="Fulfillment groups must not contain duplicates.")
+    allowed = set(canonical_fulfillment_groups())
+    invalid = sorted(set(requested) - allowed)
+    if invalid:
+        raise HTTPException(status_code=422, detail=f"Unknown fulfillment group: {', '.join(invalid)}")
+
+    previous = (await _technician_group_response(db, technician_id)).fulfillment_groups
+    await db.execute(delete(TechnicianFulfillmentGroup).where(TechnicianFulfillmentGroup.technician_id == technician_id))
+    db.add_all([
+        TechnicianFulfillmentGroup(technician_id=technician_id, fulfillment_group=group)
+        for group in sorted(requested)
+    ])
+    await db.flush()
+    response = await _technician_group_response(db, technician_id)
+    await write_audit_log(
+        db=db, actor_id=admin.id, actor_type="user",
+        action=AuditAction.TECHNICIAN_FULFILLMENT_GROUPS_UPDATED,
+        description=f"Technician #{target.id} fulfillment groups updated",
+        metadata={
+            "target_user_id": target.id,
+            "target_company_unit": target.company_unit.value,
+            "previous_groups": previous,
+            "new_groups": response.fulfillment_groups,
+        },
+    )
+    return response
+
 
 @router.get("/kb", response_model=list[KBEntryResponse])
 async def list_kb(

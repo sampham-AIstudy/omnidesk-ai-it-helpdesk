@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "source_mapping_version": "enterprise-source-map-v1.2",
+  "entries": {
+    "GT-020": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-004"], "expected_topic": "Outlook software incident"},
+    "GT-021": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-033"], "expected_topic": "Teams collaboration application issue"},
+    "GT-022": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-009"], "expected_topic": "client performance issue"},
+    "GT-023": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-001"], "expected_topic": "VPN connectivity"},
+    "GT-024": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-001"], "expected_topic": "VPN authentication"},
+    "GT-025": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-002", "kb-003"], "expected_topic": "Wi-Fi and Internet connectivity"},
+    "GT-026": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-003"], "expected_topic": "Internet connectivity incident"},
+    "GT-027": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-010"], "expected_topic": "password recovery"},
+    "GT-028": {"expected_evidence_mode": "NO_EVIDENCE_REQUIRED", "acceptable_source_ids": [], "expected_topic": "credential-handling safety"},
+    "GT-029": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-010"], "expected_topic": "account lockout"},
+    "GT-045": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-001"], "expected_topic": "VPN connection procedure"},
+    "GT-046": {"expected_evidence_mode": "UNSUPPORTED", "acceptable_source_ids": [], "expected_topic": "password length absent from frozen KB"},
+    "GT-047": {"expected_evidence_mode": "PARTIALLY_SUPPORTED", "acceptable_source_ids": ["eval-gt047-vpn-port"], "expected_topic": "VPN port without account lockout threshold", "required_supported_terms": ["port 443"], "forbidden_unsupported_terms": ["5 lần"]},
+    "GT-048": {"expected_evidence_mode": "PARTIALLY_SUPPORTED", "acceptable_source_ids": ["eval-gt048-replacement-conditions"], "expected_topic": "replacement eligibility without fulfillment time", "required_supported_terms": ["approved business need", "manager approval"], "forbidden_unsupported_terms": ["business days", "SLA"]},
+    "GT-049": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["eval-gt049-sla-a", "eval-gt049-sla-b"], "expected_topic": "conflicting P1 SLA sources"},
+    "GT-067": {"expected_evidence_mode": "PARTIALLY_SUPPORTED", "acceptable_source_ids": ["kb-001", "kb-010"], "expected_topic": "VPN support with account/SLA gap", "required_supported_terms": ["VPN"], "forbidden_unsupported_terms": ["5 lần", "2 giờ", "4 giờ"]},
+    "GT-071": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-010"], "expected_topic": "password reset"},
+    "GT-072": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-006"], "expected_topic": "shared mailbox internal policy"},
+    "GT-073": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-015"], "expected_topic": "laptop power failure; no irrelevant ticket memory"},
+    "GT-074": {"expected_evidence_mode": "NO_EVIDENCE_REQUIRED", "acceptable_source_ids": [], "expected_topic": "greeting should not use noise"},
+    "GT-075": {"expected_evidence_mode": "NO_EVIDENCE_REQUIRED", "acceptable_source_ids": [], "expected_topic": "duplicate-source retrieval observation"},
+    "GT-076": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-001"], "expected_topic": "internal VPN configuration"},
+    "GT-077": {"expected_evidence_mode": "NO_EVIDENCE_REQUIRED", "acceptable_source_ids": [], "expected_topic": "latest-version capability policy"},
+    "GT-086": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["eval-kb-12-password-policy"], "expected_topic": "citation claim contradicted by source"},
+    "GT-088": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["eval-gt047-vpn-port"], "expected_topic": "VPN port 443"}
+  },
+  "evaluation_fixtures": {
+    "eval-gt048-replacement-conditions": {"title": "Evaluation fixture: replacement laptop conditions", "content": "Replacement-laptop eligibility requires an approved business need, manager approval, and confirmation that the employee needs a company device for the assigned role. The fulfillment time is intentionally not provided in this fixture.", "provenance": "golden GT-048 context_info"},
+    "eval-gt049-sla-a": {"title": "Evaluation fixture: P1 SLA source A", "content": "KB-A states that P1 incidents have an SLA of 2 hours.", "provenance": "golden GT-049 context_info"},
+    "eval-gt049-sla-b": {"title": "Evaluation fixture: P1 SLA source B", "content": "KB-B states that P1 incidents have an SLA of 4 hours.", "provenance": "golden GT-049 context_info"},
+    "eval-kb-12-password-policy": {"title": "Evaluation fixture: KB-12 password policy", "content": "KB-12 does not contain a requirement that passwords must be changed every 90 days.", "provenance": "golden GT-086 context_info"},
+    "eval-gt047-vpn-port": {"title": "VPN gateway port", "content": "Corporate VPN gateway uses port 443. This fixture contains no account lockout policy.", "provenance": "golden GT-047 context_info"}
+  }
+}

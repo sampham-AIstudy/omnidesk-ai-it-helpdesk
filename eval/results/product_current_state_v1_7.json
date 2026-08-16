@@ -1,0 +1,67 @@
+{
+  "version": "v1_7",
+  "recorded_at": "2026-08-16",
+  "supersedes": "product_current_state_v1_6",
+  "feature_completion": {
+    "incident_lifecycle": "done_unchanged",
+    "direct_service_request_fulfillment": "done_unchanged",
+    "service_request_approval_lifecycle": "done_unchanged",
+    "admin_user_lifecycle_c1": "done_unchanged",
+    "technician_fulfillment_group_eligibility_c3": "done_unchanged",
+    "otel_instrumentation": "done_local_export_disabled_without_collector",
+    "workspace_chat_action_grounding_c4_1": "done_unchanged",
+    "service_request_knowledge_action_routing_c4_2": "done_unchanged",
+    "chroma_embedding_provenance_c4_3": "done"
+  },
+  "c4_runtime_stabilization": {
+    "status": "release_blockers_resolved",
+    "accepted_fixes": [
+      "groq_env_settings_lookup",
+      "host_local_otel_export_disabled",
+      "workspace_chat_handoff_not_invoked_gate",
+      "service_request_knowledge_vs_action_route_precedence",
+      "chroma_sentence_transformer_reembedding_and_provenance_validation"
+    ],
+    "resolved_release_blockers": [
+      "RTE-006 standalone_chat_false_handoff_claim",
+      "RTE-005 service_request_process_question_routing",
+      "RTE-003 vector_embedding_backend_drift"
+    ],
+    "remaining_release_blockers": []
+  },
+  "do_not_reimplement": [
+    "incident_lifecycle",
+    "direct_service_request_fulfillment",
+    "service_request_approval_lifecycle",
+    "technician_service_request_queue_takeover_transitions",
+    "admin_user_lifecycle_c1",
+    "technician_fulfillment_group_eligibility_c3",
+    "ai_rag_baseline",
+    "routing_security_action_grounding",
+    "otel_instrumentation",
+    "chroma_embedding_provenance_c4_3"
+  ],
+  "scoring_contract": {
+    "scope": "service_request_lifecycle_only",
+    "denominator": 100,
+    "areas": [
+      {"name": "direct_fulfillment_branch", "weight": 50, "status": "done"},
+      {"name": "approval_gated_branch", "weight": 50, "status": "done"}
+    ],
+    "score_percent": 100,
+    "portfolio_wide_percent": null
+  },
+  "verification": {
+    "tests_test_eval": "93 passed",
+    "full_service_request_e2e": "23 passed",
+    "production_c1_e2e": "18 passed",
+    "full_e2e": "41 passed",
+    "runtime_stability": "7 controlled authenticated chat requests: 7 2xx, 0 unexpected 5xx"
+  },
+  "known_non_blocking": [
+    "RTE-004 query-decomposition provider non-JSON fallback (P2; graceful fallback works)",
+    "RTE-008 audit-harness telemetry artifact (P3)",
+    "two legacy guardrail wording assertion drifts; security blocking remains intact"
+  ],
+  "next_required_batch": "Do not automatically start feature work. Reconcile the documented non-blocking runtime/test debt only with a separately approved scope."
+}

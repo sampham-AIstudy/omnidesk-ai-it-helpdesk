@@ -1,0 +1,77 @@
+{
+  "latency": {
+    "avg_ms": 0.0066,
+    "p95_ms": 0.0071,
+    "target_ms": 2.0,
+    "status": "PASS"
+  },
+  "ab_comparison": [
+    {
+      "id": "AB-01",
+      "topic": "VPN 809",
+      "raw_query": "Tôi đã thử bước đầu tiên rồi nhưng vẫn không được.",
+      "raw_top_score": 0.33948564158545597,
+      "raw_hit": false,
+      "ctx_query": "VPN FortiClient báo lỗi 809 trên Windows 11.. Tôi đã thử bước đầu tiên rồi nhưng vẫn không được.",
+      "ctx_top_score": 0.7528435912553001,
+      "ctx_hit": true,
+      "score_delta": 0.4134
+    },
+    {
+      "id": "AB-02",
+      "topic": "Outlook Mail",
+      "raw_query": "Tôi thử cách thứ nhất rồi.",
+      "raw_top_score": 0.18503983855247497,
+      "raw_hit": false,
+      "ctx_query": "Tôi thử cách thứ nhất rồi.",
+      "ctx_top_score": 0.18503983855247497,
+      "ctx_hit": false,
+      "score_delta": 0.0
+    },
+    {
+      "id": "AB-03",
+      "topic": "Printer Paper Jam",
+      "raw_query": "Cách 2 làm thế nào?",
+      "raw_top_score": 0.23413996616999305,
+      "raw_hit": false,
+      "ctx_query": "Máy in Canon LBP 2900 bị kẹt giấy liên tục.. Cách 2 làm thế nào?",
+      "ctx_top_score": 0.390731805562973,
+      "ctx_hit": true,
+      "score_delta": 0.1566
+    },
+    {
+      "id": "AB-04",
+      "topic": "WiFi 802.1X",
+      "raw_query": "Vẫn báo Authentication failed.",
+      "raw_top_score": 0.729781847000122,
+      "raw_hit": true,
+      "ctx_query": "Vẫn báo Authentication failed.",
+      "ctx_top_score": 0.729781847000122,
+      "ctx_hit": true,
+      "score_delta": 0.0
+    }
+  ],
+  "runtime_cases": [
+    {
+      "case": "Workspace VPN 809 follow-up",
+      "turn_1_query": "VPN FortiClient bị lỗi 809 trên Windows 11.",
+      "turn_2_query": "Tôi đã thử bước đầu tiên rồi nhưng vẫn không được.",
+      "turn_2_reply_snippet": "Dựa trên thông tin hiện có, tôi đề xuất bạn thực hiện các bước tiếp theo theo thứ tự ưu tiên từ Knowledge Base nội bộ:\n\n1. Xóa profile VPN cũ trên FortiClient:\n   a. Mở FortiClient.\n   b. Vào mục Remo",
+      "sources": [
+        "KB bài học từ Ticket #INC-20260808-6950"
+      ],
+      "retrieval_confidence": 0.77,
+      "confidence": 1.0,
+      "latency_ms": 6741.55,
+      "status": "PASS"
+    },
+    {
+      "case": "Ticket Outlook multi-turn follow-up",
+      "turn_1_query": "Tôi cần hỗ trợ xử lý Outlook không gửi được thư.",
+      "turn_2_query": "Tôi thử cách thứ nhất rồi.",
+      "turn_2_reply_snippet": "Dựa trên thông tin hiện có, tôi sẽ tiếp tục hỗ trợ bạn xử lý sự cố Outlook không gửi được email (email kẹt trong Outbox) theo các bước đã được cung cấp trong [kb-004] và [RECENT TICKET CONVERSATION].\n",
+      "sources": "[{\"label\": \"Outlook không đồng bộ email / stuck sending\", \"kind\": \"kb\", \"source_id\": \"kb-004\", \"url\": \"/employee/kb?source_id=kb-004\"}, {\"label\": \"Sự cố gửi và nhận email trong Outlook\", \"kind\": \"web\", \"url\": \"https://support.microsoft.com/en-us/outlook/issues-sending-and-receiving-email\"}, {\"label\": \"Không nhận được email từ bên ngoài\", \"kind\": \"kb\", \"source_id\": \"kb-005\", \"url\": \"/employee/kb?source_id=kb-005\"}]",
+      "status": "PASS"
+    }
+  ]
+}

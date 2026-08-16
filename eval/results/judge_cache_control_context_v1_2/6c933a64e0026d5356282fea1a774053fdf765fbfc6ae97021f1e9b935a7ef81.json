@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.0,
+    "completeness": 0.0,
+    "relevance": 0.0,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "UNSUPPORTED_CLAIM"
+    ],
+    "unsupported_claims": [
+      "Lời khuyên không có căn cứ"
+    ],
+    "missing_points": [
+      "Không có thông tin chi tiết về sự cố, thiết bị, người dùng, thời gian xảy ra và ưu tiên xử lý"
+    ],
+    "brief_rationale": "Lời khuyên không có căn cứ và không cung cấp thông tin cần thiết để tạo ticket.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

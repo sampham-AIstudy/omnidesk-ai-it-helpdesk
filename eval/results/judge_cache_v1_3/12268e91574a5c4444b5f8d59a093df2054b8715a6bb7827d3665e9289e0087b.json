@@ -1,0 +1,23 @@
+{
+  "result": {
+    "faithfulness": 0.5,
+    "completeness": 0.5,
+    "relevance": 0.5,
+    "correct_abstention": 0.0,
+    "citation_correctness": 1.0,
+    "failure_types": [
+      "BAD_ABSTENTION"
+    ],
+    "unsupported_claims": [],
+    "missing_points": [
+      "Danh sách database production",
+      "Mục đích sử dụng",
+      "Xác nhận tuân thủ chính sách"
+    ],
+    "brief_rationale": "Không cung cấp thông tin đầy đủ để trả lời câu hỏi.",
+    "pass": false
+  },
+  "prompt_version": "1.3",
+  "schema_version": "1.0",
+  "model": "meta/llama-3.1-8b-instruct"
+}

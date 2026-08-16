@@ -17,3 +17,10 @@ def test_gemini_fallback_does_not_use_google_guardrail_key(monkeypatch):
     monkeypatch.setenv("GOOGLE_API_KEY", "guardrail-only-key")
 
     assert llm.get_gemini_api_key() == ""
+
+
+def test_groq_fallback_reads_the_settings_value(monkeypatch):
+    monkeypatch.setattr(llm, "settings", SimpleNamespace(groq_api_key="groq-fallback-key"))
+    monkeypatch.delenv("GROQ_API_KEY", raising=False)
+
+    assert llm.get_groq_api_key() == "groq-fallback-key"

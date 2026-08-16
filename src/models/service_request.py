@@ -15,7 +15,7 @@ from src.database import Base
 from src.models.ticket import FlexibleEnum
 
 
-class ServiceRequestStatus(str, enum.Enum):
+class ServiceRequestStatus(enum.StrEnum):
     DRAFT = "draft"
     SUBMITTED = "submitted"
     PENDING_APPROVAL = "pending_approval"
@@ -46,8 +46,19 @@ class ServiceRequest(Base):
     sla_hours: Mapped[int] = mapped_column(Integer, nullable=False, default=24)
     form_data: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
     rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    approval_comment: Mapped[str | None] = mapped_column(Text, nullable=True)
     submitter_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
     requested_for_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    approved_by_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    rejected_by_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    rejected_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    # Service Requests have their own fulfillment ownership.  This deliberately
+    # does not reuse Ticket.assignee_id or the incident state machine.
+    assignee_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True, index=True)
+    assigned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    fulfilled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    fulfilled_by_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), index=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 

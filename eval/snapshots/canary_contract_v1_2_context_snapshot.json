@@ -1,0 +1,25 @@
+{
+  "GT-006": [],
+  "GT-023": [
+    {
+      "doc_id": "kb-001",
+      "content": "Nhân viên báo lỗi không đăng nhập được VPN, thông báo lỗi authentication failed hoặc connection timeout khi kết nối VPN Cisco AnyConnect/FortiClient. 1. Kiểm tra username/password VPN (thường khác email). 2. Xóa profile VPN cũ và tạo mới. 3. Kiểm tra firewall máy tính local. 4. Thử đổi network (4G thay WiFi). 5. Reset MFA app nếu dùng 2FA. 6. Liên hệ IT reset VPN account nếu vẫn lỗi.",
+      "metadata": {"title": "Không kết nối được VPN công ty", "source_id": "kb-001", "source_type": "INTERNAL"}
+    }
+  ],
+  "GT-047": [
+    {
+      "doc_id": "eval-gt047-vpn-port",
+      "content": "Corporate VPN gateway uses port 443. This fixture contains no account lockout policy.",
+      "metadata": {"title": "VPN gateway port", "source_id": "eval-gt047-vpn-port", "source_type": "EVAL_FIXTURE"}
+    }
+  ],
+  "GT-048": [
+    {
+      "doc_id": "eval-gt048-replacement-conditions",
+      "content": "Replacement-laptop eligibility requires an approved business need, manager approval, and confirmation that the employee needs a company device for the assigned role. This evaluation fixture intentionally contains no fulfillment-time or SLA information.",
+      "metadata": {"title": "Evaluation fixture: replacement laptop conditions", "source_id": "eval-gt048-replacement-conditions", "source_type": "EVAL_FIXTURE", "provenance": "golden GT-048 context_info: conditions available; fulfillment time absent"}
+    }
+  ],
+  "GT-068": []
+}

@@ -59,3 +59,10 @@ out/
 # AI logs — tracked structure, ignored content
 .ai-log/*.jsonl
 .ai-log/archive/
+
+# Temp test directories
+.pytest*/
+.pytest_tmp/
+temp_pytest*/
+temp_rag.json
+restored_rag_service.py

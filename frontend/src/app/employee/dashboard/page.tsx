@@ -90,11 +90,11 @@ const SERVICE_CATALOG = [
 ];
 
 const KB_SUGGESTIONS = [
-  { title: 'Khắc phục sự cố Wi-Fi trên Windows', category: 'Hạ tầng mạng', link: '/login' },
-  { title: 'Kết nối VPN làm việc từ xa trên Windows', category: 'Hạ tầng mạng', link: '/login' },
-  { title: 'Sửa lỗi tệp dữ liệu Outlook PST và OST', category: 'Phần mềm', link: '/login' },
-  { title: 'Xử lý lỗi tự đặt lại mật khẩu Entra SSPR', category: 'Tài khoản', link: '/login' },
-  { title: 'Khắc phục lỗi màn hình xanh Windows (BSOD)', category: 'Sự cố khẩn cấp', link: '/login' },
+  { title: 'Khắc phục sự cố Wi-Fi trên Windows', category: 'Hạ tầng mạng', link: '/employee/kb' },
+  { title: 'Kết nối VPN làm việc từ xa trên Windows', category: 'Hạ tầng mạng', link: '/employee/kb' },
+  { title: 'Sửa lỗi tệp dữ liệu Outlook PST và OST', category: 'Phần mềm', link: '/employee/kb' },
+  { title: 'Xử lý lỗi tự đặt lại mật khẩu Entra SSPR', category: 'Tài khoản', link: '/employee/kb' },
+  { title: 'Khắc phục lỗi màn hình xanh Windows (BSOD)', category: 'Sự cố khẩn cấp', link: '/employee/kb' },
 ];
 
 export default function EmployeeDashboard() {

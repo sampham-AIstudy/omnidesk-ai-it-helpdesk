@@ -1,0 +1,50 @@
+{
+  "milestone": "PROD-PREFLIGHT-1",
+  "audit_date": "2026-08-16",
+  "environment": "production",
+  "verdict": {
+    "production_data_ready": true,
+    "production_env_ready": true,
+    "production_preflight": "PASS"
+  },
+  "database_strategy": {
+    "clean_bootstrap": "INITIALIZE_FRESH_ON_DEPLOY",
+    "dev_database_preservation": "DATA_HELPDESK_DB_INTACT",
+    "demo_seed_in_production": "DISABLED",
+    "demo_users_leaked": 0,
+    "smoke_tickets_leaked": 0,
+    "smoke_service_requests_leaked": 0
+  },
+  "initial_admin": {
+    "provisioning_method": "ENVIRONMENT_VARIABLES",
+    "email_field": "INITIAL_ADMIN_EMAIL",
+    "password_field": "INITIAL_ADMIN_PASSWORD",
+    "username_field": "INITIAL_ADMIN_USERNAME",
+    "full_name_field": "INITIAL_ADMIN_FULL_NAME",
+    "password_logging": "NONE",
+    "idempotent": true
+  },
+  "knowledge_base": {
+    "chroma_collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+    "document_count": 433,
+    "kb_036_present_in_sqlite": true,
+    "kb_036_present_in_chroma": true,
+    "embedding_backend": "sentence_transformer",
+    "embedding_provenance_valid": true
+  },
+  "clean_boot_test": {
+    "total_stages": 6,
+    "passed_stages": 6,
+    "health_endpoint": "PASS",
+    "admin_jwt_login": "PASS",
+    "demo_accounts_rejected": "PASS (401)",
+    "restart_persistence": "PASS",
+    "dev_db_intact": "PASS"
+  },
+  "artifacts": [
+    ".env.production.example",
+    "scripts/run_production_preflight.py",
+    "eval/results/production_preflight_v1_10_1.md",
+    "eval/results/production_preflight_v1_10_1.json"
+  ]
+}

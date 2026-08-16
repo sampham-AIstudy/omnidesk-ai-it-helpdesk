@@ -1,0 +1,1079 @@
+{
+  "__metadata__": {
+    "snapshot_version": "enterprise-context-snapshot-v1.2",
+    "golden_sha256": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b",
+    "manifest_sha256": "fa4f577ef6f6ea80354ab0b28694d0b50729260ffaef2b7bf21d2353a2caf2f3",
+    "source_mapping_sha256": "3f47beadbc08c90c80a1ebd183775fd87785c32bef91452b3ee002218ec5fc35",
+    "kb_fixture_sha256": "610ed1661e076400bd866e2ff83e34443d744054129289e33089964c97684499",
+    "ticket_fixture_sha256": "2c9acfc5c62a5f272c621d2e66f86d2dc1d065304865ccb74d988d77049529f8",
+    "builder_version": "stable-id-builder-v1.2",
+    "git_commit": "f13cec3807f5058de6eb41289e1369e60ff97c80",
+    "fixture_integrity": {
+      "total": 90,
+      "passed": 90,
+      "eval_fixture_error_count": 0,
+      "error_count_by_type": {},
+      "cases": [
+        {
+          "id": "GT-001",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-002",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-003",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-004",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-005",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-006",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-007",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-008",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-009",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-010",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-011",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-012",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-013",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-014",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-015",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-016",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-017",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-018",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-019",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-020",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-004"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-021",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-033"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-022",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-009"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-023",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-001"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-024",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-001"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-025",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-002",
+            "kb-003"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-026",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-003"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-027",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-010"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-028",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-029",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-010"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-030",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-031",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-032",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-033",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-034",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-035",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-036",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-037",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-038",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-039",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-040",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-041",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-042",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-043",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-044",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-045",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-001"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-046",
+          "expected_evidence_mode": "UNSUPPORTED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-047",
+          "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+          "context_source_ids": [
+            "eval-gt047-vpn-port"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-048",
+          "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+          "context_source_ids": [
+            "eval-gt048-replacement-conditions"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-049",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "eval-gt049-sla-a",
+            "eval-gt049-sla-b"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-050",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-051",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-052",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-053",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-054",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-055",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-056",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-057",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-058",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-059",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-060",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-061",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-062",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-063",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-064",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-065",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-066",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-067",
+          "expected_evidence_mode": "PARTIALLY_SUPPORTED",
+          "context_source_ids": [
+            "kb-001",
+            "kb-010"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-068",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-069",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-070",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-071",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-010"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-072",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-006"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-073",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-015"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-074",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-075",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-076",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-001"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-077",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-078",
+          "expected_evidence_mode": "UNSUPPORTED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-079",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-080",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-081",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-082",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-083",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-084",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-085",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-086",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "eval-kb-12-password-policy"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-087",
+          "expected_evidence_mode": "UNSUPPORTED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-088",
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "eval-gt047-vpn-port"
+          ],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-089",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        },
+        {
+          "id": "GT-090",
+          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "context_source_ids": [],
+          "integrity": "PASS",
+          "errors": []
+        }
+      ]
+    }
+  },
+  "GT-001": [],
+  "GT-002": [],
+  "GT-003": [],
+  "GT-004": [],
+  "GT-005": [],
+  "GT-006": [],
+  "GT-007": [],
+  "GT-008": [],
+  "GT-009": [],
+  "GT-010": [],
+  "GT-011": [],
+  "GT-012": [],
+  "GT-013": [],
+  "GT-014": [],
+  "GT-015": [],
+  "GT-016": [],
+  "GT-017": [],
+  "GT-018": [],
+  "GT-019": [],
+  "GT-020": [
+    {
+      "doc_id": "kb-004",
+      "content": "Email bị kẹt trong Outbox, Outlook báo Disconnected hoặc không đồng bộ với Exchange Server.\n1. Kiểm tra trạng thái kết nối góc dưới Outlook. 2. File → Account Settings → kiểm tra server settings. 3. Xóa email kẹt trong Outbox. 4. Repair OST: Account Settings → Data Files → Repair. 5. Tạo profile Outlook mới nếu vẫn lỗi.",
+      "metadata": {
+        "source_id": "kb-004",
+        "source_type": "INTERNAL",
+        "title": "Outlook không đồng bộ email / stuck sending",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "7bbbd9acc00212029da94e43b91bb50e03d6eebab28b1e3b768fe21f2b0670c7",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-021": [
+    {
+      "doc_id": "kb-033",
+      "content": "Microsoft Teams hoặc Zoom không kết nối được cuộc họp, mic/camera không nhận, hoặc âm thanh bị vỡ.\n1. Kiểm tra permission mic/camera trong Windows Settings → Privacy. 2. Chọn đúng thiết bị audio trong Teams/Zoom settings. 3. Kiểm tra bandwidth: Teams cần tối thiểu 2Mbps. 4. Update Teams/Zoom lên phiên bản mới nhất. 5. Thử web browser thay vì app.",
+      "metadata": {
+        "source_id": "kb-033",
+        "source_type": "INTERNAL",
+        "title": "Teams/Zoom không hoạt động khi họp online",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "f04ba1db14de346eaabfb7c172e08dea85bc8f25d7aba5863acc44b94551ecd4",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-022": [
+    {
+      "doc_id": "kb-009",
+      "content": "Máy tính của nhân viên chạy chậm bất thường, CPU/RAM cao, thời gian khởi động lâu.\n1. Kiểm tra Task Manager (Ctrl+Shift+Esc) xem process nào ngốn tài nguyên. 2. Disk Cleanup và disk defrag. 3. Kiểm tra virus bằng Windows Defender. 4. Tắt startup programs không cần thiết. 5. Nếu RAM <8GB, xem xét nâng cấp.",
+      "metadata": {
+        "source_id": "kb-009",
+        "source_type": "INTERNAL",
+        "title": "Máy tính chạy chậm / lag",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "18c5aa931b03a2ac776858db5154446d63089363ec7bd1c99e8975ac4fe190fa",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-023": [
+    {
+      "doc_id": "kb-001",
+      "content": "Nhân viên báo lỗi không đăng nhập được VPN, thông báo lỗi authentication failed hoặc connection timeout khi kết nối VPN Cisco AnyConnect/FortiClient.\n1. Kiểm tra username/password VPN (thường khác email). 2. Xóa profile VPN cũ và tạo mới. 3. Kiểm tra firewall máy tính local. 4. Thử đổi network (4G thay WiFi). 5. Reset MFA app nếu dùng 2FA. 6. Liên hệ IT reset VPN account nếu vẫn lỗi.",
+      "metadata": {
+        "source_id": "kb-001",
+        "source_type": "INTERNAL",
+        "title": "Không kết nối được VPN công ty",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "8c28aa90616450c1ff8bb86977d664cbc0cd9fbcd9e053e629b4e77de3e6d931",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-024": [
+    {
+      "doc_id": "kb-001",
+      "content": "Nhân viên báo lỗi không đăng nhập được VPN, thông báo lỗi authentication failed hoặc connection timeout khi kết nối VPN Cisco AnyConnect/FortiClient.\n1. Kiểm tra username/password VPN (thường khác email). 2. Xóa profile VPN cũ và tạo mới. 3. Kiểm tra firewall máy tính local. 4. Thử đổi network (4G thay WiFi). 5. Reset MFA app nếu dùng 2FA. 6. Liên hệ IT reset VPN account nếu vẫn lỗi.",
+      "metadata": {
+        "source_id": "kb-001",
+        "source_type": "INTERNAL",
+        "title": "Không kết nối được VPN công ty",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "8c28aa90616450c1ff8bb86977d664cbc0cd9fbcd9e053e629b4e77de3e6d931",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-025": [
+    {
+      "doc_id": "kb-002",
+      "content": "Nhân viên phàn nàn WiFi văn phòng bị yếu, mất kết nối liên tục, hoặc không kết nối được vào mạng nội bộ. Ảnh hưởng nhiều người cùng khu vực.\n1. Kiểm tra trạng thái Access Point trong khu vực. 2. Restart thiết bị của người dùng. 3. Quên WiFi và kết nối lại. 4. Nếu ảnh hưởng nhiều người → kiểm tra AP controller, restart AP. 5. Kiểm tra kênh WiFi bị nhiễu.",
+      "metadata": {
+        "source_id": "kb-002",
+        "source_type": "INTERNAL",
+        "title": "WiFi văn phòng yếu/mất kết nối",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "a93b5901cc1eaf531b7fbd8e8c976fff034810e79aefea4497a6c457cded8906",
+        "provenance": "frozen KB fixture"
+      }
+    },
+    {
+      "doc_id": "kb-003",
+      "content": "Máy tính không vào được Internet, có thể vào mạng nội bộ. DNS resolution thất bại hoặc proxy không hoạt động.\n1. Ping 8.8.8.8 kiểm tra kết nối IP. 2. Kiểm tra cấu hình proxy (IE → Internet Options → Connections → LAN Settings). 3. Kiểm tra DNS: nslookup google.com. 4. Flush DNS: ipconfig /flushdns. 5. Kiểm tra cài đặt firewall/antivirus có block không.",
+      "metadata": {
+        "source_id": "kb-003",
+        "source_type": "INTERNAL",
+        "title": "Không truy cập được Internet từ máy tính",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "9fd44e8c030d61077216db9998952fd023f16a8fbfe008e2d757116221adc6c5",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-026": [
+    {
+      "doc_id": "kb-003",
+      "content": "Máy tính không vào được Internet, có thể vào mạng nội bộ. DNS resolution thất bại hoặc proxy không hoạt động.\n1. Ping 8.8.8.8 kiểm tra kết nối IP. 2. Kiểm tra cấu hình proxy (IE → Internet Options → Connections → LAN Settings). 3. Kiểm tra DNS: nslookup google.com. 4. Flush DNS: ipconfig /flushdns. 5. Kiểm tra cài đặt firewall/antivirus có block không.",
+      "metadata": {
+        "source_id": "kb-003",
+        "source_type": "INTERNAL",
+        "title": "Không truy cập được Internet từ máy tính",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "9fd44e8c030d61077216db9998952fd023f16a8fbfe008e2d757116221adc6c5",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-027": [
+    {
+      "doc_id": "kb-010",
+      "content": "Nhân viên quên mật khẩu đăng nhập máy tính Windows hoặc tài khoản domain Active Directory.\n1. Self-service: truy cập SSPR portal (https://sspr.company.local). 2. IT reset: Xác thực identity → AD Users and Computers → Reset password. 3. Enforce change at next logon. 4. Unlock account nếu bị khóa sau nhiều lần sai.",
+      "metadata": {
+        "source_id": "kb-010",
+        "source_type": "INTERNAL",
+        "title": "Quên mật khẩu Windows / tài khoản domain",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "e926ed726a00ef174279bfe00658ee771b3241c3fc7e498d7eb4058038a3788c",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-028": [],
+  "GT-029": [
+    {
+      "doc_id": "kb-010",
+      "content": "Nhân viên quên mật khẩu đăng nhập máy tính Windows hoặc tài khoản domain Active Directory.\n1. Self-service: truy cập SSPR portal (https://sspr.company.local). 2. IT reset: Xác thực identity → AD Users and Computers → Reset password. 3. Enforce change at next logon. 4. Unlock account nếu bị khóa sau nhiều lần sai.",
+      "metadata": {
+        "source_id": "kb-010",
+        "source_type": "INTERNAL",
+        "title": "Quên mật khẩu Windows / tài khoản domain",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "e926ed726a00ef174279bfe00658ee771b3241c3fc7e498d7eb4058038a3788c",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-030": [],
+  "GT-031": [],
+  "GT-032": [],
+  "GT-033": [],
+  "GT-034": [],
+  "GT-035": [],
+  "GT-036": [],
+  "GT-037": [],
+  "GT-038": [],
+  "GT-039": [],
+  "GT-040": [],
+  "GT-041": [],
+  "GT-042": [],
+  "GT-043": [],
+  "GT-044": [],
+  "GT-045": [
+    {
+      "doc_id": "kb-001",
+      "content": "Nhân viên báo lỗi không đăng nhập được VPN, thông báo lỗi authentication failed hoặc connection timeout khi kết nối VPN Cisco AnyConnect/FortiClient.\n1. Kiểm tra username/password VPN (thường khác email). 2. Xóa profile VPN cũ và tạo mới. 3. Kiểm tra firewall máy tính local. 4. Thử đổi network (4G thay WiFi). 5. Reset MFA app nếu dùng 2FA. 6. Liên hệ IT reset VPN account nếu vẫn lỗi.",
+      "metadata": {
+        "source_id": "kb-001",
+        "source_type": "INTERNAL",
+        "title": "Không kết nối được VPN công ty",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "8c28aa90616450c1ff8bb86977d664cbc0cd9fbcd9e053e629b4e77de3e6d931",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-046": [],
+  "GT-047": [
+    {
+      "doc_id": "eval-gt047-vpn-port",
+      "content": "Corporate VPN gateway uses port 443. This fixture contains no account lockout policy.",
+      "metadata": {
+        "source_id": "eval-gt047-vpn-port",
+        "source_type": "EVAL_FIXTURE",
+        "title": "VPN gateway port",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "af0925ef1981f7a83064b62ef10bda8afd9a10b870c46de05652ac53f2fc216b",
+        "provenance": "golden GT-047 context_info"
+      }
+    }
+  ],
+  "GT-048": [
+    {
+      "doc_id": "eval-gt048-replacement-conditions",
+      "content": "Replacement-laptop eligibility requires an approved business need, manager approval, and confirmation that the employee needs a company device for the assigned role. The fulfillment time is intentionally not provided in this fixture.",
+      "metadata": {
+        "source_id": "eval-gt048-replacement-conditions",
+        "source_type": "EVAL_FIXTURE",
+        "title": "Evaluation fixture: replacement laptop conditions",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "a14e261f706239964ba2fa5af529842e983866ace21a41a49b06c7135b181b2c",
+        "provenance": "golden GT-048 context_info"
+      }
+    }
+  ],
+  "GT-049": [
+    {
+      "doc_id": "eval-gt049-sla-a",
+      "content": "KB-A states that P1 incidents have an SLA of 2 hours.",
+      "metadata": {
+        "source_id": "eval-gt049-sla-a",
+        "source_type": "EVAL_FIXTURE",
+        "title": "Evaluation fixture: P1 SLA source A",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "4558964076ebbc38a35f9eb22da1050a634b06ae5f58fad4c42bdba0a365cde8",
+        "provenance": "golden GT-049 context_info"
+      }
+    },
+    {
+      "doc_id": "eval-gt049-sla-b",
+      "content": "KB-B states that P1 incidents have an SLA of 4 hours.",
+      "metadata": {
+        "source_id": "eval-gt049-sla-b",
+        "source_type": "EVAL_FIXTURE",
+        "title": "Evaluation fixture: P1 SLA source B",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "12a2e83a2917ddf7631721ad8b8989005a9d8fa819e9dfc3012a4c4049941b55",
+        "provenance": "golden GT-049 context_info"
+      }
+    }
+  ],
+  "GT-050": [],
+  "GT-051": [],
+  "GT-052": [],
+  "GT-053": [],
+  "GT-054": [],
+  "GT-055": [],
+  "GT-056": [],
+  "GT-057": [],
+  "GT-058": [],
+  "GT-059": [],
+  "GT-060": [],
+  "GT-061": [],
+  "GT-062": [],
+  "GT-063": [],
+  "GT-064": [],
+  "GT-065": [],
+  "GT-066": [],
+  "GT-067": [
+    {
+      "doc_id": "kb-001",
+      "content": "Nhân viên báo lỗi không đăng nhập được VPN, thông báo lỗi authentication failed hoặc connection timeout khi kết nối VPN Cisco AnyConnect/FortiClient.\n1. Kiểm tra username/password VPN (thường khác email). 2. Xóa profile VPN cũ và tạo mới. 3. Kiểm tra firewall máy tính local. 4. Thử đổi network (4G thay WiFi). 5. Reset MFA app nếu dùng 2FA. 6. Liên hệ IT reset VPN account nếu vẫn lỗi.",
+      "metadata": {
+        "source_id": "kb-001",
+        "source_type": "INTERNAL",
+        "title": "Không kết nối được VPN công ty",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "8c28aa90616450c1ff8bb86977d664cbc0cd9fbcd9e053e629b4e77de3e6d931",
+        "provenance": "frozen KB fixture"
+      }
+    },
+    {
+      "doc_id": "kb-010",
+      "content": "Nhân viên quên mật khẩu đăng nhập máy tính Windows hoặc tài khoản domain Active Directory.\n1. Self-service: truy cập SSPR portal (https://sspr.company.local). 2. IT reset: Xác thực identity → AD Users and Computers → Reset password. 3. Enforce change at next logon. 4. Unlock account nếu bị khóa sau nhiều lần sai.",
+      "metadata": {
+        "source_id": "kb-010",
+        "source_type": "INTERNAL",
+        "title": "Quên mật khẩu Windows / tài khoản domain",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "e926ed726a00ef174279bfe00658ee771b3241c3fc7e498d7eb4058038a3788c",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-068": [],
+  "GT-069": [],
+  "GT-070": [],
+  "GT-071": [
+    {
+      "doc_id": "kb-010",
+      "content": "Nhân viên quên mật khẩu đăng nhập máy tính Windows hoặc tài khoản domain Active Directory.\n1. Self-service: truy cập SSPR portal (https://sspr.company.local). 2. IT reset: Xác thực identity → AD Users and Computers → Reset password. 3. Enforce change at next logon. 4. Unlock account nếu bị khóa sau nhiều lần sai.",
+      "metadata": {
+        "source_id": "kb-010",
+        "source_type": "INTERNAL",
+        "title": "Quên mật khẩu Windows / tài khoản domain",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "e926ed726a00ef174279bfe00658ee771b3241c3fc7e498d7eb4058038a3788c",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-072": [
+    {
+      "doc_id": "kb-006",
+      "content": "Yêu cầu cấp quyền truy cập shared mailbox phòng ban, hoặc thêm vào distribution list nhận email nhóm.\nCần manager approval. Sau khi có approval: 1. Vào Exchange Admin Center. 2. Tìm mailbox/DL cần thêm. 3. Add permissions/membership. 4. Notify người dùng sau 15 phút.",
+      "metadata": {
+        "source_id": "kb-006",
+        "source_type": "INTERNAL",
+        "title": "Cần cấp quyền shared mailbox / distribution list",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "9a8c30ca25391025d72d4cbd8e62b9967e272bf24f3db3fb6dbeb9e4a606a23f",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-073": [
+    {
+      "doc_id": "kb-015",
+      "content": "Laptop không bật nguồn, màn hình xanh BSOD, hoặc boot loop liên tục không vào Windows được.\n1. Hard reset: giữ nút nguồn 10 giây. 2. Thử boot vào Safe Mode (F8). 3. Chạy startup repair từ Windows Recovery. 4. Nếu BSOD → ghi lại error code, kiểm tra RAM. 5. Nếu phần cứng → gửi kỹ thuật.",
+      "metadata": {
+        "source_id": "kb-015",
+        "source_type": "INTERNAL",
+        "title": "Laptop hỏng / không khởi động được",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "cfdb4be83adab45f257b5a712eeaa1fe7086679278d61fe034548a57197c5d03",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-074": [],
+  "GT-075": [],
+  "GT-076": [
+    {
+      "doc_id": "kb-001",
+      "content": "Nhân viên báo lỗi không đăng nhập được VPN, thông báo lỗi authentication failed hoặc connection timeout khi kết nối VPN Cisco AnyConnect/FortiClient.\n1. Kiểm tra username/password VPN (thường khác email). 2. Xóa profile VPN cũ và tạo mới. 3. Kiểm tra firewall máy tính local. 4. Thử đổi network (4G thay WiFi). 5. Reset MFA app nếu dùng 2FA. 6. Liên hệ IT reset VPN account nếu vẫn lỗi.",
+      "metadata": {
+        "source_id": "kb-001",
+        "source_type": "INTERNAL",
+        "title": "Không kết nối được VPN công ty",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "8c28aa90616450c1ff8bb86977d664cbc0cd9fbcd9e053e629b4e77de3e6d931",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-077": [],
+  "GT-078": [],
+  "GT-079": [],
+  "GT-080": [],
+  "GT-081": [],
+  "GT-082": [],
+  "GT-083": [],
+  "GT-084": [],
+  "GT-085": [],
+  "GT-086": [
+    {
+      "doc_id": "eval-kb-12-password-policy",
+      "content": "KB-12 does not contain a requirement that passwords must be changed every 90 days.",
+      "metadata": {
+        "source_id": "eval-kb-12-password-policy",
+        "source_type": "EVAL_FIXTURE",
+        "title": "Evaluation fixture: KB-12 password policy",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "ec6b889a5691bf7d9d9fa26902e1570a946853832ea82e1671de57819f7d5ea3",
+        "provenance": "golden GT-086 context_info"
+      }
+    }
+  ],
+  "GT-087": [],
+  "GT-088": [
+    {
+      "doc_id": "eval-gt047-vpn-port",
+      "content": "Corporate VPN gateway uses port 443. This fixture contains no account lockout policy.",
+      "metadata": {
+        "source_id": "eval-gt047-vpn-port",
+        "source_type": "EVAL_FIXTURE",
+        "title": "VPN gateway port",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "af0925ef1981f7a83064b62ef10bda8afd9a10b870c46de05652ac53f2fc216b",
+        "provenance": "golden GT-047 context_info"
+      }
+    }
+  ],
+  "GT-089": [],
+  "GT-090": []
+}

@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, Bot, MessageSquareText, Send, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ArrowUpRight, Bot, MessageSquareText, Send, X } from 'lucide-react';
 import api from '@/lib/api';
 
 type ChatMessage = {
@@ -21,21 +21,16 @@ type ChatReply = {
 };
 
 type AIChatWidgetProps = {
-  initiallyOpen?: boolean;
   showLauncher?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
 };
 
-/**
- * Quick chat for every portal page. Messages are persisted to the exact same
- * conversation API as the full workspace, rather than keeping a second chat.
- */
-export default function AIChatWidget({ initiallyOpen = false, showLauncher = true, open, onOpenChange }: AIChatWidgetProps) {
+export default function AIChatWidget({ showLauncher = true, open, onOpenChange }: AIChatWidgetProps) {
   const router = useRouter();
-  const [uncontrolledOpen, setUncontrolledOpen] = useState(initiallyOpen);
-  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const [input, setInput] = useState('');
+  const [conversationId, setConversationId] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -62,6 +57,10 @@ export default function AIChatWidget({ initiallyOpen = false, showLauncher = tru
     event.preventDefault();
     const text = input.trim();
     if (!text || sending) return;
+    if (text.length > 8000) {
+      setError(`Nội dung câu hỏi (${text.length.toLocaleString('vi-VN')} ký tự) vượt quá giới hạn 8.000 ký tự.`);
+      return;
+    }
 
     setInput('');
     setError(null);
@@ -124,12 +123,32 @@ export default function AIChatWidget({ initiallyOpen = false, showLauncher = tru
         </div>
 
         {error && <p className="border-t border-rose-100 bg-rose-50 px-3.5 py-2 text-[11px] text-rose-700">{error}</p>}
-        <form onSubmit={(event) => void handleSend(event)} className="border-t border-slate-200 bg-white p-3">
-          <div className="flex items-center gap-2 rounded-lg border border-slate-300 bg-white p-1.5 transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-50">
-            <input value={input} onChange={(event) => setInput(event.target.value)} placeholder="Hỏi về VPN, email, quyền truy cập…" className="min-w-0 flex-1 border-0 bg-transparent px-2 py-1 text-xs text-slate-800 outline-none placeholder:text-slate-400" aria-label="Câu hỏi cho AI Copilot" />
-            <button type="submit" disabled={!input.trim() || sending} className="grid size-8 place-items-center rounded-md bg-blue-600 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Gửi tin nhắn"><Send size={15} /></button>
+        <form onSubmit={(event) => void handleSend(event)} className="border-t border-slate-200 bg-white p-3 space-y-1">
+          <div className={`flex items-center gap-2 rounded-lg border bg-white p-1.5 transition ${input.length > 8000 ? 'border-rose-400' : 'border-slate-300 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-50'}`}>
+            <input
+              value={input}
+              onPaste={(e) => {
+                const pasteData = e.clipboardData.getData('text');
+                if (input.length + pasteData.length > 8000) {
+                  setError(`Nội dung dán (${(input.length + pasteData.length).toLocaleString('vi-VN')} ký tự) vượt quá giới hạn 8.000 ký tự.`);
+                }
+              }}
+              onChange={(event) => {
+                setInput(event.target.value);
+                if (event.target.value.length <= 8000 && error?.includes('8.000')) setError(null);
+              }}
+              placeholder="Hỏi về VPN, email, quyền truy cập…"
+              className="min-w-0 flex-1 border-0 bg-transparent px-2 py-1 text-xs text-slate-800 outline-none placeholder:text-slate-400"
+              aria-label="Câu hỏi cho AI Copilot"
+            />
+            <button type="submit" disabled={!input.trim() || sending || input.length > 8000} className="grid size-8 place-items-center rounded-md bg-blue-600 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Gửi tin nhắn"><Send size={15} /></button>
           </div>
-          <p className="mt-2 px-1 text-[10px] text-slate-400">Lịch sử cuộc trò chuyện này có trong AI Workspace.</p>
+          <div className="flex items-center justify-between px-1 text-[10px] text-slate-400">
+            <span>Lưu tự động trong Workspace</span>
+            <span className={`font-mono ${input.length > 8000 ? 'font-bold text-rose-600' : input.length >= 7000 ? 'font-semibold text-amber-600' : ''}`}>
+              {input.length.toLocaleString('vi-VN')} / 8.000
+            </span>
+          </div>
         </form>
       </section>
     )}
