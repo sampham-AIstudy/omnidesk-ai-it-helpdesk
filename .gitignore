@@ -16,18 +16,36 @@ env/
 .env
 .env.local
 .env.production
+.env.*.local
+.env.test
 
-# IDE
+# IDE & AI Assistant Configurations
 .vscode/
 .idea/
 .claude/
+.gemini/
+.codex/
+.cursor/
+.fleet/
+.vs/
+*.code-workspace
 *.swp
 *.swo
 *~
 
+# Linter & Type-checker caches
+.ruff_cache/
+.mypy_cache/
+.pytype/
+.pyre/
+.hypothesis/
+
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
 
 # Data (never commit large data)
 /data/
@@ -66,9 +84,18 @@ out/
 .ai-log/*.jsonl
 .ai-log/archive/
 
-# Temp test directories
+# Temp test & scratch files
 .pytest*/
 .pytest_tmp/
 temp_pytest*/
 temp_rag.json
 restored_rag_service.py
+temp_*
+*.tmp
+*.temp
+scratch/
+*.bak
+*.backup
+*.old
+*.orig
+
