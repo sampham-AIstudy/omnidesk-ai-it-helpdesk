@@ -5,6 +5,7 @@ import asyncio
 import json
 import logging
 from datetime import datetime
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -16,6 +17,7 @@ from starlette.responses import StreamingResponse
 
 from src.api.auth import get_current_active_user
 from src.database import get_db
+from src.guardrails.ai_abuse_guard import guard_ai_generation, validate_chat_message_size
 from src.models.chat_conversation import ChatConversation, ChatMessage
 from src.models.ticket import Ticket
 from src.models.user import User
@@ -26,7 +28,11 @@ from src.prompts import (
     evidence_source_ids,
     remove_unrecognized_source_ids,
 )
-from src.services.action_grounding import unverified_action_reply, workspace_handoff_not_invoked_reply
+from src.services.action_grounding import (
+    multi_intent_hold_reply,
+    unverified_action_reply,
+    workspace_handoff_not_invoked_reply,
+)
 from src.services.chat_routing_service import ChatRouteDecision, route_chat_message
 from src.services.context_query_service import build_context_aware_retrieval_query
 from src.services.llm import get_rag_llm
@@ -53,8 +59,6 @@ from src.services.web_research_service import (
     persist_research_audit,
     remove_hallucinated_citations,
 )
-
-from src.guardrails.ai_abuse_guard import guard_ai_generation, validate_chat_message_size
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/chat", tags=["AI Chat"])
@@ -358,7 +362,15 @@ async def _chat_with_agent(
 
     profile_reply = self_profile_reply(message, current_user)
     if profile_reply:
-        return ChatResponse(reply=profile_reply, confidence=1.0)
+        is_probe = (
+            "không bao giờ tiết lộ mật khẩu" in profile_reply
+            or "chỉ có thể xem thông tin hồ sơ của tài khoản đang đăng nhập" in profile_reply
+        )
+        return ChatResponse(
+            reply=profile_reply,
+            confidence=0.0 if is_probe else 1.0,
+            answerability="unanswerable" if is_probe else "evidence_available",
+        )
 
     from src.guardrails.input_guardrails import InputGuardrailPlugin
     from src.guardrails.output_guardrails import content_filter
@@ -379,7 +391,11 @@ async def _chat_with_agent(
         set_current_attributes({"helpdesk.guardrail.result": guard_res.get("decision", "UNKNOWN")})
     if guard_res.get("decision") == "BLOCK":
         from src.guardrails.output_guardrails import format_plain_text_response
-        return ChatResponse(reply=format_plain_text_response(guard_res.get("safe_response", "Yêu cầu đã bị từ chối do chính sách an toàn.")), confidence=0.0)
+        return ChatResponse(
+            reply=format_plain_text_response(guard_res.get("safe_response", "Yêu cầu đã bị từ chối do chính sách an toàn.")),
+            confidence=0.0,
+            answerability="unanswerable",
+        )
 
     clean_message = guard_res.get("normalized_text", message)
     if guard_res.get("needs_clarification"):
@@ -398,6 +414,10 @@ async def _chat_with_agent(
         "helpdesk.chat.retrieval_decision": route_decision.retrieval_decision,
         "helpdesk.chat.memory_required": route_decision.should_use_memory,
     })
+    multi_hold_reply = multi_intent_hold_reply(clean_message, recent_history=recent_history)
+    if multi_hold_reply:
+        set_current_attributes({"helpdesk.action_execution_state": "NOT_INVOKED"})
+        return _workspace_not_invoked_action_response(multi_hold_reply, route_decision)
     workspace_handoff_reply = workspace_handoff_not_invoked_reply(clean_message)
     if workspace_handoff_reply:
         set_current_attributes({"helpdesk.action_execution_state": "NOT_INVOKED"})
@@ -581,6 +601,7 @@ async def stream_chat_with_agent(
     db: AsyncSession = Depends(get_db),
 ):
     """SSE variant of chat: retrieval completes first, then LLM tokens are forwarded immediately."""
+    recent_history: list[Any] | None = None
     validate_chat_message_size(payload.message)
     message = payload.message.strip()
     if not message:
@@ -593,8 +614,16 @@ async def stream_chat_with_agent(
 
     profile_reply = self_profile_reply(message, current_user)
     if profile_reply:
+        is_probe = (
+            "không bao giờ tiết lộ mật khẩu" in profile_reply
+            or "chỉ có thể xem thông tin hồ sơ của tài khoản đang đăng nhập" in profile_reply
+        )
         async def profile_events():
-            yield _sse("done", ChatResponse(reply=profile_reply, confidence=1.0).model_dump(mode="json"))
+            yield _sse("done", ChatResponse(
+                reply=profile_reply,
+                confidence=0.0 if is_probe else 1.0,
+                answerability="unanswerable" if is_probe else "evidence_available",
+            ).model_dump(mode="json"))
         return StreamingResponse(profile_events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     from src.guardrails.input_guardrails import InputGuardrailPlugin
@@ -608,13 +637,13 @@ async def stream_chat_with_agent(
     if guard_result.get("decision") == "BLOCK":
         async def blocked_events():
             reply = format_plain_text_response(guard_result.get("safe_response", "Yêu cầu đã bị từ chối do chính sách an toàn."))
-            yield _sse("done", ChatResponse(reply=reply, confidence=0.0).model_dump(mode="json"))
+            yield _sse("done", ChatResponse(reply=reply, confidence=0.0, answerability="unanswerable").model_dump(mode="json"))
         return StreamingResponse(blocked_events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     if guard_result.get("needs_clarification"):
         async def clarification_events():
             reply = format_plain_text_response(guard_result.get("clarification_response", "Vui lòng mô tả thêm thiết bị hoặc dịch vụ đang gặp sự cố."))
-            yield _sse("done", ChatResponse(reply=reply, confidence=0.0).model_dump(mode="json"))
+            yield _sse("done", ChatResponse(reply=reply, confidence=0.0, answerability="needs_clarification").model_dump(mode="json"))
         return StreamingResponse(clarification_events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     clean_message = guard_result.get("normalized_text", message)
@@ -626,6 +655,16 @@ async def stream_chat_with_agent(
         "helpdesk.chat.retrieval_decision": route_decision.retrieval_decision,
         "helpdesk.chat.memory_required": route_decision.should_use_memory,
     })
+    multi_hold_reply = multi_intent_hold_reply(clean_message, recent_history=recent_history)
+    if multi_hold_reply:
+        set_current_attributes({"helpdesk.action_execution_state": "NOT_INVOKED"})
+
+        async def multi_hold_events():
+            yield _sse("done", _workspace_not_invoked_action_response(
+                multi_hold_reply, route_decision
+            ).model_dump(mode="json"))
+
+        return StreamingResponse(multi_hold_events(), media_type="text/event-stream", headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
     workspace_handoff_reply = workspace_handoff_not_invoked_reply(clean_message)
     if workspace_handoff_reply:
         set_current_attributes({"helpdesk.action_execution_state": "NOT_INVOKED"})

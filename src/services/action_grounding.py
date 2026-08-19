@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass
 from enum import StrEnum
+from typing import Any
 
 from src.observability.tracing import operation, record_tool_result
 
@@ -128,4 +130,132 @@ def workspace_handoff_not_invoked_reply(message: str) -> str | None:
     return (
         f"{action_state_reply(None)} Workspace Chat không thể tự chuyển bạn cho kỹ thuật viên. "
         "Để nhận hỗ trợ, hãy tạo Incident Ticket hoặc mở ticket hiện có rồi dùng chức năng Yêu cầu kỹ thuật viên."
+    )
+
+
+def _fold(text: str) -> str:
+    decomposed = unicodedata.normalize("NFD", text.lower())
+    return "".join(char for char in decomposed if unicodedata.category(char) != "Mn").replace("đ", "d")
+
+
+_HOLD_PATTERNS = [
+    r"\b(?:dung|khong|chua|khoan)\s+(?:tao|thuc hien|gui|lam|mo)\s+(?:gi|ticket|don|yeu cau|request)?\b.*(?:cho den khi|khi chua|truoc khi|cho toi)?.*(?:xac nhan|dong y|confirm)",
+    r"\b(?:nhung|tuy nhien)?\s*(?:dung|chua|khoan)\s+tao\s+gi\b",
+    r"\bchua\s+tao\s+(?:gi|ticket|don|yeu cau)\b",
+    r"\bcho\s+(?:khi\s+)?(?:toi|minh|em)\s+xac nhan\b",
+]
+
+
+def is_hold_requested(message: str) -> bool:
+    """Return True if the user explicitly requested holding mutations until confirmation."""
+    folded = _fold(" ".join(message.split()))
+    return any(re.search(p, folded, re.IGNORECASE) for p in _HOLD_PATTERNS)
+
+
+def parse_multi_intents(message: str) -> list[dict[str, str]]:
+    """Identify distinct intents (Incidents, Service Requests, Access Requests) in a composite turn."""
+    folded = _fold(" ".join(message.split()))
+    intents: list[dict[str, str]] = []
+
+    # 1. Incident Intents
+    if re.search(r"\bvpn\b.*(?:loi|hong|failed|khong|authentication|khong vao|mat ket noi)", folded):
+        intents.append({
+            "key": "incident_vpn",
+            "title": "Sự cố kỹ thuật (Incident)",
+            "detail": "Sự cố kết nối / lỗi VPN",
+        })
+    elif re.search(r"\b(?:wifi|wi-fi|mang|internet)\b.*(?:loi|hong|chap chon|khong|rot)", folded):
+        intents.append({
+            "key": "incident_network",
+            "title": "Sự cố kỹ thuật (Incident)",
+            "detail": "Sự cố mạng / Wi-Fi",
+        })
+    elif re.search(r"\b(?:laptop|may tinh|pc|man hinh|ban phim|chuot)\b.*(?:loi|hong|va dap|roi|rot|den|vo|nut)", folded):
+        intents.append({
+            "key": "incident_hardware",
+            "title": "Sự cố kỹ thuật (Incident)",
+            "detail": "Sự cố phần cứng thiết bị",
+        })
+    elif re.search(r"\b(?:outlook|teams|email|app|phan mem|sap|erp)\b.*(?:loi|hong|khong vao|crash)", folded):
+        intents.append({
+            "key": "incident_software",
+            "title": "Sự cố kỹ thuật (Incident)",
+            "detail": "Sự cố ứng dụng / phần mềm",
+        })
+
+    # 2. Service Request: Hardware
+    if re.search(r"\b(?:xin|cap|can|yeu cau|dang ky)\b.*\b(?:laptop|may tinh|pc)\b(?:\s+(?:moi|thay the))?", folded):
+        intents.append({
+            "key": "sr_laptop",
+            "title": "Yêu cầu dịch vụ (Service Request)",
+            "detail": "Yêu cầu cấp laptop mới",
+        })
+    elif re.search(r"\b(?:xin|cap|can|yeu cau|dang ky)\b.*\b(?:may in|man hinh|ban phim|chuot|tai nghe|thiet bi ngoai vi)\b", folded):
+        intents.append({
+            "key": "sr_peripheral",
+            "title": "Yêu cầu dịch vụ (Service Request)",
+            "detail": "Yêu cầu thiết bị ngoại vi",
+        })
+
+    # 3. Access Request / Permissions
+    if re.search(r"(?:(?:quyen|xin quyen|truy cap|xin)\b.*\b(?:git|repo|repository|github|gitlab)\b|\b(?:git|repo|repository|github|gitlab)\b.*(?:read-only|read\s+only|access|quyen|write)|\bquyen\s+git\b)", folded):
+        is_ro = "read-only" in folded or "read only" in folded
+        detail_suffix = " (read-only)" if is_ro else ""
+        intents.append({
+            "key": "access_git",
+            "title": "Yêu cầu quyền truy cập (Access Request)",
+            "detail": f"Yêu cầu quyền truy cập Git repository{detail_suffix}",
+        })
+    elif re.search(r"\b(?:xin|cap|dang ky)\b.*\bquyen\s+vpn\b", folded):
+        intents.append({
+            "key": "access_vpn",
+            "title": "Yêu cầu quyền truy cập (Access Request)",
+            "detail": "Yêu cầu cấp quyền VPN",
+        })
+    elif re.search(r"\b(?:xin|cap|dang ky)\b.*\bquyen\s+(?:db|database|csdl)\b", folded):
+        intents.append({
+            "key": "access_db",
+            "title": "Yêu cầu quyền truy cập (Access Request)",
+            "detail": "Yêu cầu cấp quyền Database",
+        })
+
+    # 4. Software License
+    if re.search(r"\b(?:xin|cap|cai|dang ky)\b.*\b(?:license|m365|office|phan mem)\b", folded):
+        intents.append({
+            "key": "sr_software",
+            "title": "Yêu cầu dịch vụ (Service Request)",
+            "detail": "Yêu cầu cấp bản quyền / cài đặt phần mềm",
+        })
+
+    return intents
+
+
+def multi_intent_hold_reply(
+    message: str,
+    recent_history: list[Any] | None = None,
+) -> str | None:
+    """Return structured hold response recognizing all intents without executing mutations."""
+    texts: list[str] = []
+    if recent_history:
+        for m in recent_history:
+            content = getattr(m, "content", None) or (m.get("content") if isinstance(m, dict) else None)
+            role = getattr(m, "role", None) or (m.get("role") if isinstance(m, dict) else None)
+            if role == "user" and content:
+                texts.append(content)
+    texts.append(message)
+    combined = " ".join(texts)
+
+    if not is_hold_requested(message) and not is_hold_requested(combined):
+        return None
+
+    intents = parse_multi_intents(combined)
+    if len(intents) < 2:
+        return None
+
+    intent_summary = "\n".join(f"{i+1}. {item['title']}: {item['detail']}" for i, item in enumerate(intents))
+    return (
+        f"Tôi đã ghi nhận {len(intents)} yêu cầu của bạn:\n\n"
+        f"{intent_summary}\n\n"
+        f"Chưa có thay đổi nào được thực hiện theo yêu cầu chờ xác nhận của bạn.\n"
+        f"Vui lòng xác nhận nếu bạn muốn tôi tiến hành tạo Incident cho sự cố kỹ thuật và khởi tạo các Service Request tương ứng."
     )

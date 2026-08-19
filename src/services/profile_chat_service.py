@@ -60,6 +60,11 @@ def self_profile_reply(message: str, user: User) -> str | None:
     """
     text = _fold(message)
 
+    # Benign policy / guidelines inquiries are handled by knowledge RAG, not profile guard
+    is_policy_query = any(term in text for term in ("quy dinh", "chinh sach", "huong dan", "tieu chuan", "dieu khoan"))
+    if is_policy_query and not any(term in text for term in ("cua toi", "cua minh", "ban than", "ca nhan")):
+        return None
+
     # 1. Credential & secret probing protection
     if any(re.search(pat, text) for pat in _PASSWORD_PROBE_PATTERNS):
         return (

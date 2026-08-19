@@ -94,28 +94,78 @@ COMPILED_OFF_TOPIC_PATTERNS = [re.compile(p, re.IGNORECASE) for p in OFF_TOPIC_P
 
 _SECURITY_REQUEST_PATTERNS: list[tuple[str, re.Pattern[str], str]] = [
     (
-        "SYSTEM_PROMPT_EXTRACTION",
-        re.compile(r"(?:bo qua.*(?:huong dan|quy tac|guardrail|instructions?|rules?)|(?:system|developer)\s+prompt|hidden\s+instructions)", re.I),
-        "Tôi không thể cung cấp system prompt, developer instructions hoặc chính sách nội bộ không công khai.",
+        "CROSS_TENANT_ACCESS",
+        re.compile(
+            r"(?:(?:cho toi\s+)?(?:xem|lay|tim|truy cap|liet ke|danh sach|list|show|view|get|in|dump|doc)\b.*(?:ticket|yeu cau|request|du lieu|thong tin|data).*(?:tenant|cong ty|don vi|to chuc)\s+khac|"
+            r"(?:ticket|yeu cau|request|du lieu|thong tin|data)\s+(?:cua\s+)?(?:toan bo\s+)?(?:tenant|cong ty|don vi|to chuc)\s+khac|"
+            r"(?:xem|lay|cho\s+toi)\s+(?:toan bo\s+)?ticket\s+(?:cua\s+)?tenant\s+khac)",
+            re.I,
+        ),
+        "Tôi không thể truy cập hoặc cung cấp dữ liệu, ticket thuộc tenant/đơn vị khác theo chính sách cô lập dữ liệu (tenant isolation).",
+    ),
+    (
+        "CROSS_USER_ACCESS",
+        re.compile(
+            r"(?:(?:cho toi\s+)?(?:xem|lay|tim|truy cap|liet ke|danh sach|list|show|view|get|in|dump|doc)\b.*(?:ticket|yeu cau|request|du lieu|thong tin|profile|tai khoan).*(?:cua\s+)?(?:user|nguoi dung|nhan vien|dong nghiep|nguoi)\s+khac|"
+            r"(?:ticket|yeu cau|request|profile|tai khoan)\s+(?:cua\s+)?(?:user|nguoi dung|nhan vien|dong nghiep|nguoi)\s+khac)",
+            re.I,
+        ),
+        "Tôi không thể cung cấp ticket hoặc thông tin cá nhân của người dùng khác theo chính sách phân quyền và bảo mật dữ liệu.",
     ),
     (
         "CREDENTIAL_REQUEST",
-        re.compile(r"(?:toi la|i am|gia su|gia vo|dong vai|coi nhu|assume).*admin.*(?:mat khau|password|credential|database|production|bo qua|override|quyen)", re.I),
+        re.compile(
+            r"(?:toi la|i am|gia su|gia vo|dong vai|coi nhu|assume)\s+(?:la\s+)?(?:admin|quan tri|manager|root|superuser|it admin).*(?:mat khau|password|credential|database|production|bo qua|override|quyen|privilege|access|cap quyen)",
+            re.I,
+        ),
         "Quyền hạn không thể được xác nhận từ nội dung chat. Tôi không thể tiết lộ thông tin xác thực hoặc cấp quyền khi chưa có xác thực RBAC hợp lệ.",
     ),
     (
         "DATA_EXFILTRATION",
-        re.compile(r"(?:liet ke|danh sach|cho toi|xem|lay|list|extract)\s+(?:thong tin\s+)?(?:tai khoan|mat khau|email|sdt|profile|credentials?)\s+(?:cua\s+)?(?:tat ca|toan bo|moi|all)\s+(?:nhan vien|user|nguoi dung|tai khoan|employees)", re.I),
+        re.compile(
+            r"(?:liet ke|danh sach|cho toi|xem|lay|list|extract|dump)\s+(?:thong tin\s+)?(?:tai khoan|mat khau|email|sdt|profile|credentials?)\s+(?:cua\s+)?(?:tat ca|toan bo|moi|all)\s+(?:nhan vien|user|nguoi dung|tai khoan|employees)",
+            re.I,
+        ),
         "Tôi không thể trích xuất hoặc cung cấp danh sách dữ liệu hàng loạt của người dùng khác do chính sách bảo mật thông tin nội bộ.",
     ),
     (
         "SECRET_REQUEST",
-        re.compile(r"(?:api\s*key|secret|token|mat khau|password).*(?:lich su|ticket|memory|database|production|admin)|(?:lay|tim|gui).*(?:api\s*key|secret|token|mat khau|password)", re.I),
+        re.compile(
+            r"(?:(?:tim|lay|gui|cho|in|doc|show|reveal|dump|extract|trich xuat|xem|cung cap|hien thi|get|return|display)\b.*(?:api\s*key|jwt(?:\s*secret)?|secret|token|\.env|private\s*key|database\s*(?:credential|password|mat khau)|credential|password\s*(?:database|production|db|system|admin)|mat khau\s*(?:database|production|db|he thong|admin|user khac|nguoi khac))|"
+            r"(?:cho\s+(?:toi|minh|em)\s+)?(?:mat khau|password)\s+(?:cua\s+)?(?:user|nguoi dung|nhan vien|admin|he thong)\s+khac|"
+            r"(?:doc|in|lay|xem|cho|dump|trich xuat)\s+(?:password|mat khau|secret|key|token).*(?:tu|trong)\s+(?:\.env|env|database|db|production|config|lich su|ticket|memory)|"
+            r"(?:in|show|display|reveal|lay|cho\s+(?:toi|minh|em))\s+(?:jwt\s+secret|api\s*key|token|private\s*key)|"
+            r"(?:cho\s+(?:toi|minh|em)\s+)?api\s*key\s+va\s+jwt\s+secret|"
+            r"(?:api\s*key|secret|token|jwt\s*secret).*(?:lich su|ticket|memory|database|production)\b.*(?:gui|cho|lay|tim|xem|in))",
+            re.I,
+        ),
         "Tôi không thể tìm, tiết lộ hoặc gửi lại secret, API key, token hay mật khẩu. Vui lòng dùng quy trình khôi phục hoặc hỗ trợ IT được ủy quyền.",
     ),
     (
+        "SYSTEM_PROMPT_EXTRACTION",
+        re.compile(
+            r"(?:(?:cho toi|hien|xem|lay|tiết lộ|tiet lo|reveal|show|display|extract|in|return|dump)\s+(?:toan bo\s+)?(?:system|developer|hidden)\s+(?:prompt|instructions?|message|quy tac|chi dan)|"
+            r"(?:system|developer)\s+prompt\s+(?:cua\s+\w+\s+)?(?:la gi|nhu the nao)|hidden\s+instructions|instructions?\s+an)",
+            re.I,
+        ),
+        "Tôi không thể cung cấp system prompt, developer instructions hoặc chính sách nội bộ không công khai.",
+    ),
+    (
+        "PROMPT_INJECTION",
+        re.compile(
+            r"(?:bo qua\s+(?:toan bo|tat ca|moi)?\s*(?:huong dan|quy tac|guardrails?|instructions?|rules?|chinh sach|policy)|"
+            r"ignore\s+(?:all\s+)?(?:previous|system)\s+instructions?|forget\s+(?:all\s+)?rules|unrestricted\s+mode|all\s+guards\s+disabled|act\s+as\s+dan)",
+            re.I,
+        ),
+        "Yêu cầu của bạn bị từ chối do vi phạm chính sách bảo vệ hệ thống và ngăn chặn ghi đè chỉ dẫn (prompt injection).",
+    ),
+    (
         "DUAL_USE_SECURITY_REQUEST",
-        re.compile(r"(?:bypass|vuot qua|ne|vo hieu hoa).*(?:mfa|xac thuc|authentication|security|bao mat)", re.I),
+        re.compile(
+            r"(?:bypass|vuot qua|ne|vo hieu hoa).*(?:mfa|xac thuc|authentication|security|bao mat)|"
+            r"(?:viet|huong dan|tao)\s+(?:script|code|tool).*(?:bypass|hack|tan cong|exploit)",
+            re.I,
+        ),
         "Tôi không thể hướng dẫn vượt qua MFA hoặc biện pháp bảo mật. Tôi có thể hỗ trợ quy trình khôi phục truy cập hợp lệ qua IT.",
     ),
 ]

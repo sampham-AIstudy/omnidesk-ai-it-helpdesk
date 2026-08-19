@@ -4,9 +4,14 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+addopts = "--basetemp=./data/pytest_temp"
 filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::UserWarning",
+]
+markers = [
+    "behavior_gate: Critical chat behavior regression test suite",
+    "critical_multiturn: Critical multi-turn conversation flow tests",
 ]
 
 [tool.ruff]
