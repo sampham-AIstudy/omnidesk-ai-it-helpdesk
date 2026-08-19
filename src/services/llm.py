@@ -1,9 +1,12 @@
-"""LLM service — Dynamic Multi-Provider Fallback Factory (Mistral -> OpenAI -> Local Ollama)."""
+﻿"""LLM service — Dynamic Multi-Provider Fallback Factory (Mistral -> OpenAI -> Local Ollama)."""
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
-from functools import lru_cache
+import threading
+import weakref
+from typing import Any
 
 from pydantic import SecretStr
 
@@ -183,24 +186,52 @@ def _attach_fallback(primary_llm):
     return primary_llm
 
 
-@lru_cache
+_cache_lock = threading.RLock()
+_loop_llm_cache: weakref.WeakKeyDictionary[asyncio.AbstractEventLoop, dict[tuple[str, float, int], Any]] = (
+    weakref.WeakKeyDictionary()
+)
+
+
+def clear_llm_cache() -> None:
+    """Explicitly clear all cached LLM instances."""
+    with _cache_lock:
+        _loop_llm_cache.clear()
+
+
+def _get_or_create_loop_llm(model_type: str, temperature: float, max_tokens: int) -> Any:
+    """Retrieve or create an LLM instance scoped to the currently running event loop."""
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop is not None and not loop.is_closed():
+        with _cache_lock:
+            loop_entries = _loop_llm_cache.setdefault(loop, {})
+            key = (model_type, temperature, max_tokens)
+            if key in loop_entries:
+                return loop_entries[key]
+            instance = get_provider_llm(model_type=model_type, temperature=temperature, max_tokens=max_tokens)
+            loop_entries[key] = instance
+            return instance
+
+    return get_provider_llm(model_type=model_type, temperature=temperature, max_tokens=max_tokens)
+
+
 def get_classifier_llm():
-    return get_provider_llm(model_type="classifier", temperature=0.0, max_tokens=1024)
+    return _get_or_create_loop_llm(model_type="classifier", temperature=0.0, max_tokens=1024)
 
 
-@lru_cache
 def get_fast_classifier_llm():
-    return get_provider_llm(model_type="fast_classifier", temperature=0.0, max_tokens=512)
+    return _get_or_create_loop_llm(model_type="fast_classifier", temperature=0.0, max_tokens=512)
 
 
-@lru_cache
 def get_rag_llm():
-    return get_provider_llm(model_type="rag", temperature=0.0, max_tokens=2048)
+    return _get_or_create_loop_llm(model_type="rag", temperature=0.0, max_tokens=2048)
 
 
-@lru_cache
 def get_runbook_llm():
-    return get_provider_llm(model_type="runbook", temperature=0.0, max_tokens=2048)
+    return _get_or_create_loop_llm(model_type="runbook", temperature=0.0, max_tokens=2048)
 
 
 def get_model_by_complexity(complexity: str = "normal"):

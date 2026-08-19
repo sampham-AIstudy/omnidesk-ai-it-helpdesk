@@ -89,11 +89,13 @@ async def test_behavior_contract_rest_execution(
         "hoặc khởi động lại client VPN theo quy trình hỗ trợ IT."
     )
     mock_llm = _create_mock_llm(mock_rag_resp)
+    mock_fast_llm = _create_mock_llm('{"is_complex": false, "sub_queries": []}')
     from src.services.web_research_service import ResearchResult
     empty_research = ResearchResult(False, "web_search_not_triggered", None, [])
 
     with (
         patch("src.api.chat.get_rag_llm", return_value=mock_llm),
+        patch("src.services.query_decomposition_service.get_fast_classifier_llm", return_value=mock_fast_llm),
         patch("src.api.chat.maybe_research_web", new=AsyncMock(return_value=empty_research)),
     ):
         resp = await client.post(
@@ -163,11 +165,13 @@ async def test_behavior_contract_stream_execution(
         "hoặc khởi động lại client VPN theo quy trình hỗ trợ IT."
     )
     mock_llm = _create_mock_llm(mock_rag_resp)
+    mock_fast_llm = _create_mock_llm('{"is_complex": false, "sub_queries": []}')
     from src.services.web_research_service import ResearchResult
     empty_research = ResearchResult(False, "web_search_not_triggered", None, [])
 
     with (
         patch("src.api.chat.get_rag_llm", return_value=mock_llm),
+        patch("src.services.query_decomposition_service.get_fast_classifier_llm", return_value=mock_fast_llm),
         patch("src.api.chat.maybe_research_web", new=AsyncMock(return_value=empty_research)),
     ):
         resp = await client.post(
@@ -219,11 +223,13 @@ async def test_rest_and_sse_behavioral_parity(
         "hoặc khởi động lại client VPN theo quy trình hỗ trợ IT."
     )
     mock_llm = _create_mock_llm(mock_rag_resp)
+    mock_fast_llm = _create_mock_llm('{"is_complex": false, "sub_queries": []}')
     from src.services.web_research_service import ResearchResult
     empty_research = ResearchResult(False, "web_search_not_triggered", None, [])
 
     with (
         patch("src.api.chat.get_rag_llm", return_value=mock_llm),
+        patch("src.services.query_decomposition_service.get_fast_classifier_llm", return_value=mock_fast_llm),
         patch("src.api.chat.maybe_research_web", new=AsyncMock(return_value=empty_research)),
     ):
         rest_resp = await client.post(

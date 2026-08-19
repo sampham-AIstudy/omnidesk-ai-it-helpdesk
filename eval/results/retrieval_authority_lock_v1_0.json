@@ -1,11 +1,11 @@
 {
   "meta": {
-    "timestamp": "2026-08-19T13:39:12.703128+00:00",
+    "timestamp": "2026-08-19T14:56:49.449980+00:00",
     "collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
     "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     "collection_count": 433,
     "top_k": 5,
-    "elapsed_seconds": 8.99,
+    "elapsed_seconds": 8.03,
     "golden_sha256": "ca55989f841372f75f299492f4be8a3f9215acc37b7a7da72ecc7498b1eb59b3"
   },
   "gate_status": "PASSED",
@@ -610,8 +610,8 @@
         "kb-020"
       ],
       "forbidden_ids": [
-        "kb-010",
-        "kb-001"
+        "kb-001",
+        "kb-010"
       ],
       "retrieved_ids": [
         "kb-019",
@@ -1098,27 +1098,27 @@
       ],
       "forbidden_ids": [],
       "retrieved_ids": [
+        "kb-019",
         "kb-032",
         "kb-015",
         "kb-003",
-        "kb-019",
         "kb-002"
       ],
-      "first_hit_rank": 3,
+      "first_hit_rank": 4,
       "hit_at_1": false,
       "hit_at_5": true,
       "recall_at_5": 1.0,
-      "reciprocal_rank": 0.3333333333333333,
-      "ndcg_at_5": 0.30078518014914984,
+      "reciprocal_rank": 0.25,
+      "ndcg_at_5": 0.27727342735504823,
       "forbidden_leak_count": 0,
       "cross_tenant_leak_count": 0,
       "policy_authority_violation": false,
       "failure_category": null,
       "relevance_scores": [
+        0.8846320346320345,
         0.75,
         0.5991058122205665,
         0.5894428152492669,
-        0.5800865800865801,
         0.5537190082644629
       ]
     },
@@ -1305,10 +1305,10 @@
       ],
       "acceptable_ids": [],
       "forbidden_ids": [
-        "kb-023",
-        "kb-022",
         "kb-024",
-        "kb-021"
+        "kb-023",
+        "kb-021",
+        "kb-022"
       ],
       "retrieved_ids": [
         "kb-025",
@@ -1344,10 +1344,10 @@
       ],
       "acceptable_ids": [],
       "forbidden_ids": [
-        "kb-026",
-        "kb-025",
         "kb-024",
-        "kb-023"
+        "kb-023",
+        "kb-026",
+        "kb-025"
       ],
       "retrieved_ids": [
         "kb-021",
@@ -1383,10 +1383,10 @@
       ],
       "acceptable_ids": [],
       "forbidden_ids": [
-        "kb-023",
-        "kb-022",
         "kb-024",
-        "kb-021"
+        "kb-023",
+        "kb-021",
+        "kb-022"
       ],
       "retrieved_ids": [
         "kb-026",
@@ -1424,10 +1424,10 @@
         "kb-023"
       ],
       "forbidden_ids": [
+        "kb-021",
         "kb-026",
-        "kb-025",
         "kb-022",
-        "kb-021"
+        "kb-025"
       ],
       "retrieved_ids": [
         "kb-024",
@@ -1466,8 +1466,8 @@
       ],
       "forbidden_ids": [
         "kb-023",
-        "kb-025",
-        "kb-021"
+        "kb-021",
+        "kb-025"
       ],
       "retrieved_ids": [
         "kb-019",
@@ -1555,9 +1555,9 @@
       "relevance_scores": [
         0.75,
         0.4651989188768765,
-        0.45411443845300203,
-        0.4359454639288259,
-        0.3899164471577845
+        0.45697023602915654,
+        0.43915516857683323,
+        0.39303174872790925
       ]
     },
     {

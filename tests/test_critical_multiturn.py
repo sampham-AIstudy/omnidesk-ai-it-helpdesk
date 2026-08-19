@@ -48,9 +48,11 @@ def _mock_offline_chat_dependencies():
         "Vui lòng làm theo hướng dẫn xác thực mật khẩu hoặc chờ IT hỗ trợ."
     )
     mock_llm = _create_mock_llm(mock_rag_reply)
+    mock_fast_llm = _create_mock_llm('{"is_complex": false, "sub_queries": []}')
 
     with (
         patch("src.api.chat.get_rag_llm", return_value=mock_llm),
+        patch("src.services.query_decomposition_service.get_fast_classifier_llm", return_value=mock_fast_llm),
         patch("src.api.chat.maybe_research_web", new=AsyncMock(return_value=empty_research)),
     ):
         yield

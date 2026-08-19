@@ -1,12 +1,14 @@
 """Pre-deployment and release verification script for Help Desk AI Agent Behavior Gate."""
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
+os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
 
 import pytest  # noqa: E402
 

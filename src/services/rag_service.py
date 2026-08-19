@@ -5,8 +5,14 @@ import asyncio
 import hashlib
 import logging
 import math
+import os
 import re
+import sys
 import threading
+
+# Mitigate native SentenceTransformer / safetensors async loader race conditions on Windows.
+if sys.platform == "win32":
+    os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
 import unicodedata
 import urllib.parse
 from dataclasses import dataclass

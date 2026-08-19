@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 import time
 from datetime import UTC, datetime
@@ -23,6 +24,7 @@ from typing import Any
 ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
+os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
 
 from eval.retrieval_metrics import (  # noqa: E402
     CaseRetrievalResult,
