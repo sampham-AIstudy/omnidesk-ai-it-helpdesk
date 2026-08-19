@@ -99,6 +99,11 @@ class Settings(BaseSettings):
     embedding_backend: Literal["sentence_transformer", "hashing"] = "sentence_transformer"
     embedding_allow_network_downloads: bool = False
 
+    # Cross-Encoder Reranker (Optional second-stage reranker on top of hybrid retrieval)
+    reranker_enabled: bool = False
+    reranker_model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    reranker_top_n: int = Field(default=10, ge=2, le=50)
+
     # External research (only used after the internal RAG decision gate)
     web_research_enabled: bool = True
     web_search_provider: Literal["duckduckgo_html", "disabled"] = "duckduckgo_html"

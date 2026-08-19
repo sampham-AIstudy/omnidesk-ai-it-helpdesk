@@ -41,6 +41,7 @@ export default function RiotStyleTicketDetailPage() {
   const { user } = useAuthStore();
   const [message, setMessage] = useState('');
   const [showReopenModal, setShowReopenModal] = useState(false);
+  const [showResolutionModal, setShowResolutionModal] = useState(false);
   const [reopenReason, setReopenReason] = useState('');
   const [selectedRating, setSelectedRating] = useState<number>(0);
   const [ratingFeedback, setRatingFeedback] = useState('');
@@ -268,16 +269,16 @@ export default function RiotStyleTicketDetailPage() {
   return (
     <div className="ticket-detail max-w-6xl mx-auto space-y-6 pb-12">
       {/* Back Button Navigation Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href="/employee/tickets"
-          className="inline-flex items-center gap-2 text-xs font-bold text-rose-600 hover:text-rose-700 tracking-wider uppercase transition-colors"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-blue-600 tracking-wider uppercase transition-colors"
         >
           <ArrowLeft size={16} />
-          <span>QUAY LẠI YÊU CẦU</span>
+          <span>QUAY LẠI DANH SÁCH YÊU CẦU</span>
         </Link>
-        <div className="flex items-center gap-3">
-          <span className="text-xs font-semibold text-slate-400">Trạng thái:</span>
+        <div className="flex items-center gap-2.5 px-3.5 py-1.5 bg-white rounded-2xl border border-slate-200 shadow-2xs">
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Trạng thái hiện tại:</span>
           <StatusBadge status={ticket.status} />
         </div>
       </div>
@@ -384,20 +385,36 @@ export default function RiotStyleTicketDetailPage() {
             )}
 
             {/* Quick Action Buttons on Sidebar */}
-            {!isClosedOrResolved && !isHumanActive && !isTechnician && (
-              <button
-                onClick={() => requestAgentMutation.mutate()}
-                disabled={requestAgentMutation.isPending || isWaitingAgent}
-                className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 disabled:bg-amber-100 disabled:text-amber-800 disabled:shadow-none text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
-              >
-                {isWaitingAgent ? <Clock size={14} className="animate-spin" /> : <UserPlus size={14} />}
-                <span>{isWaitingAgent ? 'Đang chờ chuyên viên tiếp nhận' : 'Yêu cầu gặp chuyên viên'}</span>
-              </button>
+            {!isClosedOrResolved && (
+              <div className="space-y-2 pt-2 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setShowResolutionModal(true)}
+                  disabled={confirmResolutionMutation.isPending}
+                  className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
+                >
+                  <CheckCircle2 size={15} />
+                  <span>Đánh dấu đã giải quyết</span>
+                </button>
+
+                {!isHumanActive && !isTechnician && (
+                  <button
+                    type="button"
+                    onClick={() => requestAgentMutation.mutate()}
+                    disabled={requestAgentMutation.isPending || isWaitingAgent}
+                    className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 disabled:bg-amber-100 disabled:text-amber-800 disabled:shadow-none text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
+                  >
+                    {isWaitingAgent ? <Clock size={14} className="animate-spin" /> : <UserPlus size={14} />}
+                    <span>{isWaitingAgent ? 'Đang chờ chuyên viên tiếp nhận' : 'Yêu cầu gặp chuyên viên'}</span>
+                  </button>
+                )}
+              </div>
             )}
 
             {/* Technician Takeover Claim Button */}
             {isTechnician && !isClosedOrResolved && (ticket.assignee_id !== user?.id) && (
               <button
+                type="button"
                 onClick={() => takeoverMutation.mutate()}
                 disabled={takeoverMutation.isPending}
                 className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-sm"
@@ -417,7 +434,7 @@ export default function RiotStyleTicketDetailPage() {
           <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col min-h-[580px]">
             
             {/* Timeline Header */}
-            <div className="p-4 sm:p-5 bg-slate-50/80 border-b border-slate-200/80 flex items-center justify-between">
+            <div className="p-4 sm:p-5 bg-slate-50/80 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-2.5">
                 <MessageCircle size={18} className="text-blue-600" />
                 <span className="text-xs font-bold text-slate-900 tracking-wide uppercase">
@@ -430,12 +447,14 @@ export default function RiotStyleTicketDetailPage() {
 
               {!isClosedOrResolved && (
                 <button
-                  onClick={() => confirmResolutionMutation.mutate(true)}
+                  type="button"
+                  onClick={() => setShowResolutionModal(true)}
                   disabled={confirmResolutionMutation.isPending}
-                  className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-sm"
+                  title="Xác nhận sự cố đã được hỗ trợ xử lý và đóng ticket"
+                  className="px-3.5 py-1.5 bg-white hover:bg-emerald-50 text-emerald-700 hover:text-emerald-800 border border-emerald-300 hover:border-emerald-400 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-2xs hover:shadow-xs active:scale-95"
                 >
-                  <CheckCircle2 size={14} />
-                  <span>Đã giải quyết</span>
+                  <CheckCircle2 size={14} className="text-emerald-600" />
+                  <span>Đánh dấu đã giải quyết</span>
                 </button>
               )}
             </div>
@@ -595,6 +614,61 @@ export default function RiotStyleTicketDetailPage() {
 
         </section>
       </div>
+
+      {/* CONFIRM RESOLUTION MODAL */}
+      {showResolutionModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 space-y-5 shadow-2xl border border-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                  <CheckCircle2 size={20} />
+                </div>
+                <h3 className="text-base font-bold text-slate-900" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                  Xác nhận đã giải quyết
+                </h3>
+              </div>
+              <button
+                onClick={() => setShowResolutionModal(false)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-lg transition-colors"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-2 text-xs text-slate-600 leading-relaxed">
+              <p>
+                Bạn có chắc chắn rằng yêu cầu hỗ trợ <strong className="text-slate-900">#{ticket.ticket_number}</strong> đã được xử lý hoàn tất?
+              </p>
+              <p className="text-slate-400">
+                Ticket sẽ được chuyển sang trạng thái <strong>Đã giải quyết</strong> và đóng phiên trao đổi hiện tại. Bạn vẫn có thể đánh giá hoặc mở lại ticket nếu cần.
+              </p>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowResolutionModal(false)}
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowResolutionModal(false);
+                  confirmResolutionMutation.mutate(true);
+                }}
+                disabled={confirmResolutionMutation.isPending}
+                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"
+              >
+                {confirmResolutionMutation.isPending ? <Spinner size={14} /> : <CheckCircle2 size={14} />}
+                <span>Xác nhận giải quyết</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* REOPEN TICKET MODAL */}
       {showReopenModal && (

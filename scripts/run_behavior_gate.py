@@ -54,6 +54,7 @@ def main() -> int:
         str(PROJECT_ROOT / "tests" / "test_behavior_gate.py"),
         str(PROJECT_ROOT / "tests" / "test_critical_multiturn.py"),
         str(PROJECT_ROOT / "tests" / "test_api" / "test_chat_new_conversation_flow.py"),
+        str(PROJECT_ROOT / "tests" / "test_services" / "test_profile_pronoun_routing.py"),
         "-v",
         "--tb=short",
     ]

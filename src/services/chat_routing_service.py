@@ -95,12 +95,13 @@ _KNOWLEDGE_QUESTION = re.compile(
     r"hoat dong (?:the nao|ra sao)|mat bao lau)\b"
 )
 _EXECUTION_ACTION = re.compile(
-    r"^(?:(?:hay|vui long)\s+)?(?:tao|gui|dang ky)\b|"
-    r"^(?:toi|minh|em)\s+(?:muon|can)\s+(?:xin|dang ky|tao|gui)\b|"
-    r"^xin(?:\s+cap)?\b.*\b(?:cho|giup)\s+(?:toi|minh|em|to)\b|"
-    r"^lam\s+(?:giup|cho)\s+(?:toi|minh|em)\b.*\b(?:yeu cau|request|don)\b|"
-    r"^yeu cau\b.*\b(?:cho|giup)\s+(?:toi|minh|em)\b|"
-    r"^cap\b.*\bcho\s+(?:toi|minh|em)\b"
+    r"^(?:(?:hay|vui long)\s+)?(?:gui|dang ky)\b|"
+    r"^(?:(?:hay|vui long)\s+)?tao\s+(?:service request|ticket|incident|yeu cau|request|don|issue|tai khoan|form|m365|microsoft 365)\b|"
+    r"^(?:toi|minh|em|tao)\s+(?:muon|can)\s+(?:xin|dang ky|tao|gui)\b|"
+    r"^xin(?:\s+cap)?\b.*\b(?:cho|giup)\s+(?:toi|minh|em|to|tao)\b|"
+    r"^lam\s+(?:giup|cho)\s+(?:toi|minh|em|to|tao)\b.*\b(?:yeu cau|request|don)\b|"
+    r"^yeu cau\b.*\b(?:cho|giup)\s+(?:toi|minh|em|to|tao)\b|"
+    r"^cap\b.*\bcho\s+(?:toi|minh|em|to|tao)\b"
 )
 _INCIDENT = re.compile(
     r"\b(?:loi|khong len|khong mo|khong dung|mat ket noi|man hinh|laptop|may tinh|may in|ban phim|"

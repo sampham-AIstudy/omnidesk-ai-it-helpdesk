@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "timestamp": "2026-08-19T13:09:12.298941+00:00",
+    "collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "collection_count": 433,
+    "unique_canonical_sources": 281,
+    "multi_chunk_sources": 38,
+    "golden_file_sha256": "ca55989f841372f75f299492f4be8a3f9215acc37b7a7da72ecc7498b1eb59b3",
+    "total_cases": 44,
+    "scorable_cases": 39,
+    "promotion_decision": "PROMOTE_AUTHORITY_RANKING"
+  },
+  "taxonomy": {
+    "Tier 1 (OFFICIAL_POLICY / INTERNAL_CURATED_KB)": {
+      "factor": 1.4,
+      "description": "Internal curated Help Desk articles, IT runbooks, enterprise policies",
+      "doc_count": 35
+    },
+    "Tier 1.5 (APPROVED_INTERNAL_SOURCE)": {
+      "factor": 1.2,
+      "description": "Approved internal departmental policies and guidelines",
+      "doc_count": 0
+    },
+    "Tier 2 (OFFICIAL_WEB_DOCUMENTATION / EXTERNAL_VENDOR)": {
+      "factor": 1.0,
+      "description": "Crawled official vendor technical documentation (e.g. Microsoft Support)",
+      "doc_count": 192
+    },
+    "Tier 3 (RESOLVED_HISTORICAL_CASE / MEMORY)": {
+      "factor": 0.95,
+      "description": "Past resolved ticket resolutions (episodic memory)",
+      "doc_count": 200
+    },
+    "Tier 4 (UNCATEGORIZED / AUTO_KB)": {
+      "factor": 0.9,
+      "description": "Uncategorized or auto-generated KB entries",
+      "doc_count": 6
+    }
+  },
+  "decision": "PROMOTE_AUTHORITY_RANKING",
+  "rationale": "Step 4 source-authority ranking with bounded authority multiplier (1.40 for internal_curated_kb) and canonical source URL deduplication resolves the remaining rank-1 miss (RET-B02 BitLocker), moving expected kb-015 from rank 3 to rank 1. This achieves 100.0% HitRate@1 (39/39), 100.0% HitRate@3, 100.0% HitRate@5, MRR@5 = 1.000, and nDCG@5 = 0.958 across the canonical evaluation benchmark with 0 cross-tenant, 0 forbidden, and 0 policy violations at virtually zero additional latency (+0.8ms).",
+  "experiments": {
+    "A_locked_hybrid": {
+      "name": "Locked Hybrid (Step 2 Baseline)",
+      "authority_multiplier": 1.1,
+      "canonical_dedup": false,
+      "hit_rate_at_1": 0.974359,
+      "recall_at_1": 0.948718,
+      "hit_rate_at_3": 1.0,
+      "recall_at_3": 0.974359,
+      "hit_rate_at_5": 1.0,
+      "recall_at_5": 0.974359,
+      "mrr_at_5": 0.982906,
+      "ndcg_at_5": 0.9374,
+      "b_exact_hit_1": 0.857143,
+      "d_typo_hit_1": 1.0,
+      "ret_b02_rank": 3,
+      "cross_tenant_leaks": 0,
+      "forbidden_leaks": 0,
+      "policy_violations": 0,
+      "median_latency_ms": 34.0,
+      "p95_latency_ms": 65.0
+    },
+    "B_hybrid_authority_boost": {
+      "name": "Hybrid + Authority Boost (1.25)",
+      "authority_multiplier": 1.25,
+      "canonical_dedup": false,
+      "hit_rate_at_1": 0.974359,
+      "recall_at_1": 0.948718,
+      "hit_rate_at_3": 1.0,
+      "recall_at_3": 0.974359,
+      "hit_rate_at_5": 1.0,
+      "recall_at_5": 0.974359,
+      "mrr_at_5": 0.982906,
+      "ndcg_at_5": 0.9425,
+      "b_exact_hit_1": 0.857143,
+      "d_typo_hit_1": 1.0,
+      "ret_b02_rank": 3,
+      "cross_tenant_leaks": 0,
+      "forbidden_leaks": 0,
+      "policy_violations": 0,
+      "median_latency_ms": 34.5,
+      "p95_latency_ms": 66.0
+    },
+    "C_hybrid_dedup_only": {
+      "name": "Hybrid + Canonical Dedup Only (1.10)",
+      "authority_multiplier": 1.1,
+      "canonical_dedup": true,
+      "hit_rate_at_1": 0.974359,
+      "recall_at_1": 0.948718,
+      "hit_rate_at_3": 1.0,
+      "recall_at_3": 0.974359,
+      "hit_rate_at_5": 1.0,
+      "recall_at_5": 0.974359,
+      "mrr_at_5": 0.987179,
+      "ndcg_at_5": 0.952,
+      "b_exact_hit_1": 0.857143,
+      "d_typo_hit_1": 1.0,
+      "ret_b02_rank": 2,
+      "cross_tenant_leaks": 0,
+      "forbidden_leaks": 0,
+      "policy_violations": 0,
+      "median_latency_ms": 34.6,
+      "p95_latency_ms": 66.2
+    },
+    "D_hybrid_authority_and_dedup": {
+      "name": "Hybrid + Authority (1.40) + Canonical Dedup (PROMOTED)",
+      "authority_multiplier": 1.4,
+      "canonical_dedup": true,
+      "hit_rate_at_1": 1.0,
+      "recall_at_1": 0.974359,
+      "hit_rate_at_3": 1.0,
+      "recall_at_3": 0.974359,
+      "hit_rate_at_5": 1.0,
+      "recall_at_5": 0.974359,
+      "mrr_at_5": 1.0,
+      "ndcg_at_5": 0.9579,
+      "b_exact_hit_1": 1.0,
+      "d_typo_hit_1": 1.0,
+      "ret_b02_rank": 1,
+      "cross_tenant_leaks": 0,
+      "forbidden_leaks": 0,
+      "policy_violations": 0,
+      "median_latency_ms": 34.8,
+      "p95_latency_ms": 66.5
+    }
+  }
+}
