@@ -46,7 +46,7 @@ def get_provider_llm(model_type: str = "rag", temperature: float = 0.0, max_toke
         try:
             from langchain_mistralai import ChatMistralAI
             model_attr = f"mistral_{model_type}_model"
-            model_name = getattr(settings, model_attr, settings.mistral_rag_model)
+            model_name = str(getattr(settings, model_attr, settings.mistral_rag_model) or "mistral-small-latest")
             logger.info(f"Using Provider: Mistral AI ({model_name})")
             llm = ChatMistralAI(
                 api_key=SecretStr(mistral_key),
@@ -79,8 +79,8 @@ def get_provider_llm(model_type: str = "rag", temperature: float = 0.0, max_toke
     logger.info(f"Using Provider: Local Ollama ({model_name} @ {base_url})")
 
     try:
-        from langchain_community.llms.ollama import Ollama
-        return Ollama(
+        from langchain_ollama import ChatOllama
+        return ChatOllama(
             base_url=base_url,
             model=model_name,
             temperature=temperature,
@@ -167,18 +167,18 @@ def _attach_fallback(primary_llm):
 
     # 3. Fallback 3: Local Ollama (Cuối cùng nếu mất mạng/hết quota cloud)
     try:
-        from langchain_community.llms.ollama import Ollama
+        from langchain_ollama import ChatOllama
         base_url = settings.ollama_base_url or "http://localhost:11434"
         model_name = settings.ollama_model or "mistral"
         fallbacks.append(
-            Ollama(
+            ChatOllama(
                 base_url=base_url,
                 model=model_name,
                 temperature=0.0,
             )
         )
     except Exception as e:
-        logger.warning(f"Failed to initialize Ollama fallback: {e}")
+        logger.warning(f"Failed to initialize ChatOllama fallback: {e}")
 
     if fallbacks:
         logger.info(f"Attached {len(fallbacks)} fallback LLM provider(s) to primary LLM.")
