@@ -11,7 +11,7 @@ _TICKET_NUMBER_RE = re.compile(r"\b(?:INC|REQ)-[A-Za-z0-9-]+\b", re.IGNORECASE)
 def source_id_for_document(document: dict[str, Any]) -> str:
     """Return only the persisted ID that was supplied by retrieval."""
     metadata = document.get("metadata", {}) or {}
-    value = document.get("doc_id") or metadata.get("source_id") or metadata.get("chroma_id")
+    value = document.get("citation_source_id") or metadata.get("citation_source_id") or document.get("doc_id") or metadata.get("source_id") or metadata.get("chroma_id")
     return str(value) if value else ""
 
 

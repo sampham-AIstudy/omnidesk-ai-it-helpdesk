@@ -1,0 +1,89 @@
+{
+  "gate": "production-gate-v3",
+  "active_collection": {
+    "name": "helpdesk_kb_multilingual_v3_sentence_transformer",
+    "count": 443
+  },
+  "rollback_collection": {
+    "name": "helpdesk_kb_multilingual_v2_sentence_transformer",
+    "count": 433
+  },
+  "checks": {
+    "active_collection": true,
+    "rollback_collection": true,
+    "enterprise_product_failure": true,
+    "enterprise_fixture_incomplete": true,
+    "enterprise_conflicts_documented": true,
+    "p0_v3": true,
+    "hard_negative": true,
+    "provenance": true,
+    "enterprise": true,
+    "behavior": true,
+    "retrieval": true,
+    "memory_context": true,
+    "pytest": true
+  },
+  "contract_conflicts": [
+    {
+      "case_id": "GT-072",
+      "reason": "WEB_OUTBOUND_CONFIDENTIALITY_BLOCK"
+    },
+    {
+      "case_id": "GT-076",
+      "reason": "WEB_INTERNAL_EVIDENCE_SUFFICIENT"
+    }
+  ],
+  "deferred_non_blockers": {
+    "step_6": "PARTIAL / BLOCKED_BY_DATA: no proven multi-chunk hierarchical source; expansion fails closed.",
+    "step_7": "PARTIAL / DEFERRED: bounded retry is safe, but no real WEAK-to-RECOVERED corpus evidence or proven pruning benefit."
+  },
+  "commands": {
+    "enterprise": {
+      "command": [
+        "eval/enterprise_runtime_v1_0.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "behavior": {
+      "command": [
+        "scripts/run_behavior_gate.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "retrieval": {
+      "command": [
+        "scripts/run_retrieval_gate.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "memory_context": {
+      "command": [
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_services/test_zero_mem_service.py",
+        "tests/test_services/test_recent_conversation_context.py"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "pytest": {
+      "command": [
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  "status": "PASS"
+}

@@ -1,4 +1,5 @@
 from src.services.chat_routing_service import route_chat_message
+from src.services.context_query_service import is_context_dependent
 
 
 def test_small_talk_short_circuits_retrieval_and_memory() -> None:
@@ -12,6 +13,16 @@ def test_small_talk_short_circuits_retrieval_and_memory() -> None:
     assert decision.retrieval_decision == "not_required"
     assert decision.should_search_web is False
     assert decision.should_invoke_tool is False
+
+
+def test_workspace_greeting_never_inherits_a_previous_technical_topic() -> None:
+    """A greeting is direct, and therefore never enters contextual retrieval."""
+    decision = route_chat_message("hello chat")
+
+    assert is_context_dependent("hello chat") is False
+    assert decision.route == "direct_response"
+    assert decision.should_retrieve is False
+    assert decision.should_use_memory is False
 
 
 def test_acknowledgement_and_casual_check_in_short_circuit_retrieval() -> None:

@@ -1,0 +1,17 @@
+{
+  "dataset": "P0 shadow knowledge-gap candidate set",
+  "version": "v3-shadow-20260820",
+  "cases": [
+    {"id":"P0-CASE-01","category_group":"P0_network","query":"Ping to 10.10.1.20 succeeds but TCP port 8443 fails. What does that prove?","expected_source_ids":["p0-02-l3-vs-l4-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-02","category_group":"P0_network","query":"Test-NetConnection to a server times out on TCP 443","expected_source_ids":["p0-03-tcp-failure-semantics-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-03","category_group":"P0_network","query":"Connection refused when opening TCP port 1433","expected_source_ids":["p0-03-tcp-failure-semantics-c001"],"acceptable_source_ids":["p0-04-service-listening-c001"],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-04","category_group":"P0_network","query":"The service is not listening on its expected port","expected_source_ids":["p0-04-service-listening-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-05","category_group":"P0_network","query":"Could a firewall ACL or NAT rule be silently blocking this TCP flow?","expected_source_ids":["p0-05-firewall-acl-nat-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-06","category_group":"P0_network","query":"FortiClient says VPN connected but I cannot open an internal application","expected_source_ids":["p0-06-vpn-connected-internal-unreachable-c001"],"acceptable_source_ids":["p0-07-routing-split-tunnel-c001"],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-07","category_group":"P0_network","query":"How do I distinguish a DNS problem from a routing problem over VPN?","expected_source_ids":["p0-08-dns-proxy-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-08","category_group":"P0_network","query":"Split tunnel VPN does not route an internal subnet through FortiClient","expected_source_ids":["p0-07-routing-split-tunnel-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-09","category_group":"P0_network","query":"FortiClient SSL-VPN cannot connect; which profile and logs should be checked?","expected_source_ids":["p0-01-forticlient-ssl-vpn-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-10","category_group":"P0_network","query":"TCP port 403 fails from this workstation","expected_source_ids":["p0-09-tcp-port-403-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]},
+    {"id":"P0-CASE-11","category_group":"P0_network","query":"The API returns HTTP 403 Forbidden in the browser","expected_source_ids":["p0-10-http-403-forbidden-c001"],"acceptable_source_ids":[],"forbidden_source_ids":[]}
+  ]
+}

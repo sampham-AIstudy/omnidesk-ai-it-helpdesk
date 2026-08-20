@@ -1,7 +1,7 @@
 # Evaluation Contract & Domain Fact Repair v1.2
 
 - Lock errors: none
-- v1.1 global fixture audit: 66/90 pass; 24 EVAL_FIXTURE_ERROR
+- v1.1 global fixture audit: 276/300 pass; 24 EVAL_FIXTURE_ERROR
 
 ## Routing reporting
 

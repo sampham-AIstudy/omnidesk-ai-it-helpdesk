@@ -1,0 +1,47 @@
+{
+  "snapshot_version": "enterprise-runtime-snapshot-v1.0",
+  "harness_version": "enterprise-runtime-harness-v1.0",
+  "golden_dataset_hash": "79d8c3902ecaf1edc1c3181ca16fe89e02ad5ff1d6e48c85a30b3cbe88d6fcec",
+  "evaluation_manifest_hash": "a7003332dac2ad30b3a61b404922e2b008af0db1df906d2aeb30621fc16300c3",
+  "production_collection_contract": {
+    "version": "v3",
+    "name": "helpdesk_kb_multilingual_v3_sentence_transformer",
+    "count": 443
+  },
+  "fixture_kb_contract": {
+    "fixture_kb_contract": "enterprise-contract-kb-v1",
+    "evaluation_only": true,
+    "source_sha256": "b02015c52dd248d328045fe6da2df458bfbc721695a595d7f19fa9ac41c70b22",
+    "document_count": 10,
+    "chunk_count": 10,
+    "chunk_id_digest": "7d664da47ef0f83d02d949e8aaea7ed320c2a339029eb81f0437db2f85e31f0e",
+    "metadata_digest": "7ea1286f60a3810bad6a2b7239aa41969a13117c1280e43a39096e5a9a69426a",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "embedding_dimension": 384,
+    "distance_metric": "cosine",
+    "collection_name": "enterprise_contract_kb_v1",
+    "built": true
+  },
+  "retrieval_config_version": "current-runtime-hybrid-v3",
+  "users": {
+    "eval_employee": {
+      "id_alias": "eval-user-001",
+      "tenant_alias": "eval-tenant-a",
+      "role": "employee"
+    }
+  },
+  "tenants": {
+    "eval-tenant-a": {
+      "company_unit": "Engineering"
+    }
+  },
+  "tickets": {},
+  "roles": {
+    "employee": {
+      "permissions": "fixture-defined"
+    }
+  },
+  "memories": {},
+  "service_catalog": {},
+  "source_evidence": {}
+}

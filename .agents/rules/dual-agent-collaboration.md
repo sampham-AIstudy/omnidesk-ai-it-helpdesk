@@ -14,6 +14,11 @@ When this AGY session is PRIMARY and receives a non-trivial coding task:
 
    `$null | codex exec "<SECONDARY_REVIEW_ONLY prompt>"`
 
+   If the execution host blocks Codex runtime state under
+   `C:\Users\Admin\.codex`, grant this one child process the host's scoped
+   state access. Keep the command and `[SECONDARY_REVIEW_ONLY]` marker intact,
+   then compare the working tree before and after the review.
+
    Do NOT use plain:
 
    `codex exec "<prompt>"`

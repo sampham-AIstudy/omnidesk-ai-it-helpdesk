@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 import pytest
 
 from src.services.web_research_service import (
+    ResearchResult,
     ResearchSource,
     citation_source_payload,
     detect_internal_external_conflict,
@@ -50,6 +51,32 @@ async def test_low_confidence_rag_triggers_web_search():
     assert result.reason == "low_rag_confidence"
     assert provider.queries == ["Windows 11 update mới nhất xử lý lỗi VPN"]
     assert result.sources[0].source_type == "OFFICIAL"
+    assert result.raw_result_count == 1
+    assert result.rejected_result_count == 0
+
+
+@pytest.mark.asyncio
+async def test_adaptive_insufficiency_overrides_generic_high_scoring_neighbours():
+    provider = FakeProvider([source()])
+
+    result = await maybe_research_web(
+        "proprietary-widget-zz99 failure",
+        [{"relevance_score": 0.75}],
+        provider,
+        insufficient_internal=True,
+    )
+
+    assert result.triggered is True
+    assert result.reason == "adaptive_insufficient_internal_evidence"
+    assert provider.queries == ["proprietary-widget-zz99 failure"]
+
+
+def test_research_result_keeps_legacy_four_argument_construction():
+    result = ResearchResult(True, "low_rag_confidence", "safe", [])
+
+    assert result.raw_result_count == 0
+    assert result.rejected_result_count == 0
+    assert result.failure_category is None
 
 
 def test_citation_uses_exact_retrieved_url_only():

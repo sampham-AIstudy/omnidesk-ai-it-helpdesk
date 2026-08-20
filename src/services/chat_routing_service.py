@@ -61,7 +61,7 @@ def _fold(text: str) -> str:
     return "".join(char for char in normalized if unicodedata.category(char) != "Mn").replace("\u0111", "d")
 
 
-_GREETING = re.compile(r"^(?:xin )?(?:chao|hello|hi|hey)(?: ban)?(?: nhe| a| ah)?[!., ]*$")
+_GREETING = re.compile(r"^(?:xin )?(?:chao|hello|hi|hey)(?: ban| chat| bot)?(?: nhe| a| ah)?[!., ]*$")
 _THANKS = re.compile(r"^(?:cam on|thanks|thank you)(?: ban)?(?: nhe| a| ah)?[!., ]*$")
 _ACKNOWLEDGEMENT = re.compile(
     r"^(?:(?:ok|oke|okay|da|vâng|vang)(?: hieu roi)?|da hieu|hieu roi|ro roi|duoc roi)[!., ]*$"
@@ -115,11 +115,66 @@ _CONDITIONAL_OR_HOLD_ACTION = re.compile(
     r"\b(?:huong dan\s+(?:toi\s+)?(?:xu ly|truoc)|neu khong duoc\s+moi\s+tao|chua\s+tao|dung\s+tao|khoan\s+tao|chua\s+can\s+tao)\b"
 )
 _GARBAGE = re.compile(r"^(?:\d+|[a-z]{5,}|[^\w\s]{3,})$")
+_SOCIAL_DIRECT = re.compile(
+    r"^(?:"
+    r"(?:xin )?(?:chao|hello|hi|hey)(?: (?:ban|chat|bot|tro ly(?: it)?|doi it|helpdesk|team|buoi sang))?"
+    r"|xin chao,? toi chi muon chao"
+    r"|good (?:morning|afternoon)"
+    r"|(?:cam on|thanks|thank you)(?: (?:ban|doi ho tro|da phan hoi|ban nhieu))?(?: nhe| a| ah)?"
+    r"|cam on ban da ho tro"
+    r"|chuc (?:ban )?(?:mot )?ngay tot lanh"
+    r"|hen gap lai|tam biet"
+    r"|(?:ok|oke|okay|da|u|vang)(?: hieu roi| roi)?|da hieu|hieu roi|ro roi|duoc roi"
+    r"|thoi de sau|de sau nhe|de sau|luc khac|khi khac|khong can nua|de luc khac"
+    r"|(?:ban )?co ranh khong|(?:toi nay )?ban khoe chu|ban ten gi"
+    r"|ban co the (?:tro chuyen|noi chuyen) (?:mot chut|it) khong"
+    r")[!?,. ]*$"
+)
+_TECHNICAL_SIGNAL = re.compile(
+    r"\b(?:vpn|wifi|wi-fi|dns|bitlocker|outlook|mfa|forticlient|sap|erp|"
+    r"tcp|http|port|timeout|timed out|0x[0-9a-f]+|khong ket noi|mat mang|"
+    r"khong mo|khong vao|khong dang nhap|mat ket noi|tu tat|nhap nhay|man hinh den)\b"
+)
+_NOISE_OR_EMPTY_CONTENT = re.compile(
+    r"\b(?:asdf|qwer|lorem|ipsum|test|khong biet go gi|bam nham|gui nham|"
+    r"khong co noi dung|ky tu la|mot hai ba bon)\b"
+)
+_UNDERSPECIFIED_INCIDENT = re.compile(
+    r"(?:"
+    r"\b(?:may(?: tinh)?|he thong|ung dung|app|mang|tai khoan|man hinh|email|cai nay|no|su co|it)\b"
+    r".*\b(?:co van de|bi sao|bi gi do|hong roi|khong on|ky lam|cham qua|"
+    r"khong chay|loi|cuu toi|gap)\b"
+    r"|^(?:khong the thao tac|giup toi voi|toi khong lam viec duoc)[!., ]*$"
+    r")"
+)
+
+
+def _is_uninterpretable(folded: str) -> bool:
+    """Return true only when no usable technical or task signal is present."""
+    if _TECHNICAL_SIGNAL.search(folded):
+        return False
+    if _GARBAGE.fullmatch(folded) or _NOISE_OR_EMPTY_CONTENT.search(folded):
+        return True
+    tokens = re.findall(r"[a-z0-9]+", folded)
+    return not tokens or len(tokens) == 1
+
+
+def _is_underspecified_incident(folded: str) -> bool:
+    """Potential incidents need an object plus a concrete failure signal."""
+    return not _TECHNICAL_SIGNAL.search(folded) and bool(_UNDERSPECIFIED_INCIDENT.search(folded))
 
 
 def route_chat_message(message: str) -> ChatRouteDecision:
     """Choose the least expensive safe path for one chat turn."""
     folded = _fold(message).strip()
+    # Explicit conversational topic shifts must not inherit a previous IT turn.
+    if _SOCIAL_DIRECT.fullmatch(folded):
+        return ChatRouteDecision(
+            "direct_response",
+            "direct",
+            1.0,
+            "Mình sẵn sàng hỗ trợ khi bạn cần.",
+        )
     if _GREETING.fullmatch(folded):
         return ChatRouteDecision(
             "direct_response",
@@ -150,7 +205,7 @@ def route_chat_message(message: str) -> ChatRouteDecision:
             1.0,
             "Mình sẵn sàng hỗ trợ. Bạn đang cần hỗ trợ vấn đề IT nào?",
         )
-    if _GARBAGE.fullmatch(folded):
+    if _is_uninterpretable(folded):
         return ChatRouteDecision(
             "needs_clarification",
             "needs_clarification",
@@ -179,6 +234,13 @@ def route_chat_message(message: str) -> ChatRouteDecision:
         return ChatRouteDecision("incident", "evidence_required", 0.88)
     if _EXECUTION_ACTION.search(folded) or _ACTION.search(folded):
         return ChatRouteDecision("action_request", "tool_required", 0.92)
+    if _is_underspecified_incident(folded):
+        return ChatRouteDecision(
+            "needs_clarification",
+            "needs_clarification",
+            0.94,
+            "Mình cần thêm thông tin để hỗ trợ: thiết bị hay ứng dụng nào gặp lỗi, và dấu hiệu lỗi cụ thể là gì?",
+        )
     if _INCIDENT.search(folded):
         return ChatRouteDecision("incident", "evidence_required", 0.82)
     return ChatRouteDecision("knowledge", "evidence_required", 0.70)

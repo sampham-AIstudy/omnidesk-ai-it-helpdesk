@@ -211,6 +211,13 @@ On Windows / PowerShell, use:
 $null | codex exec "[SECONDARY_REVIEW_ONLY] <review prompt>"
 ```
 
+If the execution host applies a filesystem sandbox that blocks Codex runtime
+state under `C:\Users\Admin\.codex`, grant this one child process the host's
+scoped state access (for example, `sandbox_permissions: "require_escalated"`
+when the host provides that control). This does not change the PowerShell
+command or permit a second writer. The AGY PRIMARY MUST retain the marker and
+compare a working-tree snapshot before and after the review.
+
 The delegated prompt MUST begin with:
 
 `[SECONDARY_REVIEW_ONLY]`
@@ -303,8 +310,21 @@ AGY MUST be invoked using one-shot print mode.
 On Windows / PowerShell, use exactly:
 
 ```powershell
-Set-Location "C:\Users\Admin\Python Advanced\VinAI Lab\P-236"; agy -p "[SECONDARY_REVIEW_ONLY] <review prompt>"
+Set-Location "C:\Users\Admin\Python Advanced\VinAI Lab\P-236"; agy -p "[SECONDARY_REVIEW_ONLY] <review prompt>" --mode plan
 ```
+
+When Codex runs this command through its execution tool, it MUST set
+`sandbox_permissions: "require_escalated"` for this one AGY child process.
+AGY must write its conversation, cache, and telemetry state under
+`C:\Users\Admin\.gemini\antigravity-cli`; without elevation, the outer Codex
+filesystem sandbox denies those writes and may make the reviewer unavailable.
+
+`--mode plan` and `[SECONDARY_REVIEW_ONLY]` are both required. They align AGY
+with its reviewer role, but elevation is not a filesystem read-only boundary.
+Do not use elevated execution for normal AGY primary work or omit the marker.
+Before and after every elevated AGY review, the Codex PRIMARY MUST compare a
+working-tree snapshot (including `git status --porcelain -uall` and the
+current diff) and stop/report any unexpected repository mutation.
 
 Do NOT use:
 
@@ -360,7 +380,8 @@ RISKS
 TESTS
 ```
 
-If AGY fails because network access is unavailable inside the Codex sandbox:
+If AGY fails after the required elevated reviewer invocation because network
+access or the AGY service is unavailable:
 
 - do not retry repeatedly
 - retry at most once if appropriate

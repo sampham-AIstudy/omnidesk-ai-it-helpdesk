@@ -187,6 +187,7 @@ async def init_db():
         episodic_memory,
         hitl_approval,
         knowledge_base,
+        knowledge_gap,
         service_request,
         technician_fulfillment_group,
         ticket,

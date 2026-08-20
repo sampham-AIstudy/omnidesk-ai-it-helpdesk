@@ -1,6 +1,7 @@
 """Conversation workflow inside a ticket."""
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 from collections.abc import Awaitable, Callable, Sequence
@@ -17,17 +18,20 @@ from src.models.audit_log import AuditAction
 from src.models.ticket import Ticket, TicketStatus
 from src.models.ticket_message import TicketMessage, TicketMessageSender
 from src.models.user import User, UserRole
+from src.observability.tracing import set_current_attributes
 from src.prompts import (
     PRODUCTION_RAG_SYSTEM_PROMPT,
     build_authorized_evidence,
     evidence_source_ids,
     remove_unrecognized_source_ids,
 )
+from src.services.adaptive_retrieval_policy import retrieve_turn_with_bounded_retry
 from src.services.chat_routing_service import route_chat_message
 from src.services.context_query_service import (
     build_context_aware_retrieval_query,
     resolve_contextual_user_query,
 )
+from src.services.knowledge_gap_telemetry import record_retrieval_outcome
 from src.services.llm import get_rag_llm
 from src.services.profile_chat_service import _fold, self_profile_reply
 from src.services.rag_service import get_collection, search_similar
@@ -43,6 +47,7 @@ from src.services.web_research_service import (
     has_actionable_external_context,
     maybe_research_web,
     persist_research_audit,
+    should_research_web,
 )
 
 logger = logging.getLogger(__name__)
@@ -473,13 +478,20 @@ async def handle_ticket_message(
         ticket_context={"title": report_title, "description": report_description},
     )
     query = retrieval_query_res.query
-    docs = search_similar(
-        query=query,
-        n_results=4,
-        category_filter=ticket.category.value if ticket.category else None,
-        user_company_unit=ticket.submitter.company_unit.value if ticket.submitter else None,
-        user_department=ticket.submitter.department if ticket.submitter else None,
+    adaptive_turn = await retrieve_turn_with_bounded_retry(
+        [query],
+        lambda attempt: asyncio.to_thread(
+            search_similar,
+            query=attempt,
+            n_results=4,
+            category_filter=ticket.category.value if ticket.category else None,
+            user_company_unit=ticket.submitter.company_unit.value if ticket.submitter else None,
+            user_department=ticket.submitter.department if ticket.submitter else None,
+        ),
     )
+    adaptive = adaptive_turn.results[0]
+    docs = adaptive.documents
+    set_current_attributes({f"helpdesk.retrieval.{key}": value for key, value in adaptive_turn.telemetry().items()})
     best_relevance = max((doc.get("relevance_score", 0.0) for doc in docs), default=0.0)
     minimum_relevance = _minimum_agent_relevance()
 
@@ -498,14 +510,41 @@ async def handle_ticket_message(
     await audit_memory_retrieval(db, user_id=user.id, ticket_id=ticket.id, metrics=_memory_metrics)
 
     research = None
-    if has_actionable_external_context(query) and (not docs or best_relevance < minimum_relevance):
-        research = await maybe_research_web(query, docs)
+    should_web, _web_reason = should_research_web(
+        query, docs, insufficient_internal=adaptive.outcome in {"WEAK", "EMPTY"}
+    )
+    if has_actionable_external_context(query) and should_web:
+        research = await maybe_research_web(
+            query, docs, insufficient_internal=adaptive.outcome in {"WEAK", "EMPTY"}
+        )
 
     unsafe_request = any(
         marker in content.casefold()
         for marker in ("bypass", "ne dlp", "mat khau admin", "password admin", "bo qua quy trinh")
     )
-    if ((not docs or best_relevance < minimum_relevance) and not memory_evidence and not (research and research.triggered)) or unsafe_request:
+    missing_knowledge = (
+        (adaptive.outcome in {"WEAK", "EMPTY"} or not docs or best_relevance < minimum_relevance)
+        and not memory_evidence
+        and not (research and research.triggered)
+    )
+    await record_retrieval_outcome(
+        db,
+        surface="ticket",
+        transport="sse" if on_token is not None else "rest",
+        tenant_scope=(ticket.submitter.company_unit.value if ticket.submitter else user.company_unit.value),
+        department_scope=(ticket.submitter.department if ticket.submitter else user.department),
+        query=content,
+        retrieval_required=route_decision.retrieval_required,
+        retrieval_strategy="ticket_hybrid_zero_mem",
+        rag_docs=docs,
+        top_score=best_relevance,
+        insufficient_evidence=missing_knowledge,
+        research=research,
+        episodic_evidence_count=len(memory_evidence),
+        web_research_provenance_used=bool(research and research.triggered),
+        hitl_or_escalation=missing_knowledge,
+    )
+    if missing_knowledge or unsafe_request:
         if ticket.status == TicketStatus.WAITING_FOR_AGENT:
             reply = await _reply_while_waiting_for_agent(db, ticket=ticket)
             if on_token:

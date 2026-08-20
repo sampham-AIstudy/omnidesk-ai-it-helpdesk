@@ -1,7 +1,8 @@
 {
   "schema_version": 2,
-  "evaluation_contract_version": "enterprise-golden-v1.2",
+  "evaluation_contract_version": "enterprise-golden-v1.3",
   "golden_dataset": "eval/golden_testset_enterprise.json",
+  "golden_case_count": 300,
   "snapshot": {
     "knowledge_base_fixture": "src.data.knowledge_base:get_all_kb_entries",
     "ticket_fixture": "tests.conftest:prepare_database",

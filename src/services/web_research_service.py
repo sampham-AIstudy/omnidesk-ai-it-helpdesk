@@ -82,6 +82,9 @@ class ResearchResult:
     reason: str
     query: str | None
     sources: list[ResearchSource]
+    raw_result_count: int = 0
+    rejected_result_count: int = 0
+    failure_category: str | None = None
 
 
 class SearchProvider(Protocol):
@@ -169,12 +172,16 @@ def has_actionable_external_context(message: str) -> bool:
     )
 
 
-def _needs_external_research(message: str, rag_docs: list[dict]) -> tuple[bool, str]:
+def should_research_web(
+    message: str, rag_docs: list[dict], *, insufficient_internal: bool = False
+) -> tuple[bool, str]:
     """Conservative decision gate: internal RAG wins when it is clearly sufficient."""
     normalized = message.casefold()
     best_score = max((float(doc.get("relevance_score", 0)) for doc in rag_docs), default=0.0)
     asks_fresh = any(marker in normalized for marker in FRESHNESS_MARKERS)
     asks_vendor = any(marker in normalized for marker in VENDOR_MARKERS)
+    if insufficient_internal:
+        return True, "adaptive_insufficient_internal_evidence"
     if not rag_docs:
         return True, "internal_kb_empty"
     if best_score < settings.web_research_min_rag_score:
@@ -238,28 +245,44 @@ def get_search_provider() -> SearchProvider | None:
     return DuckDuckGoHtmlProvider()
 
 
-async def maybe_research_web(message: str, rag_docs: list[dict], provider: SearchProvider | None = None) -> ResearchResult:
-    should_search, reason = _needs_external_research(message, rag_docs)
+async def maybe_research_web(
+    message: str,
+    rag_docs: list[dict],
+    provider: SearchProvider | None = None,
+    *,
+    insufficient_internal: bool = False,
+) -> ResearchResult:
+    should_search, reason = should_research_web(
+        message, rag_docs, insufficient_internal=insufficient_internal
+    )
     if not should_search:
         return ResearchResult(False, reason, None, [])
 
     query = sanitize_search_query(message)
     if not query:
-        return ResearchResult(False, "sensitive_or_empty_search_query", None, [])
+        return ResearchResult(
+            False, "sensitive_or_empty_search_query", None, [],
+            failure_category="query_blocked",
+        )
     active_provider = provider or get_search_provider()
     if not active_provider:
-        return ResearchResult(False, "web_research_disabled", query, [])
+        return ResearchResult(False, "web_research_disabled", query, [], failure_category="disabled")
 
     try:
         raw_sources = await active_provider.search(query, settings.web_research_max_results)
     except Exception as exc:  # A failed external dependency must not block Help Desk service.
         logger.info("External research unavailable: %s", exc)
-        return ResearchResult(False, "search_provider_unavailable", query, [])
+        return ResearchResult(False, "search_provider_unavailable", query, [], failure_category="provider_unavailable")
 
     safe_sources = [source for source in raw_sources if _valid_http_url(source.url) and _is_untrusted_content_safe(source)]
     if len(safe_sources) != len(raw_sources):
         logger.warning("Dropped %d external results due to URL or indirect injection policy", len(raw_sources) - len(safe_sources))
-    return ResearchResult(bool(safe_sources), reason, query, safe_sources)
+    return ResearchResult(
+        bool(safe_sources), reason, query, safe_sources,
+        raw_result_count=len(raw_sources),
+        rejected_result_count=len(raw_sources) - len(safe_sources),
+        failure_category="all_results_rejected" if raw_sources and not safe_sources else None,
+    )
 
 
 async def persist_research_audit(

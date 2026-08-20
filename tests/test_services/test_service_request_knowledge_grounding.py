@@ -79,9 +79,9 @@ async def test_kb_sr_canonical_article_exists_in_sqlite():
 
 @pytest.mark.asyncio
 async def test_kb_sr_canonical_article_in_chroma_provenance():
-    """Verify kb-036 is indexed in helpdesk_kb_multilingual_v2_sentence_transformer with 384-dim SentenceTransformer."""
+    """Verify kb-036 is indexed in the active v3 canonical collection with 384-dim SentenceTransformer."""
     collection = get_collection()
-    assert collection.name == "helpdesk_kb_multilingual_v2_sentence_transformer"
+    assert collection.name == "helpdesk_kb_multilingual_v3_sentence_transformer"
 
     res = collection.get(ids=["kb-036"], include=["documents", "metadatas"])
     assert len(res["ids"]) == 1

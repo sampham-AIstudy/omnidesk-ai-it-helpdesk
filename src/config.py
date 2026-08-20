@@ -94,7 +94,7 @@ class Settings(BaseSettings):
 
     # Vector Store
     chroma_persist_dir: str = "./data/chroma"
-    chroma_collection_name: str = "helpdesk_kb_multilingual_v2_sentence_transformer"
+    chroma_collection_name: str = "helpdesk_kb_multilingual_v3_sentence_transformer"
     embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     embedding_backend: Literal["sentence_transformer", "hashing"] = "sentence_transformer"
     embedding_allow_network_downloads: bool = False
@@ -111,6 +111,15 @@ class Settings(BaseSettings):
     web_research_max_results: int = Field(default=4, ge=1, le=8)
     web_research_min_rag_score: float = Field(default=0.55, ge=0.0, le=1.0)
     rag_min_relevance_score: float = Field(default=0.55, ge=0.0, le=1.0)
+
+    # Post-ranking KB context expansion. These limits never affect retrieval
+    # candidates or their scores; they bound only attached evidence.
+    context_expansion_enabled: bool = True
+    context_expansion_max_chunks_per_anchor: int = Field(default=1, ge=0, le=2)
+    context_expansion_max_total_chunks: int = Field(default=4, ge=0, le=8)
+    context_expansion_max_parent_items: int = Field(default=2, ge=0, le=4)
+    context_expansion_parent_max_chars: int = Field(default=280, ge=40, le=1000)
+    context_expansion_max_evidence_tokens: int = Field(default=2800, ge=256, le=8000)
 
     # Semantic duplicate ticket detection
     duplicate_high_threshold: float = Field(default=0.85, ge=0.0, le=1.0)

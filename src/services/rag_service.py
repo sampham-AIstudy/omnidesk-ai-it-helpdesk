@@ -468,10 +468,12 @@ def search_similar(
         extract_exact_technical_tokens,
         normalize_informal_query,
     )
+    from src.services.technical_intent_service import infer_technical_facets, topic_compatibility
 
     # 1. Query Normalization & Technical Token Extraction
     norm_query = normalize_informal_query(query)
     exact_tokens = extract_exact_technical_tokens(query) | extract_exact_technical_tokens(norm_query)
+    technical_facets = infer_technical_facets(norm_query)
 
     # 2. Dense Embedding Retrieval Channel
     expanded_query = _expand_query(norm_query if norm_query != query else query)
@@ -554,7 +556,7 @@ def search_similar(
     bm25_ranks: dict[str, int] = {item["doc_id"]: item["lexical_rank"] for item in bm25_results}
     bm25_docs: dict[str, dict[str, Any]] = {item["doc_id"]: item for item in bm25_results}
 
-    # 4. Reciprocal Rank Fusion (RRF, k=60) with Exact Technical Match & Source Authority
+    # 4. Reciprocal Rank Fusion (RRF, k=60), then bounded topic relevance and authority.
     k_rrf = 60
     all_candidate_ids = set(dense_ranks.keys()) | set(bm25_ranks.keys())
     if not all_candidate_ids:
@@ -593,7 +595,21 @@ def search_similar(
         source_type = meta.get("source", "NO_SOURCE_KEY")
         auth_factor = SOURCE_AUTHORITY_FACTORS.get(source_type, 1.0)
 
-        fusion_score = (dense_rrf * 1.0 + bm25_rrf * 1.2 + exact_boost) * auth_factor
+        # Authority remains exactly the existing factor, but is applied only
+        # after a deterministic technical-topic relevance adjustment.
+        rrf_score = dense_rrf * 1.0 + bm25_rrf * 1.2 + exact_boost
+        compatibility, compatibility_reason = topic_compatibility(technical_facets, meta)
+        topic_adjusted_score = rrf_score * compatibility
+        fusion_score = topic_adjusted_score * auth_factor
+        d_info["dense_rrf"] = dense_rrf
+        d_info["lexical_rrf"] = bm25_rrf
+        d_info["exact_contribution"] = exact_boost
+        d_info["rrf_score"] = rrf_score
+        d_info["topic_compatibility"] = compatibility
+        d_info["topic_compatibility_reason"] = compatibility_reason
+        d_info["authority_factor"] = auth_factor
+        d_info["topic_adjusted_score"] = topic_adjusted_score
+        d_info["final_score"] = fusion_score
         d_info["fusion_score"] = fusion_score
 
         # Traditional lexical score for compatibility

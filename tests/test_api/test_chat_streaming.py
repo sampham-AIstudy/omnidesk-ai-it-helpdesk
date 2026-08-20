@@ -113,3 +113,17 @@ async def test_greeting_does_not_call_rag_web_or_memory(client, auth_employee):
     assert '"answerability": "direct"' in response.text
     rag_search.assert_not_awaited()
     memory_search.assert_not_awaited()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("path", ("/api/v1/chat", "/api/v1/chat/stream"))
+async def test_workspace_rejects_explicit_ticket_context(client, auth_employee, path):
+    """Workspace endpoints must not accept an implicit ticket-memory scope."""
+    response = await client.post(
+        path,
+        json={"message": "hello", "ticket_id": 123},
+        headers={"Authorization": f"Bearer {auth_employee}"},
+    )
+
+    assert response.status_code == 400
+    assert "does not accept ticket context" in response.json()["detail"]

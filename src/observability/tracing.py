@@ -33,6 +33,11 @@ _ALLOWED_KEYS = {
     "helpdesk.guardrail.result", "helpdesk.chat.route", "helpdesk.chat.retrieval_required",
     "helpdesk.chat.retrieval_decision", "helpdesk.chat.memory_required", "helpdesk.rag.documents_retrieved",
     "helpdesk.rag.top_score", "helpdesk.rag.query_decomposed", "helpdesk.rag.sub_query_count",
+    "helpdesk.memory.enabled", "helpdesk.memory.route", "helpdesk.memory.ticket_context_authorized",
+    "helpdesk.gap.detected", "helpdesk.gap.topic",
+    "helpdesk.expansion.anchor_count", "helpdesk.expansion.neighbor_count",
+    "helpdesk.expansion.parent_count", "helpdesk.expansion.dropped_neighbor_count",
+    "helpdesk.expansion.token_cost", "helpdesk.expansion.used",
     "gen_ai.request.model", "gen_ai.response.model", "gen_ai.usage.input_tokens", "gen_ai.usage.output_tokens",
 }
 _SENSITIVE_MARKERS = ("password", "secret", "token", "authorization", "cookie", "email", "prompt", "message", "content", "document", "query")

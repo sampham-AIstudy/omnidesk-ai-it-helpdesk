@@ -79,7 +79,7 @@ Chỉ trả về một JSON object hợp lệ, không Markdown hay text ngoài J
 def _source_id(doc: dict[str, Any]) -> str:
     """Use an existing persisted/vector-store identifier, when one exists."""
     metadata = doc.get("metadata", {}) or {}
-    value = doc.get("doc_id") or metadata.get("source_id") or metadata.get("chroma_id")
+    value = doc.get("citation_source_id") or metadata.get("citation_source_id") or doc.get("doc_id") or metadata.get("source_id") or metadata.get("chroma_id")
     return str(value) if value else ""
 
 
@@ -147,6 +147,9 @@ def build_authorized_evidence(documents: list[dict[str, Any]]) -> str:
         version = metadata.get("version", "")
         updated_at = metadata.get("updated_at") or metadata.get("updated_at_iso") or ""
         header = f"[{source_id}] type={authority}" if source_id else f"type={authority}"
+        role = metadata.get("evidence_role")
+        if role and role != "anchor":
+            header += f" context_role={role} anchor={metadata.get('anchor_chunk_id', '')}"
         if version:
             header += f" version={version}"
         if updated_at:

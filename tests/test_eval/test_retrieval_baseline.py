@@ -15,6 +15,7 @@ from eval.retrieval_metrics import (
     summarize_retrieval_evaluation,
 )
 from scripts.run_retrieval_gate import build_thresholds_from_args, compute_file_sha256
+from src.config import get_settings
 
 GOLDEN_PATH = Path(__file__).resolve().parent.parent.parent / "eval" / "retrieval_golden_v1.json"
 
@@ -456,13 +457,20 @@ def test_hybrid_lock_artifact_immutability():
 
 
 def test_authority_lock_artifact_provenance():
-    """Step 4 Authority lock artifact must match live golden SHA and 100% hitrate."""
+    """Active canonical authority-lock artifact must match its versioned provenance."""
     path = Path(__file__).resolve().parent.parent.parent / "eval" / "results" / "retrieval_authority_lock_v1_0.json"
     assert path.exists(), f"Authority lock artifact not found at {path}"
     data = json.loads(path.read_text(encoding="utf-8"))
     meta = data.get("meta", {})
     assert meta.get("golden_sha256") == compute_file_sha256(GOLDEN_PATH)
-    assert meta.get("collection_count") == 433
+    expected_collection_counts = {
+        "helpdesk_kb_multilingual_v2_sentence_transformer": 433,
+        "helpdesk_kb_multilingual_v3_sentence_transformer": 443,
+    }
+    active_collection = get_settings().chroma_collection_name
+    assert active_collection in expected_collection_counts
+    assert meta.get("collection") == active_collection
+    assert meta.get("collection_count") == expected_collection_counts[active_collection]
     summary = data.get("summary", {})
     assert summary.get("hit_rate_at_1", 0.0) == 1.0
     assert summary.get("hit_rate_at_3", 0.0) == 1.0
