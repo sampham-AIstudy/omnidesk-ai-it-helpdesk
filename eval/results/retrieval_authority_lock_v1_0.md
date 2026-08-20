@@ -1,6 +1,6 @@
 # P-236 Retrieval Evaluation Baseline & Release Gate Report
 
-- **Generated At**: `2026-08-19T14:56:49.449980+00:00`
+- **Generated At**: `2026-08-19T16:27:15.958288+00:00`
 - **Collection**: `helpdesk_kb_multilingual_v2_sentence_transformer`
 - **Embedding Model**: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 - **Collection Size**: 433 documents/chunks

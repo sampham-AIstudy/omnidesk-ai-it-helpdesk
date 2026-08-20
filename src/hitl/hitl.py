@@ -4,7 +4,7 @@ Evaluates proposals using the Risk-Aware Router Matrix: Confidence x Risk x Cont
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class RiskAwareRouter:
     """Decision Matrix combining Confidence and Risk level."""
 
-    def route(self, confidence_level: str, risk_level: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
+    def route(self, confidence_level: str, risk_level: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
         """Map confidence and risk to decision: AUTO, REVIEW, HITL."""
         conf = confidence_level.upper()
         risk = risk_level.upper()
@@ -43,7 +43,7 @@ class RiskAwareRouter:
         }
 
 
-def route_decision(confidence: float, risk: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
+def route_decision(confidence: float, risk: str, context: dict[str, Any] | None = None) -> dict[str, Any]:
     """Helper function to map numeric confidence to level and evaluate router."""
     if confidence >= 0.90:
         conf_level = "HIGH"

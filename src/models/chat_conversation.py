@@ -1,13 +1,17 @@
 """Database models for standalone Chatbot Workspace conversations and messages, isolated per user."""
 from __future__ import annotations
 
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
+
+if TYPE_CHECKING:
+    from src.models.user import User
 
 
 def generate_uuid() -> str:
@@ -27,8 +31,8 @@ class ChatConversation(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now(), nullable=False
     )
 
-    user: Mapped["User"] = relationship("User")
-    messages: Mapped[list["ChatMessage"]] = relationship(
+    user: Mapped[User] = relationship("User")
+    messages: Mapped[list[ChatMessage]] = relationship(
         "ChatMessage", back_populates="conversation", cascade="all, delete-orphan", order_by="ChatMessage.created_at.asc()"
     )
 
@@ -49,7 +53,7 @@ class ChatMessage(Base):
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
 
-    conversation: Mapped["ChatConversation"] = relationship("ChatConversation", back_populates="messages")
+    conversation: Mapped[ChatConversation] = relationship("ChatConversation", back_populates="messages")
 
     def __repr__(self) -> str:
         return f"<ChatMessage id={self.id} conv={self.conversation_id} role={self.role}>"

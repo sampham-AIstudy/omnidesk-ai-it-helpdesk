@@ -5,12 +5,10 @@ from sqlalchemy import select
 from src.data.service_request_kb import SERVICE_REQUEST_KB_ENTRY
 from src.database import AsyncSessionLocal
 from src.models.knowledge_base import KnowledgeBaseEntry
-from src.models.user import User, UserRole
 from src.services.chat_routing_service import route_chat_message
 from src.services.context_query_service import build_context_aware_retrieval_query
 from src.services.rag_service import (
     get_collection,
-    get_collection_count,
     index_document,
     search_similar_async,
 )

@@ -89,14 +89,14 @@ def record_business_event(event: str) -> None:
 
 def record_http_request(route: str, method: str, status_code: int, duration_ms: float) -> None:
     """Record API metrics against route templates, never literal IDs or query text."""
-    attributes = {"http.route": route, "http.request.method": method, "http.response.status_code": status_code}
+    attributes: dict[str, str | int | float | bool] = {"http.route": route, "http.request.method": method, "http.response.status_code": status_code}
     _http_requests.add(1, attributes)
     _http_duration.record(duration_ms, attributes)
 
 
 def record_tool_result(tool_name: str, success: bool) -> None:
     """Record tool state only; resource IDs and error bodies are deliberately excluded."""
-    attributes = {"ai.tool.name": tool_name, "ai.tool.success": success}
+    attributes: dict[str, str | int | float | bool] = {"ai.tool.name": tool_name, "ai.tool.success": success}
     _tool_calls.add(1, attributes)
     if not success:
         _tool_failures.add(1, {"ai.tool.name": tool_name})

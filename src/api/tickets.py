@@ -12,6 +12,7 @@ from starlette.responses import StreamingResponse
 
 from src.api.auth import get_current_active_user
 from src.database import get_db
+from src.guardrails.ai_abuse_guard import validate_chat_message_size
 from src.models.audit_log import AuditAction
 from src.models.schemas import (
     AgentProcessResponse,
@@ -30,8 +31,7 @@ from src.models.schemas import (
     TicketResponse,
     TicketStatusUpdate,
 )
-from src.guardrails.ai_abuse_guard import validate_chat_message_size
-from src.models.ticket import Ticket, TicketStatus
+from src.models.ticket import Ticket, TicketPriority, TicketStatus
 from src.models.user import CompanyUnit, User, UserRole
 from src.observability.tracing import record_business_event
 from src.services import auth_service, ticket_service
@@ -363,7 +363,7 @@ async def _run_agent_workflow(
 async def list_tickets(
     status: TicketStatus | None = Query(None),
     search: str | None = Query(None, min_length=1, max_length=200),
-    priority: str | None = Query(None),
+    priority: TicketPriority | None = Query(None),
     sort_by: str = Query("created_at", pattern="^(created_at|updated_at|priority|sla_deadline|confidence_score)$"),
     sort_order: str = Query("desc", pattern="^(asc|desc)$"),
     page: int = Query(1, ge=1),
@@ -564,7 +564,7 @@ async def stream_ticket_message(
                     continue
             messages = await task
             await db.commit()
-            yield f"event: done\ndata: {json.dumps(TicketConversationResponse(items=[TicketMessageResponse.model_validate(item).model_dump(mode='json') for item in messages]).model_dump(mode='json'), ensure_ascii=False)}\n\n"
+            yield f"event: done\ndata: {json.dumps(TicketConversationResponse(items=[TicketMessageResponse.model_validate(item) for item in messages]).model_dump(mode='json'), ensure_ascii=False)}\n\n"
         except Exception as exc:
             logger.exception("Ticket message streaming failed: %s", exc)
             yield f"event: error\ndata: {json.dumps({'message': 'Không thể tạo phản hồi streaming.'}, ensure_ascii=False)}\n\n"

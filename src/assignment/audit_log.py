@@ -5,13 +5,13 @@ Gathers security events, decisions, tool calls, and exports formatted JSON audit
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
-_audit_records: List[Dict[str, Any]] = []
+_audit_records: list[dict[str, Any]] = []
 
 
 def record_audit_event(
@@ -25,11 +25,11 @@ def record_audit_event(
     category: str = "",
     confidence: float = 1.0,
     risk: str = "LOW",
-    metadata: Dict[str, Any] = None,
-) -> Dict[str, Any]:
+    metadata: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Record a structured security audit event."""
     event = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now(UTC).isoformat(),
         "ticket_id": ticket_id or "N/A",
         "tenant_id": tenant_id or "default",
         "user_id": user_id or "anonymous",
@@ -56,5 +56,5 @@ def export_json(output_path: str = "outputs/audit_log.json") -> None:
     logger.info(f"Exported {len(_audit_records)} audit log entries to {output_path}")
 
 
-def get_audit_records() -> List[Dict[str, Any]]:
+def get_audit_records() -> list[dict[str, Any]]:
     return _audit_records

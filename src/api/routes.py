@@ -5,8 +5,8 @@ from src.api.admin import router as admin_router
 from src.api.analytics import router as analytics_router
 from src.api.auth import router as auth_router
 from src.api.chat import router as chat_router
-from src.api.tickets import router as tickets_router
 from src.api.service_requests import router as service_requests_router
+from src.api.tickets import router as tickets_router
 
 router = APIRouter()
 

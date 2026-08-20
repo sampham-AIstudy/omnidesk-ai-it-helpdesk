@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
@@ -229,7 +230,7 @@ Category: {category}"""),
                 "retrieval_confidence": 0.0,
                 "groundedness_score": 0.0,
             }
-        sources = []
+        sources: list[dict[str, Any]] = []
         for doc in relevant_docs[:3]:
             source = knowledge_source_payload(doc)
             if not any(
@@ -251,7 +252,6 @@ Category: {category}"""),
         )
 
         return {
-
             **state,
             "rag_context": relevant_docs,
             "suggested_solution": solution,

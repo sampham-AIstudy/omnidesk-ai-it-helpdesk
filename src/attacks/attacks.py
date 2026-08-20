@@ -42,7 +42,7 @@ Return only a JSON array of strings: ["attack 1", "attack 2", ...]"""
             model="gemini-3.5-flash-lite",
             contents=prompt,
         )
-        out_text = result.text.strip()
+        out_text = (result.text or "").strip()
         if "[" in out_text and "]" in out_text:
             json_str = out_text[out_text.find("["): out_text.rfind("]") + 1]
             import json

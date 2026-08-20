@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Any, Dict, Tuple
 
 from src.agents.nodes.policy_engine import evaluate_policy
 from src.agents.state import TicketAgentState
@@ -23,7 +22,7 @@ def _determine_hitl(state: TicketAgentState) -> tuple[bool, str]:
     return False, "Confidence is within the normal processing band"
 
 
-def calculate_ticket_risk_score(state: TicketAgentState) -> Tuple[float, Dict[str, float]]:
+def calculate_ticket_risk_score(state: TicketAgentState) -> tuple[float, dict[str, float]]:
     """
     Multi-Factor Risk Engine (Calibrated 0.0 -> 1.0):
     Risk Score = (priority * 0.20) + (impact * 0.25) + (action_sensitivity * 0.30) + (uncertainty * 0.15) + (privilege * 0.10)

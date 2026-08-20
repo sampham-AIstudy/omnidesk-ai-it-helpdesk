@@ -114,7 +114,7 @@ async def _seed_demo_users(db):
 
     seeded = 0
     for user_data in demo_users:
-        existing = await get_user_by_username(db, user_data["username"])
+        existing = await get_user_by_username(db, str(user_data["username"]))
         if not existing:
             await create_user(db, **user_data)
             seeded += 1

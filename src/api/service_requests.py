@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.api.auth import get_current_active_user
 from src.database import get_db
 from src.models.schemas import (
+    ServiceCatalogItem,
     ServiceCatalogResponse,
     ServiceRequestApprovalDecision,
     ServiceRequestApprovalQueueResponse,
@@ -39,7 +40,7 @@ router = APIRouter(prefix="/service-requests", tags=["service-requests"])
 @router.get("/catalog", response_model=ServiceCatalogResponse)
 async def service_catalog(current_user: User = Depends(get_current_active_user)):
     """Read-only, employee-safe source of truth for the service catalog."""
-    return ServiceCatalogResponse(items=list_service_catalog())
+    return ServiceCatalogResponse(items=[ServiceCatalogItem(**item) for item in list_service_catalog()])
 
 
 @router.post("", response_model=ServiceRequestResponse, status_code=status.HTTP_201_CREATED)

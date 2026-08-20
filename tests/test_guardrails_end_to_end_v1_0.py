@@ -29,15 +29,14 @@ Directly maps every GRD ID to an explicit, isolated test function:
 from __future__ import annotations
 
 import pytest
-from httpx import AsyncClient
-
-from src.guardrails.input_guardrails import InputGuardrailPlugin
 from fastapi import HTTPException
+from httpx import AsyncClient
 
 from src.guardrails.ai_abuse_guard import (
     MAX_CHAT_MESSAGE_CHARS,
     validate_chat_message_size,
 )
+from src.guardrails.input_guardrails import InputGuardrailPlugin
 from src.services.action_grounding import (
     ActionExecutionState,
     ActionResult,
@@ -289,6 +288,7 @@ async def test_grd_19_rate_abuse_rejected_with_429() -> None:
 @pytest.mark.asyncio
 async def test_grd_20_concurrent_generation_bounded() -> None:
     import asyncio
+
     from src.guardrails.ai_abuse_guard import guard_ai_generation, reset_abuse_guard_state
     reset_abuse_guard_state()
     user_id = 99992

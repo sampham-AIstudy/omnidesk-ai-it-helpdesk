@@ -51,7 +51,7 @@ async def test_me_authenticated(client, auth_employee):
     """GET /me với token hợp lệ → user info."""
     if not auth_employee:
         pytest.skip("No auth token available")
-    
+
     resp = await client.get(
         "/api/v1/auth/me",
         headers={"Authorization": f"Bearer {auth_employee}"}

@@ -5,7 +5,7 @@ Pipeline: Attachment -> File type validation -> Size validation -> Text extracti
 
 import logging
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
 
@@ -20,7 +20,7 @@ ALLOWED_EXTENSIONS = {".txt", ".log", ".pdf", ".docx", ".csv", ".png", ".jpg", "
 MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024  # 10MB
 
 
-def scan_url_virustotal(url_to_scan: str) -> Dict[str, Any]:
+def scan_url_virustotal(url_to_scan: str) -> dict[str, Any]:
     """Scan URL using VirusTotal API v3."""
     api_key = settings.virustotal_api_key
     if not api_key:
@@ -37,14 +37,14 @@ def scan_url_virustotal(url_to_scan: str) -> Dict[str, Any]:
     return {"malicious": False}
 
 
-def scan_url_safe_browsing(urls: List[str]) -> Dict[str, Any]:
+def scan_url_safe_browsing(urls: list[str]) -> dict[str, Any]:
     """Scan URLs using Google Safe Browsing API v4."""
     api_key = settings.google_safe_browsing_api
     if not api_key or not urls:
         return {"safe": True, "matches": []}
 
     endpoint = f"https://safebrowsing.googleapis.com/v4/threatMatches:find?key={api_key}"
-    payload = {
+    payload: dict[str, Any] = {
         "client": {"clientId": "helpdesk-agent", "clientVersion": "1.0.0"},
         "threatInfo": {
             "threatTypes": ["MALWARE", "SOCIAL_ENGINEERING", "UNWANTED_SOFTWARE", "POTENTIALLY_HARMFUL_APPLICATION"],
@@ -64,7 +64,7 @@ def scan_url_safe_browsing(urls: List[str]) -> Dict[str, Any]:
     return {"safe": True, "matches": []}
 
 
-def scan_attachment(file_name: str, file_bytes: bytes, text_content: str = "") -> Dict[str, Any]:
+def scan_attachment(file_name: str, file_bytes: bytes, text_content: str = "") -> dict[str, Any]:
     """Execute full attachment security scanning pipeline."""
     # 1. File extension validation
     ext = "." + file_name.split(".")[-1].lower() if "." in file_name else ""

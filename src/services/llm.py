@@ -1,4 +1,4 @@
-﻿"""LLM service — Dynamic Multi-Provider Fallback Factory (Mistral -> OpenAI -> Local Ollama)."""
+"""LLM service — Dynamic Multi-Provider Fallback Factory (Mistral -> OpenAI -> Local Ollama)."""
 from __future__ import annotations
 
 import asyncio
@@ -18,7 +18,7 @@ settings = get_settings()
 try:
     from langchain_groq import ChatGroq
 except ImportError:
-    ChatGroq = None
+    ChatGroq = None  # type: ignore[misc,assignment]
 
 
 def get_gemini_api_key() -> str:
@@ -96,11 +96,11 @@ def get_provider_llm(model_type: str = "rag", temperature: float = 0.0, max_toke
 
 def _attach_fallback(primary_llm):
     """Gắn chuỗi Fallback providers (Groq -> Gemini 3.5 Flash-Lite -> Local Ollama) khi API chính bị Rate Limit / lỗi."""
-    fallbacks = []
+    fallbacks: list[Any] = []
 
     # 1. Fallback 1: Groq (Llama 3.1 8B Instant)
     groq_key = get_groq_api_key()
-    if groq_key and ChatGroq:
+    if groq_key and ChatGroq is not None:
         try:
             fallbacks.append(
                 ChatGroq(

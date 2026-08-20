@@ -129,7 +129,7 @@ async def get_tickets(
     query = query.order_by(sort_column.asc() if sort_order == "asc" else sort_column.desc())
     query = query.offset((page - 1) * page_size).limit(page_size)
     result = await db.execute(query)
-    return result.scalars().all(), total
+    return list(result.scalars().all()), total
 
 
 async def get_pending_hitl(
@@ -141,7 +141,7 @@ async def get_pending_hitl(
             User.company_unit == submitter_company_unit
         )
     result = await db.execute(query.order_by(Ticket.created_at.asc()))
-    return result.scalars().all()
+    return list(result.scalars().all())
 
 
 async def update_ticket_classification(

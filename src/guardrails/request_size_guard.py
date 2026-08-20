@@ -5,7 +5,6 @@ RAG, or LLM execution.
 """
 from __future__ import annotations
 
-import json
 from starlette.datastructures import Headers
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send

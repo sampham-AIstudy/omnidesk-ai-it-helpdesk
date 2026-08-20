@@ -5,7 +5,6 @@ import re
 from typing import Any
 from urllib.parse import quote
 
-
 _TICKET_NUMBER_RE = re.compile(r"\b(?:INC|REQ)-[A-Za-z0-9-]+\b", re.IGNORECASE)
 
 

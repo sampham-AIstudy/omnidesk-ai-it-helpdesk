@@ -4,13 +4,12 @@ Monitors SLA timers, remaining time, breach risks, and triggers automatic escala
 """
 
 import logging
-from datetime import datetime, timezone
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def evaluate_sla_status(ticket: Dict[str, Any], remaining_minutes: float) -> Dict[str, Any]:
+def evaluate_sla_status(ticket: dict[str, Any], remaining_minutes: float) -> dict[str, Any]:
     """Evaluate SLA breach risk and return status."""
     priority = ticket.get("priority", "P3")
     failed_attempts = ticket.get("failed_resolution_count", 0)

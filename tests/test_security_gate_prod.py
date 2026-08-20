@@ -1,19 +1,17 @@
 """Tests for SEC-GATE-1: Production Security Gate, Demo Account Hardening & Secret Validation."""
 from __future__ import annotations
 
-import os
 import shutil
 import tempfile
 from pathlib import Path
-from unittest.mock import patch
 
 import pytest
 from pydantic import ValidationError
 from sqlalchemy import select
 
 from src.config import Settings
-from src.database import AsyncSessionLocal, Base, create_async_engine, init_db
-from src.main import _provision_initial_admin, _seed_demo_users
+from src.database import Base, create_async_engine
+from src.main import _provision_initial_admin
 from src.models.user import User, UserRole
 
 
@@ -110,9 +108,9 @@ async def test_sec_prod_07_initial_admin_provisioning():
             await conn.run_sync(Base.metadata.create_all)
 
         from sqlalchemy.ext.asyncio import async_sessionmaker
-        SessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
+        session_factory = async_sessionmaker(bind=engine, expire_on_commit=False)
 
-        async with SessionLocal() as db:
+        async with session_factory() as db:
             await _provision_initial_admin(
                 db,
                 email="admin.prod@company.example.com",
@@ -121,7 +119,7 @@ async def test_sec_prod_07_initial_admin_provisioning():
                 full_name="Chief Administrator",
             )
 
-        async with SessionLocal() as db:
+        async with session_factory() as db:
             result = await db.execute(select(User).where(User.username == "superadmin"))
             admin_user = result.scalar_one_or_none()
             assert admin_user is not None

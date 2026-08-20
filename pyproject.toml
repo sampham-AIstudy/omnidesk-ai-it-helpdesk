@@ -25,3 +25,35 @@ ignore = ["E501"]
 [tool.pyright]
 extraPaths = ["."]
 
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_unused_configs = true
+check_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "chromadb.*",
+    "presidio_analyzer.*",
+    "presidio_anonymizer.*",
+    "spacy.*",
+    "jose.*",
+    "google.genai.*",
+    "upstash_redis.*",
+    "sklearn.*",
+    "datasets.*",
+    "pandas.*",
+    "langchain_groq.*",
+    "langgraph.*",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "src.services.rag_service",
+    "src.services.zero_mem_service",
+    "src.services.duplicate_detection_service",
+    "src.services.bm25_retriever",
+]
+ignore_errors = true
+

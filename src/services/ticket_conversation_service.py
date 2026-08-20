@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import logging
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Sequence
 from datetime import UTC, datetime
 from typing import Any
 
@@ -23,8 +23,13 @@ from src.prompts import (
     evidence_source_ids,
     remove_unrecognized_source_ids,
 )
-from src.services.context_query_service import build_context_aware_retrieval_query
+from src.services.chat_routing_service import route_chat_message
+from src.services.context_query_service import (
+    build_context_aware_retrieval_query,
+    resolve_contextual_user_query,
+)
 from src.services.llm import get_rag_llm
+from src.services.profile_chat_service import _fold, self_profile_reply
 from src.services.rag_service import get_collection, search_similar
 from src.services.recent_conversation_context import (
     exclude_recent_history_from_episodic,
@@ -99,7 +104,7 @@ async def add_message(
     sender_type: TicketMessageSender,
     content: str,
     sender_id: int | None = None,
-    sources: list[str | dict[str, Any]] | None = None,
+    sources: Sequence[str | dict[str, Any]] | None = None,
     confidence_score: float | None = None,
     routing_hint: str | None = None,
     index_for_memory: bool = True,
@@ -189,7 +194,7 @@ async def seed_agent_opening(db: AsyncSession, ticket: Ticket) -> None:
 
 
 def _format_context(docs: list[dict]) -> tuple[str, list[dict[str, str]]]:
-    sources = []
+    sources: list[dict[str, str]] = []
     for doc in docs[:4]:
         source = knowledge_source_payload(doc)
         if not any(
@@ -273,53 +278,31 @@ async def handle_ticket_message(
         else TicketMessageSender.TECHNICIAN
     )
 
-    # 1. Block prompt injection before persisting it into searchable memory,
-    # retrieval, public research or the answer model. The authoritative ticket
-    # transcript retains it for investigation but it is never RAG evidence.
-    if user.role == UserRole.EMPLOYEE:
-        guard_result = _INPUT_GUARDRAIL.on_user_message_callback(content)
-        if guard_result.get("decision") == "BLOCK":
-            await add_message(
-                db,
-                ticket_id=ticket.id,
-                sender_type=sender_type,
-                sender_id=user.id,
-                content=content,
-                index_for_memory=False,
-            )
-            await add_message(
-                db,
-                ticket_id=ticket.id,
-                sender_type=TicketMessageSender.AGENT,
-                content=(
-                    "Yêu cầu này đã bị chặn vì chứa chỉ dẫn cố gắng thay đổi chính sách hoặc "
-                    "truy cập dữ liệu hệ thống. Ticket và yêu cầu hỗ trợ hợp lệ của bạn vẫn được giữ nguyên."
-                ),
-                routing_hint=ticket.routing_target,
-            )
-            await write_audit_log(
-                db=db,
-                ticket_id=ticket.id,
-                actor_id=user.id,
-                actor_type="user",
-                action=AuditAction.AGENT_DECISION,
-                description="Ticket message blocked by input prompt-injection guardrail.",
-                metadata={"guardrail": "input", "decision": "BLOCK"},
-            )
-            await db.flush()
-            return await list_messages(db, ticket.id)
-
-    # 2. Record safe user or technician message.
-    current_message = await add_message(
+    # 1. Load recent history before processing to enable context resolution
+    recent_history = await load_ticket_recent_history(
         db,
         ticket_id=ticket.id,
-        sender_type=sender_type,
-        sender_id=user.id,
-        content=content,
+        exclude_message_id=None,
     )
+    report_title, report_description = user_report(ticket.title, ticket.description)
+
+    # 2. Contextual query resolution (Deterministic early resolution for ticket conversation)
+    resolution = resolve_contextual_user_query(
+        content,
+        recent_history=recent_history,
+        ticket_context={"title": report_title, "description": report_description},
+    )
+    resolved_query = resolution.resolved_query
 
     # 3. Technician Message / Takeover Handling
     if user.role != UserRole.EMPLOYEE:
+        current_message = await add_message(
+            db,
+            ticket_id=ticket.id,
+            sender_type=sender_type,
+            sender_id=user.id,
+            content=content,
+        )
         first_tech_join = ticket.assignee_id != user.id or ticket.status in (TicketStatus.WAITING_FOR_AGENT, TicketStatus.ESCALATED)
         ticket.assignee_id = user.id
         ticket.status = TicketStatus.HUMAN_ACTIVE
@@ -345,9 +328,52 @@ async def handle_ticket_message(
 
         return await list_messages(db, ticket.id)
 
-    # 4. AI stops only after a technician has actually taken over.  A ticket in
-    # WAITING_FOR_AGENT is still in the queue, so the employee can keep using
-    # the assistant while waiting.
+    # 4. Employee Input Guardrail & Security Request Classification (evaluated on resolved query)
+    guard_result = _INPUT_GUARDRAIL.on_user_message_callback(
+        resolved_query,
+        conversation_context=f"{report_title}\n{report_description}",
+    )
+    if guard_result.get("decision") == "BLOCK":
+        await add_message(
+            db,
+            ticket_id=ticket.id,
+            sender_type=sender_type,
+            sender_id=user.id,
+            content=content,
+            index_for_memory=False,
+        )
+        await add_message(
+            db,
+            ticket_id=ticket.id,
+            sender_type=TicketMessageSender.AGENT,
+            content=(
+                "Yêu cầu này đã bị chặn vì chứa chỉ dẫn cố gắng thay đổi chính sách hoặc "
+                "truy cập dữ liệu hệ thống. Ticket và yêu cầu hỗ trợ hợp lệ của bạn vẫn được giữ nguyên."
+            ),
+            routing_hint=ticket.routing_target,
+        )
+        await write_audit_log(
+            db=db,
+            ticket_id=ticket.id,
+            actor_id=user.id,
+            actor_type="user",
+            action=AuditAction.AGENT_DECISION,
+            description="Ticket message blocked by input security guardrail.",
+            metadata={"guardrail": "input", "decision": "BLOCK"},
+        )
+        await db.flush()
+        return await list_messages(db, ticket.id)
+
+    # 5. Record safe user message (preserving original raw content in transcript)
+    current_message = await add_message(
+        db,
+        ticket_id=ticket.id,
+        sender_type=sender_type,
+        sender_id=user.id,
+        content=content,
+    )
+
+    # 6. Check if AI support is inactive (human active / assignee present)
     if ticket.status in (
         TicketStatus.CLOSED,
         TicketStatus.RESOLVED,
@@ -356,20 +382,22 @@ async def handle_ticket_message(
     ) or ticket.assignee_id:
         return await list_messages(db, ticket.id)
 
-    from src.services.profile_chat_service import self_profile_reply
-    profile_reply = self_profile_reply(content, user)
+    # 7. Self-Profile & Privacy Gate
+    profile_reply = self_profile_reply(resolved_query, user)
     if profile_reply:
-        await add_message(
+        reply_msg = await add_message(
             db,
             ticket_id=ticket.id,
             sender_type=TicketMessageSender.AGENT,
             content=profile_reply,
             routing_hint=ticket.routing_target,
         )
+        if on_token:
+            await on_token(reply_msg.content)
         await db.flush()
         return await list_messages(db, ticket.id)
 
-    # 5. Check for User Intent: Explicit Human Request or Dissatisfaction
+    # 8. Check for User Intent: Explicit Human Request or Dissatisfaction
     content_lower = content.lower().strip()
     human_request_keywords = (
         "gặp chuyên viên", "nói chuyện với người thật", "chuyển chuyên viên",
@@ -409,16 +437,38 @@ async def handle_ticket_message(
         )
         return await list_messages(db, ticket.id)
 
-    # 6. KB and optional public-research search. Form labels are operational
-    # metadata, not evidence of the actual product fault.
-    recent_history = await load_ticket_recent_history(
-        db,
-        ticket_id=ticket.id,
-        exclude_message_id=current_message.id,
-    )
-    report_title, report_description = user_report(ticket.title, ticket.description)
+    # 9. Intent Routing on Cleaned Resolved Query
+    clean_message = guard_result.get("normalized_text", resolved_query)
+    route_decision = route_chat_message(clean_message)
+
+    if not route_decision.should_retrieve:
+        # Non-retrieval route (greetings, thanks, acknowledgements, social feelings, closing/deferral)
+        folded_clean = _fold(clean_message)
+        if any(term in folded_clean for term in ("toi buon qua", "ban buon qua", "am sad", "buon qua")):
+            reply_text = (
+                "Mình hiểu bạn đang gặp trở ngại và cảm thấy mệt mỏi. "
+                "Khi nào bạn sẵn sàng, mình có thể tiếp tục hỗ trợ bạn kiểm tra sự cố trong ticket này."
+            )
+        elif route_decision.route == "direct_response":
+            reply_text = route_decision.direct_reply or "Được rồi. Khi cần hỗ trợ thêm, bạn cứ nhắn mình nhé."
+        else:
+            reply_text = route_decision.direct_reply or "Bạn vui lòng mô tả thêm chi tiết sự cố cần hỗ trợ."
+
+        reply_msg = await add_message(
+            db,
+            ticket_id=ticket.id,
+            sender_type=TicketMessageSender.AGENT,
+            content=reply_text,
+            routing_hint=ticket.routing_target,
+        )
+        if on_token:
+            await on_token(reply_msg.content)
+        await db.flush()
+        return await list_messages(db, ticket.id)
+
+    # 10. Retrieval and Generation Path (only executed when retrieval is required)
     retrieval_query_res = build_context_aware_retrieval_query(
-        content,
+        clean_message,
         recent_history=recent_history,
         ticket_context={"title": report_title, "description": report_description},
     )
@@ -469,7 +519,7 @@ async def handle_ticket_message(
         )
         return await list_messages(db, ticket.id)
 
-    # 7. Generate AI Response
+    # 11. Generate AI Response
     context_text, sources = _format_context(docs)
     external_context = "Không dùng nguồn Internet."
     if research and research.triggered:

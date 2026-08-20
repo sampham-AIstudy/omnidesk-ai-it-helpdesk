@@ -64,7 +64,10 @@ def _fold(text: str) -> str:
 _GREETING = re.compile(r"^(?:xin )?(?:chao|hello|hi|hey)(?: ban)?(?: nhe| a| ah)?[!., ]*$")
 _THANKS = re.compile(r"^(?:cam on|thanks|thank you)(?: ban)?(?: nhe| a| ah)?[!., ]*$")
 _ACKNOWLEDGEMENT = re.compile(
-    r"^(?:(?:ok|oke|okay)(?: hieu roi)?|da hieu|hieu roi|ro roi|duoc roi)[!., ]*$"
+    r"^(?:(?:ok|oke|okay|da|vâng|vang)(?: hieu roi)?|da hieu|hieu roi|ro roi|duoc roi)[!., ]*$"
+)
+_DEFERRAL = re.compile(
+    r"^(?:thoi de sau|de sau nhe|de sau|luc khac|khi khac|khong can nua|de luc khac)[!., ]*$"
 )
 _CASUAL_CHECK_IN = re.compile(r"^(?:ban )?khoe(?: khong)?[?!. ]*$")
 _NON_IT_SOCIAL = re.compile(
@@ -127,6 +130,13 @@ def route_chat_message(message: str) -> ChatRouteDecision:
     if _THANKS.fullmatch(folded):
         return ChatRouteDecision("direct_response", "direct", 1.0, "Rất sẵn lòng hỗ trợ bạn.")
     if _ACKNOWLEDGEMENT.fullmatch(folded):
+        return ChatRouteDecision(
+            "direct_response",
+            "direct",
+            1.0,
+            "Được rồi. Khi cần hỗ trợ thêm, bạn cứ nhắn mình nhé.",
+        )
+    if _DEFERRAL.fullmatch(folded):
         return ChatRouteDecision(
             "direct_response",
             "direct",

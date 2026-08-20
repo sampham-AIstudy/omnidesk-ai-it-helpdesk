@@ -221,7 +221,12 @@ async def rebuild_ticket_duplicate_index(db: AsyncSession) -> int:
     tickets = result.scalars().all()
     if not tickets:
         return 0
-    await asyncio.to_thread(lambda: [index_ticket_for_duplicate_detection(ticket) for ticket in tickets])
+
+    def _sync() -> None:
+        for ticket in tickets:
+            index_ticket_for_duplicate_detection(ticket)
+
+    await asyncio.to_thread(_sync)
     logger.info("Duplicate ticket index synchronized: %d tickets", len(tickets))
     return len(tickets)
 

@@ -6,7 +6,7 @@ and forces SOC routing, HIGH priority, and zero auto-close.
 
 import logging
 import re
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ SECURITY_KEYWORDS = [
 ]
 
 
-def detect_security_incident(text: str) -> Dict[str, Any]:
+def detect_security_incident(text: str) -> dict[str, Any]:
     """Detect if request is a security incident."""
     if not text:
         return {"is_security_incident": False, "matched_keywords": []}

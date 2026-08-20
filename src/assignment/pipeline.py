@@ -5,11 +5,11 @@ Manages outbound egress policies and executes full guardrail test suite runs.
 
 import json
 import logging
-import re
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
-from src.assignment.audit_log import export_json as export_audit_log, record_audit_event
+from src.assignment.audit_log import export_json as export_audit_log
+from src.assignment.audit_log import record_audit_event
 from src.assignment.monitoring import get_metrics_tracker
 from src.guardrails.input_guardrails import InputGuardrailPlugin
 from src.guardrails.output_guardrails import content_filter
@@ -28,7 +28,7 @@ ALLOWED_EGRESS_DOMAINS = [
 DENIED_METHODS_ON_SENSITIVE = {"DELETE"}
 
 
-def is_egress_allowed(url: str, method: str = "GET", payload: Dict[str, Any] = None) -> Dict[str, Any]:
+def is_egress_allowed(url: str, method: str = "GET", payload: dict[str, Any] | None = None) -> dict[str, Any]:
     """Check whether external egress HTTP request passes security policy."""
     if not url.startswith("https://"):
         return {"allowed": False, "reason": "Non-HTTPS egress request blocked"}
@@ -54,7 +54,7 @@ def is_egress_allowed(url: str, method: str = "GET", payload: Dict[str, Any] = N
     return {"allowed": True, "reason": "Egress request authorized"}
 
 
-def run_assignment_suite() -> Dict[str, Any]:
+def run_assignment_suite() -> dict[str, Any]:
     """Execute complete assignment test suite and write output JSON files."""
     tracker = get_metrics_tracker()
     plugin = InputGuardrailPlugin()
@@ -117,7 +117,7 @@ def run_assignment_suite() -> Dict[str, Any]:
     export_audit_log("outputs/audit_log.json")
     tracker.export_json("outputs/metrics.json")
 
-    logger.info(f"Assignment suite finished. Grade report generated.")
+    logger.info("Assignment suite finished. Grade report generated.")
     return summary
 
 

@@ -75,7 +75,8 @@ def _intents(question: str) -> tuple[str | None, list[str]]:
 def build_response_plan(question: str, documents: list[dict[str, Any]]) -> ResponsePlan:
     """Create a minimal answer/clarification contract from authorized context."""
     evidence_terms = _terms("\n".join(str(document.get("content", "")) for document in documents))
-    answerable, unsupported = [], []
+    answerable: list[str] = []
+    unsupported: list[str] = []
     for part in _question_parts(question):
         (answerable if _terms(part) & evidence_terms else unsupported).append(part)
     state = extract_incident_fact_state(question)

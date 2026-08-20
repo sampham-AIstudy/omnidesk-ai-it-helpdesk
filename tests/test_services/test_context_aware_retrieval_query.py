@@ -1,9 +1,7 @@
 """Structural tests for CTX-FIX-2 Context-Aware Retrieval Query."""
 from __future__ import annotations
 
-from datetime import UTC, datetime, timedelta
-from types import SimpleNamespace
-from unittest.mock import AsyncMock, patch
+from unittest.mock import patch
 
 import pytest
 from sqlalchemy import select
@@ -12,22 +10,19 @@ from src.api.chat import ChatRequest, _chat_with_agent
 from src.database import AsyncSessionLocal
 from src.models.chat_conversation import ChatConversation, ChatMessage
 from src.models.ticket import Ticket
-from src.models.ticket_message import TicketMessage, TicketMessageSender
+from src.models.ticket_message import TicketMessageSender
 from src.models.user import User
 from src.services.chat_routing_service import ChatRouteDecision
 from src.services.context_query_service import (
-    RetrievalQueryResult,
     build_context_aware_retrieval_query,
     is_context_dependent,
 )
-from src.services.query_decomposition_service import DecompositionResult
 from src.services.recent_conversation_context import (
     RecentConversationMessage,
     load_ticket_recent_history,
     load_workspace_recent_history,
 )
-from src.services.ticket_conversation_service import add_message, handle_ticket_message
-
+from src.services.ticket_conversation_service import add_message
 
 # ============================================================================
 # Workspace Structural Tests (QR-W-01 to QR-W-08)

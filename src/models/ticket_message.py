@@ -3,14 +3,17 @@ from __future__ import annotations
 
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.database import Base
-
-
 from src.models.ticket import FlexibleEnum
+
+if TYPE_CHECKING:
+    from src.models.ticket import Ticket
+    from src.models.user import User
 
 
 class TicketMessageSender(str, enum.Enum):
@@ -37,8 +40,8 @@ class TicketMessage(Base):
         DateTime(timezone=True), server_default=func.now(), index=True
     )
 
-    ticket: Mapped["Ticket"] = relationship("Ticket", back_populates="messages")
-    sender: Mapped["User | None"] = relationship("User")
+    ticket: Mapped[Ticket] = relationship("Ticket", back_populates="messages")
+    sender: Mapped[User | None] = relationship("User")
 
     def __repr__(self) -> str:
         return f"<TicketMessage #{self.id} ticket={self.ticket_id} sender={self.sender_type}>"

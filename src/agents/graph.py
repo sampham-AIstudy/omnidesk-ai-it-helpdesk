@@ -17,6 +17,7 @@ Flow:
 from __future__ import annotations
 
 import logging
+from typing import Any
 
 from langgraph.graph import END, START, StateGraph
 
@@ -62,7 +63,7 @@ def after_hitl_check(state: TicketAgentState) -> str:
 
 # ─── Build Graph ─────────────────────────────────────────────────────────────
 
-def build_graph() -> StateGraph:
+def build_graph() -> Any:
     graph = StateGraph(TicketAgentState)
 
     # Add nodes

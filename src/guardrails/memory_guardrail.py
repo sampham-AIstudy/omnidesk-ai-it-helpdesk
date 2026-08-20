@@ -4,7 +4,7 @@ Handles session memory key isolation (tenant_id:user_id:ticket_id) and prevents 
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from src.guardrails.input_guardrails import detect_injection
 from src.guardrails.output_guardrails import redact_secrets_and_pii
@@ -20,7 +20,7 @@ def generate_isolated_session_key(tenant_id: str, user_id: str, ticket_id: str) 
     return f"{tenant}:{user}:{ticket}"
 
 
-def validate_memory_write(candidate_text: str) -> Dict[str, Any]:
+def validate_memory_write(candidate_text: str) -> dict[str, Any]:
     """Validate candidate memory text against injection, secret leakage, and poisoning."""
     if not candidate_text:
         return {"allowed": False, "reason": "Empty candidate memory"}
