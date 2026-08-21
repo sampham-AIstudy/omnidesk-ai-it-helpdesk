@@ -1,11 +1,11 @@
 {
   "meta": {
-    "timestamp": "2026-08-20T20:07:38.800520+00:00",
+    "timestamp": "2026-08-21T06:26:41.463529+00:00",
     "collection": "helpdesk_kb_multilingual_v3_sentence_transformer",
     "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
     "collection_count": 443,
     "top_k": 5,
-    "elapsed_seconds": 9.16,
+    "elapsed_seconds": 10.7,
     "golden_sha256": "ca55989f841372f75f299492f4be8a3f9215acc37b7a7da72ecc7498b1eb59b3"
   },
   "gate_status": "PASSED",
@@ -610,8 +610,8 @@
         "kb-020"
       ],
       "forbidden_ids": [
-        "kb-001",
-        "kb-010"
+        "kb-010",
+        "kb-001"
       ],
       "retrieved_ids": [
         "kb-019",
@@ -1135,27 +1135,27 @@
       "forbidden_ids": [],
       "retrieved_ids": [
         "kb-035",
-        "kb-028",
         "auto-kb-ticket-64",
         "kb-013",
-        "kb-007"
+        "kb-007",
+        "kb-014"
       ],
-      "first_hit_rank": 4,
+      "first_hit_rank": 3,
       "hit_at_1": false,
       "hit_at_5": true,
       "recall_at_5": 1.0,
-      "reciprocal_rank": 0.25,
-      "ndcg_at_5": 0.20210734650054757,
+      "reciprocal_rank": 0.3333333333333333,
+      "ndcg_at_5": 0.23463936301137822,
       "forbidden_leak_count": 0,
       "cross_tenant_leak_count": 0,
       "policy_authority_violation": false,
       "failure_category": null,
       "relevance_scores": [
         0.75,
-        0.45584197254132813,
         0.40785593688485694,
         0.36664669680300643,
-        0.3607330404029579
+        0.3607330404029579,
+        0.35500711912672045
       ]
     },
     {
@@ -1305,10 +1305,10 @@
       ],
       "acceptable_ids": [],
       "forbidden_ids": [
-        "kb-024",
-        "kb-022",
+        "kb-021",
         "kb-023",
-        "kb-021"
+        "kb-022",
+        "kb-024"
       ],
       "retrieved_ids": [
         "kb-025",
@@ -1344,10 +1344,10 @@
       ],
       "acceptable_ids": [],
       "forbidden_ids": [
-        "kb-024",
+        "kb-023",
         "kb-026",
         "kb-025",
-        "kb-023"
+        "kb-024"
       ],
       "retrieved_ids": [
         "kb-021",
@@ -1383,10 +1383,10 @@
       ],
       "acceptable_ids": [],
       "forbidden_ids": [
-        "kb-024",
-        "kb-022",
+        "kb-021",
         "kb-023",
-        "kb-021"
+        "kb-022",
+        "kb-024"
       ],
       "retrieved_ids": [
         "kb-026",
@@ -1424,10 +1424,10 @@
         "kb-023"
       ],
       "forbidden_ids": [
-        "kb-022",
+        "kb-021",
         "kb-026",
         "kb-025",
-        "kb-021"
+        "kb-022"
       ],
       "retrieved_ids": [
         "kb-024",
@@ -1465,9 +1465,9 @@
         "kb-020"
       ],
       "forbidden_ids": [
-        "kb-025",
+        "kb-021",
         "kb-023",
-        "kb-021"
+        "kb-025"
       ],
       "retrieved_ids": [
         "kb-019",
@@ -1570,9 +1570,9 @@
       "retrieved_ids": [
         "kb-035",
         "kb-023",
+        "web-outlook-shared-mailbox-performance-005",
         "kb-001",
-        "kb-016",
-        "kb-027"
+        "kb-016"
       ],
       "first_hit_rank": null,
       "hit_at_1": false,
@@ -1587,9 +1587,9 @@
       "relevance_scores": [
         0.75,
         0.484847634602643,
+        0.3251126895876995,
         0.28673323823109853,
-        0.2776305957475715,
-        0.2690881158784155
+        0.2776305957475715
       ]
     },
     {
@@ -1745,8 +1745,8 @@
       ],
       "acceptable_ids": [],
       "forbidden_ids": [
-        "kb-002",
-        "kb-001"
+        "kb-001",
+        "kb-002"
       ],
       "retrieved_ids": [
         "kb-028",

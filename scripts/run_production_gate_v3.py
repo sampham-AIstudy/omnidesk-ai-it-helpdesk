@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 PYTHON = sys.executable
 RESULT = ROOT / "eval" / "results" / "production_gate_v3.json"
 ACTIVE = "helpdesk_kb_multilingual_v3_sentence_transformer"

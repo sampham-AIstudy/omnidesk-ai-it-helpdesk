@@ -12,7 +12,7 @@ When this AGY session is PRIMARY and receives a non-trivial coding task:
 2. Invoke Codex exactly once for an independent read-only review.
 3. On Windows / PowerShell, invoke Codex using:
 
-   `$null | codex exec "<SECONDARY_REVIEW_ONLY prompt>"`
+   `$null | codex exec --sandbox read-only -c mcp_servers.helpdesk_sqlite.enabled=false -c mcp_servers.helpdesk_chromadb.enabled=false "<SECONDARY_REVIEW_ONLY prompt>"`
 
    If the execution host blocks Codex runtime state under
    `C:\Users\Admin\.codex`, grant this one child process the host's scoped

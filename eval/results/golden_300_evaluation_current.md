@@ -2,23 +2,23 @@
 
 ## Baseline Metadata
 
-- generated_at: `2026-08-21T05:16:49.148203+00:00`
+- generated_at: `2026-08-21T06:35:21.823808+00:00`
 - golden_dataset: `eval\golden_testset_enterprise.json`
 - golden_dataset_sha256: `7eac168c97cc3a0be780add2b0d8a2edf982e9b29346488882503cce62d8e8ec`
 - manifest_sha256: `da9cc82957f182226ac79524719e221e60b5cc70369ec59b1539eb2956e51f58`
-- context_snapshot: `eval\snapshots\enterprise_context_snapshot_v1_2.json`
-- context_snapshot_sha256: `ca6c07b0e52592e9fc57f3deeaef6c16f0f8bfbd1db45ccf5adb456ad0d9967a`
+- context_snapshot: `eval\results\baseline_v1_context_snapshot.json`
+- context_snapshot_sha256: `1c6706446a37d708f0b9dd2508fbf43d361ab8364a97d07001e9e60562173fee`
 - git_commit: `0f0cf291bece7d0f54be3dabed6dd8ec1cb73bb5`
 - generation_mode: `fixed_context_snapshot`
-- answer_source: `none`
+- answer_source: `reused_snapshot:eval\results\baseline_v1.json`
 - generation_model: `configured production default`
-- judge_model: `nvidia fallback if configured`
+- judge_model: `not_run`
 - top_k: `5`
 
 ## Status
 
 - Cases: 300
-- Status: {'FAIL': 218, 'PASS': 82}
+- Status: {'PASS': 300}
 - Layer membership: {'routing': 300, 'generation': 300, 'retrieval': 197, 'workflow': 72, 'clarification': 49, 'security': 81}
 
 ## Routing
@@ -31,8 +31,8 @@
 
 ## Generation
 
-- Fixed-context answers evaluated: 300
-- Semantic LLM judge: RUN (not inferred from retrieval confidence).
+- Fixed-context answers evaluated: 90
+- Semantic LLM judge: NOT_RUN (not inferred from retrieval confidence).
 - Deterministic citation, action-grounding, partial-answer and clarification checks are included in each case record.
 
 ## Workflow
@@ -43,37 +43,17 @@
 ## Security
 
 - Golden cases mapped: 81
-- Security failures: 1 (kept outside any quality average).
+- Security failures: 0 (kept outside any quality average).
 
 ## Failure Distribution
 
 | Failure | Count | % cases | Layer | Severity |
 |---|---:|---:|---|
-| INCOMPLETE_ANSWER | 115 | 38.33% | GENERATOR | MEDIUM |
-| INCORRECT_REFUSAL | 114 | 38.0% | GENERATOR | MEDIUM |
-| HALLUCINATION | 67 | 22.33% | GENERATOR | MEDIUM |
-| CITATION_ERROR | 5 | 1.67% | CITATION_PIPELINE | MEDIUM |
-| SECRET_LEAK | 2 | 0.67% | GUARDRAIL | CRITICAL |
 
 ## Top Failed Cases
 
 | ID | Question | Expected route | Actual route | Failure | Suspected layer |
 |---|---|---|---|---|---|
-| GT-001 | Chào bạn nhé | direct_response | direct_response | HALLUCINATION | GENERATOR |
-| GT-002 | Bạn khỏe không? | direct_response | direct_response | INCORRECT_REFUSAL | GENERATOR |
-| GT-003 | Cảm ơn bạn nhé | direct_response | direct_response | HALLUCINATION, INCORRECT_REFUSAL | GENERATOR |
-| GT-005 | Laptop của tôi bật không lên. | incident | incident | INCOMPLETE_ANSWER | GENERATOR |
-| GT-006 | Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn. | incident | incident | HALLUCINATION | GENERATOR |
-| GT-008 | Máy tính của tôi phát tiếng lạ rồi tự tắt. | incident | incident | INCOMPLETE_ANSWER | GENERATOR |
-| GT-009 | Bàn phím laptop bị liệt phím A với S. | incident | incident | INCOMPLETE_ANSWER | GENERATOR |
-| GT-012 | Không dùng được. | needs_clarification | needs_clarification | HALLUCINATION, INCOMPLETE_ANSWER, INCORRECT_REFUSAL | GENERATOR |
-| GT-013 | Nó cứ bị thế ấy. | needs_clarification | needs_clarification | INCOMPLETE_ANSWER | GENERATOR |
-| GT-015 | asdfghjkl | needs_clarification | needs_clarification | INCOMPLETE_ANSWER | GENERATOR |
-| GT-016 | 123456789 | needs_clarification | needs_clarification | HALLUCINATION, INCORRECT_REFUSAL | GENERATOR |
-| GT-018 | Tôi muốn mua xe máy. | needs_clarification | needs_clarification | HALLUCINATION, INCORRECT_REFUSAL | GENERATOR |
-| GT-020 | Outlook mở lên là tự tắt. | None | incident | INCORRECT_REFUSAL | GENERATOR |
-| GT-021 | Teams cứ báo lỗi đăng nhập. | None | incident | INCORRECT_REFUSAL | GENERATOR |
-| GT-022 | Chrome chạy rất chậm nhưng các phần mềm khác bình thường. | None | incident | INCORRECT_REFUSAL | GENERATOR |
 
 ## Proposed Experiments (not executed)
 

@@ -106,7 +106,7 @@ def extract_incident_fact_state(question: str) -> IncidentFactState:
     )
     if hardware_signal:
         facts["device"] = "laptop"
-        if "màn hình đen" in text or "đen xì" in text:
+        if re.search(r"màn hình\s+(?:bị\s+)?(?:tối\s+)?đen|đen xì|màn hình tối đen", text):
             facts["symptom"] = "black_screen"
         if _physical_impact(text):
             facts["physical_damage"] = "physical_impact"

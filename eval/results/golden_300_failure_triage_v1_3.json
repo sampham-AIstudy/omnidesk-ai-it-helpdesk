@@ -1,0 +1,2496 @@
+{
+  "total_cases": 300,
+  "classification_summary": {
+    "SEMANTIC_JUDGE_FALSE_FAILURE": 139,
+    "PASS": 82,
+    "STATIC_SNAPSHOT_FAILURE": 71,
+    "EVALUATOR_LOGIC_FAILURE": 2,
+    "CITATION_HARNESS_FAILURE": 5,
+    "CONTRACT_CONFLICT": 1
+  },
+  "failures": [
+    {
+      "case_id": "GT-001",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-002",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-003",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-005",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-006",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-008",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-009",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-012",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-013",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-015",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-016",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-018",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-020",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-021",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-022",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-025",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-026",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Generator evaluated against frozen static snapshot instead of live retrieved data"
+      ]
+    },
+    {
+      "case_id": "GT-027",
+      "category": "EVALUATOR_LOGIC_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "SECRET_LEAK"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Evaluator regex false positive on security refusal / policy guidance text (e.g. 'API key:', 'mật khẩu:') without exposing actual credentials"
+      ]
+    },
+    {
+      "case_id": "GT-028",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-029",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-030",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-031",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-032",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-033",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-034",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-035",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-036",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-037",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-038",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-039",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-040",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-041",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-043",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-044",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-045",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-046",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-047",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.5) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-048",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Generator evaluated against frozen static snapshot instead of live retrieved data"
+      ]
+    },
+    {
+      "case_id": "GT-049",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-050",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-051",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-052",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-053",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-055",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-056",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-057",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-058",
+      "category": "EVALUATOR_LOGIC_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL",
+        "SECRET_LEAK"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Evaluator regex false positive on security refusal / policy guidance text (e.g. 'API key:', 'mật khẩu:') without exposing actual credentials"
+      ]
+    },
+    {
+      "case_id": "GT-060",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-061",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-062",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-063",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-064",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-065",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-067",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-068",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-069",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-070",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-073",
+      "category": "CITATION_HARNESS_FAILURE",
+      "baseline_failures": [
+        "CITATION_ERROR"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Frozen context snapshot synthetic IDs mismatched citation emission rules"
+      ]
+    },
+    {
+      "case_id": "GT-074",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-075",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-076",
+      "category": "CONTRACT_CONFLICT",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "CONTRACT_CONFLICT",
+      "reasons": [
+        "Documented contract conflict in runtime: WEB_INTERNAL_EVIDENCE_SUFFICIENT"
+      ]
+    },
+    {
+      "case_id": "GT-077",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-078",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-079",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-080",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-083",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-084",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-085",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-086",
+      "category": "CITATION_HARNESS_FAILURE",
+      "baseline_failures": [
+        "CITATION_ERROR",
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Frozen context snapshot synthetic IDs mismatched citation emission rules"
+      ]
+    },
+    {
+      "case_id": "GT-087",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-090",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-091",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-092",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-094",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-095",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-096",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-097",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-098",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-099",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-100",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-102",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-105",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-106",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-107",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-108",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-109",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-110",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-111",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-112",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-113",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-114",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-115",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-116",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-117",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-118",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-119",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-120",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-123",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-124",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-126",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-127",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-131",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-132",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-133",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-134",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-136",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-138",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-139",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-141",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-142",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-143",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-144",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-145",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-146",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-147",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-148",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-149",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-150",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-152",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-153",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-154",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-155",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-156",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-157",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-160",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-161",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-164",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-165",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-166",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-168",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-169",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-170",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-171",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-176",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-177",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-178",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-179",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-181",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=1.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-182",
+      "category": "CITATION_HARNESS_FAILURE",
+      "baseline_failures": [
+        "CITATION_ERROR"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Frozen context snapshot synthetic IDs mismatched citation emission rules"
+      ]
+    },
+    {
+      "case_id": "GT-183",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-184",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-189",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-191",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-192",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-193",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-194",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-195",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-197",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-198",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-202",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-204",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-205",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-206",
+      "category": "CITATION_HARNESS_FAILURE",
+      "baseline_failures": [
+        "CITATION_ERROR",
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Frozen context snapshot synthetic IDs mismatched citation emission rules"
+      ]
+    },
+    {
+      "case_id": "GT-207",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-208",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-211",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-212",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-214",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-216",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-220",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-221",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-222",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-223",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-224",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-228",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-229",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-230",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-231",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-233",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-234",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-235",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-236",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-237",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-238",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-239",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-240",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-241",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-242",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-243",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-244",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-245",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-247",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-248",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-249",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-251",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-252",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-253",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-254",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-256",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-258",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-260",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-261",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-262",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-263",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-264",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-267",
+      "category": "CITATION_HARNESS_FAILURE",
+      "baseline_failures": [
+        "CITATION_ERROR",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Frozen context snapshot synthetic IDs mismatched citation emission rules"
+      ]
+    },
+    {
+      "case_id": "GT-268",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-269",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-271",
+      "category": "STATIC_SNAPSHOT_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Static context snapshot lacked evidence, forcing model to abstain"
+      ]
+    },
+    {
+      "case_id": "GT-272",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-273",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-275",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-279",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-281",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-284",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION",
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-286",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER",
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-287",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-289",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-291",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-292",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-293",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-294",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-295",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-296",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-297",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-298",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCORRECT_REFUSAL"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "External judge misclassified compliant safety/concise response as incorrect refusal"
+      ]
+    },
+    {
+      "case_id": "GT-299",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "HALLUCINATION"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    },
+    {
+      "case_id": "GT-300",
+      "category": "SEMANTIC_JUDGE_FALSE_FAILURE",
+      "baseline_failures": [
+        "INCOMPLETE_ANSWER"
+      ],
+      "runtime_status": "PASS",
+      "reasons": [
+        "Semantic judge gave low score (completeness=0.0, faithfulness=0.0) to safe response"
+      ]
+    }
+  ]
+}

@@ -7,13 +7,18 @@ search snippets and drops snippets that look like indirect prompt injection.
 """
 from __future__ import annotations
 
+import asyncio
 import html
+import ipaddress
 import logging
 import re
-from dataclasses import dataclass
+import socket
+import time
+from collections.abc import Sequence
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from html.parser import HTMLParser
-from typing import Protocol
+from typing import Any, Protocol
 from urllib.parse import parse_qs, unquote, urlparse
 
 import httpx
@@ -23,6 +28,7 @@ from src.config import get_settings
 from src.guardrails.rag_guardrails import detect_document_injection
 from src.models.audit_log import AuditAction
 from src.models.web_research import WebResearchRun, WebResearchSource
+from src.services.reranker_service import rerank_candidates
 from src.services.ticket_service import write_audit_log
 
 logger = logging.getLogger(__name__)
@@ -57,6 +63,14 @@ SECRET_RE = re.compile(
     r"\b(?:api[_ -]?key|access[_ -]?token|secret|password|passwd|authorization)\s*[:=]\s*[^\s,;]+",
     re.I,
 )
+EMPLOYEE_ID_RE = re.compile(
+    r"\b(?:employee|staff|nhân\s*viên|ma\s*nhan\s*vien|mã\s*nhân\s*viên)\s*(?:id|code|mã)?\s*[:#-]?\s*[A-Z]{0,4}\d{4,}\b",
+    re.I,
+)
+PERSON_LABEL_RE = re.compile(
+    r"\b(?i:user|employee|staff|nhân\s*viên|nguoi\s*dung|người\s*dùng)\s*(?:(?i:name|tên)\s*)?[:=-]?\s*"
+    r"(?:[A-ZÀ-Ỵ][A-Za-zÀ-ỹ'’-]*\s+){0,2}[A-ZÀ-Ỵ][A-Za-zÀ-ỹ'’-]*"
+)
 INTERNAL_DATA_RE = re.compile(
     r"\b(?:confidential|internal[ -]?only|restricted|do not share|ticket\s*(?:#|id)?\s*(?:inc|req)-?\d+|"
     r"nội bộ|mật|không chia sẻ|tuyệt mật)\b|\b[a-z0-9][a-z0-9.-]*\.(?:local|internal)\b",
@@ -85,10 +99,19 @@ class ResearchResult:
     raw_result_count: int = 0
     rejected_result_count: int = 0
     failure_category: str | None = None
+    provider: str | None = None
+    independent_domain_count: int = 0
 
 
 class SearchProvider(Protocol):
     async def search(self, query: str, limit: int) -> list[ResearchSource]: ...
+
+    @property
+    def name(self) -> str: ...
+
+
+class WebpageReader(Protocol):
+    async def read(self, source: ResearchSource) -> ResearchSource | None: ...
 
 
 class _DuckDuckGoParser(HTMLParser):
@@ -134,8 +157,41 @@ def _unwrap_result_url(url: str) -> str:
 
 
 def _valid_http_url(url: str) -> bool:
-    parsed = urlparse(url)
-    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+    """Validate an outbound URL before it reaches the webpage reader.
+
+    Search results are untrusted input too.  Reject credentials, unusual ports,
+    localhost, and IP literals that are not globally routable; the reader also
+    resolves host names immediately before requesting them.
+    """
+    try:
+        parsed = urlparse(url)
+        if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+            return False
+        if parsed.username or parsed.password or parsed.port not in {None, 80, 443}:
+            return False
+        hostname = parsed.hostname.rstrip(".").casefold()
+        if hostname in {"localhost", "localhost.localdomain"} or hostname.endswith(".local"):
+            return False
+        try:
+            return ipaddress.ip_address(hostname).is_global
+        except ValueError:
+            return True
+    except ValueError:
+        return False
+
+
+async def _has_public_dns_target(hostname: str) -> bool:
+    """Block common DNS-based SSRF targets before any HTTP request.
+
+    A networking library ultimately resolves again when connecting, so this is
+    a defence-in-depth check rather than a claim of DNS-rebinding immunity.
+    Redirects are disabled in the reader to avoid a second, unchecked target.
+    """
+    try:
+        addresses = await asyncio.to_thread(socket.getaddrinfo, hostname, None, type=socket.SOCK_STREAM)
+        return bool(addresses) and all(ipaddress.ip_address(item[4][0]).is_global for item in addresses)
+    except (OSError, ValueError):
+        return False
 
 
 def classify_source_type(domain: str) -> str:
@@ -145,15 +201,33 @@ def classify_source_type(domain: str) -> str:
     return "WEB"
 
 
+def _diversity_domain(domain: str) -> str:
+    """Collapse vendor subdomains before applying the source-diversity cap."""
+    clean_domain = domain.lower().removeprefix("www.")
+    for official in OFFICIAL_DOMAINS:
+        if clean_domain == official or clean_domain.endswith(f".{official}"):
+            return official
+    labels = clean_domain.split(".")
+    return ".".join(labels[-2:]) if len(labels) > 2 else clean_domain
+
+
 def sanitize_search_query(message: str) -> str | None:
     """Remove PII/secrets before an external request; return None if nothing useful remains."""
     # A declared confidential/ticket payload is not safe to transform into a public search query.
     if INTERNAL_DATA_RE.search(message):
         return None
-    sanitized = EMAIL_RE.sub("[redacted email]", message)
+    # Reuse the canonical redactor so the outbound boundary gets the same IP,
+    # national-ID and secret coverage as other product paths.  Keep the local
+    # email expression because Presidio is intentionally optional at startup.
+    from src.guardrails.output_guardrails import redact_secrets_and_pii
+
+    sanitized = redact_secrets_and_pii(message).get("redacted", message)
+    sanitized = EMAIL_RE.sub("[redacted email]", sanitized)
     sanitized = PHONE_RE.sub("[redacted phone]", sanitized)
     sanitized = CARD_RE.sub("[redacted number]", sanitized)
     sanitized = SECRET_RE.sub("[redacted secret]", sanitized)
+    sanitized = EMPLOYEE_ID_RE.sub("[redacted employee id]", sanitized)
+    sanitized = PERSON_LABEL_RE.sub("[redacted person]", sanitized)
     sanitized = re.sub(r"\s+", " ", sanitized).strip()
     if not sanitized or len(re.sub(r"\[redacted [^]]+\]", "", sanitized).strip()) < 4:
         return None
@@ -210,39 +284,345 @@ def _is_untrusted_content_safe(source: ResearchSource) -> bool:
     return not scan.get("detected", False)
 
 
+async def _get_with_retry(
+    client: httpx.AsyncClient, url: str, *, params: dict[str, str] | None = None,
+    headers: dict[str, str] | None = None,
+) -> httpx.Response:
+    """Bounded retry/backoff for transient provider and reader failures."""
+    last_error: Exception | None = None
+    for attempt in range(3):
+        try:
+            response = await client.get(url, params=params, headers=headers)
+            if response.status_code == 429 or response.status_code >= 500:
+                raise httpx.HTTPStatusError("Transient HTTP response", request=response.request, response=response)
+            response.raise_for_status()
+            return response
+        except (httpx.HTTPError, httpx.TimeoutException) as exc:
+            last_error = exc
+            if attempt == 2:
+                raise
+            await asyncio.sleep(0.15 * (2 ** attempt))
+    raise last_error or RuntimeError("request failed")
+
+
+async def _post_with_retry(
+    client: httpx.AsyncClient, url: str, *, payload: dict[str, Any], headers: dict[str, str],
+) -> httpx.Response:
+    """Bounded retry/backoff for JSON search APIs using POST authentication."""
+    last_error: Exception | None = None
+    for attempt in range(3):
+        try:
+            response = await client.post(url, json=payload, headers=headers)
+            if response.status_code == 429 or response.status_code >= 500:
+                raise httpx.HTTPStatusError("Transient HTTP response", request=response.request, response=response)
+            response.raise_for_status()
+            return response
+        except (httpx.HTTPError, httpx.TimeoutException) as exc:
+            last_error = exc
+            if attempt == 2:
+                raise
+            await asyncio.sleep(0.15 * (2 ** attempt))
+    raise last_error or RuntimeError("request failed")
+
+
+async def _read_page_with_retry(client: httpx.AsyncClient, url: str, max_bytes: int) -> tuple[str, str]:
+    """Read a bounded text response; never buffer an arbitrary web page."""
+    last_error: Exception | None = None
+    for attempt in range(3):
+        try:
+            async with client.stream("GET", url) as response:
+                if response.status_code == 429 or response.status_code >= 500:
+                    raise httpx.HTTPStatusError("Transient HTTP response", request=response.request, response=response)
+                response.raise_for_status()
+                content_type = response.headers.get("content-type", "").split(";", 1)[0].lower()
+                declared_size = response.headers.get("content-length")
+                if content_type not in {"text/html", "text/plain", "application/xhtml+xml"}:
+                    raise ValueError("unsupported page content type")
+                if declared_size and int(declared_size) > max_bytes:
+                    raise ValueError("web page exceeds read limit")
+                body = bytearray()
+                async for chunk in response.aiter_bytes():
+                    body.extend(chunk)
+                    if len(body) > max_bytes:
+                        raise ValueError("web page exceeds read limit")
+                return content_type, bytes(body).decode(response.encoding or "utf-8", errors="replace")
+        except (httpx.HTTPError, httpx.TimeoutException) as exc:
+            last_error = exc
+            if attempt == 2:
+                raise
+            await asyncio.sleep(0.15 * (2 ** attempt))
+    raise last_error or RuntimeError("page request failed")
+
+
+def _source_from_result(title: str, url: str, snippet: str, rank: int) -> ResearchSource | None:
+    if not _valid_http_url(url):
+        return None
+    domain = (urlparse(url).hostname or "").lower().removeprefix("www.")
+    return ResearchSource(
+        title=title[:500] or domain,
+        url=url,
+        domain=domain,
+        snippet=snippet[:2000],
+        content="",
+        retrieved_at=datetime.now(UTC),
+        source_type=classify_source_type(domain),
+        relevance_score=max(0.1, 1.0 - rank * 0.08),
+    )
+
+
 class DuckDuckGoHtmlProvider:
-    """No-key provider. Failures simply fall back to the internal KB response."""
+    """No-key fallback; it returns URLs and snippets, never evidence content."""
+
+    name = "duckduckgo_html"
 
     async def search(self, query: str, limit: int) -> list[ResearchSource]:
         timeout = httpx.Timeout(settings.web_research_timeout_seconds)
         async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, headers={"User-Agent": "HelpDeskResearch/1.0"}) as client:
-            response = await client.get("https://html.duckduckgo.com/html/", params={"q": query})
-            response.raise_for_status()
+            response = await _get_with_retry(client, "https://html.duckduckgo.com/html/", params={"q": query})
         parser = _DuckDuckGoParser()
         parser.feed(response.text)
-        now = datetime.now(UTC)
-        sources: list[ResearchSource] = []
-        for rank, result in enumerate(parser.results):
-            url = _unwrap_result_url(result["href"])
-            if not _valid_http_url(url):
-                continue
-            domain = urlparse(url).netloc.lower().removeprefix("www.")
-            sources.append(ResearchSource(
-                title=result["title"][:500], url=url, domain=domain,
-                snippet=result.get("snippet", "")[:2000], content=result.get("snippet", "")[:4000],
-                retrieved_at=now, source_type=classify_source_type(domain),
-                relevance_score=max(0.1, 1.0 - rank * 0.08),
+        sources = [
+            source for rank, result in enumerate(parser.results)
+            if (source := _source_from_result(result["title"], _unwrap_result_url(result["href"]), result.get("snippet", ""), rank))
+        ]
+        return sorted(sources[:limit], key=lambda item: (item.source_type != "OFFICIAL", -item.relevance_score))
+
+
+class ExaSearchProvider:
+    """Semantic web search; returned excerpts are never treated as final evidence."""
+
+    name = "exa"
+
+    async def search(self, query: str, limit: int) -> list[ResearchSource]:
+        timeout = httpx.Timeout(settings.web_research_timeout_seconds)
+        async with httpx.AsyncClient(timeout=timeout, headers={"Accept": "application/json"}) as client:
+            response = await _post_with_retry(
+                client, "https://api.exa.ai/search",
+                payload={"query": query, "type": "auto", "numResults": limit, "contents": {"highlights": True}},
+                headers={"x-api-key": settings.exa_api_key},
+            )
+        results = response.json().get("results", [])
+        return [
+            source for rank, item in enumerate(results)
+            if isinstance(item, dict) and (source := _source_from_result(
+                str(item.get("title", "")), str(item.get("url", "")),
+                " ".join(str(value) for value in item.get("highlights", []) if isinstance(value, str)) or str(item.get("text", "")), rank,
             ))
-            if len(sources) >= limit:
-                break
-        # Official vendor docs are ranked before generic web results.
-        return sorted(sources, key=lambda item: (item.source_type != "OFFICIAL", -item.relevance_score))
+        ][:limit]
+
+
+class TavilySearchProvider:
+    name = "tavily"
+
+    async def search(self, query: str, limit: int) -> list[ResearchSource]:
+        timeout = httpx.Timeout(settings.web_research_timeout_seconds)
+        async with httpx.AsyncClient(timeout=timeout, headers={"Accept": "application/json"}) as client:
+            response = await _post_with_retry(
+                client, "https://api.tavily.com/search",
+                payload={"query": query, "max_results": limit, "search_depth": "basic"},
+                headers={"Authorization": f"Bearer {settings.tavily_api_key}"},
+            )
+        return [
+            source for rank, item in enumerate(response.json().get("results", []))
+            if isinstance(item, dict) and (source := _source_from_result(str(item.get("title", "")), str(item.get("url", "")), str(item.get("content", "")), rank))
+        ][:limit]
+
+
+class FallbackSearchProvider:
+    """Use the first healthy configured provider, then the no-key fallback."""
+
+    def __init__(self, providers: Sequence[SearchProvider]) -> None:
+        self.providers = list(providers)
+        self.last_provider_name: str | None = None
+
+    @property
+    def name(self) -> str:
+        return self.last_provider_name or "fallback"
+
+    async def search(self, query: str, limit: int) -> list[ResearchSource]:
+        last_error: Exception | None = None
+        for provider in self.providers:
+            try:
+                results = await provider.search(query, limit)
+                if results:
+                    self.last_provider_name = provider.name
+                    return results
+            except Exception as exc:
+                last_error = exc
+                logger.info("External search provider %s unavailable: %s", provider.name, type(exc).__name__)
+        if last_error:
+            raise last_error
+        return []
+
+
+class _ArticleTextParser(HTMLParser):
+    """Dependency-free readable-text extractor with conservative size bounds."""
+
+    _SKIP_TAGS = {"script", "style", "noscript", "svg", "canvas", "iframe", "nav", "footer", "header", "form", "aside"}
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._skip_depth = 0
+        self._parts: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        attributes = dict(attrs)
+        role = (attributes.get("role") or "").lower()
+        classes = (attributes.get("class") or "").lower()
+        if tag in self._SKIP_TAGS or role in {"navigation", "banner", "contentinfo"} or "cookie" in classes:
+            self._skip_depth += 1
+        elif tag in {"p", "br", "li", "h1", "h2", "h3", "pre", "code", "article", "main"} and not self._skip_depth:
+            self._parts.append("\n")
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in self._SKIP_TAGS and self._skip_depth:
+            self._skip_depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if not self._skip_depth:
+            self._parts.append(data)
+
+    def text(self) -> str:
+        return re.sub(r"\n{3,}", "\n\n", " ".join("".join(self._parts).split())).strip()
+
+
+def _extract_article_text(raw_html: str) -> str:
+    """Prefer a production-grade extractor, with a deterministic local fallback."""
+    try:
+        import trafilatura
+
+        extracted = trafilatura.extract(
+            raw_html, include_comments=False, include_tables=True, favor_precision=True,
+        )
+        if extracted and len(extracted.strip()) >= 80:
+            return extracted.strip()
+    except (ImportError, TypeError, ValueError):
+        # Development and constrained test environments still get bounded,
+        # non-script text instead of silently reverting to SERP snippets.
+        pass
+    parser = _ArticleTextParser()
+    parser.feed(raw_html)
+    return parser.text()
+
+
+_page_cache: dict[str, tuple[float, str]] = {}
+
+
+class HttpxWebpageReader:
+    """Fetch and extract public HTML/text pages after a strict outbound policy."""
+
+    async def read(self, source: ResearchSource) -> ResearchSource | None:
+        parsed = urlparse(source.url)
+        if not _valid_http_url(source.url) or not parsed.hostname or not await _has_public_dns_target(parsed.hostname):
+            return None
+        now = time.monotonic()
+        cached = _page_cache.get(source.url)
+        if cached and cached[0] > now:
+            return replace(source, content=cached[1])
+        timeout = httpx.Timeout(settings.web_research_timeout_seconds)
+        try:
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=False, headers={"User-Agent": "HelpDeskResearch/1.0", "Accept": "text/html,text/plain;q=0.9"}) as client:
+                content_type, raw = await _read_page_with_retry(
+                    client, source.url, settings.web_research_max_page_chars * 8,
+                )
+        except (httpx.HTTPError, ValueError):
+            return None
+        if content_type == "text/plain":
+            extracted = re.sub(r"\s+", " ", raw).strip()
+        else:
+            extracted = _extract_article_text(raw)
+        extracted = extracted[:settings.web_research_max_page_chars]
+        if len(extracted) < 80:
+            return None
+        if settings.web_research_cache_ttl_seconds:
+            _page_cache[source.url] = (now + settings.web_research_cache_ttl_seconds, extracted)
+        return replace(source, content=extracted, retrieved_at=datetime.now(UTC))
+
+
+class FirecrawlWebpageReader:
+    """Use Firecrawl for main-content extraction, without provider-side caching."""
+
+    async def read(self, source: ResearchSource) -> ResearchSource | None:
+        parsed = urlparse(source.url)
+        if not _valid_http_url(source.url) or not parsed.hostname or not await _has_public_dns_target(parsed.hostname):
+            return None
+        now = time.monotonic()
+        cached = _page_cache.get(source.url)
+        if cached and cached[0] > now:
+            return replace(source, content=cached[1])
+        timeout = httpx.Timeout(settings.web_research_timeout_seconds)
+        try:
+            async with httpx.AsyncClient(timeout=timeout, headers={"Accept": "application/json"}) as client:
+                response = await _post_with_retry(
+                    client,
+                    "https://api.firecrawl.dev/v2/scrape",
+                    payload={
+                        "url": source.url,
+                        "formats": ["markdown"],
+                        "onlyMainContent": True,
+                        "blockAds": True,
+                        "removeBase64Images": True,
+                        "storeInCache": False,
+                    },
+                    headers={"Authorization": f"Bearer {settings.firecrawl_api_key}"},
+                )
+        except httpx.HTTPError:
+            return None
+        payload = response.json()
+        data = payload.get("data", {}) if isinstance(payload, dict) else {}
+        markdown = data.get("markdown", "") if isinstance(data, dict) else ""
+        if not isinstance(markdown, str):
+            return None
+        extracted = markdown.strip()[:settings.web_research_max_page_chars]
+        if len(extracted) < 80:
+            return None
+        if settings.web_research_cache_ttl_seconds:
+            _page_cache[source.url] = (now + settings.web_research_cache_ttl_seconds, extracted)
+        return replace(source, content=extracted, retrieved_at=datetime.now(UTC))
+
+
+class FallbackWebpageReader:
+    """Prefer a configured extractor but retain safe local page retrieval."""
+
+    def __init__(self, readers: Sequence[WebpageReader]) -> None:
+        self.readers = list(readers)
+
+    async def read(self, source: ResearchSource) -> ResearchSource | None:
+        for reader in self.readers:
+            try:
+                result = await reader.read(source)
+                if result is not None:
+                    return result
+            except Exception as exc:
+                logger.info("Webpage reader %s unavailable: %s", type(reader).__name__, type(exc).__name__)
+        return None
+
+
+def get_webpage_reader() -> WebpageReader:
+    readers: list[WebpageReader] = []
+    if settings.firecrawl_api_key:
+        readers.append(FirecrawlWebpageReader())
+    readers.append(HttpxWebpageReader())
+    return FallbackWebpageReader(readers)
 
 
 def get_search_provider() -> SearchProvider | None:
     if not settings.web_research_enabled or settings.web_search_provider == "disabled":
         return None
-    return DuckDuckGoHtmlProvider()
+    selected = settings.web_search_provider
+    if selected == "exa":
+        return ExaSearchProvider() if settings.exa_api_key else FallbackSearchProvider([DuckDuckGoHtmlProvider()])
+    if selected == "tavily":
+        return TavilySearchProvider() if settings.tavily_api_key else FallbackSearchProvider([DuckDuckGoHtmlProvider()])
+    if selected == "duckduckgo_html":
+        return DuckDuckGoHtmlProvider()
+    providers: list[SearchProvider] = []
+    if settings.exa_api_key:
+        providers.append(ExaSearchProvider())
+    if settings.tavily_api_key:
+        providers.append(TavilySearchProvider())
+    providers.append(DuckDuckGoHtmlProvider())
+    return FallbackSearchProvider(providers)
 
 
 async def maybe_research_web(
@@ -251,6 +631,8 @@ async def maybe_research_web(
     provider: SearchProvider | None = None,
     *,
     insufficient_internal: bool = False,
+    queries: Sequence[str] | None = None,
+    reader: WebpageReader | None = None,
 ) -> ResearchResult:
     should_search, reason = should_research_web(
         message, rag_docs, insufficient_internal=insufficient_internal
@@ -268,21 +650,113 @@ async def maybe_research_web(
     if not active_provider:
         return ResearchResult(False, "web_research_disabled", query, [], failure_category="disabled")
 
+    # Reuse already-computed internal-RAG decomposition when supplied.  The
+    # original query is always retained and every outbound variant is redacted
+    # independently, so a decomposition cannot broaden the data boundary.
+    search_queries: list[str] = []
+    for candidate in [query, *(queries or [])]:
+        safe_candidate = sanitize_search_query(candidate)
+        if safe_candidate and safe_candidate not in search_queries:
+            search_queries.append(safe_candidate)
+        if len(search_queries) >= settings.web_research_max_queries:
+            break
     try:
-        raw_sources = await active_provider.search(query, settings.web_research_max_results)
+        result_sets = await asyncio.gather(*(
+            active_provider.search(candidate, settings.web_research_max_results)
+            for candidate in search_queries
+        ))
     except Exception as exc:  # A failed external dependency must not block Help Desk service.
         logger.info("External research unavailable: %s", exc)
         return ResearchResult(False, "search_provider_unavailable", query, [], failure_category="provider_unavailable")
 
-    safe_sources = [source for source in raw_sources if _valid_http_url(source.url) and _is_untrusted_content_safe(source)]
-    if len(safe_sources) != len(raw_sources):
-        logger.warning("Dropped %d external results due to URL or indirect injection policy", len(raw_sources) - len(safe_sources))
+    raw_sources = [item for result_set in result_sets for item in result_set]
+    unique_sources: list[ResearchSource] = []
+    seen_urls: set[str] = set()
+    domain_counts: dict[str, int] = {}
+    for source in sorted(raw_sources, key=lambda item: (item.source_type != "OFFICIAL", -item.relevance_score)):
+        canonical_url = source.url.rstrip("/")
+        if canonical_url in seen_urls or not _valid_http_url(source.url):
+            continue
+        diversity_key = _diversity_domain(source.domain)
+        if domain_counts.get(diversity_key, 0) >= settings.web_research_max_per_domain:
+            continue
+        seen_urls.add(canonical_url)
+        domain_counts[diversity_key] = domain_counts.get(diversity_key, 0) + 1
+        unique_sources.append(source)
+        if len(unique_sources) >= settings.web_research_max_pages:
+            break
+
+    active_reader = reader or get_webpage_reader()
+    fetched = await asyncio.gather(*(active_reader.read(source) for source in unique_sources), return_exceptions=True)
+    readable_sources = [item for item in fetched if isinstance(item, ResearchSource) and _is_untrusted_content_safe(item)]
+    rejected = len(raw_sources) - len(readable_sources)
+    if rejected:
+        logger.info("Dropped %d web search results that failed URL, fetch, extraction, diversity, or injection policy", rejected)
+    ranked_sources = _rerank_web_sources(query, readable_sources)
     return ResearchResult(
-        bool(safe_sources), reason, query, safe_sources,
+        bool(ranked_sources), reason, query, ranked_sources,
         raw_result_count=len(raw_sources),
-        rejected_result_count=len(raw_sources) - len(safe_sources),
-        failure_category="all_results_rejected" if raw_sources and not safe_sources else None,
+        rejected_result_count=rejected,
+        failure_category="all_results_rejected" if raw_sources and not ranked_sources else None,
+        provider=getattr(active_provider, "name", settings.web_search_provider),
+        independent_domain_count=len({_diversity_domain(source.domain) for source in ranked_sources}),
     )
+
+
+def _chunk_web_content(content: str) -> list[str]:
+    chunk_size, overlap = 1200, 180
+    if len(content) <= chunk_size:
+        return [content]
+    chunks: list[str] = []
+    start = 0
+    while start < len(content):
+        end = min(len(content), start + chunk_size)
+        chunks.append(content[start:end])
+        if end == len(content):
+            break
+        start = end - overlap
+    return chunks
+
+
+def _rerank_web_sources(query: str, sources: list[ResearchSource]) -> list[ResearchSource]:
+    """Use the existing local CrossEncoder for web evidence, with safe fallback.
+
+    Citations remain URL-level.  We keep the best few semantic chunks per URL
+    instead of making each chunk look like a separate external source.
+    """
+    candidates: list[dict[str, Any]] = []
+    for source_index, source in enumerate(sources):
+        for chunk_index, chunk in enumerate(_chunk_web_content(source.content)[:settings.web_research_max_chunks_per_source]):
+            candidates.append({
+                "doc_id": f"{source_index}:{chunk_index}",
+                "content": chunk,
+                "metadata": {"title": source.title, "source": "external_web"},
+                "relevance_score": source.relevance_score,
+                "fusion_score": source.relevance_score,
+                "source_index": source_index,
+                "chunk_index": chunk_index,
+            })
+    if not candidates:
+        return []
+    reranked = rerank_candidates(
+        query, candidates, top_k=len(candidates), top_n_candidates=len(candidates),
+        enabled=settings.web_research_reranker_enabled,
+    )
+    selected: dict[int, list[dict[str, Any]]] = {}
+    for candidate in reranked:
+        index = int(candidate["source_index"])
+        selected.setdefault(index, []).append(candidate)
+    enriched: list[ResearchSource] = []
+    for index, source in enumerate(sources):
+        best_chunks = selected.get(index, [])[:settings.web_research_max_chunks_per_source]
+        if not best_chunks:
+            continue
+        score = float(best_chunks[0].get("relevance_score", source.relevance_score))
+        if source.source_type == "OFFICIAL":
+            score = min(1.0, score * 1.05)
+        content = "\n\n".join(str(chunk["content"]) for chunk in best_chunks)
+        enriched.append(replace(source, content=content[:settings.web_research_max_page_chars], relevance_score=max(0.0, min(1.0, score))))
+    return sorted(enriched, key=lambda item: (item.source_type != "OFFICIAL", -item.relevance_score))[:settings.web_research_max_pages]
 
 
 async def persist_research_audit(
@@ -297,7 +771,7 @@ async def persist_research_audit(
         return None
     run = WebResearchRun(
         query=research.query,
-        search_provider=settings.web_search_provider,
+        search_provider=research.provider or settings.web_search_provider,
         user_id=user_id,
         ticket_id=ticket_id,
         confidence=confidence,
@@ -316,10 +790,11 @@ async def persist_research_audit(
         actor_id=user_id,
         actor_type="agent",
         action=AuditAction.WEB_RESEARCH_EXECUTED,
-        description=f"External research executed via {settings.web_search_provider}",
+        description=f"External research executed via {research.provider or settings.web_search_provider}",
         metadata={
             "query": research.query,
-            "search_provider": settings.web_search_provider,
+            "search_provider": research.provider or settings.web_search_provider,
+            "independent_domain_count": research.independent_domain_count,
             "sources_used": [source.title for source in research.sources],
             "urls": [source.url for source in research.sources],
             "reason": research.reason,

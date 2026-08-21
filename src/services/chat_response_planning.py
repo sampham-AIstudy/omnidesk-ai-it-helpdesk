@@ -99,26 +99,46 @@ def minimal_incident_triage_reply(plan: ResponsePlan) -> str | None:
     facts = plan.known_facts
     if plan.primary_intent != "incident" or plan.missing_required_facts:
         return None
-    if not {"device", "symptom", "cause"} <= facts.keys():
-        return None
-    return (
-        "Mình đã ghi nhận laptop bị màn hình đen ngay sau va đập. "
-        "Đây là sự cố phần cứng cần được kỹ thuật viên kiểm tra; bạn nên ngừng tác động thêm lên thiết bị. "
-        "Mình không cần hỏi lại loại thiết bị, nguyên nhân va đập hoặc thời điểm xảy ra. "
-        "Nếu tiện, bạn có thể bổ sung serial/mã tài sản hoặc ảnh hư hỏng để hỗ trợ tiếp nhận incident."
-    )
+    if plan.incident_domain == "HARDWARE_PHYSICAL_DAMAGE" and {"device", "symptom", "cause"} <= facts.keys():
+        device = facts.get("device", "laptop")
+        symptom = facts.get("symptom", "black_screen")
+        symptom_str = "màn hình đen" if symptom == "black_screen" else symptom
+        return (
+            f"Mình đã ghi nhận sự cố phần cứng: {device} bị {symptom_str} ngay sau khi bị va đập/tác động vật lý. "
+            "Bạn nên ngừng mọi tác động vật lý lên thiết bị để tránh làm hỏng thêm linh kiện. "
+            "Các bước kiểm tra an toàn cơ bản: kiểm tra xem đèn nguồn của máy có sáng không và thử kết nối với màn hình ngoài (nếu có sẵn), không tự ý tháo mở máy. "
+            "Mình không cần hỏi lại về loại thiết bị, nguyên nhân va đập hay thời điểm xảy ra sự cố vì thông tin đã đầy đủ. "
+            "Đây là sự cố cần chuyển bộ phận Hỗ trợ Kỹ thuật phần cứng tiếp nhận và xử lý. "
+            "Nếu tiện, bạn có thể bổ sung serial/mã tài sản hoặc ảnh hư hỏng để hỗ trợ tiếp nhận incident."
+        )
+    return None
 
 
 def partial_evidence_reply(plan: ResponsePlan, documents: list[dict[str, Any]]) -> str | None:
     if not plan.answerable_claims or not plan.unsupported_claims:
         return None
-    content = " ".join(str(document.get("content", "")) for document in documents)
-    sentences = re.split(r"(?<=[.!?])\s+", content)
     answerable_terms = _terms(" ".join(plan.answerable_claims))
-    evidence_sentence = next((sentence for sentence in sentences if _terms(sentence) & answerable_terms), None)
-    if not evidence_sentence:
+    matching_doc = None
+    evidence_sentence = None
+    for doc in documents:
+        content = str(doc.get("content", ""))
+        sentences = re.split(r"(?<=[.!?])\s+", content)
+        for sentence in sentences:
+            if _terms(sentence) & answerable_terms:
+                evidence_sentence = sentence.strip()
+                matching_doc = doc
+                break
+        if evidence_sentence:
+            break
+    if not evidence_sentence or not matching_doc:
         return None
+
+    source_id = matching_doc.get("metadata", {}).get("source_id") or matching_doc.get("doc_id") or ""
+    cite_tag = f" [{source_id}]" if source_id else ""
+
+    unsupported_topic = plan.unsupported_claims[0].strip()
     return (
-        f"Theo thông tin được cung cấp: {evidence_sentence.strip()} "
-        f"Với phần '{plan.unsupported_claims[0]}', tài liệu hiện có không đủ để xác định chính xác."
+        f"Theo thông tin được cung cấp: {evidence_sentence}{cite_tag} "
+        f"Với phần '{unsupported_topic}', tài liệu hiện có chưa đủ thông tin để xác định chính xác. "
+        "Bạn vui lòng tham khảo quy định nội bộ của tổ chức hoặc liên hệ quản trị viên IT để được hỗ trợ."
     )

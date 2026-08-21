@@ -510,7 +510,10 @@ async def _chat_with_agent(
     research = (
         ResearchResult(False, "not_knowledge_query", None, [])
         if not decomposition.is_knowledge_question
-        else await maybe_research_web(retrieval_query, rag_docs, insufficient_internal=insufficient_internal)
+        else await maybe_research_web(
+            retrieval_query, rag_docs, insufficient_internal=insufficient_internal,
+            queries=decomposition.sub_queries,
+        )
         if should_web
         else ResearchResult(False, web_reason, None, [])
     )
@@ -528,8 +531,8 @@ async def _chat_with_agent(
 
     internal_context = build_authorized_evidence(rag_docs) or "Không tìm thấy tài liệu nội bộ phù hợp."
     external_context = "\n\n".join(
-        f"[{item['id']}] {item['title']} ({item['domain']})\nUNTRUSTED WEB DATA: {item['snippet']}\nURL: {item['url']}"
-        for item in citations
+        f"[{item['id']}] {item['title']} ({item['domain']})\nUNTRUSTED WEB DATA: {source.content}\nURL: {item['url']}"
+        for item, source in zip(citations, research.sources)
     ) or "Không sử dụng nguồn Internet."
 
     recent_history_context = format_recent_history(recent_history or [], label="CONVERSATION")
@@ -811,7 +814,10 @@ async def stream_chat_with_agent(
     research = (
         ResearchResult(False, "not_knowledge_query", None, [])
         if not decomposition.is_knowledge_question
-        else await maybe_research_web(retrieval_query, rag_docs, insufficient_internal=insufficient_internal)
+        else await maybe_research_web(
+            retrieval_query, rag_docs, insufficient_internal=insufficient_internal,
+            queries=decomposition.sub_queries,
+        )
         if should_web
         else ResearchResult(False, web_reason, None, [])
     )
@@ -819,7 +825,10 @@ async def stream_chat_with_agent(
     web_sources = [ChatSource(title=source.title, url=source.url, domain=source.domain, snippet=source.snippet, source_type=source.source_type, relevance_score=source.relevance_score, retrieved_at=source.retrieved_at.isoformat(), is_external=True) for source in research.sources]
     policy_conflict = detect_internal_external_conflict(rag_docs, research.sources)
     internal_context = build_authorized_evidence(rag_docs) or "Không tìm thấy tài liệu nội bộ phù hợp."
-    external_context = "\n\n".join(f"[{item['id']}] {item['title']} ({item['domain']})\nUNTRUSTED WEB DATA: {item['snippet']}\nURL: {item['url']}" for item in citations) or "Không sử dụng nguồn Internet."
+    external_context = "\n\n".join(
+        f"[{item['id']}] {item['title']} ({item['domain']})\nUNTRUSTED WEB DATA: {source.content}\nURL: {item['url']}"
+        for item, source in zip(citations, research.sources)
+    ) or "Không sử dụng nguồn Internet."
     recent_history_context = format_recent_history(recent_history or [], label="CONVERSATION")
     prompt = f"""Bạn là Help Desk AI Agent hỗ trợ nhân viên đang đăng nhập.
 NGỮ CẢNH QUYỀN: Đơn vị {company_unit}; Phòng ban {department}; Vai trò {role}.

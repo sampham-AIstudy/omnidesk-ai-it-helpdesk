@@ -106,9 +106,21 @@ class Settings(BaseSettings):
 
     # External research (only used after the internal RAG decision gate)
     web_research_enabled: bool = True
-    web_search_provider: Literal["duckduckgo_html", "disabled"] = "duckduckgo_html"
+    # "auto" uses Exa semantic search, then Tavily and DDG as fallbacks.
+    # Firecrawl is a separate webpage-reader concern, not a search dependency.
+    web_search_provider: Literal["auto", "exa", "tavily", "duckduckgo_html", "disabled"] = "auto"
+    exa_api_key: str = ""
+    tavily_api_key: str = ""
+    firecrawl_api_key: str = ""
     web_research_timeout_seconds: float = Field(default=6.0, ge=1.0, le=20.0)
     web_research_max_results: int = Field(default=4, ge=1, le=8)
+    web_research_max_queries: int = Field(default=3, ge=1, le=3)
+    web_research_max_pages: int = Field(default=3, ge=1, le=5)
+    web_research_max_page_chars: int = Field(default=6000, ge=1000, le=20000)
+    web_research_max_chunks_per_source: int = Field(default=3, ge=1, le=6)
+    web_research_max_per_domain: int = Field(default=1, ge=1, le=2)
+    web_research_cache_ttl_seconds: int = Field(default=300, ge=0, le=3600)
+    web_research_reranker_enabled: bool = True
     web_research_min_rag_score: float = Field(default=0.55, ge=0.0, le=1.0)
     rag_min_relevance_score: float = Field(default=0.55, ge=0.0, le=1.0)
 

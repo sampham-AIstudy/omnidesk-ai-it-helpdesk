@@ -15,7 +15,7 @@ def test_partial_answer_plan_separates_supported_and_unsupported_claims() -> Non
     reply = partial_evidence_reply(plan, [{"content": "VPN uses port 443 for the corporate gateway."}])
     assert reply is not None
     assert "port 443" in reply
-    assert "không đủ" in reply
+    assert "chưa đủ" in reply or "không đủ" in reply
 
 
 def test_incident_plan_preserves_known_facts_and_asks_no_required_question() -> None:

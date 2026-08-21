@@ -145,7 +145,7 @@ async def record_retrieval_outcome(
         no_evidence=no_evidence,
         insufficient_evidence=insufficient_evidence,
         web_research_triggered=research_attempted,
-        web_research_provider=(settings.web_search_provider if research_attempted else None),
+        web_research_provider=((research.provider or settings.web_search_provider) if research_attempted and research else None),
         web_research_result_count=len(research.sources) if research else 0,
         web_research_rejected_result_count=research.rejected_result_count if research else 0,
         web_research_failure_category=research.failure_category if research else None,

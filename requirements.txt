@@ -50,6 +50,7 @@ cryptography>=42.0.0
 
 # --- HTTP, Network & Utilities ---
 httpx>=0.28.0
+trafilatura>=2.0.0
 requests>=2.31.0
 anyio>=4.0.0
 tenacity>=8.5.0

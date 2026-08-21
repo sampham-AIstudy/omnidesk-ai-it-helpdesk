@@ -24,6 +24,10 @@ _web_requests = _meter.create_counter("helpdesk.ai.web.requests", unit="{request
 _generation_errors = _meter.create_counter("helpdesk.ai.generation.errors", unit="{errors}", description="Generation-stage failures.")
 _tool_calls = _meter.create_counter("helpdesk.ai.tool.calls", unit="{calls}", description="Trusted tool/action render calls.")
 _tool_failures = _meter.create_counter("helpdesk.ai.tool.failures", unit="{failures}", description="Trusted tool/action failures.")
+_ticket_stage_duration = _meter.create_histogram(
+    "helpdesk.ticket.stage.duration", unit="ms",
+    description="Bounded ticket-turn stage latency without request content.",
+)
 P = ParamSpec("P")
 T = TypeVar("T")
 
@@ -39,6 +43,15 @@ _ALLOWED_KEYS = {
     "helpdesk.expansion.parent_count", "helpdesk.expansion.dropped_neighbor_count",
     "helpdesk.expansion.token_cost", "helpdesk.expansion.used",
     "gen_ai.request.model", "gen_ai.response.model", "gen_ai.usage.input_tokens", "gen_ai.usage.output_tokens",
+    "helpdesk.ticket.context_resolution_ms", "helpdesk.ticket.routing_ms",
+    "helpdesk.ticket.kb_retrieval_ms", "helpdesk.ticket.memory_retrieval_ms",
+    "helpdesk.ticket.evidence_acquisition_wall_ms", "helpdesk.ticket.web_research_ms",
+    "helpdesk.ticket.llm_generation_ms", "helpdesk.ticket.citation_validation_ms",
+    "helpdesk.ticket.total_request_ms", "helpdesk.ticket.model_first_token_ms",
+    "helpdesk.ticket.client_first_token_ms", "helpdesk.ticket.time_to_first_token_ms",
+    "helpdesk.ticket.kb_started_offset_ms",
+    "helpdesk.ticket.kb_completed_offset_ms", "helpdesk.ticket.memory_started_offset_ms",
+    "helpdesk.ticket.memory_completed_offset_ms",
 }
 _SENSITIVE_MARKERS = ("password", "secret", "token", "authorization", "cookie", "email", "prompt", "message", "content", "document", "query")
 
@@ -105,6 +118,42 @@ def record_tool_result(tool_name: str, success: bool) -> None:
     _tool_calls.add(1, attributes)
     if not success:
         _tool_failures.add(1, {"ai.tool.name": tool_name})
+
+
+_TICKET_TIMING_STAGES = frozenset({
+    "context_resolution", "routing", "kb_retrieval", "memory_retrieval",
+    "evidence_acquisition_wall", "web_research", "llm_generation",
+    "citation_validation", "total_request", "model_first_token", "client_first_token",
+    "time_to_first_token",
+})
+
+
+def record_ticket_stage_latency(stage: str, duration_ms: float) -> None:
+    """Record one bounded ticket-turn timing without attaching user data.
+
+    ``stage`` is allow-listed so callers cannot turn telemetry labels into a
+    content channel.  The same value is placed on the current trace span for
+    per-turn diagnosis and emitted as a low-cardinality histogram datapoint.
+    """
+    if stage not in _TICKET_TIMING_STAGES or duration_ms < 0:
+        return
+    bounded = round(min(float(duration_ms), 3_600_000.0), 2)
+    _ticket_stage_duration.record(bounded, {"ai.stage": stage})
+    set_current_attributes({f"helpdesk.ticket.{stage}_ms": bounded})
+
+
+def record_ticket_evidence_overlap(
+    *, kb_started_offset_ms: float, kb_completed_offset_ms: float,
+    memory_started_offset_ms: float, memory_completed_offset_ms: float,
+) -> None:
+    """Expose relative evidence-worker boundaries, never wall-clock timestamps."""
+    values = {
+        "helpdesk.ticket.kb_started_offset_ms": kb_started_offset_ms,
+        "helpdesk.ticket.kb_completed_offset_ms": kb_completed_offset_ms,
+        "helpdesk.ticket.memory_started_offset_ms": memory_started_offset_ms,
+        "helpdesk.ticket.memory_completed_offset_ms": memory_completed_offset_ms,
+    }
+    set_current_attributes({key: round(max(0.0, value), 2) for key, value in values.items()})
 
 
 def traced_async_operation(name: str) -> Callable[[Callable[P, Awaitable[T]]], Callable[P, Awaitable[T]]]:

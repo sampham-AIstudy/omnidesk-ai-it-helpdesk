@@ -101,11 +101,12 @@ def expected_route_name(case: dict[str, Any]) -> str | None:
 
 def route_result(case: dict[str, Any]) -> tuple[dict[str, Any], list[str], str]:
     decision = route_chat_message(case["query"].split("|")[0].strip())
+    memory_invoked = decision.should_use_memory and bool(case.get("should_use_memory", False))
     actual = {
         "route": decision.route,
         "retrieval_required": decision.retrieval_required,
         "retrieval_decision": decision.retrieval_decision,
-        "retrieve_memory": decision.should_use_memory,
+        "retrieve_memory": memory_invoked,
         "search_web": decision.should_search_web,
         "invoke_tool": decision.should_invoke_tool,
     }

@@ -208,7 +208,7 @@ AGY must then obtain an independent Codex review.
 On Windows / PowerShell, use:
 
 ```powershell
-$null | codex exec "[SECONDARY_REVIEW_ONLY] <review prompt>"
+$null | codex exec --sandbox read-only -c mcp_servers.helpdesk_sqlite.enabled=false -c mcp_servers.helpdesk_chromadb.enabled=false "[SECONDARY_REVIEW_ONLY] <review prompt>"
 ```
 
 If the execution host applies a filesystem sandbox that blocks Codex runtime

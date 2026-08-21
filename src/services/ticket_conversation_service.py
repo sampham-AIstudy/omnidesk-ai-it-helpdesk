@@ -6,6 +6,7 @@ import json
 import logging
 from collections.abc import Awaitable, Callable, Sequence
 from datetime import UTC, datetime
+from time import perf_counter
 from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -18,7 +19,11 @@ from src.models.audit_log import AuditAction
 from src.models.ticket import Ticket, TicketStatus
 from src.models.ticket_message import TicketMessage, TicketMessageSender
 from src.models.user import User, UserRole
-from src.observability.tracing import set_current_attributes
+from src.observability.tracing import (
+    record_ticket_evidence_overlap,
+    record_ticket_stage_latency,
+    set_current_attributes,
+)
 from src.prompts import (
     PRODUCTION_RAG_SYSTEM_PROMPT,
     build_authorized_evidence,
@@ -259,6 +264,90 @@ async def escalate_to_technician(
     )
 
 
+async def _acquire_ticket_evidence(
+    db: AsyncSession,
+    *,
+    query: str,
+    ticket: Ticket,
+    user: User,
+) -> tuple[Any | None, list[Any], dict[str, object], Exception | None, Exception | None]:
+    """Acquire independent KB and Zero-Mem evidence without sharing DB work.
+
+    The KB worker only runs the existing Chroma/BM25 call in ``to_thread``.
+    Zero-Mem remains the sole consumer of this request's ``AsyncSession``.
+    Each result is preserved if the other worker fails; ticket writes, audit
+    records, web eligibility, and state transitions remain after this join.
+    """
+    started = perf_counter()
+    boundaries: dict[str, float] = {}
+
+    submitter = ticket.submitter
+    category_filter = ticket.category.value if ticket.category else None
+    company_unit = submitter.company_unit.value if submitter else None
+    department = submitter.department if submitter else None
+
+    async def kb_worker() -> Any:
+        boundaries["kb_started"] = perf_counter()
+        try:
+            return await retrieve_turn_with_bounded_retry(
+                [query],
+                lambda attempt: asyncio.to_thread(
+                    search_similar,
+                    query=attempt,
+                    n_results=4,
+                    category_filter=category_filter,
+                    user_company_unit=company_unit,
+                    user_department=department,
+                ),
+            )
+        finally:
+            boundaries["kb_completed"] = perf_counter()
+
+    async def memory_worker() -> tuple[list[Any], dict[str, object]]:
+        boundaries["memory_started"] = perf_counter()
+        try:
+            from src.services.zero_mem_service import retrieve_episodic_evidence
+            return await retrieve_episodic_evidence(db, query, user, ticket_id=ticket.id)
+        finally:
+            boundaries["memory_completed"] = perf_counter()
+
+    kb_result, memory_result = await asyncio.gather(
+        kb_worker(), memory_worker(), return_exceptions=True,
+    )
+    completed = perf_counter()
+    kb_error = kb_result if isinstance(kb_result, Exception) else None
+    memory_error = memory_result if isinstance(memory_result, Exception) else None
+    if kb_error:
+        logger.warning("Ticket KB retrieval failed; continuing with valid memory evidence: %s", type(kb_error).__name__)
+    if memory_error:
+        logger.warning("Ticket Zero-Mem retrieval failed; continuing without episodic evidence: %s", type(memory_error).__name__)
+
+    kb_started = boundaries.get("kb_started", started)
+    kb_completed = boundaries.get("kb_completed", completed)
+    memory_started = boundaries.get("memory_started", started)
+    memory_completed = boundaries.get("memory_completed", completed)
+    record_ticket_stage_latency("kb_retrieval", (kb_completed - kb_started) * 1000)
+    record_ticket_stage_latency("memory_retrieval", (memory_completed - memory_started) * 1000)
+    record_ticket_stage_latency("evidence_acquisition_wall", (completed - started) * 1000)
+    record_ticket_evidence_overlap(
+        kb_started_offset_ms=(kb_started - started) * 1000,
+        kb_completed_offset_ms=(kb_completed - started) * 1000,
+        memory_started_offset_ms=(memory_started - started) * 1000,
+        memory_completed_offset_ms=(memory_completed - started) * 1000,
+    )
+
+    memory_evidence, memory_metrics = (
+        memory_result if not memory_error else ([], {"enabled": True, "evidence_final_count": 0, "failure": type(memory_error).__name__})
+    )
+    return (
+        None if kb_error else kb_result,
+        memory_evidence,
+        memory_metrics,
+        kb_error,
+        memory_error,
+    )
+
+
 async def handle_ticket_message(
     db: AsyncSession,
     *,
@@ -266,6 +355,39 @@ async def handle_ticket_message(
     user: User,
     content: str,
     on_token: Callable[[str], Awaitable[None]] | None = None,
+) -> list[TicketMessage]:
+    turn_started = perf_counter()
+    first_client_token_ms: float | None = None
+
+    async def timed_on_token(text: str) -> None:
+        nonlocal first_client_token_ms
+        if first_client_token_ms is None:
+            first_client_token_ms = (perf_counter() - turn_started) * 1000
+            # This is the first authoritative token handed to the SSE queue,
+            # not an unobservable browser-receipt timestamp.
+            record_ticket_stage_latency("client_first_token", first_client_token_ms)
+            record_ticket_stage_latency("time_to_first_token", first_client_token_ms)
+        if on_token:
+            await on_token(text)
+
+    try:
+        return await _handle_ticket_message(
+            db, ticket=ticket, user=user, content=content,
+            on_token=timed_on_token if on_token else None,
+            turn_started=turn_started,
+        )
+    finally:
+        record_ticket_stage_latency("total_request", (perf_counter() - turn_started) * 1000)
+
+
+async def _handle_ticket_message(
+    db: AsyncSession,
+    *,
+    ticket: Ticket,
+    user: User,
+    content: str,
+    on_token: Callable[[str], Awaitable[None]] | None = None,
+    turn_started: float,
 ) -> list[TicketMessage]:
     from src.models.ticket import TicketSupportMode
 
@@ -292,11 +414,13 @@ async def handle_ticket_message(
     report_title, report_description = user_report(ticket.title, ticket.description)
 
     # 2. Contextual query resolution (Deterministic early resolution for ticket conversation)
+    context_started = perf_counter()
     resolution = resolve_contextual_user_query(
         content,
         recent_history=recent_history,
         ticket_context={"title": report_title, "description": report_description},
     )
+    record_ticket_stage_latency("context_resolution", (perf_counter() - context_started) * 1000)
     resolved_query = resolution.resolved_query
 
     # 3. Technician Message / Takeover Handling
@@ -444,7 +568,9 @@ async def handle_ticket_message(
 
     # 9. Intent Routing on Cleaned Resolved Query
     clean_message = guard_result.get("normalized_text", resolved_query)
+    routing_started = perf_counter()
     route_decision = route_chat_message(clean_message)
+    record_ticket_stage_latency("routing", (perf_counter() - routing_started) * 1000)
 
     if not route_decision.should_retrieve:
         # Non-retrieval route (greetings, thanks, acknowledgements, social feelings, closing/deferral)
@@ -478,27 +604,24 @@ async def handle_ticket_message(
         ticket_context={"title": report_title, "description": report_description},
     )
     query = retrieval_query_res.query
-    adaptive_turn = await retrieve_turn_with_bounded_retry(
-        [query],
-        lambda attempt: asyncio.to_thread(
-            search_similar,
-            query=attempt,
-            n_results=4,
-            category_filter=ticket.category.value if ticket.category else None,
-            user_company_unit=ticket.submitter.company_unit.value if ticket.submitter else None,
-            user_department=ticket.submitter.department if ticket.submitter else None,
-        ),
-    )
-    adaptive = adaptive_turn.results[0]
-    docs = adaptive.documents
-    set_current_attributes({f"helpdesk.retrieval.{key}": value for key, value in adaptive_turn.telemetry().items()})
+    (
+        adaptive_turn,
+        memory_evidence,
+        _memory_metrics,
+        _kb_error,
+        _memory_error,
+    ) = await _acquire_ticket_evidence(db, query=query, ticket=ticket, user=user)
+    if adaptive_turn is None:
+        docs: list[dict] = []
+        retrieval_outcome = "EMPTY"
+    else:
+        adaptive = adaptive_turn.results[0]
+        docs = adaptive.documents
+        retrieval_outcome = adaptive.outcome
+        set_current_attributes({f"helpdesk.retrieval.{key}": value for key, value in adaptive_turn.telemetry().items()})
     best_relevance = max((doc.get("relevance_score", 0.0) for doc in docs), default=0.0)
     minimum_relevance = _minimum_agent_relevance()
 
-    from src.services.zero_mem_service import audit_memory_retrieval, evidence_context, retrieve_episodic_evidence
-    memory_evidence, _memory_metrics = await retrieve_episodic_evidence(
-        db, query, user, ticket_id=ticket.id
-    )
     # The current user row can be returned by Zero-Mem because it is indexed
     # before generation. Remove it, and any recent transcript duplicates, by
     # stable TicketMessage provenance only; the stored index is unchanged.
@@ -507,23 +630,27 @@ async def handle_ticket_message(
         recent_history,
         current_message_id=current_message.id,
     )
-    await audit_memory_retrieval(db, user_id=user.id, ticket_id=ticket.id, metrics=_memory_metrics)
+    if _memory_error is None:
+        from src.services.zero_mem_service import audit_memory_retrieval
+        await audit_memory_retrieval(db, user_id=user.id, ticket_id=ticket.id, metrics=_memory_metrics)
 
     research = None
     should_web, _web_reason = should_research_web(
-        query, docs, insufficient_internal=adaptive.outcome in {"WEAK", "EMPTY"}
+        query, docs, insufficient_internal=retrieval_outcome in {"WEAK", "EMPTY"}
     )
     if has_actionable_external_context(query) and should_web:
+        web_started = perf_counter()
         research = await maybe_research_web(
-            query, docs, insufficient_internal=adaptive.outcome in {"WEAK", "EMPTY"}
+            query, docs, insufficient_internal=retrieval_outcome in {"WEAK", "EMPTY"}
         )
+        record_ticket_stage_latency("web_research", (perf_counter() - web_started) * 1000)
 
     unsafe_request = any(
         marker in content.casefold()
         for marker in ("bypass", "ne dlp", "mat khau admin", "password admin", "bo qua quy trinh")
     )
     missing_knowledge = (
-        (adaptive.outcome in {"WEAK", "EMPTY"} or not docs or best_relevance < minimum_relevance)
+        (retrieval_outcome in {"WEAK", "EMPTY"} or not docs or best_relevance < minimum_relevance)
         and not memory_evidence
         and not (research and research.triggered)
     )
@@ -583,6 +710,7 @@ async def handle_ticket_message(
                 source["message_id"] = str(message_id)
             sources.append(source)
     llm = get_rag_llm()
+    from src.services.zero_mem_service import evidence_context
     recent_history_context = format_recent_history(recent_history, label="TICKET CONVERSATION")
     messages_for_llm = [
         SystemMessage(content=PRODUCTION_RAG_SYSTEM_PROMPT),
@@ -595,6 +723,8 @@ async def handle_ticket_message(
             f"Trạng thái: {ticket.status.value}\nNgười dùng vừa nhắn: {content}"
         )),
     ]
+    generation_started = perf_counter()
+    first_model_token_ms: float | None = None
     try:
         from src.guardrails.ai_abuse_guard import guard_ai_generation
         async with guard_ai_generation(user.id):
@@ -604,6 +734,9 @@ async def handle_ticket_message(
             else:
                 raw = ""
                 async for chunk in llm.astream(messages_for_llm):
+                    if first_model_token_ms is None:
+                        first_model_token_ms = (perf_counter() - turn_started) * 1000
+                        record_ticket_stage_latency("model_first_token", first_model_token_ms)
                     chunk_text = getattr(chunk, "content", "")
                     raw += chunk_text if isinstance(chunk_text, str) else str(chunk_text or "")
                 # Do not emit unreviewed partial text; it could contain a secret,
@@ -615,9 +748,13 @@ async def handle_ticket_message(
             "Mình chưa gọi được mô hình trả lời lúc này. "
             "Dựa trên gợi ý đã có trong ticket, bạn thử các bước KB trước; nếu chưa được hãy bấm Cần kỹ thuật viên."
         )
+    finally:
+        record_ticket_stage_latency("llm_generation", (perf_counter() - generation_started) * 1000)
 
+    citation_started = perf_counter()
     answer = content_filter(str(answer).strip()).get("redacted", str(answer).strip())
     answer, _ = remove_unrecognized_source_ids(answer, evidence_source_ids(docs))
+    record_ticket_stage_latency("citation_validation", (perf_counter() - citation_started) * 1000)
 
     # A model may recommend technician involvement, but it has no authority to
     # claim that a handoff happened. Make the state transition ourselves, using
