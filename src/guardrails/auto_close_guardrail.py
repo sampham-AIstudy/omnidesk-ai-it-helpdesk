@@ -5,12 +5,12 @@ Zero auto-close for P1/P2 production incidents, security incidents, VIP issues, 
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def evaluate_auto_close(ticket: Dict[str, Any], resolution: Dict[str, Any]) -> Dict[str, Any]:
+def evaluate_auto_close(ticket: dict[str, Any], resolution: dict[str, Any]) -> dict[str, Any]:
     """Evaluate whether a ticket can be automatically closed."""
     priority = ticket.get("priority", "P3")
     is_prod = ticket.get("is_production_impact", False)

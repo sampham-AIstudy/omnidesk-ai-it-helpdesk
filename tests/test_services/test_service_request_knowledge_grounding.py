@@ -5,12 +5,10 @@ from sqlalchemy import select
 from src.data.service_request_kb import SERVICE_REQUEST_KB_ENTRY
 from src.database import AsyncSessionLocal
 from src.models.knowledge_base import KnowledgeBaseEntry
-from src.models.user import User, UserRole
 from src.services.chat_routing_service import route_chat_message
 from src.services.context_query_service import build_context_aware_retrieval_query
 from src.services.rag_service import (
     get_collection,
-    get_collection_count,
     index_document,
     search_similar_async,
 )
@@ -81,9 +79,9 @@ async def test_kb_sr_canonical_article_exists_in_sqlite():
 
 @pytest.mark.asyncio
 async def test_kb_sr_canonical_article_in_chroma_provenance():
-    """Verify kb-036 is indexed in helpdesk_kb_multilingual_v2_sentence_transformer with 384-dim SentenceTransformer."""
+    """Verify kb-036 is indexed in the active v3 canonical collection with 384-dim SentenceTransformer."""
     collection = get_collection()
-    assert collection.name == "helpdesk_kb_multilingual_v2_sentence_transformer"
+    assert collection.name == "helpdesk_kb_multilingual_v3_sentence_transformer"
 
     res = collection.get(ids=["kb-036"], include=["documents", "metadatas"])
     assert len(res["ids"]) == 1

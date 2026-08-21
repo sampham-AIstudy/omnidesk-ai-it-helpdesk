@@ -3,26 +3,24 @@ from __future__ import annotations
 
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
     DateTime,
-    Enum,
     Float,
     ForeignKey,
     Integer,
     String,
     Text,
+    TypeDecorator,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from typing import TYPE_CHECKING
 
 from src.database import Base
 
 if TYPE_CHECKING:
-    from src.models.ai_run import AIRun
-    from src.models.hitl_approval import HITLApproval
     from src.models.user import User
 
 
@@ -106,8 +104,6 @@ def can_transition_ticket(current_status: TicketStatus | str, new_status: Ticket
         return True
     return new_enum in ALLOWED_TICKET_TRANSITIONS.get(curr_enum, set())
 
-
-from sqlalchemy import TypeDecorator
 
 class FlexibleEnum(TypeDecorator):
     """
@@ -223,8 +219,8 @@ class Ticket(Base):
     )
 
     # Relationships
-    submitter: Mapped["User"] = relationship("User", back_populates="tickets", foreign_keys=[submitter_id])
-    assignee: Mapped["User | None"] = relationship("User", back_populates="assigned_tickets", foreign_keys=[assignee_id])
+    submitter: Mapped[User] = relationship("User", back_populates="tickets", foreign_keys=[submitter_id])
+    assignee: Mapped[User | None] = relationship("User", back_populates="assigned_tickets", foreign_keys=[assignee_id])
     audit_logs: Mapped[list] = relationship("AuditLog", back_populates="ticket")
     messages: Mapped[list] = relationship("TicketMessage", back_populates="ticket")
     hitl_approvals: Mapped[list] = relationship("HITLApproval", back_populates="ticket", cascade="all, delete-orphan")

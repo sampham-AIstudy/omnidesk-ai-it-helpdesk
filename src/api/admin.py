@@ -505,7 +505,7 @@ async def get_ai_metrics(
         scoped_runs(select(
             func.avg(AIRun.latency_ms),
             func.avg(AIRun.groundedness_score),
-            func.avg(AIRun.confidence_score),
+            func.avg(AIRun.classification_confidence),
             func.sum(AIRun.estimated_cost),
         ))
     )

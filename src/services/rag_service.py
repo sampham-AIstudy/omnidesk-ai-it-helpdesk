@@ -5,9 +5,17 @@ import asyncio
 import hashlib
 import logging
 import math
+import os
 import re
+import sys
 import threading
+
+# Mitigate native SentenceTransformer / safetensors async loader race conditions on Windows.
+if sys.platform == "win32":
+    os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
 import unicodedata
+import urllib.parse
+from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -36,6 +44,49 @@ _SEARCH_STOPWORDS.update({
     "bi", "bo", "cho", "co", "cua", "duoc", "em", "gi", "hay", "khong", "la",
     "luc", "may", "nhanh", "qua", "quy", "toi", "trinh", "trong", "va", "voi",
 })
+
+# Source Authority Hierarchy for deterministic bounded ranking
+SOURCE_AUTHORITY_FACTORS: dict[str, float] = {
+    "internal_curated_kb": 1.40,        # Tier 1: Canonical Internal KB / Runbooks
+    "approved_internal_source": 1.20,   # Tier 1.5: Approved Internal Policies
+    "official_web_documentation": 1.00, # Tier 2: External Vendor Documentation
+    "historical_resolved_ticket": 0.95, # Tier 3: Episodic Ticket Resolutions
+    "NO_SOURCE_KEY": 0.90,              # Tier 4: Uncategorized / Auto KB
+}
+
+
+def get_canonical_source_id(doc_id: str, metadata: dict[str, Any] | None = None) -> str:
+    """Derive canonical logical document ID for deduplication and grouping."""
+    meta = metadata or {}
+    source_url = meta.get("source_url", "").strip()
+    if source_url:
+        try:
+            parsed = urllib.parse.urlparse(source_url)
+            norm_url = f"{parsed.scheme.lower()}://{parsed.netloc.lower()}{parsed.path.lower().rstrip('/')}"
+            if parsed.query:
+                norm_url = f"{norm_url}?{parsed.query}"
+            return f"url:{norm_url}"
+        except Exception:
+            return f"url:{source_url.lower().rstrip('/')}"
+
+    if meta.get("parent_id"):
+        return f"parent:{meta['parent_id']}"
+    if meta.get("canonical_source_id"):
+        return f"canon:{meta['canonical_source_id']}"
+
+    if doc_id.startswith("web-"):
+        m = re.match(r"^(web-.+)-\d{3,}$", doc_id)
+        if m:
+            return f"web_base:{m.group(1)}"
+
+    if doc_id.startswith("kb-"):
+        m = re.match(r"^(kb-\d+)[_-](?:chunk|part|c)[_-]?\d+$", doc_id, re.IGNORECASE)
+        if m:
+            return f"kb_base:{m.group(1)}"
+        return f"kb:{doc_id}"
+
+    return doc_id
+
 
 _QUERY_EXPANSIONS = {
     ("man hinh xanh", "blue screen", "bsod"): "BSOD blue screen stop code Safe Mode Startup Repair",
@@ -125,9 +176,6 @@ class _HashingEmbedder:
 
     def embed_query(self, text: str) -> list[float]:
         return self._embed(text)
-
-
-from dataclasses import dataclass
 
 
 class EmbeddingProvenanceError(RuntimeError):
@@ -312,6 +360,9 @@ def index_document(
         documents=[content],
         metadatas=[metadata],
     )
+    _rag_query_cache.clear()
+    from src.services.bm25_retriever import invalidate_bm25_index
+    invalidate_bm25_index()
 
 
 def index_documents(documents: list[dict]) -> None:
@@ -326,6 +377,9 @@ def index_documents(documents: list[dict]) -> None:
         documents=contents,
         metadatas=[item["metadata"] for item in documents],
     )
+    _rag_query_cache.clear()
+    from src.services.bm25_retriever import invalidate_bm25_index
+    invalidate_bm25_index()
 
 
 def get_indexed_document_ids(doc_ids: list[str]) -> set[str]:
@@ -339,6 +393,9 @@ def delete_document(doc_id: str) -> None:
     """Remove a KB entry from ChromaDB by document id."""
     collection = get_collection()
     collection.delete(ids=[doc_id])
+    _rag_query_cache.clear()
+    from src.services.bm25_retriever import invalidate_bm25_index
+    invalidate_bm25_index()
 
 
 def _metadata_allowed(
@@ -391,9 +448,12 @@ def search_similar(
     category_filter: str | None = None,
     user_company_unit: str | None = None,
     user_department: str | None = None,
+    *,
+    use_reranker: bool | None = None,
 ) -> list[dict]:
-    """Semantic search KB entries with pre-retrieval ACL, security-scoped caching & hybrid RRF scoring."""
-    cache_key = f"{user_company_unit or 'all'}:{user_department or 'all'}:{category_filter or 'none'}:{n_results}:{query.strip().lower()}"
+    """Hybrid search KB entries with Query Normalization, BM25 Lexical + Dense Embedding, RRF Fusion & optional Reranker."""
+    rerank_flag = use_reranker if use_reranker is not None else get_settings().reranker_enabled
+    cache_key = f"{user_company_unit or 'all'}:{user_department or 'all'}:{category_filter or 'none'}:{n_results}:{rerank_flag}:{query.strip().lower()}"
     if cache_key in _rag_query_cache:
         return _rag_query_cache[cache_key]
 
@@ -403,10 +463,23 @@ def search_similar(
         logger.warning(f"Incompatible KB collection embedding provenance: {exc}")
         return []
 
-    expanded_query = _expand_query(query)
+    from src.services.bm25_retriever import get_bm25_index
+    from src.services.query_normalization_service import (
+        extract_exact_technical_tokens,
+        normalize_informal_query,
+    )
+    from src.services.technical_intent_service import infer_technical_facets, topic_compatibility
+
+    # 1. Query Normalization & Technical Token Extraction
+    norm_query = normalize_informal_query(query)
+    exact_tokens = extract_exact_technical_tokens(query) | extract_exact_technical_tokens(norm_query)
+    technical_facets = infer_technical_facets(norm_query)
+
+    # 2. Dense Embedding Retrieval Channel
+    expanded_query = _expand_query(norm_query if norm_query != query else query)
     query_embedding = embed_query(expanded_query)
 
-    # Build Pre-Retrieval ACL Filter
+    # Build Pre-Retrieval ACL Filter for Dense Query
     where_conditions = []
     if category_filter:
         where_conditions.append({"category": category_filter})
@@ -416,7 +489,7 @@ def search_similar(
             "$or": [
                 {"applicable_to_all": True},
                 {"company_unit": "all"},
-                {"company_unit": user_company_unit}
+                {"company_unit": user_company_unit},
             ]
         })
 
@@ -427,7 +500,7 @@ def search_similar(
         where_filter = {"$and": where_conditions}
 
     try:
-        results = collection.query(
+        dense_results = collection.query(
             query_embeddings=[query_embedding],
             n_results=min(max(n_results * 8, n_results), collection.count() or 1),
             where=where_filter if where_filter else None,
@@ -435,50 +508,160 @@ def search_similar(
         )
     except Exception as e:
         logger.warning(f"ChromaDB query error with ACL filter: {e}")
-        # Fallback query without where clause if ChromaDB $or is unsupported
         try:
-            results = collection.query(
+            dense_results = collection.query(
                 query_embeddings=[query_embedding],
                 n_results=min(max(n_results * 8, n_results), collection.count() or 1),
                 include=["documents", "metadatas", "distances"],
             )
         except Exception as ex:
             logger.error(f"ChromaDB fallback query error: {ex}")
-            return []
+            dense_results = {}
 
-    docs = []
-    if results and results.get("documents"):
-        for i, doc in enumerate(results["documents"][0]):
-            metadata = results["metadatas"][0][i] if results.get("metadatas") else {}
-            # Double check ACL & Indirect Prompt Injection
+    dense_ranks: dict[str, int] = {}
+    dense_docs: dict[str, dict[str, Any]] = {}
+    if dense_results and dense_results.get("documents"):
+        rank_idx = 1
+        for i, doc in enumerate(dense_results["documents"][0]):
+            metadata = dense_results["metadatas"][0][i] if dense_results.get("metadatas") else {}
             if not _metadata_allowed(metadata, user_company_unit, user_department):
                 continue
-
             if scan_indirect_injection(doc):
                 logger.warning(f"Indirect Prompt Injection detected & blocked in KB doc: {metadata.get('title', 'Unknown')}")
                 continue
 
-            docs.append({
-                # Chroma returns persisted IDs for every query result.  Carry
-                # them through the pipeline so the answer model can cite a
-                # real evidence identifier instead of inventing one.
-                "doc_id": results.get("ids", [[]])[0][i] if results.get("ids") else "",
+            doc_id = str(dense_results.get("ids", [[]])[0][i])
+            dist = float(dense_results["distances"][0][i]) if dense_results.get("distances") else 1.0
+            sem_score = max(0.0, 1.0 - dist)
+
+            dense_ranks[doc_id] = rank_idx
+            dense_docs[doc_id] = {
+                "doc_id": doc_id,
                 "content": doc,
                 "metadata": metadata,
-                "distance": results["distances"][0][i] if results.get("distances") else 1.0,
-                "semantic_score": max(0.0, 1.0 - (results["distances"][0][i] if results.get("distances") else 1.0)),
-            })
+                "distance": dist,
+                "semantic_score": sem_score,
+                "dense_rank": rank_idx,
+            }
+            rank_idx += 1
 
-    for item in docs:
-        lexical_score = _lexical_score(expanded_query, item["metadata"], item.get("content", ""))
-        item["lexical_score"] = lexical_score
-        item["relevance_score"] = min(
-            1.0,
-            0.82 * item["semantic_score"] + 0.35 * lexical_score,
+    # 3. Independent Lexical BM25 Retrieval Channel
+    bm25_results = get_bm25_index().search(
+        query=norm_query,
+        top_n=60,
+        category_filter=category_filter,
+        user_company_unit=user_company_unit,
+        user_department=user_department,
+    )
+    bm25_ranks: dict[str, int] = {item["doc_id"]: item["lexical_rank"] for item in bm25_results}
+    bm25_docs: dict[str, dict[str, Any]] = {item["doc_id"]: item for item in bm25_results}
+
+    # 4. Reciprocal Rank Fusion (RRF, k=60), then bounded topic relevance and authority.
+    k_rrf = 60
+    all_candidate_ids = set(dense_ranks.keys()) | set(bm25_ranks.keys())
+    if not all_candidate_ids:
+        return []
+
+    candidates: list[dict[str, Any]] = []
+    for doc_id in all_candidate_ids:
+        dense_r = dense_ranks.get(doc_id)
+        bm25_r = bm25_ranks.get(doc_id)
+
+        dense_rrf = (1.0 / (k_rrf + dense_r)) if dense_r else 0.0
+        bm25_rrf = (1.0 / (k_rrf + bm25_r)) if bm25_r else 0.0
+
+        if doc_id in dense_docs:
+            d_info = dict(dense_docs[doc_id])
+        else:
+            b_item = bm25_docs[doc_id]
+            d_info = {
+                "doc_id": doc_id,
+                "content": b_item["content"],
+                "metadata": b_item["metadata"],
+                "distance": 1.0,
+                "semantic_score": 0.0,
+                "dense_rank": None,
+            }
+
+        d_info["lexical_rank"] = bm25_r
+
+        # Exact technical token match bonus
+        meta = d_info["metadata"]
+        searchable_text = f"{meta.get('title', '')} {meta.get('tags', '')} {meta.get('solution', '')} {d_info.get('content', '')}".lower()
+        exact_matches = sum(1 for token in exact_tokens if token in searchable_text)
+        exact_boost = 0.005 * exact_matches
+
+        # Source authority preference based on deterministic authority hierarchy
+        source_type = meta.get("source", "NO_SOURCE_KEY")
+        auth_factor = SOURCE_AUTHORITY_FACTORS.get(source_type, 1.0)
+
+        # Authority remains exactly the existing factor, but is applied only
+        # after a deterministic technical-topic relevance adjustment.
+        rrf_score = dense_rrf * 1.0 + bm25_rrf * 1.2 + exact_boost
+        compatibility, compatibility_reason = topic_compatibility(technical_facets, meta)
+        topic_adjusted_score = rrf_score * compatibility
+        fusion_score = topic_adjusted_score * auth_factor
+        d_info["dense_rrf"] = dense_rrf
+        d_info["lexical_rrf"] = bm25_rrf
+        d_info["exact_contribution"] = exact_boost
+        d_info["rrf_score"] = rrf_score
+        d_info["topic_compatibility"] = compatibility
+        d_info["topic_compatibility_reason"] = compatibility_reason
+        d_info["authority_factor"] = auth_factor
+        d_info["topic_adjusted_score"] = topic_adjusted_score
+        d_info["final_score"] = fusion_score
+        d_info["fusion_score"] = fusion_score
+
+        # Traditional lexical score for compatibility
+        lexical_overlap = _lexical_score(expanded_query, meta, d_info.get("content", ""))
+        d_info["lexical_score"] = lexical_overlap
+
+        candidates.append(d_info)
+
+    # 5. Deterministic Ranking & Downstream Score Calibration
+    candidates.sort(key=lambda x: (-x["fusion_score"], x["doc_id"]))
+    max_fusion = candidates[0]["fusion_score"] if candidates else 1.0
+
+    for item in candidates:
+        # Calibrate relevance_score to [0.0, 1.0] scale expected by downstream consumers
+        confidence_base = max(
+            item.get("semantic_score", 0.0),
+            item.get("lexical_score", 0.0),
+            0.75 if item.get("fusion_score", 0.0) == max_fusion else 0.50,
         )
+        relative_rrf = (item["fusion_score"] / max_fusion) if max_fusion > 0 else 0.0
+        item["relevance_score"] = min(1.0, confidence_base * relative_rrf)
 
-    docs.sort(key=lambda item: item["relevance_score"], reverse=True)
-    final_docs = docs[:n_results]
+    # Secondary sort by calibrated score and doc_id for complete determinism
+    candidates.sort(key=lambda x: (-x["relevance_score"], -x["fusion_score"], x["doc_id"]))
+
+    # 6. Canonical Source Deduplication / Source Diversity
+    seen_canonical: set[str] = set()
+    primary_candidates: list[dict] = []
+    secondary_candidates: list[dict] = []
+
+    for item in candidates:
+        canon_id = get_canonical_source_id(item["doc_id"], item.get("metadata", {}))
+        if canon_id not in seen_canonical:
+            seen_canonical.add(canon_id)
+            primary_candidates.append(item)
+        else:
+            secondary_candidates.append(item)
+
+    deduped_candidates = primary_candidates + secondary_candidates
+
+    # 7. Optional Cross-Encoder Second-Stage Reranking
+    if rerank_flag:
+        from src.services.reranker_service import rerank_candidates
+
+        final_docs = rerank_candidates(
+            query=norm_query,
+            candidates=deduped_candidates,
+            top_k=n_results,
+            enabled=True,
+        )
+    else:
+        final_docs = deduped_candidates[:n_results]
 
     if len(_rag_query_cache) >= _MAX_RAG_CACHE_SIZE:
         _rag_query_cache.clear()
@@ -581,6 +764,8 @@ async def search_similar_async(
     category_filter: str | None = None,
     user_company_unit: str | None = None,
     user_department: str | None = None,
+    *,
+    use_reranker: bool | None = None,
 ) -> list[dict]:
     """Non-blocking async wrapper cho search_similar."""
     return await asyncio.to_thread(
@@ -590,13 +775,13 @@ async def search_similar_async(
         category_filter=category_filter,
         user_company_unit=user_company_unit,
         user_department=user_department,
+        use_reranker=use_reranker,
     )
 
 
 def get_collection_count() -> int:
     try:
-        client = get_chroma_client()
-        col = client.get_collection(COLLECTION_NAME)
+        col = get_collection()
         return col.count()
     except Exception:
         return 0

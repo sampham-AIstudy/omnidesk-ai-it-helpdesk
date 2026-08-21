@@ -1,9 +1,12 @@
 """LLM service — Dynamic Multi-Provider Fallback Factory (Mistral -> OpenAI -> Local Ollama)."""
 from __future__ import annotations
 
+import asyncio
 import logging
 import os
-from functools import lru_cache
+import threading
+import weakref
+from typing import Any
 
 from pydantic import SecretStr
 
@@ -15,7 +18,7 @@ settings = get_settings()
 try:
     from langchain_groq import ChatGroq
 except ImportError:
-    ChatGroq = None
+    ChatGroq = None  # type: ignore[misc,assignment]
 
 
 def get_gemini_api_key() -> str:
@@ -43,7 +46,7 @@ def get_provider_llm(model_type: str = "rag", temperature: float = 0.0, max_toke
         try:
             from langchain_mistralai import ChatMistralAI
             model_attr = f"mistral_{model_type}_model"
-            model_name = getattr(settings, model_attr, settings.mistral_rag_model)
+            model_name = str(getattr(settings, model_attr, settings.mistral_rag_model) or "mistral-small-latest")
             logger.info(f"Using Provider: Mistral AI ({model_name})")
             llm = ChatMistralAI(
                 api_key=SecretStr(mistral_key),
@@ -76,8 +79,8 @@ def get_provider_llm(model_type: str = "rag", temperature: float = 0.0, max_toke
     logger.info(f"Using Provider: Local Ollama ({model_name} @ {base_url})")
 
     try:
-        from langchain_community.llms.ollama import Ollama
-        return Ollama(
+        from langchain_ollama import ChatOllama
+        return ChatOllama(
             base_url=base_url,
             model=model_name,
             temperature=temperature,
@@ -93,11 +96,11 @@ def get_provider_llm(model_type: str = "rag", temperature: float = 0.0, max_toke
 
 def _attach_fallback(primary_llm):
     """Gắn chuỗi Fallback providers (Groq -> Gemini 3.5 Flash-Lite -> Local Ollama) khi API chính bị Rate Limit / lỗi."""
-    fallbacks = []
+    fallbacks: list[Any] = []
 
     # 1. Fallback 1: Groq (Llama 3.1 8B Instant)
     groq_key = get_groq_api_key()
-    if groq_key and ChatGroq:
+    if groq_key and ChatGroq is not None:
         try:
             fallbacks.append(
                 ChatGroq(
@@ -164,18 +167,18 @@ def _attach_fallback(primary_llm):
 
     # 3. Fallback 3: Local Ollama (Cuối cùng nếu mất mạng/hết quota cloud)
     try:
-        from langchain_community.llms.ollama import Ollama
+        from langchain_ollama import ChatOllama
         base_url = settings.ollama_base_url or "http://localhost:11434"
         model_name = settings.ollama_model or "mistral"
         fallbacks.append(
-            Ollama(
+            ChatOllama(
                 base_url=base_url,
                 model=model_name,
                 temperature=0.0,
             )
         )
     except Exception as e:
-        logger.warning(f"Failed to initialize Ollama fallback: {e}")
+        logger.warning(f"Failed to initialize ChatOllama fallback: {e}")
 
     if fallbacks:
         logger.info(f"Attached {len(fallbacks)} fallback LLM provider(s) to primary LLM.")
@@ -183,24 +186,52 @@ def _attach_fallback(primary_llm):
     return primary_llm
 
 
-@lru_cache
+_cache_lock = threading.RLock()
+_loop_llm_cache: weakref.WeakKeyDictionary[asyncio.AbstractEventLoop, dict[tuple[str, float, int], Any]] = (
+    weakref.WeakKeyDictionary()
+)
+
+
+def clear_llm_cache() -> None:
+    """Explicitly clear all cached LLM instances."""
+    with _cache_lock:
+        _loop_llm_cache.clear()
+
+
+def _get_or_create_loop_llm(model_type: str, temperature: float, max_tokens: int) -> Any:
+    """Retrieve or create an LLM instance scoped to the currently running event loop."""
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop is not None and not loop.is_closed():
+        with _cache_lock:
+            loop_entries = _loop_llm_cache.setdefault(loop, {})
+            key = (model_type, temperature, max_tokens)
+            if key in loop_entries:
+                return loop_entries[key]
+            instance = get_provider_llm(model_type=model_type, temperature=temperature, max_tokens=max_tokens)
+            loop_entries[key] = instance
+            return instance
+
+    return get_provider_llm(model_type=model_type, temperature=temperature, max_tokens=max_tokens)
+
+
 def get_classifier_llm():
-    return get_provider_llm(model_type="classifier", temperature=0.0, max_tokens=1024)
+    return _get_or_create_loop_llm(model_type="classifier", temperature=0.0, max_tokens=1024)
 
 
-@lru_cache
 def get_fast_classifier_llm():
-    return get_provider_llm(model_type="fast_classifier", temperature=0.0, max_tokens=512)
+    return _get_or_create_loop_llm(model_type="fast_classifier", temperature=0.0, max_tokens=512)
 
 
-@lru_cache
 def get_rag_llm():
-    return get_provider_llm(model_type="rag", temperature=0.0, max_tokens=2048)
+    return _get_or_create_loop_llm(model_type="rag", temperature=0.0, max_tokens=2048)
 
 
-@lru_cache
 def get_runbook_llm():
-    return get_provider_llm(model_type="runbook", temperature=0.0, max_tokens=2048)
+    return _get_or_create_loop_llm(model_type="runbook", temperature=0.0, max_tokens=2048)
 
 
 def get_model_by_complexity(complexity: str = "normal"):

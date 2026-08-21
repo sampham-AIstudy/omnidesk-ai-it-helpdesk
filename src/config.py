@@ -94,18 +94,44 @@ class Settings(BaseSettings):
 
     # Vector Store
     chroma_persist_dir: str = "./data/chroma"
-    chroma_collection_name: str = "helpdesk_kb_multilingual_v2_sentence_transformer"
+    chroma_collection_name: str = "helpdesk_kb_multilingual_v3_sentence_transformer"
     embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
     embedding_backend: Literal["sentence_transformer", "hashing"] = "sentence_transformer"
     embedding_allow_network_downloads: bool = False
 
+    # Cross-Encoder Reranker (Optional second-stage reranker on top of hybrid retrieval)
+    reranker_enabled: bool = False
+    reranker_model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    reranker_top_n: int = Field(default=10, ge=2, le=50)
+
     # External research (only used after the internal RAG decision gate)
     web_research_enabled: bool = True
-    web_search_provider: Literal["duckduckgo_html", "disabled"] = "duckduckgo_html"
+    # "auto" uses Exa semantic search, then Tavily and DDG as fallbacks.
+    # Firecrawl is a separate webpage-reader concern, not a search dependency.
+    web_search_provider: Literal["auto", "exa", "tavily", "duckduckgo_html", "disabled"] = "auto"
+    exa_api_key: str = ""
+    tavily_api_key: str = ""
+    firecrawl_api_key: str = ""
     web_research_timeout_seconds: float = Field(default=6.0, ge=1.0, le=20.0)
     web_research_max_results: int = Field(default=4, ge=1, le=8)
+    web_research_max_queries: int = Field(default=3, ge=1, le=3)
+    web_research_max_pages: int = Field(default=3, ge=1, le=5)
+    web_research_max_page_chars: int = Field(default=6000, ge=1000, le=20000)
+    web_research_max_chunks_per_source: int = Field(default=3, ge=1, le=6)
+    web_research_max_per_domain: int = Field(default=1, ge=1, le=2)
+    web_research_cache_ttl_seconds: int = Field(default=300, ge=0, le=3600)
+    web_research_reranker_enabled: bool = True
     web_research_min_rag_score: float = Field(default=0.55, ge=0.0, le=1.0)
     rag_min_relevance_score: float = Field(default=0.55, ge=0.0, le=1.0)
+
+    # Post-ranking KB context expansion. These limits never affect retrieval
+    # candidates or their scores; they bound only attached evidence.
+    context_expansion_enabled: bool = True
+    context_expansion_max_chunks_per_anchor: int = Field(default=1, ge=0, le=2)
+    context_expansion_max_total_chunks: int = Field(default=4, ge=0, le=8)
+    context_expansion_max_parent_items: int = Field(default=2, ge=0, le=4)
+    context_expansion_parent_max_chars: int = Field(default=280, ge=40, le=1000)
+    context_expansion_max_evidence_tokens: int = Field(default=2800, ge=256, le=8000)
 
     # Semantic duplicate ticket detection
     duplicate_high_threshold: float = Field(default=0.85, ge=0.0, le=1.0)

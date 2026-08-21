@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import re
 
-
 _FORM_PRODUCT_PREFIX = re.compile(
     r"^\s*\[(?:Mạng Nội Bộ & VPN|Email & Office|SAP ERP|Phần Cứng & Laptop|"
     r"Tài Khoản & Quyền|Máy Chủ & Hạ Tầng|Yêu Cầu Khác)\]\s*",

@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 import asyncio
+
 import pytest
 from httpx import ASGITransport, AsyncClient
 
 from src.config import get_settings
 from src.guardrails.ai_abuse_guard import (
     MAX_CHAT_MESSAGE_BYTES,
-    MAX_CHAT_MESSAGE_CHARS,
     guard_ai_generation,
     reset_abuse_guard_state,
     validate_chat_message_size,
@@ -19,11 +19,9 @@ from src.models.schemas import DuplicateCheckRequest, TicketCreate
 from src.models.ticket_message import TicketMessage, TicketMessageSender
 from src.services.context_query_service import build_context_aware_retrieval_query
 from src.services.recent_conversation_context import (
-    MAX_HISTORY_MESSAGE_CHARS,
     MAX_TICKET_RECENT_HISTORY_CHARS,
     MAX_WORKSPACE_RECENT_HISTORY_CHARS,
     RecentConversationMessage,
-    format_recent_history,
     load_ticket_recent_history,
     load_workspace_recent_history,
 )
@@ -52,14 +50,6 @@ class TestInputSizeValidation:
         assert exc_info.value.detail.get("error") == "INPUT_TOO_LARGE"
 
     def test_multibyte_encoded_payload_rejected_when_exceeding_32kb(self):
-        # 4-byte unicode character repeated 10,000 times = 40,000 bytes > 32KB
-        # while char length is 10,000 > 8000, or 7,000 chars * 5 bytes/char = 35,000 bytes
-        msg = "🚀" * 7500  # 7500 chars <= 8000, but 7500 * 4 = 30000 bytes
-        # 8000 chars of 4-byte emoji = 32000 bytes
-        # Let's test a string within 8000 chars but > 32768 bytes
-        # e.g., 7000 * 5 bytes = 35000 bytes (or 3-byte vietnamese character: "ạ" * 7000 is 7000*3=21000, "ạ" * 8000 is 8000*3=24000)
-        # 4-byte emoji 8200 would fail char limit first, but let's test 7500 emojis + multi-byte characters
-        msg_large_bytes = "🔒" * 7500 + "A" * 1000  # 8500 chars fails
         msg_multi_byte_33kb = "🚀" * 7800 + "🛠️" * 200  # 8000 chars, but emojis + variation selectors > 32KB
         if len(msg_multi_byte_33kb.encode("utf-8")) > MAX_CHAT_MESSAGE_BYTES:
             with pytest.raises(Exception) as exc_info:

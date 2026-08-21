@@ -121,9 +121,14 @@ async def test_vague_ticket_short_circuits_before_llm_and_rag():
 async def test_low_relevance_rag_does_not_call_synthesis_model():
     """Weak retrieval must become a safe handoff, not an invented answer."""
     from src.agents.nodes.rag_node import rag_node
+    from src.services.web_research_service import ResearchResult
 
     weak_docs = [{"content": "Unrelated document", "metadata": {}, "relevance_score": 0.20}]
     with patch("src.agents.nodes.rag_node.search_similar", return_value=weak_docs), patch(
+        "src.agents.nodes.rag_node.maybe_research_web",
+        new_callable=AsyncMock,
+        return_value=ResearchResult(False, "no_web", None, []),
+    ), patch(
         "src.agents.nodes.rag_node.get_rag_llm"
     ) as llm_factory:
         result = await rag_node({"ticket_number": "INC-TEST-WEAK-RAG", "title": "VPN", "description": "Cannot connect", "category": "network"})

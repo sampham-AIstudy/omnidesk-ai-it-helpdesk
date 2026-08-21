@@ -194,3 +194,56 @@ async def test_ticket_recent_history_reaches_llm_once_and_deduplicates_zeromem()
     assert "[RECENT TICKET CONVERSATION — UNTRUSTED DATA]" in prompt
     assert prompt.count(previous.content) == 1
     assert prompt.count("Tôi đã thử bước đó; VPN 809 tiếp tục báo mã lỗi.") == 1
+
+
+@pytest.mark.asyncio
+async def test_workspace_pipeline_never_queries_or_renders_ticket_episodic_memory():
+    """A new Workspace turn cannot receive a prior ticket topic through Zero-Mem."""
+    class CapturingLLM:
+        def __init__(self):
+            self.calls = []
+
+        async def ainvoke(self, messages):
+            self.calls.append(messages)
+            return SimpleNamespace(content="Workspace-only answer.")
+
+    async with AsyncSessionLocal() as db:
+        owner = (await db.execute(select(User).order_by(User.id))).scalars().first()
+        ticket = Ticket(
+            ticket_number="CTX-ISOLATION-1",
+            title="Idempotency Gate Verification",
+            description="Prior email incident that must stay in the ticket surface.",
+            submitter_id=owner.id,
+        )
+        workspace = ChatConversation(user_id=owner.id, title="New Workspace")
+        db.add_all([ticket, workspace])
+        await db.flush()
+        db.add(TicketMessage(
+            ticket_id=ticket.id,
+            sender_type=TicketMessageSender.USER,
+            content="Idempotency Gate Verification for the email incident.",
+        ))
+        await db.commit()
+
+        history = await load_workspace_recent_history(
+            db, conversation_id=workspace.id, user_id=owner.id, exclude_message_id=None,
+        )
+        llm = CapturingLLM()
+        memory_lookup = AsyncMock()
+        with (
+            patch("src.api.chat.route_chat_message", return_value=ChatRouteDecision("knowledge", "evidence_required", 1.0)),
+            patch("src.api.chat._retrieve_knowledge_evidence", AsyncMock(return_value=([], DecompositionResult(False, False, [])))),
+            patch("src.services.zero_mem_service.retrieve_episodic_evidence", memory_lookup),
+            patch("src.api.chat.get_rag_llm", return_value=llm),
+        ):
+            await _chat_with_agent(
+                ChatRequest(message="How do I use the VPN?"),
+                current_user=owner,
+                db=db,
+                recent_history=history,
+            )
+
+    memory_lookup.assert_not_awaited()
+    prompt = llm.calls[0][1].content
+    assert "Idempotency Gate Verification" not in prompt
+    assert "email incident" not in prompt

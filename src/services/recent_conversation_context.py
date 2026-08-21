@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from dataclasses import dataclass
+from typing import TypeVar
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,6 +18,7 @@ from src.models.chat_conversation import ChatConversation, ChatMessage
 from src.models.ticket_message import TicketMessage, TicketMessageSender
 
 settings = get_settings()
+T = TypeVar("T")
 _CONVERSATIONAL_TICKET_SENDERS = (
     TicketMessageSender.USER,
     TicketMessageSender.AGENT,
@@ -151,13 +153,13 @@ def format_recent_history(history: Iterable[RecentConversationMessage], *, label
 
 
 def exclude_recent_history_from_episodic(
-    evidence: Iterable[object], history: Iterable[RecentConversationMessage], *, current_message_id: int | None = None
-) -> list[object]:
+    evidence: Iterable[T], history: Iterable[RecentConversationMessage], *, current_message_id: int | None = None
+) -> list[T]:
     """Avoid duplicate TicketMessage spans without mutating the Zero-Mem index."""
     excluded_ids = {item.message_id for item in history}
     if current_message_id is not None:
         excluded_ids.add(str(current_message_id))
-    result: list[object] = []
+    result: list[T] = []
     for item in evidence:
         provenance = getattr(item, "provenance", {}) or {}
         message_id = provenance.get("message_id")

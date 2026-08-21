@@ -7,7 +7,7 @@ OpenAI Moderation API, Gemini Safety Judge, and Groundedness evaluation.
 import logging
 import re
 from importlib.util import find_spec
-from typing import Any, Dict, List
+from typing import Any
 
 import requests
 
@@ -77,7 +77,7 @@ def format_plain_text_response(text: str) -> str:
     return re.sub(r"\n{3,}", "\n\n", formatted).strip()
 
 
-def redact_secrets_and_pii(text: str) -> Dict[str, Any]:
+def redact_secrets_and_pii(text: str) -> dict[str, Any]:
     """Redact sensitive PII and secrets using Presidio + Regex."""
     if not text:
         return {"safe": True, "redacted": "", "issues": [], "severity": "LOW"}
@@ -94,7 +94,7 @@ def redact_secrets_and_pii(text: str) -> Dict[str, Any]:
             ]
             results = _presidio_analyzer.analyze(text=text, entities=target_entities, language="en")
             if results:
-                anonymized_result = _presidio_anonymizer.anonymize(text=text, analyzer_results=results)
+                anonymized_result = _presidio_anonymizer.anonymize(text=text, analyzer_results=results)  # type: ignore[arg-type]
                 redacted_text = anonymized_result.text
                 for r in results:
                     issues.append(f"Presidio detected {r.entity_type}")
@@ -119,7 +119,7 @@ def redact_secrets_and_pii(text: str) -> Dict[str, Any]:
     }
 
 
-def check_openai_moderation(text: str) -> Dict[str, Any]:
+def check_openai_moderation(text: str) -> dict[str, Any]:
     """Check text using OpenAI Moderation API if key is available."""
     api_key = settings.openai_moderation_api
     if not api_key:
@@ -145,7 +145,7 @@ def check_openai_moderation(text: str) -> Dict[str, Any]:
     return {"flagged": False}
 
 
-def gemini_safety_judge(prompt: str, response: str) -> Dict[str, Any]:
+def gemini_safety_judge(prompt: str, response: str) -> dict[str, Any]:
     """Evaluate output safety using Google Gemini API as Safety Judge."""
     api_key = settings.google_api_key
     if not api_key:
@@ -154,7 +154,7 @@ def gemini_safety_judge(prompt: str, response: str) -> Dict[str, Any]:
     try:
         import google.genai as genai
         client = genai.Client(api_key=api_key)
-        
+
         judge_prompt = f"""You are a Security Judge evaluating AI agent outputs for safety and compliance.
 User Request: {prompt}
 Agent Response: {response}
@@ -171,7 +171,7 @@ Respond in JSON format:
             model="gemini-3.5-flash-lite",
             contents=judge_prompt,
         )
-        text_out = result.text.strip()
+        text_out = (result.text or "").strip()
         safe = "true" in text_out.lower() and "unsafe" not in text_out.lower()
         return {"safe": safe, "verdict": "SAFE" if safe else "UNSAFE", "raw": text_out}
     except Exception as e:
@@ -179,7 +179,7 @@ Respond in JSON format:
         return {"safe": True, "verdict": "SAFE", "reason": f"Fallback due to Gemini error: {e}"}
 
 
-def evaluate_groundedness(answer: str, context_docs: List[Dict[str, Any]]) -> Dict[str, Any]:
+def evaluate_groundedness(answer: str, context_docs: list[dict[str, Any]]) -> dict[str, Any]:
     """Verify if the generated troubleshooting instructions are grounded in retrieved KB docs using 3-Tier action model."""
     if not context_docs:
         return {
@@ -204,7 +204,7 @@ def evaluate_groundedness(answer: str, context_docs: List[Dict[str, Any]]) -> Di
 
     matched = sum(1 for word in answer_words if word in doc_text)
     score = round(matched / len(answer_words), 2)
-    
+
     if score >= 0.75:
         level = "HIGH"
         recommended_action = "AUTO_RESPOND"
@@ -228,7 +228,7 @@ def evaluate_groundedness(answer: str, context_docs: List[Dict[str, Any]]) -> Di
     }
 
 
-def content_filter(text: str) -> Dict[str, Any]:
+def content_filter(text: str) -> dict[str, Any]:
     """Main output content filter function."""
     redaction_res = redact_secrets_and_pii(text)
     mod_res = check_openai_moderation(text)

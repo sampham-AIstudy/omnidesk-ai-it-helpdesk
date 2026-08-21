@@ -6,14 +6,14 @@ Hard policy rules have absolute power to OVERRIDE LLM Risk Scores.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from src.agents.state import TicketAgentState
 
 logger = logging.getLogger(__name__)
 
 
-def evaluate_policy(state: TicketAgentState, risk_score: float) -> Dict[str, Any]:
+def evaluate_policy(state: TicketAgentState, risk_score: float) -> dict[str, Any]:
     """
     Deterministic Safety Policy Engine Matrix:
     1. Security Category -> REQUIRE_HITL
@@ -27,8 +27,10 @@ def evaluate_policy(state: TicketAgentState, risk_score: float) -> Dict[str, Any
     """
     category = state.get("category", "other")
     is_production = state.get("is_production_impact", False)
-    groundedness = state.get("groundedness_score", 1.0)
-    confidence = state.get("confidence_score", 1.0)
+    groundedness_val = state.get("groundedness_score")
+    groundedness: float = float(groundedness_val) if groundedness_val is not None else 1.0
+    confidence_val = state.get("confidence_score")
+    confidence: float = float(confidence_val) if confidence_val is not None else 1.0
     description = (state.get("description", "") + " " + state.get("title", "")).lower()
 
     # Rule 1: Security Category or Security Incident

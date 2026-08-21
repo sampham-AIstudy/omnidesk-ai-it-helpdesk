@@ -1,0 +1,1813 @@
+{
+  "meta": {
+    "timestamp": "2026-08-20T08:28:31.011612+00:00",
+    "collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "collection_count": 433,
+    "top_k": 5,
+    "elapsed_seconds": 8.05,
+    "golden_sha256": "ca55989f841372f75f299492f4be8a3f9215acc37b7a7da72ecc7498b1eb59b3"
+  },
+  "gate_status": "PASSED",
+  "thresholds": {
+    "min_hit_rate_at_1": 0.97,
+    "min_recall_at_1": 0.94,
+    "min_hit_rate_at_3": 0.97,
+    "min_recall_at_3": 0.94,
+    "min_hit_rate_at_5": 0.97,
+    "min_recall_at_5": 0.94,
+    "min_mrr_at_5": 0.98,
+    "min_ndcg_at_5": 0.93,
+    "min_d_typo_hit_rate_at_1": 0.9,
+    "min_b_exact_hit_rate_at_1": 0.95,
+    "max_cross_tenant_leaks": 0,
+    "max_forbidden_doc_leaks": 0,
+    "max_policy_authority_violations": 0
+  },
+  "metric_checks": [
+    {
+      "metric": "HitRate@1",
+      "measured": 1.0,
+      "threshold": 0.97,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "Recall@1",
+      "measured": 0.9743589743589743,
+      "threshold": 0.94,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "HitRate@3",
+      "measured": 1.0,
+      "threshold": 0.97,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "Recall@3",
+      "measured": 0.9743589743589743,
+      "threshold": 0.94,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "HitRate@5",
+      "measured": 1.0,
+      "threshold": 0.97,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "Recall@5",
+      "measured": 0.9743589743589743,
+      "threshold": 0.94,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "MRR@5",
+      "measured": 1.0,
+      "threshold": 0.98,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "nDCG@5",
+      "measured": 0.9616631355539943,
+      "threshold": 0.93,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "D_typo_informal HitRate@1",
+      "measured": 1.0,
+      "threshold": 0.9,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "B_exact_token HitRate@1",
+      "measured": 1.0,
+      "threshold": 0.95,
+      "comparison": ">=",
+      "passed": true,
+      "is_safety": false
+    },
+    {
+      "metric": "Cross-Tenant Leaks",
+      "measured": 0.0,
+      "threshold": 0.0,
+      "comparison": "==",
+      "passed": true,
+      "is_safety": true
+    },
+    {
+      "metric": "Forbidden Doc Leaks",
+      "measured": 0.0,
+      "threshold": 0.0,
+      "comparison": "==",
+      "passed": true,
+      "is_safety": true
+    },
+    {
+      "metric": "Policy Authority Violations",
+      "measured": 0.0,
+      "threshold": 0.0,
+      "comparison": "==",
+      "passed": true,
+      "is_safety": true
+    }
+  ],
+  "failure_reasons": [],
+  "summary": {
+    "total_cases": 44,
+    "scorable_cases": 39,
+    "hit_rate_at_1": 1.0,
+    "hit_rate_at_3": 1.0,
+    "hit_rate_at_5": 1.0,
+    "recall_at_1": 0.9743589743589743,
+    "recall_at_3": 0.9743589743589743,
+    "recall_at_5": 0.9743589743589743,
+    "mrr_at_5": 1.0,
+    "ndcg_at_5": 0.9616631355539943,
+    "ndcg_at_10": 0.9616631355539943,
+    "cross_tenant_leak_count": 0,
+    "forbidden_doc_retrieval_count": 0,
+    "policy_authority_violation_count": 0,
+    "category_summary": {
+      "A_semantic_paraphrase": {
+        "total_cases": 7,
+        "scorable_cases": 7,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 0.8571428571428571,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.9071686086991576,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "B_exact_token": {
+        "total_cases": 7,
+        "scorable_cases": 7,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 1.0,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "C_multilingual": {
+        "total_cases": 5,
+        "scorable_cases": 5,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.9520375066863738,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "D_typo_informal": {
+        "total_cases": 5,
+        "scorable_cases": 5,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.9520375066863738,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "E_ambiguous": {
+        "total_cases": 2,
+        "scorable_cases": 0,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 1.0,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "F_policy_authority": {
+        "total_cases": 4,
+        "scorable_cases": 4,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 1.0,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "G_tenant_isolation": {
+        "total_cases": 5,
+        "scorable_cases": 5,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.9847770017252475,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "H_no_evidence": {
+        "total_cases": 3,
+        "scorable_cases": 0,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 1.0,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "I_hard_negative": {
+        "total_cases": 6,
+        "scorable_cases": 6,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.9517369917036174,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      }
+    },
+    "failure_breakdown": {}
+  },
+  "case_results": [
+    {
+      "case_id": "RET-A01",
+      "category_group": "A_semantic_paraphrase",
+      "query": "VPN của tôi không kết nối được",
+      "expected_ids": [
+        "kb-001"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-001",
+        "kb-008",
+        "kb-003",
+        "web-windows-vpn-003",
+        "auto-kb-ticket-63"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.8682397110540824,
+        0.5569511132533693,
+        0.4867394555777086,
+        0.44740906827554433
+      ]
+    },
+    {
+      "case_id": "RET-A02",
+      "category_group": "A_semantic_paraphrase",
+      "query": "Tôi không truy cập được mạng nội bộ khi làm việc ở nhà",
+      "expected_ids": [
+        "kb-001"
+      ],
+      "acceptable_ids": [
+        "kb-002",
+        "kb-003"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-003",
+        "kb-031",
+        "kb-033",
+        "kb-005",
+        "kb-002"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 0.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 0.44295238679582505,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.4590889632627647,
+        0.413787704832481,
+        0.4127005347593583,
+        0.4015991237677985
+      ]
+    },
+    {
+      "case_id": "RET-A03",
+      "category_group": "A_semantic_paraphrase",
+      "query": "Máy tính không bắt được WiFi công ty dù đang ở gần router",
+      "expected_ids": [
+        "kb-002"
+      ],
+      "acceptable_ids": [
+        "kb-003"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-002",
+        "kb-016",
+        "web-windows-wifi-007",
+        "kb-001",
+        "kb-003"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 0.9072278740982787,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.49115260590679977,
+        0.4852446942928515,
+        0.4060428312348127,
+        0.4052921386246959
+      ]
+    },
+    {
+      "case_id": "RET-A04",
+      "category_group": "A_semantic_paraphrase",
+      "query": "Email bị kẹt trong hộp thư đi không gửi được",
+      "expected_ids": [
+        "kb-004"
+      ],
+      "acceptable_ids": [
+        "kb-005"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-004",
+        "kb-005",
+        "kb-032",
+        "kb-017",
+        "kb-014"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.6405196995538476,
+        0.5109878739008459,
+        0.48506932961360694,
+        0.38868283404660015
+      ]
+    },
+    {
+      "case_id": "RET-A05",
+      "category_group": "A_semantic_paraphrase",
+      "query": "Máy tính của tôi chạy rất chậm không làm việc được",
+      "expected_ids": [
+        "kb-009"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-009",
+        "kb-016",
+        "kb-015",
+        "web-windows-slow-performance-001",
+        "kb-013"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.5814058398035876,
+        0.40461824711010375,
+        0.37730016813173395,
+        0.2683284457478005
+      ]
+    },
+    {
+      "case_id": "RET-A06",
+      "category_group": "A_semantic_paraphrase",
+      "query": "Tôi quên mật khẩu đăng nhập Windows không vào được máy",
+      "expected_ids": [
+        "kb-010"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-010",
+        "kb-015",
+        "kb-019",
+        "web-windows-reset-pin-002",
+        "web-windows-hello-troubleshoot-003"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.4169805060371345,
+        0.40244742507913905,
+        0.3138012674830733,
+        0.26485989060839366
+      ]
+    },
+    {
+      "case_id": "RET-A07",
+      "category_group": "A_semantic_paraphrase",
+      "query": "Laptop Windows bị màn hình xanh liên tục",
+      "expected_ids": [
+        "kb-015"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-015",
+        "web-windows-blue-screen-003",
+        "kb-013",
+        "web-windows-external-monitor-003",
+        "kb-007"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.9375,
+        0.5281375175590551,
+        0.43146198455206475,
+        0.4172090390137041,
+        0.3741647624178696
+      ]
+    },
+    {
+      "case_id": "RET-B01",
+      "category_group": "B_exact_token",
+      "query": "FortiClient báo authentication failed khi kết nối VPN",
+      "expected_ids": [
+        "kb-001"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-001",
+        "auto-kb-ticket-63",
+        "kb-008",
+        "auto-kb-ticket-64",
+        "web-windows-vpn-003"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.35720604353401103,
+        0.35487490317273984,
+        0.34598103513943373,
+        0.32176015811881126
+      ]
+    },
+    {
+      "case_id": "RET-B02",
+      "category_group": "B_exact_token",
+      "query": "BitLocker yêu cầu recovery key khi khởi động laptop",
+      "expected_ids": [
+        "kb-015"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-015",
+        "web-bitlocker-recovery-001",
+        "kb-035",
+        "kb-007",
+        "web-windows-backup-restore-001"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.7448255981578203,
+        0.4325782912739435,
+        0.32062733693394263,
+        0.30145487423968437
+      ]
+    },
+    {
+      "case_id": "RET-B03",
+      "category_group": "B_exact_token",
+      "query": "Outlook bị Disconnected và email stuck trong Outbox",
+      "expected_ids": [
+        "kb-004"
+      ],
+      "acceptable_ids": [
+        "kb-005"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-004",
+        "kb-005",
+        "web-outlook-send-receive-001",
+        "web-outlook-shared-mailbox-performance-005",
+        "kb-022"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.41089281817397477,
+        0.36724368667545393,
+        0.3139820488980463,
+        0.3014699670524626
+      ]
+    },
+    {
+      "case_id": "RET-B04",
+      "category_group": "B_exact_token",
+      "query": "SAP session timeout và bị maximum sessions exceeded",
+      "expected_ids": [
+        "kb-019"
+      ],
+      "acceptable_ids": [
+        "kb-020"
+      ],
+      "forbidden_ids": [
+        "kb-010",
+        "kb-001"
+      ],
+      "retrieved_ids": [
+        "kb-019",
+        "kb-020",
+        "mem-kgl-199",
+        "kb-032",
+        "kb-028"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.39833763126560934,
+        0.3746314530798838,
+        0.27741562844067935,
+        0.2375648106065999
+      ]
+    },
+    {
+      "case_id": "RET-B05",
+      "category_group": "B_exact_token",
+      "query": "BSOD stop code xuất hiện lúc khởi động Windows",
+      "expected_ids": [
+        "kb-015"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-015",
+        "web-windows-blue-screen-001",
+        "web-windows-activation-errors-002",
+        "kb-016",
+        "web-defender-device-isolation-005"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.7857142857142857,
+        0.5474456455149432,
+        0.2672680211698533,
+        0.26350653834314347,
+        0.25833160678883627
+      ]
+    },
+    {
+      "case_id": "RET-B06",
+      "category_group": "B_exact_token",
+      "query": "Email phishing yêu cầu nhập thông tin đăng nhập công ty",
+      "expected_ids": [
+        "kb-017"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-017",
+        "kb-012",
+        "kb-032",
+        "kb-005",
+        "kb-006"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.5957490881919938,
+        0.3581926219526436,
+        0.3580748390937832,
+        0.34685741239718015
+      ]
+    },
+    {
+      "case_id": "RET-B07",
+      "category_group": "B_exact_token",
+      "query": "Microsoft Authenticator mất điện thoại cần reset MFA",
+      "expected_ids": [
+        "kb-018"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-018",
+        "web-entra-sspr-002",
+        "web-m365-authenticator-troubleshoot-001",
+        "kb-001",
+        "kb-010"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.40093159171782744,
+        0.40065318671412936,
+        0.3924936643566799,
+        0.3818737499443966
+      ]
+    },
+    {
+      "case_id": "RET-C01",
+      "category_group": "C_multilingual",
+      "query": "Cannot connect to company VPN, getting authentication error",
+      "expected_ids": [
+        "kb-001"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-001",
+        "web-windows-update-005",
+        "web-windows-vpn-003",
+        "kb-008",
+        "web-teams-restore-access-002"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.46036941717807767,
+        0.4387797596818699,
+        0.3738300582154403,
+        0.33824036401360935
+      ]
+    },
+    {
+      "case_id": "RET-C02",
+      "category_group": "C_multilingual",
+      "query": "Outlook không sync, email stuck trong outbox",
+      "expected_ids": [
+        "kb-004"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-004",
+        "kb-005",
+        "web-outlook-send-receive-001",
+        "web-outlook-shared-mailbox-performance-005",
+        "web-exchange-access-other-mailbox-003"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.5610842042712577,
+        0.4294915029318691,
+        0.36570280218771356,
+        0.33183701858523423
+      ]
+    },
+    {
+      "case_id": "RET-C03",
+      "category_group": "C_multilingual",
+      "query": "Laptop bị blue screen liên tục không biết fix như nào",
+      "expected_ids": [
+        "kb-015"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-015",
+        "web-windows-blue-screen-003",
+        "kb-013",
+        "mem-kgl-362",
+        "kb-016"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.4570295133147196,
+        0.41762284604641836,
+        0.4164598210852777,
+        0.36473119190443165
+      ]
+    },
+    {
+      "case_id": "RET-C04",
+      "category_group": "C_multilingual",
+      "query": "Password reset cho domain account Windows bị expire",
+      "expected_ids": [
+        "kb-010"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-010",
+        "web-m365-password-policy-002",
+        "kb-018",
+        "kb-035",
+        "web-entra-sspr-005"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.8571428571428571,
+        0.42409294440945433,
+        0.3316154208437059,
+        0.33002692516662563,
+        0.3234850748676217
+      ]
+    },
+    {
+      "case_id": "RET-C05",
+      "category_group": "C_multilingual",
+      "query": "WiFi office yeu/ mat ket noi lien tuc",
+      "expected_ids": [
+        "kb-002"
+      ],
+      "acceptable_ids": [
+        "kb-003"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-002",
+        "kb-016",
+        "kb-001",
+        "kb-008",
+        "kb-017"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 0.7601875334318685,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.7692307692307693,
+        0.2965359603373897,
+        0.29279536165763714,
+        0.22137543095626927,
+        0.2148643888693202
+      ]
+    },
+    {
+      "case_id": "RET-D01",
+      "category_group": "D_typo_informal",
+      "query": "vpn auth loi ko vao dc",
+      "expected_ids": [
+        "kb-001"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-001",
+        "kb-008",
+        "auto-kb-ticket-63",
+        "kb-003",
+        "web-windows-update-005"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.8,
+        0.5727298649454338,
+        0.3778458882104126,
+        0.35844497490090543,
+        0.32339325854584866
+      ]
+    },
+    {
+      "case_id": "RET-D02",
+      "category_group": "D_typo_informal",
+      "query": "wifi cty ko vao dc",
+      "expected_ids": [
+        "kb-002"
+      ],
+      "acceptable_ids": [
+        "kb-003"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-002",
+        "kb-001",
+        "web-windows-wifi-001",
+        "auto-kb-ticket-63",
+        "kb-019"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 0.7601875334318685,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.4916794282797346,
+        0.36642715498343115,
+        0.3120147352523977,
+        0.28469335666885437
+      ]
+    },
+    {
+      "case_id": "RET-D03",
+      "category_group": "D_typo_informal",
+      "query": "outlook ko sync",
+      "expected_ids": [
+        "kb-004"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-004",
+        "kb-005",
+        "kb-022",
+        "kb-027",
+        "web-outlook-send-receive-001"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.9454481275872026,
+        0.42770380168217703,
+        0.3661998263264148,
+        0.33447467468086006
+      ]
+    },
+    {
+      "case_id": "RET-D04",
+      "category_group": "D_typo_informal",
+      "query": "may tinh cham lag qua troi",
+      "expected_ids": [
+        "kb-009"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-009",
+        "web-windows-slow-performance-002",
+        "kb-016",
+        "kb-030",
+        "kb-025"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.8255049586296082,
+        0.5310972873998084,
+        0.45686632208371336,
+        0.4543703705517213,
+        0.36635807656999514
+      ]
+    },
+    {
+      "case_id": "RET-D05",
+      "category_group": "D_typo_informal",
+      "query": "ko nho mat khau may tinh",
+      "expected_ids": [
+        "kb-010"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-010",
+        "kb-017",
+        "kb-015",
+        "kb-019",
+        "kb-005"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.41810966810966804,
+        0.37414811449341207,
+        0.3713975531707892,
+        0.34032721796276016
+      ]
+    },
+    {
+      "case_id": "RET-E01",
+      "category_group": "E_ambiguous",
+      "query": "Không vào được",
+      "expected_ids": [],
+      "acceptable_ids": [
+        "kb-001",
+        "kb-002",
+        "kb-003",
+        "kb-010",
+        "kb-011"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-032",
+        "kb-015",
+        "kb-003",
+        "kb-019",
+        "kb-002"
+      ],
+      "first_hit_rank": 3,
+      "hit_at_1": false,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.3333333333333333,
+      "ndcg_at_5": 0.30078518014914984,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.5991058122205665,
+        0.5894428152492669,
+        0.5800865800865801,
+        0.5537190082644629
+      ]
+    },
+    {
+      "case_id": "RET-E02",
+      "category_group": "E_ambiguous",
+      "query": "Bị lỗi rồi không biết làm sao",
+      "expected_ids": [],
+      "acceptable_ids": [
+        "kb-009",
+        "kb-015",
+        "kb-013"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-035",
+        "kb-028",
+        "auto-kb-ticket-64",
+        "kb-013",
+        "kb-007"
+      ],
+      "first_hit_rank": 4,
+      "hit_at_1": false,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.25,
+      "ndcg_at_5": 0.20210734650054757,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.45591546446519127,
+        0.4045460692089764,
+        0.3636712539064642,
+        0.357805588520876
+      ]
+    },
+    {
+      "case_id": "RET-F01",
+      "category_group": "F_policy_authority",
+      "query": "Quy trình reset mật khẩu khi tài khoản bị khóa",
+      "expected_ids": [
+        "kb-010"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-010",
+        "kb-017",
+        "kb-018",
+        "web-m365-compromised-mailbox-004",
+        "web-microsoft-account-locked-001"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.8571428571428571,
+        0.582040964354794,
+        0.4881952781112444,
+        0.43598536798068316,
+        0.4252176157762161
+      ]
+    },
+    {
+      "case_id": "RET-F02",
+      "category_group": "F_policy_authority",
+      "query": "Quy trình xin cấp quyền truy cập thư mục shared",
+      "expected_ids": [
+        "kb-011"
+      ],
+      "acceptable_ids": [
+        "kb-006"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-011",
+        "kb-006",
+        "web-sharepoint-onedrive-access-denied-001",
+        "web-exchange-access-other-mailbox-001",
+        "web-m365-shared-mailboxes-001"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.47821974171711384,
+        0.41461832757129174,
+        0.37587900394862234,
+        0.36683690477291064
+      ]
+    },
+    {
+      "case_id": "RET-F03",
+      "category_group": "F_policy_authority",
+      "query": "Chính sách cài phần mềm mới trên máy công ty",
+      "expected_ids": [
+        "kb-034"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-034",
+        "kb-008",
+        "kb-021",
+        "auto-kb-ticket-63",
+        "kb-027"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.44509792307068796,
+        0.4262609185686109,
+        0.42554240631163714,
+        0.4170159872657002
+      ]
+    },
+    {
+      "case_id": "RET-F04",
+      "category_group": "F_policy_authority",
+      "query": "VPN của công ty kết nối như thế nào và yêu cầu gì",
+      "expected_ids": [
+        "kb-001"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-001",
+        "web-windows-vpn-003",
+        "kb-012",
+        "kb-008",
+        "auto-kb-ticket-63"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.5235834618500272,
+        0.46866069706448976,
+        0.43554005306362015,
+        0.38738881218336374
+      ]
+    },
+    {
+      "case_id": "RET-G01",
+      "category_group": "G_tenant_isolation",
+      "query": "Hệ thống HIS bệnh viện chạy chậm ảnh hưởng khám bệnh",
+      "expected_ids": [
+        "kb-025"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [
+        "kb-024",
+        "kb-023",
+        "kb-022",
+        "kb-021"
+      ],
+      "retrieved_ids": [
+        "kb-025",
+        "kb-030",
+        "kb-027",
+        "kb-009",
+        "kb-026"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.49316493064291583,
+        0.42297538917202815,
+        0.4065073068558635,
+        0.38613180007810105
+      ]
+    },
+    {
+      "case_id": "RET-G02",
+      "category_group": "G_tenant_isolation",
+      "query": "Phần mềm quản lý dự án bất động sản không đồng bộ dữ liệu",
+      "expected_ids": [
+        "kb-021"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [
+        "kb-026",
+        "kb-024",
+        "kb-023",
+        "kb-025"
+      ],
+      "retrieved_ids": [
+        "kb-021",
+        "kb-036",
+        "kb-008",
+        "kb-034",
+        "kb-029"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.6033223438553031,
+        0.4806885822510822,
+        0.39490358126721764,
+        0.3457937411425784
+      ]
+    },
+    {
+      "case_id": "RET-G03",
+      "category_group": "G_tenant_isolation",
+      "query": "Máy MRI không gửi được ảnh lên hệ thống PACS",
+      "expected_ids": [
+        "kb-026"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [
+        "kb-024",
+        "kb-023",
+        "kb-022",
+        "kb-021"
+      ],
+      "retrieved_ids": [
+        "kb-026",
+        "kb-013",
+        "kb-015",
+        "kb-029",
+        "kb-032"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.36738489898662186,
+        0.313405887530848,
+        0.2762023809916448,
+        0.2067446195560074
+      ]
+    },
+    {
+      "case_id": "RET-G04",
+      "category_group": "G_tenant_isolation",
+      "query": "Hệ thống POS showroom xe bị lỗi không in hóa đơn",
+      "expected_ids": [
+        "kb-024"
+      ],
+      "acceptable_ids": [
+        "kb-023"
+      ],
+      "forbidden_ids": [
+        "kb-026",
+        "kb-021",
+        "kb-022",
+        "kb-025"
+      ],
+      "retrieved_ids": [
+        "kb-024",
+        "kb-023",
+        "kb-014",
+        "kb-032",
+        "kb-030"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.49291739102440274,
+        0.382663244938694,
+        0.23191711814466304,
+        0.23077101610732026
+      ]
+    },
+    {
+      "case_id": "RET-G05",
+      "category_group": "G_tenant_isolation",
+      "query": "SAP không đăng nhập được bị khóa tài khoản",
+      "expected_ids": [
+        "kb-019"
+      ],
+      "acceptable_ids": [
+        "kb-020"
+      ],
+      "forbidden_ids": [
+        "kb-023",
+        "kb-021",
+        "kb-025"
+      ],
+      "retrieved_ids": [
+        "kb-019",
+        "kb-010",
+        "auto-kb-ticket-7",
+        "kb-020",
+        "auto-kb-ticket-6"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 0.9238850086262381,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.753920316696167,
+        0.6030880416038672,
+        0.5189485482279426,
+        0.4751813379070537,
+        0.32740814776742927
+      ]
+    },
+    {
+      "case_id": "RET-H01",
+      "category_group": "H_no_evidence",
+      "query": "Máy pha cà phê Bluetooth ở pantry không pair được",
+      "expected_ids": [],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-033",
+        "web-windows-bluetooth-005",
+        "kb-002",
+        "web-windows-printer-003",
+        "kb-032"
+      ],
+      "first_hit_rank": null,
+      "hit_at_1": false,
+      "hit_at_5": false,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.6174667280348597,
+        0.39408859532177914,
+        0.38321029352419494,
+        0.36521355583327214
+      ]
+    },
+    {
+      "case_id": "RET-H02",
+      "category_group": "H_no_evidence",
+      "query": "Chính sách nghỉ phép bao nhiêu ngày một năm",
+      "expected_ids": [],
+      "acceptable_ids": [
+        "kb-032"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-032",
+        "kb-035",
+        "kb-025",
+        "kb-028",
+        "kb-029"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.4651989188768765,
+        0.45411443845300203,
+        0.4359454639288259,
+        0.3899164471577845
+      ]
+    },
+    {
+      "case_id": "RET-H03",
+      "category_group": "H_no_evidence",
+      "query": "Giá cổ phiếu công ty tuần trước là bao nhiêu",
+      "expected_ids": [],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-035",
+        "kb-023",
+        "kb-001",
+        "kb-016",
+        "kb-011"
+      ],
+      "first_hit_rank": null,
+      "hit_at_1": false,
+      "hit_at_5": false,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.48484763460264296,
+        0.2867332382310985,
+        0.2776305957475715,
+        0.2690881158784155
+      ]
+    },
+    {
+      "case_id": "RET-I01",
+      "category_group": "I_hard_negative",
+      "query": "Mật khẩu VPN khác với mật khẩu email của tôi đúng không",
+      "expected_ids": [
+        "kb-001"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-001",
+        "kb-010",
+        "kb-012",
+        "kb-017",
+        "kb-036"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.4888506885396746,
+        0.4638933959561883,
+        0.4591645795549414,
+        0.40301407720874
+      ]
+    },
+    {
+      "case_id": "RET-I02",
+      "category_group": "I_hard_negative",
+      "query": "Xin cấp quyền truy cập thư mục file server cho dự án",
+      "expected_ids": [
+        "kb-011"
+      ],
+      "acceptable_ids": [
+        "kb-012"
+      ],
+      "forbidden_ids": [
+        "kb-001"
+      ],
+      "retrieved_ids": [
+        "kb-011",
+        "kb-021",
+        "kb-036",
+        "web-sharepoint-onedrive-access-denied-001",
+        "auto-kb-ticket-63"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 0.7601875334318685,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.7777777777777778,
+        0.43292482165721596,
+        0.30666108085462923,
+        0.30195746282702807,
+        0.2892967247805958
+      ]
+    },
+    {
+      "case_id": "RET-I03",
+      "category_group": "I_hard_negative",
+      "query": "Máy in không in được qua mạng văn phòng",
+      "expected_ids": [
+        "kb-014"
+      ],
+      "acceptable_ids": [
+        "kb-002"
+      ],
+      "forbidden_ids": [],
+      "retrieved_ids": [
+        "kb-014",
+        "kb-031",
+        "kb-002",
+        "kb-026",
+        "kb-005"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 0.9502344167898356,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.6891736605958727,
+        0.5729543175617379,
+        0.43214706319461177,
+        0.39949270767279643
+      ]
+    },
+    {
+      "case_id": "RET-I04",
+      "category_group": "I_hard_negative",
+      "query": "Outlook báo lỗi authentication khi mở lên",
+      "expected_ids": [
+        "kb-004"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [
+        "kb-001"
+      ],
+      "retrieved_ids": [
+        "kb-004",
+        "kb-005",
+        "web-outlook-shared-mailbox-performance-005",
+        "web-outlook-send-receive-001",
+        "kb-022"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.75,
+        0.44585754047342124,
+        0.42495375727240503,
+        0.4138088103329217,
+        0.40443082128332597
+      ]
+    },
+    {
+      "case_id": "RET-I05",
+      "category_group": "I_hard_negative",
+      "query": "Server sản xuất không phản hồi hệ thống bị gián đoạn",
+      "expected_ids": [
+        "kb-028"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [
+        "kb-002",
+        "kb-001"
+      ],
+      "retrieved_ids": [
+        "kb-028",
+        "kb-029",
+        "kb-032",
+        "kb-021",
+        "mem-kgl-48"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        0.7777777777777778,
+        0.3929265921244531,
+        0.3902356902356902,
+        0.29814271749755616,
+        0.29003485916678223
+      ]
+    },
+    {
+      "case_id": "RET-I06",
+      "category_group": "I_hard_negative",
+      "query": "Máy tính bị nhiễm malware cần ngắt mạng khẩn cấp",
+      "expected_ids": [
+        "kb-016"
+      ],
+      "acceptable_ids": [],
+      "forbidden_ids": [
+        "kb-017"
+      ],
+      "retrieved_ids": [
+        "kb-016",
+        "web-windows-slow-performance-002",
+        "kb-003",
+        "mem-kgl-916",
+        "web-defender-device-isolation-008"
+      ],
+      "first_hit_rank": 1,
+      "hit_at_1": true,
+      "hit_at_5": true,
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0,
+      "ndcg_at_5": 1.0,
+      "forbidden_leak_count": 0,
+      "cross_tenant_leak_count": 0,
+      "policy_authority_violation": false,
+      "failure_category": null,
+      "relevance_scores": [
+        1.0,
+        0.4219337827793338,
+        0.4194410932488273,
+        0.3486494255467404,
+        0.3406882561621203
+      ]
+    }
+  ]
+}

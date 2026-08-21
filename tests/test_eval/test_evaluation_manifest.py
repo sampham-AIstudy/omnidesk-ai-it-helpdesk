@@ -13,6 +13,9 @@ def test_evaluation_manifest_covers_the_full_golden_dataset() -> None:
     case_ids = {case["id"] for case in dataset}
     layers = manifest["layers"]
 
+    assert manifest["golden_case_count"] == 300
+    assert len(dataset) == 300
+    assert len(case_ids) == 300
     routing = set(layers["routing_contract"]["case_ids"])
     assert len(routing) == 21
     assert routing <= case_ids

@@ -8,11 +8,12 @@ Verifies:
 - CHAT-NEW-05: New conversation starts with empty message history.
 - CHAT-NEW-06: Listing conversations returns the newly created conversation in user history.
 """
-from __future__ import annotations
-
 import asyncio
+
 import pytest
 from httpx import AsyncClient
+
+pytestmark = [pytest.mark.behavior_gate, pytest.mark.critical_multiturn]
 
 
 def _headers(token: str) -> dict[str, str]:
@@ -58,10 +59,9 @@ async def test_chat_new_04_and_05_new_conversation_has_clean_empty_history(
 ) -> None:
     """CHAT-NEW-04 & CHAT-NEW-05: New conversation does not leak messages from previous conversation."""
     # Create conversation 1
-    resp1 = await client.post(
+    await client.post(
         "/api/v1/chat/conversations", json={"title": "First Conv"}, headers=_headers(auth_employee)
     )
-    id1 = resp1.json()["id"]
 
     # Create conversation 2
     resp2 = await client.post(

@@ -21,34 +21,38 @@ def _mask_profile_contact_details(value: str) -> str:
     return _PHONE_PATTERN.sub("***", _EMAIL_PATTERN.sub("***", value))
 
 
+_SELF_PRONOUNS_GROUP = r"(?:toi|tao|minh|tui|to|em|ban than|ca nhan)"
+_SELF_STRICT_PRONOUNS_GROUP = r"(?:toi|tao|minh|tui|to|em)"
+
 _PASSWORD_PROBE_PATTERNS = (
-    r"\b(?:password|mat khau|pass)\s+(?:cua\s+)?(?:admin|manager|giam doc|director|truong phong|user|tai khoan|root|he thong|nguoi khac)\b",
+    r"\b(?:password|mat khau|pass)\s+(?:cua\s+)?(?:admin|manager|giam doc|director|truong phong|user|tai khoan|root|he thong|nguoi khac|nhan vien)\b",
     r"\b(?:password|mat khau)\s+admin\b",
-    r"\bcho\s+toi\s+(?:password|mat khau)\b",
+    r"\bcho\s+(?:toi|tao|minh|tui|em|to)\s+(?:password|mat khau)\b",
     r"\b(?:password|mat khau)\b.{0,24}\bla\s+gi\b",
 )
 
 _THIRD_PARTY_PERSON_PATTERNS = (
-    r"\b(?:thong tin|tai khoan|ho so|profile|email|sdt|so dien thoai|dien thoai|phone|lien he|danh ba)\s+(?:ve\s+)?(?:tai khoan\s+)?(?:cua\s+)?(?:manager|giam doc|director|truong phong|pho phong|leader|sep|admin|administrator|quan tri vien|ky thuat vien|technician|tech|nhan vien\s+(?:khac|[a-z])|nguoi\s+khac|user\s+khac|tai khoan\s+khac|dong nghiep|ai\s+do)\b",
+    r"\b(?:thong tin|tai khoan|ho so|profile|email|sdt|so dien thoai|dien thoai|phone|lien he|danh ba)\s+(?:ve\s+)?(?:tai khoan\s+)?(?:cua\s+)?(?:manager|giam doc|director|truong phong|pho phong|leader|sep|admin|administrator|quan tri vien|ky thuat vien|technician|tech|nhan vien\s+(?:khac|[a-z])|nguoi\s+khac|user\s+khac|tai khoan\s+khac|dong nghiep|ai\s+do|moi nguoi|tat ca(?:\s+moi\s+nguoi)?|toan bo\s+nhan vien)\b",
     r"\b(?:thong tin|tai khoan|ho so|profile|email|sdt|so dien thoai|dien thoai|phone)\s+(?:ve\s+)?(?:tai khoan\s+)?(?:manager|giam doc|director|truong phong|pho phong|leader|sep|admin|administrator|quan tri vien|ky thuat vien|technician|nhan vien\s+\w+)\b",
     r"\b(?:thong tin|email|sdt|so dien thoai)\s+(?:nguyen|tran|le|pham|hoang|huynh|phan|vu|vo|dang|bui|do|ho|ngo|duong|ly)\s+[a-z]+\b",
-    r"\b(?:tai khoan|thong tin|email|sdt|so dien thoai|ho so|profile)\s+cua\s+(?!toi\b|minh\b|ban than\b|em\b)\w+",
-    r"\bcho\s+toi\s+(?:tai khoan|thong tin|email|sdt|so dien thoai|ho so)\s+(?:cua\s+)?(?:manager|giam doc|director|truong phong|pho phong|leader|sep|admin|technician|ky thuat vien|nhan vien\s+\w+|nguoi\s+khac)\b",
+    r"\b(?:tai khoan|thong tin|email|sdt|so dien thoai|dien thoai|phone|ho so|profile)\s+cua\s+(?!" + _SELF_PRONOUNS_GROUP + r"\b)\w+",
+    r"\bcho\s+(?:toi|tao|minh|tui|em|to)\s+(?:tai khoan|thong tin|email|sdt|so dien thoai|dien thoai|phone|ho so|profile)\s+(?:cua\s+)?(?:manager|giam doc|director|truong phong|pho phong|leader|sep|admin|technician|ky thuat vien|nhan vien\s+\w+|nguoi\s+khac|moi nguoi|toan bo\s+nhan vien)\b",
     r"\b(?:gia vo|gia dinh|dong vai).{0,30}\b(?:admin|manager|giam doc).{0,40}\b(?:thong tin|email|tai khoan|mat khau|password)\b",
     r"\btai khoan\s+(?:manager|giam doc|director|truong phong|admin|technician)\b",
 )
 
 _SELF_PROFILE_PATTERNS = (
-    r"\b(?:thong tin|ho so|profile|tai khoan)\s+(?:ca nhan\s+)?(?:cua\s+)?(?:toi|minh|ban than)\b",
-    r"\b(?:thong tin|ho so|profile|tai khoan)\s+(?:cua\s+)?(?:toi|minh)\b",
-    r"\b(?:email|sdt|so dien thoai|dien thoai|phone)\s+(?:cua\s+)?(?:toi|minh)\b",
-    r"\b(?:toi|minh)\s+la\s+ai\b",
-    r"\b(?:toi|minh)\s+ten\s+la\s+gi\b",
-    r"\bten\s+(?:cua\s+)?(?:toi|minh)\b",
+    r"\b(?:thong tin|ho so|profile|tai khoan)\s+(?:ca nhan\s+)?(?:cua\s+)?" + _SELF_PRONOUNS_GROUP + r"\b",
+    r"\b(?:email|sdt|so dien thoai|dien thoai|phone)\s+(?:cua\s+)?" + _SELF_PRONOUNS_GROUP + r"\b",
+    r"\b" + _SELF_STRICT_PRONOUNS_GROUP + r"\s+la\s*(?:ai|\?|gi)\b",
+    r"^" + _SELF_STRICT_PRONOUNS_GROUP + r"\s+la\s*[?]*$",
+    r"\b" + _SELF_STRICT_PRONOUNS_GROUP + r"\s+ten\s+(?:la\s+)?(?:gi|\?)\b",
+    r"\bten\s+(?:cua\s+)?" + _SELF_PRONOUNS_GROUP + r"\b",
     r"\btai khoan\s+dang\s+dang\s+nhap\b",
-    r"\b(?:so dien thoai|sdt|email)\s+(?:cua\s+)?toi\s+(?:da\s+cap\s+nhat\s+chua|la\s+gi)\b",
-    r"\bthong tin\s+cua\s+toi\b",
-    r"\bthong tin\s+(?:ve\s+)?tai khoan\s+cua\s+toi\b",
+    r"\b(?:so dien thoai|sdt|email|dien thoai|phone)\s+(?:cua\s+)?" + _SELF_PRONOUNS_GROUP + r"\s+(?:da\s+cap\s+nhat\s+chua|la\s+gi|\?)\b",
+    r"\bthong tin\s+ca\s+nhan\b",
+    r"\bho\s+so\s+ca\s+nhan\b",
+    r"\bprofile\s+ca\s+nhan\b",
 )
 
 
@@ -59,6 +63,23 @@ def self_profile_reply(message: str, user: User) -> str | None:
     from turning a profile question into a query over other people or credentials.
     """
     text = _fold(message)
+
+    # Benign policy / guidelines inquiries are handled by knowledge RAG, not profile guard
+    is_policy_query = any(term in text for term in ("quy dinh", "chinh sach", "huong dan", "tieu chuan", "dieu khoan"))
+    if is_policy_query and not any(
+        term in text
+        for term in (
+            "cua toi",
+            "cua tao",
+            "cua minh",
+            "cua tui",
+            "cua to",
+            "cua em",
+            "ban than",
+            "ca nhan",
+        )
+    ):
+        return None
 
     # 1. Credential & secret probing protection
     if any(re.search(pat, text) for pat in _PASSWORD_PROBE_PATTERNS):
@@ -80,7 +101,7 @@ def self_profile_reply(message: str, user: User) -> str | None:
     if not is_self_profile:
         return None
 
-    wants_name = "ten" in text or "toi la ai" in text
+    wants_name = any(term in text for term in ("ten", "la ai", "la?", "la gi"))
     wants_email = "email" in text or "e-mail" in text
     wants_phone = any(term in text for term in ("so dien thoai", "sdt", "dien thoai", "phone"))
     wants_profile = any(term in text for term in ("thong tin ca nhan", "ho so", "profile", "tai khoan", "thong tin"))

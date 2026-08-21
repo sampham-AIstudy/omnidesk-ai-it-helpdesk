@@ -2,6 +2,7 @@
 SQLAlchemy async database engine + session factory.
 """
 import logging
+from collections.abc import AsyncGenerator
 from pathlib import Path
 
 from sqlalchemy import event, text
@@ -36,7 +37,7 @@ class Base(DeclarativeBase):
     pass
 
 
-async def get_db() -> AsyncSession:
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """Dependency injection: yield DB session."""
     async with AsyncSessionLocal() as session:
         try:
@@ -186,6 +187,7 @@ async def init_db():
         episodic_memory,
         hitl_approval,
         knowledge_base,
+        knowledge_gap,
         service_request,
         technician_fulfillment_group,
         ticket,

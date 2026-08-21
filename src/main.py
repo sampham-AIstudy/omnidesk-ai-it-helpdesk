@@ -15,6 +15,7 @@ from starlette.responses import Response
 
 from src.api.routes import router
 from src.config import get_settings
+from src.guardrails.request_size_guard import RequestSizeLimitMiddleware
 from src.observability.telemetry import (
     configure_telemetry,
     instrument_sqlalchemy,
@@ -113,7 +114,7 @@ async def _seed_demo_users(db):
 
     seeded = 0
     for user_data in demo_users:
-        existing = await get_user_by_username(db, user_data["username"])
+        existing = await get_user_by_username(db, str(user_data["username"]))
         if not existing:
             await create_user(db, **user_data)
             seeded += 1
@@ -295,7 +296,6 @@ app = FastAPI(
 )
 
 # Request Size Hard Limit Guard
-from src.guardrails.request_size_guard import RequestSizeLimitMiddleware
 app.add_middleware(RequestSizeLimitMiddleware)
 
 # CORS
@@ -347,12 +347,19 @@ configure_telemetry(app, settings)
 async def health():
     from src.services.cache_service import get_cache_status
     from src.services.rag_service import get_collection_count
+    from src.version import get_build_info
+
+    build = get_build_info()
     return {
         "status": "ok",
         "env": settings.app_env,
         "kb_documents": get_collection_count(),
         "cache": get_cache_status(),
-        "version": "1.0.0",
+        "version": build["app_version"],
+        "build_commit": build["git_commit"],
+        "manifest_hash": build["manifest_hash"],
+        "guardrails_version": build["guardrails_version"],
+        "behavior_contract_version": build["behavior_contract_version"],
     }
 
 

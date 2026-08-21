@@ -5,13 +5,13 @@ LLM output is treated as a PROPOSAL, never direct execution authority.
 """
 
 import logging
-from typing import Any, Dict, Set
+from typing import Any
 
 from src.guardrails.access_guardrails import check_tool_permission
 
 logger = logging.getLogger(__name__)
 
-HIGH_RISK_ACTIONS: Set[str] = {
+HIGH_RISK_ACTIONS: set[str] = {
     "reset_password",
     "disable_account",
     "unlock_privileged_account",
@@ -26,10 +26,9 @@ HIGH_RISK_ACTIONS: Set[str] = {
 }
 
 
-def evaluate_tool_call(user: Dict[str, Any], tool_proposal: Dict[str, Any], ticket: Dict[str, Any] = None) -> Dict[str, Any]:
+def evaluate_tool_call(user: dict[str, Any], tool_proposal: dict[str, Any], ticket: dict[str, Any] | None = None) -> dict[str, Any]:
     """Evaluate tool proposal and return ALLOW, DENY, or HITL policy decision."""
     tool_name = tool_proposal.get("tool_name", tool_proposal.get("name", ""))
-    tool_args = tool_proposal.get("arguments", tool_proposal.get("args", {}))
 
     if not tool_name:
         return {"decision": "DENY", "risk": "CRITICAL", "reason": "Empty tool proposal name"}

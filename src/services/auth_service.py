@@ -14,7 +14,6 @@ from src.models.user import CompanyUnit, User, UserRole
 settings = get_settings()
 
 
-
 # ─── Password Utilities ───────────────────────────────────────────────────────
 
 def hash_password(password: str) -> str:
@@ -27,7 +26,6 @@ def verify_password(plain: str, hashed: str) -> bool:
     pwd_bytes = plain.encode("utf-8")[:72]
     hashed_bytes = hashed.encode("utf-8")
     return bcrypt.checkpw(pwd_bytes, hashed_bytes)
-
 
 
 # ─── JWT Utilities ────────────────────────────────────────────────────────────
@@ -114,7 +112,12 @@ def can_access_company_unit(user: User, company_unit: CompanyUnit | str | None) 
     """Central tenant boundary: only Admin or corporate IT may cross units."""
     if user.role == UserRole.ADMIN or user.company_unit == CompanyUnit.CORPORATE:
         return True
-    candidate = company_unit.value if hasattr(company_unit, "value") else str(company_unit or "")
+    if company_unit is None:
+        candidate = ""
+    elif hasattr(company_unit, "value"):
+        candidate = str(getattr(company_unit, "value"))
+    else:
+        candidate = str(company_unit)
     return candidate == user.company_unit.value
 
 

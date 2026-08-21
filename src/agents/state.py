@@ -1,7 +1,7 @@
 """TicketAgentState — State schema cho LangGraph Help Desk workflow."""
 from __future__ import annotations
 
-from typing import TypedDict
+from typing import Any, TypedDict
 
 
 class TicketAgentState(TypedDict, total=False):
@@ -28,13 +28,17 @@ class TicketAgentState(TypedDict, total=False):
     # ── RAG (output từ rag_node) ──────────────────────────────────────────────
     rag_context: list[dict]    # [{content, metadata, relevance_score}]
     suggested_solution: str    # Synthesized answer từ RAG + LLM
-    rag_sources: list[str | dict]  # Persisted provenance links for KB/web sources
+    rag_sources: list[Any]     # Persisted provenance links for KB/web sources
     runbook_steps: list[str]   # Extracted runbook steps nếu có
+    retrieval_confidence: float | None
+    groundedness_score: float | None
 
-    # ── Routing ───────────────────────────────────────────────────────────────
+    # ── Routing & Risk (output từ policy/hitl node) ───────────────────────────
     routing_target: str        # Đội kỹ thuật được route tới
     hitl_required: bool        # HITL cần thiết không?
     hitl_reason: str           # Lý do cần HITL
+    risk_score: float
+    decision_factors_json: str
 
     # ── Action taken ──────────────────────────────────────────────────────────
     action_taken: str          # "auto_closed" | "routed" | "hitl_pending" | "escalated" | "blocked_by_guardrail"

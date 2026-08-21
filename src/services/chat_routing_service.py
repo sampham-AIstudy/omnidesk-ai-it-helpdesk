@@ -61,10 +61,13 @@ def _fold(text: str) -> str:
     return "".join(char for char in normalized if unicodedata.category(char) != "Mn").replace("\u0111", "d")
 
 
-_GREETING = re.compile(r"^(?:xin )?(?:chao|hello|hi|hey)(?: ban)?(?: nhe| a| ah)?[!., ]*$")
+_GREETING = re.compile(r"^(?:xin )?(?:chao|hello|hi|hey)(?: ban| chat| bot)?(?: nhe| a| ah)?[!., ]*$")
 _THANKS = re.compile(r"^(?:cam on|thanks|thank you)(?: ban)?(?: nhe| a| ah)?[!., ]*$")
 _ACKNOWLEDGEMENT = re.compile(
-    r"^(?:(?:ok|oke|okay)(?: hieu roi)?|da hieu|hieu roi|ro roi|duoc roi)[!., ]*$"
+    r"^(?:(?:ok|oke|okay|da|vâng|vang)(?: hieu roi)?|da hieu|hieu roi|ro roi|duoc roi)[!., ]*$"
+)
+_DEFERRAL = re.compile(
+    r"^(?:thoi de sau|de sau nhe|de sau|luc khac|khi khac|khong can nua|de luc khac)[!., ]*$"
 )
 _CASUAL_CHECK_IN = re.compile(r"^(?:ban )?khoe(?: khong)?[?!. ]*$")
 _NON_IT_SOCIAL = re.compile(
@@ -95,74 +98,149 @@ _KNOWLEDGE_QUESTION = re.compile(
     r"hoat dong (?:the nao|ra sao)|mat bao lau)\b"
 )
 _EXECUTION_ACTION = re.compile(
-    r"^(?:(?:hay|vui long)\s+)?(?:tao|gui|dang ky)\b|"
-    r"^(?:toi|minh|em)\s+(?:muon|can)\s+(?:xin|dang ky|tao|gui)\b|"
-    r"^xin(?:\s+cap)?\b.*\b(?:cho|giup)\s+(?:toi|minh|em|to)\b|"
-    r"^lam\s+(?:giup|cho)\s+(?:toi|minh|em)\b.*\b(?:yeu cau|request|don)\b|"
-    r"^yeu cau\b.*\b(?:cho|giup)\s+(?:toi|minh|em)\b|"
-    r"^cap\b.*\bcho\s+(?:toi|minh|em)\b"
+    r"^(?:(?:hay|vui long)\s+)?(?:gui|dang ky)\b|"
+    r"^(?:(?:hay|vui long)\s+)?tao\s+(?:service request|ticket|incident|yeu cau|request|don|issue|tai khoan|form|m365|microsoft 365)\b|"
+    r"^(?:toi|minh|em|tao)\s+(?:muon|can)\s+(?:xin|dang ky|tao|gui)\b|"
+    r"^xin(?:\s+cap)?\b.*\b(?:cho|giup)\s+(?:toi|minh|em|to|tao)\b|"
+    r"^lam\s+(?:giup|cho)\s+(?:toi|minh|em|to|tao)\b.*\b(?:yeu cau|request|don)\b|"
+    r"^yeu cau\b.*\b(?:cho|giup)\s+(?:toi|minh|em|to|tao)\b|"
+    r"^cap\b.*\bcho\s+(?:toi|minh|em|to|tao)\b"
 )
 _INCIDENT = re.compile(
     r"\b(?:loi|khong len|khong mo|khong dung|mat ket noi|man hinh|laptop|may tinh|may in|ban phim|"
     r"wifi|wi-fi|vpn|outlook|email|app|phan mem|tai khoan|mat khau|mfa|sap|erp|virus|phishing|"
     r"roi|dam|va dap|nhap nhay|tu tat|tieng la)\b"
 )
+_CONDITIONAL_OR_HOLD_ACTION = re.compile(
+    r"\b(?:huong dan\s+(?:toi\s+)?(?:xu ly|truoc)|neu khong duoc\s+moi\s+tao|chua\s+tao|dung\s+tao|khoan\s+tao|chua\s+can\s+tao)\b"
+)
 _GARBAGE = re.compile(r"^(?:\d+|[a-z]{5,}|[^\w\s]{3,})$")
+_SOCIAL_DIRECT = re.compile(
+    r"^(?:"
+    r"(?:xin )?(?:chao|hello|hi|hey)(?: (?:ban|chat|bot|tro ly(?: it)?|doi it|helpdesk|team|buoi sang))?"
+    r"|xin chao,? toi chi muon chao"
+    r"|good (?:morning|afternoon)"
+    r"|(?:cam on|thanks|thank you)(?: (?:ban|doi ho tro|da phan hoi|ban nhieu))?(?: nhe| a| ah)?"
+    r"|cam on ban da ho tro"
+    r"|chuc (?:ban )?(?:mot )?ngay tot lanh"
+    r"|hen gap lai|tam biet"
+    r"|(?:ok|oke|okay|da|u|vang)(?: hieu roi| roi)?|da hieu|hieu roi|ro roi|duoc roi"
+    r"|thoi de sau|de sau nhe|de sau|luc khac|khi khac|khong can nua|de luc khac"
+    r"|(?:ban )?co ranh khong|(?:toi nay )?ban khoe chu|ban ten gi"
+    r"|ban co the (?:tro chuyen|noi chuyen) (?:mot chut|it) khong"
+    r")[!?,. ]*$"
+)
+_TECHNICAL_SIGNAL = re.compile(
+    r"\b(?:vpn|wifi|wi-fi|dns|bitlocker|outlook|mfa|forticlient|sap|erp|"
+    r"tcp|http|port|timeout|timed out|0x[0-9a-f]+|khong ket noi|mat mang|"
+    r"khong mo|khong vao|khong dang nhap|mat ket noi|tu tat|nhap nhay|man hinh den)\b"
+)
+_NOISE_OR_EMPTY_CONTENT = re.compile(
+    r"\b(?:asdf|qwer|lorem|ipsum|test|khong biet go gi|bam nham|gui nham|"
+    r"khong co noi dung|ky tu la|mot hai ba bon)\b"
+)
+_UNDERSPECIFIED_INCIDENT = re.compile(
+    r"(?:"
+    r"\b(?:may(?: tinh)?|he thong|ung dung|app|mang|tai khoan|man hinh|email|cai nay|no|su co|it)\b"
+    r".*\b(?:co van de|bi sao|bi gi do|hong roi|khong on|ky lam|cham qua|"
+    r"khong chay|loi|cuu toi|gap)\b"
+    r"|^(?:khong the thao tac|giup toi voi|toi khong lam viec duoc)[!., ]*$"
+    r")"
+)
+
+
+def _is_uninterpretable(folded: str) -> bool:
+    """Return true only when no usable technical or task signal is present."""
+    if _TECHNICAL_SIGNAL.search(folded):
+        return False
+    if _GARBAGE.fullmatch(folded) or _NOISE_OR_EMPTY_CONTENT.search(folded):
+        return True
+    tokens = re.findall(r"[a-z0-9]+", folded)
+    return not tokens or len(tokens) == 1
+
+
+def _is_underspecified_incident(folded: str) -> bool:
+    """Potential incidents need an object plus a concrete failure signal."""
+    return not _TECHNICAL_SIGNAL.search(folded) and bool(_UNDERSPECIFIED_INCIDENT.search(folded))
 
 
 def route_chat_message(message: str) -> ChatRouteDecision:
     """Choose the least expensive safe path for one chat turn."""
     folded = _fold(message).strip()
+    # Explicit conversational topic shifts must not inherit a previous IT turn.
+    if _SOCIAL_DIRECT.fullmatch(folded):
+        return ChatRouteDecision(
+            "direct_response",
+            "direct",
+            1.0,
+            "Mình sẵn sàng hỗ trợ khi bạn cần.",
+        )
     if _GREETING.fullmatch(folded):
         return ChatRouteDecision(
             "direct_response",
             "direct",
             1.0,
-            "Ch\u00e0o b\u1ea1n! M\u00ecnh c\u00f3 th\u1ec3 h\u1ed7 tr\u1ee3 c\u00e1c v\u1ea5n \u0111\u1ec1 IT ho\u1eb7c tra c\u1ee9u Knowledge Base.",
+            "Chào bạn! Mình có thể hỗ trợ các vấn đề IT hoặc tra cứu Knowledge Base.",
         )
     if _THANKS.fullmatch(folded):
-        return ChatRouteDecision("direct_response", "direct", 1.0, "R\u1ea5t s\u1eb5n l\u00f2ng h\u1ed7 tr\u1ee3 b\u1ea1n.")
+        return ChatRouteDecision("direct_response", "direct", 1.0, "Rất sẵn lòng hỗ trợ bạn.")
     if _ACKNOWLEDGEMENT.fullmatch(folded):
         return ChatRouteDecision(
             "direct_response",
             "direct",
             1.0,
-            "\u0110\u01b0\u1ee3c r\u1ed3i. Khi c\u1ea7n h\u1ed7 tr\u1ee3 th\u00eam, b\u1ea1n c\u1ee9 nh\u1eafn m\u00ecnh nh\u00e9.",
+            "Được rồi. Khi cần hỗ trợ thêm, bạn cứ nhắn mình nhé.",
+        )
+    if _DEFERRAL.fullmatch(folded):
+        return ChatRouteDecision(
+            "direct_response",
+            "direct",
+            1.0,
+            "Được rồi. Khi cần hỗ trợ thêm, bạn cứ nhắn mình nhé.",
         )
     if _CASUAL_CHECK_IN.fullmatch(folded):
         return ChatRouteDecision(
             "direct_response",
             "direct",
             1.0,
-            "M\u00ecnh s\u1eb5n s\u00e0ng h\u1ed7 tr\u1ee3. B\u1ea1n \u0111ang c\u1ea7n h\u1ed7 tr\u1ee3 v\u1ea5n \u0111\u1ec1 IT n\u00e0o?",
+            "Mình sẵn sàng hỗ trợ. Bạn đang cần hỗ trợ vấn đề IT nào?",
         )
-    if _GARBAGE.fullmatch(folded):
+    if _is_uninterpretable(folded):
         return ChatRouteDecision(
             "needs_clarification",
             "needs_clarification",
             0.98,
-            "M\u00ecnh ch\u01b0a nh\u1eadn di\u1ec7n \u0111\u01b0\u1ee3c y\u00eau c\u1ea7u IT. B\u1ea1n h\u00e3y m\u00f4 t\u1ea3 thi\u1ebft b\u1ecb ho\u1eb7c d\u1ecbch v\u1ee5 \u0111ang g\u1eb7p v\u1ea5n \u0111\u1ec1 v\u00e0 bi\u1ec3u hi\u1ec7n l\u1ed7i.",
+            "Mình chưa nhận diện được yêu cầu IT. Bạn hãy mô tả thiết bị hoặc dịch vụ đang gặp vấn đề và biểu hiện lỗi.",
         )
     if _NON_IT_SOCIAL.search(folded):
         return ChatRouteDecision(
             "needs_clarification",
             "needs_clarification",
             0.99,
-            "M\u00ecnh ch\u1ec9 h\u1ed7 tr\u1ee3 c\u00e1c v\u1ea5n \u0111\u1ec1 IT. B\u1ea1n h\u00e3y m\u00f4 t\u1ea3 thi\u1ebft b\u1ecb, \u1ee9ng d\u1ee5ng ho\u1eb7c d\u1ecbch v\u1ee5 IT c\u1ea7n h\u1ed7 tr\u1ee3.",
+            "Mình chỉ hỗ trợ các vấn đề IT. Bạn hãy mô tả thiết bị, ứng dụng hoặc dịch vụ IT cần hỗ trợ.",
         )
     if _VAGUE_INCIDENT.fullmatch(folded):
         return ChatRouteDecision(
             "needs_clarification",
             "needs_clarification",
             0.94,
-            "M\u00ecnh c\u1ea7n th\u00eam th\u00f4ng tin \u0111\u1ec3 h\u1ed7 tr\u1ee3: thi\u1ebft b\u1ecb hay \u1ee9ng d\u1ee5ng n\u00e0o g\u1eb7p l\u1ed7i, v\u00e0 d\u1ea5u hi\u1ec7u l\u1ed7i c\u1ee5 th\u1ec3 l\u00e0 g\u00ec?",
+            "Mình cần thêm thông tin để hỗ trợ: thiết bị hay ứng dụng nào gặp lỗi, và dấu hiệu lỗi cụ thể là gì?",
         )
     if _STATUS.search(folded) or _TICKET_REFERENCE_STATUS.search(folded):
         return ChatRouteDecision("ticket_status", "tool_required", 0.96)
     if _KNOWLEDGE_QUESTION.search(folded):
         return ChatRouteDecision("knowledge", "evidence_required", 0.88)
+    if _CONDITIONAL_OR_HOLD_ACTION.search(folded) and _INCIDENT.search(folded):
+        return ChatRouteDecision("incident", "evidence_required", 0.88)
     if _EXECUTION_ACTION.search(folded) or _ACTION.search(folded):
         return ChatRouteDecision("action_request", "tool_required", 0.92)
+    if _is_underspecified_incident(folded):
+        return ChatRouteDecision(
+            "needs_clarification",
+            "needs_clarification",
+            0.94,
+            "Mình cần thêm thông tin để hỗ trợ: thiết bị hay ứng dụng nào gặp lỗi, và dấu hiệu lỗi cụ thể là gì?",
+        )
     if _INCIDENT.search(folded):
         return ChatRouteDecision("incident", "evidence_required", 0.82)
     return ChatRouteDecision("knowledge", "evidence_required", 0.70)

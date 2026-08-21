@@ -5,12 +5,12 @@ High Confidence >= 0.90, Medium 0.70-0.89, Low < 0.70 (forces HITL).
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
 
-def evaluate_classification_confidence(classification: Dict[str, Any]) -> Dict[str, Any]:
+def evaluate_classification_confidence(classification: dict[str, Any]) -> dict[str, Any]:
     """Evaluate classification confidence against thresholds."""
     cat_conf = classification.get("category_confidence", 1.0)
     prio_conf = classification.get("priority_confidence", 1.0)

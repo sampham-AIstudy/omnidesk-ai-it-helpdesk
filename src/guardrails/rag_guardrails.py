@@ -6,7 +6,7 @@ and source trust score calculation.
 
 import logging
 import re
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ INDIRECT_INJECTION_PATTERNS = [
 ]
 
 
-def validate_source(doc_metadata: Dict[str, Any]) -> Dict[str, Any]:
+def validate_source(doc_metadata: dict[str, Any]) -> dict[str, Any]:
     """Validate RAG document metadata against trust policies."""
     source = str(doc_metadata.get("source", doc_metadata.get("source_domain", "kb_seed_database")))
     approved = doc_metadata.get("approved", True)
@@ -45,7 +45,7 @@ def validate_source(doc_metadata: Dict[str, Any]) -> Dict[str, Any]:
     return {"valid": True, "reason": "Valid trusted source"}
 
 
-def detect_document_injection(content: str) -> Dict[str, Any]:
+def detect_document_injection(content: str) -> dict[str, Any]:
     """Scan retrieved RAG text chunks for indirect prompt injection attacks."""
     if not content:
         return {"detected": False, "matched_patterns": []}
@@ -62,7 +62,7 @@ def detect_document_injection(content: str) -> Dict[str, Any]:
     }
 
 
-def calculate_source_trust(doc_metadata: Dict[str, Any]) -> float:
+def calculate_source_trust(doc_metadata: dict[str, Any]) -> float:
     """Calculate trust score (0.00 to 1.00) for a retrieved document."""
     source = str(doc_metadata.get("source", "")).lower()
     approved = doc_metadata.get("approved", True)
@@ -78,7 +78,7 @@ def calculate_source_trust(doc_metadata: Dict[str, Any]) -> float:
     return 0.10
 
 
-def sanitize_rag_context(docs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def sanitize_rag_context(docs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Filter and sanitize retrieved RAG documents."""
     safe_docs = []
     for doc in docs:

@@ -1,0 +1,2027 @@
+{
+  "canonical_collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+  "shadow_collection": "helpdesk_kb_multilingual_v3_shadow",
+  "locked_dataset": "C:\\Users\\Admin\\Python Advanced\\VinAI Lab\\P-236\\eval\\retrieval_golden_v1.json",
+  "p0_dataset": "C:\\Users\\Admin\\Python Advanced\\VinAI Lab\\P-236\\eval\\p0_shadow_v3_cases.json",
+  "locked_baseline": {
+    "v2": {
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "recall_at_1": 0.9743589743589743,
+      "recall_at_3": 0.9743589743589743,
+      "recall_at_5": 0.9743589743589743,
+      "mrr_at_5": 1.0,
+      "ndcg_at_5": 0.9616631355539943
+    },
+    "v3": {
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "recall_at_1": 0.9743589743589743,
+      "recall_at_3": 0.9743589743589743,
+      "recall_at_5": 0.9743589743589743,
+      "mrr_at_5": 1.0,
+      "ndcg_at_5": 0.9616631355539943
+    },
+    "regression_check": {
+      "hit_rate_at_1": true,
+      "hit_rate_at_3": true,
+      "hit_rate_at_5": true,
+      "recall_at_1": true,
+      "recall_at_3": true,
+      "recall_at_5": true,
+      "mrr_at_5": true,
+      "ndcg_at_5": true
+    }
+  },
+  "p0_candidate": {
+    "v2": {
+      "hit_rate_at_1": 0.0,
+      "hit_rate_at_3": 0.0,
+      "hit_rate_at_5": 0.0,
+      "recall_at_1": 0.0,
+      "recall_at_3": 0.0,
+      "recall_at_5": 0.0,
+      "mrr_at_5": 0.0,
+      "ndcg_at_5": 0.0
+    },
+    "v3": {
+      "hit_rate_at_1": 0.6363636363636364,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "recall_at_1": 0.5454545454545454,
+      "recall_at_3": 1.0,
+      "recall_at_5": 1.0,
+      "mrr_at_5": 0.8181818181818182,
+      "ndcg_at_5": 0.8394673604097759
+    },
+    "per_case": [
+      {
+        "id": "P0-CASE-01",
+        "expected_source": [
+          "p0-02-l3-vs-l4-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 1,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-02",
+        "expected_source": [
+          "p0-03-tcp-failure-semantics-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 2,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-03",
+        "expected_source": [
+          "p0-03-tcp-failure-semantics-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 1,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-04",
+        "expected_source": [
+          "p0-04-service-listening-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 1,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-05",
+        "expected_source": [
+          "p0-05-firewall-acl-nat-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 2,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-06",
+        "expected_source": [
+          "p0-06-vpn-connected-internal-unreachable-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 1,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-07",
+        "expected_source": [
+          "p0-08-dns-proxy-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 1,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-08",
+        "expected_source": [
+          "p0-07-routing-split-tunnel-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 2,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-09",
+        "expected_source": [
+          "p0-01-forticlient-ssl-vpn-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 2,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-10",
+        "expected_source": [
+          "p0-09-tcp-port-403-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 1,
+        "outcome": "improved"
+      },
+      {
+        "id": "P0-CASE-11",
+        "expected_source": [
+          "p0-10-http-403-forbidden-c001"
+        ],
+        "v2_rank": null,
+        "v3_rank": 1,
+        "outcome": "improved"
+      }
+    ],
+    "improved_cases": 11
+  },
+  "safety": {
+    "cross_tenant_leaks": 0,
+    "forbidden_leaks": 0,
+    "policy_violations": 0
+  },
+  "details": {
+    "v2_locked": [
+      {
+        "id": "RET-A01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "kb-008",
+          "kb-003",
+          "web-windows-vpn-003",
+          "auto-kb-ticket-63"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A02",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-003",
+          "kb-031",
+          "kb-033",
+          "kb-005",
+          "kb-002"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A03",
+        "expected_source": [
+          "kb-002"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-002",
+          "kb-016",
+          "web-windows-wifi-007",
+          "kb-001",
+          "kb-003"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A04",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "kb-032",
+          "kb-017",
+          "kb-014"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A05",
+        "expected_source": [
+          "kb-009"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-009",
+          "kb-016",
+          "kb-015",
+          "web-windows-slow-performance-001",
+          "kb-013"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A06",
+        "expected_source": [
+          "kb-010"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-010",
+          "kb-015",
+          "kb-019",
+          "web-windows-reset-pin-002",
+          "web-windows-hello-troubleshoot-003"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A07",
+        "expected_source": [
+          "kb-015"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-015",
+          "web-windows-blue-screen-003",
+          "kb-013",
+          "web-windows-external-monitor-003",
+          "kb-007"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "auto-kb-ticket-63",
+          "web-teams-restore-access-002",
+          "kb-012",
+          "kb-008"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B02",
+        "expected_source": [
+          "kb-015"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-015",
+          "web-bitlocker-recovery-001",
+          "kb-035",
+          "kb-007",
+          "web-windows-backup-restore-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B03",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "web-outlook-send-receive-001",
+          "web-outlook-shared-mailbox-performance-005",
+          "kb-022"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B04",
+        "expected_source": [
+          "kb-019"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-019",
+          "kb-020",
+          "mem-kgl-199",
+          "kb-032",
+          "kb-028"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B05",
+        "expected_source": [
+          "kb-015"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-015",
+          "web-windows-blue-screen-001",
+          "web-windows-activation-errors-002",
+          "kb-016",
+          "web-defender-device-isolation-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B06",
+        "expected_source": [
+          "kb-017"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-017",
+          "kb-012",
+          "kb-032",
+          "kb-005",
+          "kb-006"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B07",
+        "expected_source": [
+          "kb-018"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-018",
+          "web-entra-sspr-002",
+          "web-m365-authenticator-troubleshoot-001",
+          "kb-001",
+          "kb-010"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "web-teams-restore-access-002",
+          "auto-kb-ticket-63",
+          "web-windows-update-005",
+          "web-windows-vpn-003"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C02",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "web-outlook-send-receive-001",
+          "web-outlook-shared-mailbox-performance-005",
+          "web-exchange-access-other-mailbox-003"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C03",
+        "expected_source": [
+          "kb-015"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-015",
+          "web-windows-blue-screen-003",
+          "kb-013",
+          "mem-kgl-362",
+          "kb-016"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C04",
+        "expected_source": [
+          "kb-010"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-010",
+          "web-m365-password-policy-002",
+          "kb-018",
+          "kb-035",
+          "web-entra-sspr-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C05",
+        "expected_source": [
+          "kb-002"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-002",
+          "kb-016",
+          "kb-001",
+          "kb-008",
+          "kb-017"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "auto-kb-ticket-63",
+          "kb-008",
+          "web-teams-restore-access-002",
+          "kb-012"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D02",
+        "expected_source": [
+          "kb-002"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-002",
+          "kb-001",
+          "web-windows-wifi-001",
+          "auto-kb-ticket-63",
+          "kb-019"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D03",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "kb-022",
+          "kb-027",
+          "web-outlook-send-receive-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D04",
+        "expected_source": [
+          "kb-009"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-009",
+          "web-windows-slow-performance-002",
+          "kb-016",
+          "kb-030",
+          "kb-025"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D05",
+        "expected_source": [
+          "kb-010"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-010",
+          "kb-017",
+          "kb-015",
+          "kb-019",
+          "kb-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-E01",
+        "expected_source": [],
+        "rank": 3,
+        "retrieved_ids": [
+          "kb-032",
+          "kb-015",
+          "kb-003",
+          "kb-019",
+          "kb-002"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-E02",
+        "expected_source": [],
+        "rank": 4,
+        "retrieved_ids": [
+          "kb-035",
+          "kb-028",
+          "auto-kb-ticket-64",
+          "kb-013",
+          "kb-007"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-F01",
+        "expected_source": [
+          "kb-010"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-010",
+          "kb-017",
+          "kb-018",
+          "web-m365-compromised-mailbox-004",
+          "web-microsoft-account-locked-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-F02",
+        "expected_source": [
+          "kb-011"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-011",
+          "kb-006",
+          "web-sharepoint-onedrive-access-denied-001",
+          "web-exchange-access-other-mailbox-001",
+          "web-m365-shared-mailboxes-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-F03",
+        "expected_source": [
+          "kb-034"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-034",
+          "kb-008",
+          "kb-021",
+          "auto-kb-ticket-63",
+          "kb-027"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-F04",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "web-windows-vpn-003",
+          "kb-012",
+          "kb-008",
+          "auto-kb-ticket-63"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G01",
+        "expected_source": [
+          "kb-025"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-025",
+          "kb-030",
+          "kb-027",
+          "kb-009",
+          "kb-026"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G02",
+        "expected_source": [
+          "kb-021"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-021",
+          "kb-036",
+          "kb-008",
+          "kb-034",
+          "kb-029"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G03",
+        "expected_source": [
+          "kb-026"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-026",
+          "kb-013",
+          "kb-015",
+          "kb-029",
+          "kb-032"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G04",
+        "expected_source": [
+          "kb-024"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-024",
+          "kb-023",
+          "kb-014",
+          "kb-032",
+          "kb-030"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G05",
+        "expected_source": [
+          "kb-019"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-019",
+          "kb-010",
+          "auto-kb-ticket-7",
+          "kb-020",
+          "auto-kb-ticket-6"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-H01",
+        "expected_source": [],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-033",
+          "web-windows-bluetooth-005",
+          "kb-002",
+          "web-windows-printer-003",
+          "kb-032"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "RET-H02",
+        "expected_source": [],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-032",
+          "kb-035",
+          "kb-025",
+          "kb-028",
+          "kb-029"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-H03",
+        "expected_source": [],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-035",
+          "kb-023",
+          "kb-001",
+          "kb-016",
+          "kb-011"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "RET-I01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "kb-010",
+          "kb-012",
+          "kb-017",
+          "kb-036"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I02",
+        "expected_source": [
+          "kb-011"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-011",
+          "kb-021",
+          "kb-036",
+          "web-sharepoint-onedrive-access-denied-001",
+          "auto-kb-ticket-63"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I03",
+        "expected_source": [
+          "kb-014"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-014",
+          "kb-031",
+          "kb-002",
+          "kb-026",
+          "kb-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I04",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "web-outlook-shared-mailbox-performance-005",
+          "web-outlook-send-receive-001",
+          "kb-022"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I05",
+        "expected_source": [
+          "kb-028"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-028",
+          "kb-029",
+          "kb-032",
+          "kb-021",
+          "mem-kgl-48"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I06",
+        "expected_source": [
+          "kb-016"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-016",
+          "web-windows-slow-performance-002",
+          "kb-003",
+          "mem-kgl-916",
+          "web-defender-device-isolation-008"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      }
+    ],
+    "v3_locked": [
+      {
+        "id": "RET-A01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "kb-008",
+          "kb-003",
+          "web-windows-vpn-003",
+          "auto-kb-ticket-63"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A02",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-003",
+          "kb-031",
+          "kb-033",
+          "kb-005",
+          "kb-002"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A03",
+        "expected_source": [
+          "kb-002"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-002",
+          "kb-016",
+          "web-windows-wifi-007",
+          "kb-001",
+          "kb-003"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A04",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "kb-032",
+          "kb-017",
+          "kb-014"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A05",
+        "expected_source": [
+          "kb-009"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-009",
+          "kb-016",
+          "kb-015",
+          "web-windows-slow-performance-001",
+          "kb-013"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A06",
+        "expected_source": [
+          "kb-010"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-010",
+          "kb-015",
+          "kb-019",
+          "web-windows-reset-pin-002",
+          "web-windows-hello-troubleshoot-003"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-A07",
+        "expected_source": [
+          "kb-015"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-015",
+          "web-windows-blue-screen-003",
+          "kb-013",
+          "web-windows-external-monitor-003",
+          "kb-007"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "p0-01-forticlient-ssl-vpn-c001",
+          "auto-kb-ticket-63",
+          "web-teams-restore-access-002",
+          "kb-012"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B02",
+        "expected_source": [
+          "kb-015"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-015",
+          "web-bitlocker-recovery-001",
+          "kb-035",
+          "kb-007",
+          "web-windows-backup-restore-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B03",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "web-outlook-send-receive-001",
+          "web-outlook-shared-mailbox-performance-005",
+          "kb-022"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B04",
+        "expected_source": [
+          "kb-019"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-019",
+          "kb-020",
+          "mem-kgl-199",
+          "kb-032",
+          "kb-028"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B05",
+        "expected_source": [
+          "kb-015"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-015",
+          "web-windows-blue-screen-001",
+          "web-windows-activation-errors-002",
+          "kb-016",
+          "web-defender-device-isolation-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B06",
+        "expected_source": [
+          "kb-017"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-017",
+          "kb-012",
+          "kb-005",
+          "kb-032",
+          "kb-006"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-B07",
+        "expected_source": [
+          "kb-018"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-018",
+          "web-entra-sspr-002",
+          "web-m365-authenticator-troubleshoot-001",
+          "kb-001",
+          "kb-010"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "p0-01-forticlient-ssl-vpn-c001",
+          "web-teams-restore-access-002",
+          "auto-kb-ticket-63",
+          "web-windows-update-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C02",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "web-outlook-send-receive-001",
+          "web-outlook-shared-mailbox-performance-005",
+          "web-exchange-access-other-mailbox-003"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C03",
+        "expected_source": [
+          "kb-015"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-015",
+          "web-windows-blue-screen-003",
+          "kb-013",
+          "mem-kgl-362",
+          "kb-016"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C04",
+        "expected_source": [
+          "kb-010"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-010",
+          "web-m365-password-policy-002",
+          "kb-018",
+          "kb-035",
+          "web-entra-sspr-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-C05",
+        "expected_source": [
+          "kb-002"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-002",
+          "kb-016",
+          "kb-001",
+          "kb-008",
+          "kb-017"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "auto-kb-ticket-63",
+          "kb-008",
+          "kb-012",
+          "web-teams-restore-access-002"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D02",
+        "expected_source": [
+          "kb-002"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-002",
+          "kb-001",
+          "web-windows-wifi-001",
+          "auto-kb-ticket-63",
+          "kb-019"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D03",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "kb-022",
+          "kb-027",
+          "web-outlook-send-receive-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D04",
+        "expected_source": [
+          "kb-009"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-009",
+          "web-windows-slow-performance-002",
+          "kb-016",
+          "kb-030",
+          "kb-025"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-D05",
+        "expected_source": [
+          "kb-010"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-010",
+          "kb-017",
+          "kb-015",
+          "kb-019",
+          "kb-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-E01",
+        "expected_source": [],
+        "rank": 3,
+        "retrieved_ids": [
+          "kb-032",
+          "kb-015",
+          "kb-003",
+          "kb-019",
+          "kb-002"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-E02",
+        "expected_source": [],
+        "rank": 4,
+        "retrieved_ids": [
+          "kb-035",
+          "kb-028",
+          "auto-kb-ticket-64",
+          "kb-013",
+          "kb-007"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-F01",
+        "expected_source": [
+          "kb-010"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-010",
+          "kb-017",
+          "kb-018",
+          "web-m365-compromised-mailbox-004",
+          "web-microsoft-account-locked-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-F02",
+        "expected_source": [
+          "kb-011"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-011",
+          "kb-006",
+          "web-sharepoint-onedrive-access-denied-001",
+          "web-exchange-access-other-mailbox-001",
+          "web-m365-shared-mailboxes-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-F03",
+        "expected_source": [
+          "kb-034"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-034",
+          "kb-008",
+          "kb-021",
+          "auto-kb-ticket-63",
+          "kb-027"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-F04",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "p0-06-vpn-connected-internal-unreachable-c001",
+          "web-windows-vpn-003",
+          "p0-01-forticlient-ssl-vpn-c001",
+          "kb-012"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G01",
+        "expected_source": [
+          "kb-025"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-025",
+          "kb-030",
+          "kb-027",
+          "kb-009",
+          "kb-026"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G02",
+        "expected_source": [
+          "kb-021"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-021",
+          "kb-036",
+          "kb-008",
+          "kb-034",
+          "kb-029"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G03",
+        "expected_source": [
+          "kb-026"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-026",
+          "kb-013",
+          "kb-015",
+          "kb-029",
+          "kb-032"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G04",
+        "expected_source": [
+          "kb-024"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-024",
+          "kb-023",
+          "kb-014",
+          "kb-032",
+          "kb-030"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-G05",
+        "expected_source": [
+          "kb-019"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-019",
+          "kb-010",
+          "auto-kb-ticket-7",
+          "kb-020",
+          "auto-kb-ticket-6"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-H01",
+        "expected_source": [],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-033",
+          "web-windows-bluetooth-005",
+          "kb-002",
+          "web-windows-printer-003",
+          "kb-032"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "RET-H02",
+        "expected_source": [],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-032",
+          "kb-035",
+          "kb-025",
+          "kb-028",
+          "kb-029"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-H03",
+        "expected_source": [],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-035",
+          "kb-023",
+          "web-outlook-shared-mailbox-performance-005",
+          "kb-001",
+          "kb-016"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "RET-I01",
+        "expected_source": [
+          "kb-001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-001",
+          "kb-010",
+          "kb-012",
+          "kb-017",
+          "kb-036"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I02",
+        "expected_source": [
+          "kb-011"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-011",
+          "kb-021",
+          "kb-036",
+          "web-sharepoint-onedrive-access-denied-001",
+          "auto-kb-ticket-63"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I03",
+        "expected_source": [
+          "kb-014"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-014",
+          "kb-031",
+          "kb-002",
+          "kb-026",
+          "kb-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I04",
+        "expected_source": [
+          "kb-004"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-004",
+          "kb-005",
+          "web-outlook-shared-mailbox-performance-005",
+          "web-outlook-send-receive-001",
+          "kb-022"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I05",
+        "expected_source": [
+          "kb-028"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-028",
+          "kb-032",
+          "kb-029",
+          "kb-021",
+          "mem-kgl-48"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "RET-I06",
+        "expected_source": [
+          "kb-016"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "kb-016",
+          "web-windows-slow-performance-002",
+          "kb-003",
+          "mem-kgl-916",
+          "web-defender-device-isolation-008"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      }
+    ],
+    "v2_p0": [
+      {
+        "id": "P0-CASE-01",
+        "expected_source": [
+          "p0-02-l3-vs-l4-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-003",
+          "mem-kgl-830",
+          "web-windows-rdp-troubleshoot-008",
+          "mem-kgl-899",
+          "mem-kgl-775"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-02",
+        "expected_source": [
+          "p0-03-tcp-failure-semantics-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-028",
+          "web-windows-wifi-003",
+          "mem-kgl-48",
+          "web-windows-rdp-troubleshoot-005",
+          "kb-011"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-03",
+        "expected_source": [
+          "p0-03-tcp-failure-semantics-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "web-windows-rdp-troubleshoot-007",
+          "mem-kgl-830",
+          "mem-kgl-775",
+          "kb-001",
+          "mem-kgl-899"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-04",
+        "expected_source": [
+          "p0-04-service-listening-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "web-windows-rdp-troubleshoot-007",
+          "mem-kgl-830",
+          "mem-kgl-724",
+          "mem-kgl-775",
+          "mem-kgl-899"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-05",
+        "expected_source": [
+          "p0-05-firewall-acl-nat-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-003",
+          "kb-001",
+          "web-windows-firewall-allow-app-003",
+          "mem-kgl-274",
+          "mem-kgl-699"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-06",
+        "expected_source": [
+          "p0-06-vpn-connected-internal-unreachable-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-001",
+          "web-windows-vpn-004",
+          "web-windows-update-005",
+          "auto-kb-ticket-63",
+          "auto-kb-ticket-64"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-07",
+        "expected_source": [
+          "p0-08-dns-proxy-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-003",
+          "kb-001",
+          "web-windows-vpn-003",
+          "web-windows-update-005",
+          "kb-008"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-08",
+        "expected_source": [
+          "p0-07-routing-split-tunnel-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-001",
+          "web-windows-vpn-001",
+          "auto-kb-ticket-63",
+          "auto-kb-ticket-64",
+          "web-windows-update-005"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-09",
+        "expected_source": [
+          "p0-01-forticlient-ssl-vpn-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "kb-001",
+          "auto-kb-ticket-63",
+          "web-teams-restore-access-002",
+          "auto-kb-ticket-64",
+          "web-windows-vpn-003"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-10",
+        "expected_source": [
+          "p0-09-tcp-port-403-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "web-windows-rdp-troubleshoot-007",
+          "mem-kgl-830",
+          "mem-kgl-775",
+          "mem-kgl-899",
+          "web-windows-wifi-003"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      },
+      {
+        "id": "P0-CASE-11",
+        "expected_source": [
+          "p0-10-http-403-forbidden-c001"
+        ],
+        "rank": null,
+        "retrieved_ids": [
+          "web-office-activation-error-001",
+          "mem-kgl-914",
+          "web-windows-rdp-troubleshoot-001",
+          "mem-kgl-740",
+          "kb-022"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": false,
+        "hit_at_5": false
+      }
+    ],
+    "v3_p0": [
+      {
+        "id": "P0-CASE-01",
+        "expected_source": [
+          "p0-02-l3-vs-l4-c001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "p0-02-l3-vs-l4-c001",
+          "p0-04-service-listening-c001",
+          "p0-03-tcp-failure-semantics-c001",
+          "p0-05-firewall-acl-nat-c001",
+          "p0-06-vpn-connected-internal-unreachable-c001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-02",
+        "expected_source": [
+          "p0-03-tcp-failure-semantics-c001"
+        ],
+        "rank": 2,
+        "retrieved_ids": [
+          "p0-09-tcp-port-403-c001",
+          "p0-03-tcp-failure-semantics-c001",
+          "p0-04-service-listening-c001",
+          "p0-08-dns-proxy-c001",
+          "p0-05-firewall-acl-nat-c001"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-03",
+        "expected_source": [
+          "p0-03-tcp-failure-semantics-c001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "p0-04-service-listening-c001",
+          "p0-09-tcp-port-403-c001",
+          "p0-03-tcp-failure-semantics-c001",
+          "p0-10-http-403-forbidden-c001",
+          "p0-08-dns-proxy-c001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-04",
+        "expected_source": [
+          "p0-04-service-listening-c001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "p0-04-service-listening-c001",
+          "p0-09-tcp-port-403-c001",
+          "web-windows-rdp-troubleshoot-007",
+          "p0-06-vpn-connected-internal-unreachable-c001",
+          "mem-kgl-724"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-05",
+        "expected_source": [
+          "p0-05-firewall-acl-nat-c001"
+        ],
+        "rank": 2,
+        "retrieved_ids": [
+          "p0-09-tcp-port-403-c001",
+          "p0-05-firewall-acl-nat-c001",
+          "p0-04-service-listening-c001",
+          "p0-03-tcp-failure-semantics-c001",
+          "p0-06-vpn-connected-internal-unreachable-c001"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-06",
+        "expected_source": [
+          "p0-06-vpn-connected-internal-unreachable-c001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "p0-06-vpn-connected-internal-unreachable-c001",
+          "kb-001",
+          "p0-07-routing-split-tunnel-c001",
+          "web-windows-vpn-004",
+          "web-windows-update-005"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-07",
+        "expected_source": [
+          "p0-08-dns-proxy-c001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "p0-08-dns-proxy-c001",
+          "p0-06-vpn-connected-internal-unreachable-c001",
+          "p0-01-forticlient-ssl-vpn-c001",
+          "kb-001",
+          "kb-003"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-08",
+        "expected_source": [
+          "p0-07-routing-split-tunnel-c001"
+        ],
+        "rank": 2,
+        "retrieved_ids": [
+          "p0-06-vpn-connected-internal-unreachable-c001",
+          "p0-07-routing-split-tunnel-c001",
+          "kb-001",
+          "p0-05-firewall-acl-nat-c001",
+          "p0-08-dns-proxy-c001"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-09",
+        "expected_source": [
+          "p0-01-forticlient-ssl-vpn-c001"
+        ],
+        "rank": 2,
+        "retrieved_ids": [
+          "kb-001",
+          "p0-01-forticlient-ssl-vpn-c001",
+          "auto-kb-ticket-63",
+          "p0-05-firewall-acl-nat-c001",
+          "web-teams-restore-access-002"
+        ],
+        "hit_at_1": false,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-10",
+        "expected_source": [
+          "p0-09-tcp-port-403-c001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "p0-09-tcp-port-403-c001",
+          "p0-04-service-listening-c001",
+          "p0-03-tcp-failure-semantics-c001",
+          "p0-08-dns-proxy-c001",
+          "web-windows-rdp-troubleshoot-007"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      },
+      {
+        "id": "P0-CASE-11",
+        "expected_source": [
+          "p0-10-http-403-forbidden-c001"
+        ],
+        "rank": 1,
+        "retrieved_ids": [
+          "p0-10-http-403-forbidden-c001",
+          "web-office-activation-error-001",
+          "mem-kgl-914",
+          "mem-kgl-740",
+          "web-windows-rdp-troubleshoot-001"
+        ],
+        "hit_at_1": true,
+        "hit_at_3": true,
+        "hit_at_5": true
+      }
+    ]
+  }
+}

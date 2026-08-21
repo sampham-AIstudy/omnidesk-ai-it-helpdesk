@@ -7,6 +7,7 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from sqlalchemy import func, or_, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -27,6 +28,7 @@ SLA_HOURS: dict[TicketPriority, int] = {
     TicketPriority.HIGH: 4,
     TicketPriority.CRITICAL: 1,
 }
+_TICKET_NUMBER_MAX_ATTEMPTS = 8
 
 
 def _gen_ticket_number() -> str:
@@ -47,20 +49,35 @@ async def create_ticket(
     duplicate_detection_method: str | None = None,
     duplicate_confirmed_by: str | None = None,
 ) -> Ticket:
-    ticket = Ticket(
-        ticket_number=_gen_ticket_number(),
-        title=title,
-        description=description,
-        submitter_id=submitter_id,
-        is_production_impact=is_production_impact,
-        status=TicketStatus.OPEN,
-        duplicate_of_ticket_id=duplicate_of_ticket_id,
-        duplicate_score=duplicate_score,
-        duplicate_detection_method=duplicate_detection_method,
-        duplicate_confirmed_by=duplicate_confirmed_by,
-    )
-    db.add(ticket)
-    await db.flush()
+    # The database unique constraint is the concurrency authority.  A nested
+    # transaction lets a rare collision roll back only its insert, then retry
+    # without poisoning the caller's outer unit of work.
+    ticket: Ticket | None = None
+    for attempt in range(_TICKET_NUMBER_MAX_ATTEMPTS):
+        candidate = Ticket(
+            ticket_number=_gen_ticket_number(),
+            title=title,
+            description=description,
+            submitter_id=submitter_id,
+            is_production_impact=is_production_impact,
+            status=TicketStatus.OPEN,
+            duplicate_of_ticket_id=duplicate_of_ticket_id,
+            duplicate_score=duplicate_score,
+            duplicate_detection_method=duplicate_detection_method,
+            duplicate_confirmed_by=duplicate_confirmed_by,
+        )
+        try:
+            async with db.begin_nested():
+                db.add(candidate)
+                await db.flush()
+            ticket = candidate
+            break
+        except IntegrityError as exc:
+            if attempt + 1 == _TICKET_NUMBER_MAX_ATTEMPTS:
+                raise RuntimeError("Could not allocate a unique ticket number after bounded retries.") from exc
+
+    if ticket is None:  # Defensive guard; the loop either returns or raises.
+        raise RuntimeError("Could not allocate a unique ticket number.")
     await db.refresh(ticket)
 
     await write_audit_log(
@@ -129,7 +146,7 @@ async def get_tickets(
     query = query.order_by(sort_column.asc() if sort_order == "asc" else sort_column.desc())
     query = query.offset((page - 1) * page_size).limit(page_size)
     result = await db.execute(query)
-    return result.scalars().all(), total
+    return list(result.scalars().all()), total
 
 
 async def get_pending_hitl(
@@ -141,7 +158,7 @@ async def get_pending_hitl(
             User.company_unit == submitter_company_unit
         )
     result = await db.execute(query.order_by(Ticket.created_at.asc()))
-    return result.scalars().all()
+    return list(result.scalars().all())
 
 
 async def update_ticket_classification(

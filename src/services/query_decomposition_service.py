@@ -80,6 +80,6 @@ async def decompose_knowledge_query(question: str) -> DecompositionResult:
             bool(payload.get("is_complex", False)) and len(sub_queries) > 1,
             sub_queries,
         )
-    except (json.JSONDecodeError, TypeError, ValueError, AttributeError) as exc:
+    except Exception as exc:
         logger.info("Query decomposition unavailable; using original query: %s", type(exc).__name__)
         return DecompositionResult(True, False, [original_question])

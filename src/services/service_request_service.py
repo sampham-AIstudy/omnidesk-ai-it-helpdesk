@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import secrets
 from datetime import UTC, datetime
+from typing import Any
 
 from sqlalchemy import exists, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -23,7 +24,7 @@ class ServiceRequestConflictError(Exception):
 class ServiceRequestAuthorizationError(Exception):
     """The caller is authenticated but cannot fulfill this routed request."""
 
-SERVICE_POLICIES: dict[str, dict[str, object]] = {
+SERVICE_POLICIES: dict[str, dict[str, Any]] = {
     "Đặt lại mật khẩu": {"group": "Identity & Access", "approval": [], "sla": 1, "risk": "low"},
     "Xin laptop mới": {"group": "Workplace IT", "approval": ["manager"], "sla": 24, "risk": "low"},
     "Xin máy in": {"group": "Workplace IT", "approval": ["manager"], "sla": 24, "risk": "low"},
@@ -76,7 +77,7 @@ def canonical_fulfillment_groups() -> list[str]:
     return sorted({str(policy["group"]) for policy in SERVICE_POLICIES.values()})
 
 
-def list_service_catalog() -> list[dict[str, object]]:
+def list_service_catalog() -> list[dict[str, Any]]:
     """Return the authoritative catalog metadata safe for employee UI use."""
     return [
         {
@@ -257,7 +258,7 @@ async def take_service_request(db: AsyncSession, *, request: ServiceRequest, tec
             updated_at=claimed_at,
         )
     )
-    if result.rowcount != 1:
+    if getattr(result, "rowcount", 0) != 1:
         # A membership removal that races this update must remain a denial,
         # never a stale-client bypass.
         if membership is not None and not await db.scalar(select(membership)):
@@ -304,7 +305,7 @@ async def transition_service_request(
         )
         .values(**values)
     )
-    if result.rowcount != 1:
+    if getattr(result, "rowcount", 0) != 1:
         raise ServiceRequestConflictError("Service Request changed before this update could be applied.")
     await db.refresh(request)
     await write_service_request_audit(
@@ -335,7 +336,7 @@ async def approve_service_request(
             updated_at=decided_at,
         )
     )
-    if result.rowcount != 1:
+    if getattr(result, "rowcount", 0) != 1:
         raise ServiceRequestConflictError("Service Request was already decided by another manager.")
     await db.refresh(request)
     await write_service_request_audit(
@@ -366,7 +367,7 @@ async def reject_service_request(
             updated_at=decided_at,
         )
     )
-    if result.rowcount != 1:
+    if getattr(result, "rowcount", 0) != 1:
         raise ServiceRequestConflictError("Service Request was already decided by another manager.")
     await db.refresh(request)
     await write_service_request_audit(
@@ -410,7 +411,7 @@ async def serialize_service_request(db: AsyncSession, request: ServiceRequest, *
             {
                 "action": entry.action,
                 "actor_id": entry.actor_id,
-                "actor_name": actors.get(entry.actor_id),
+                "actor_name": actors.get(entry.actor_id) if entry.actor_id is not None else None,
                 "description": entry.description,
                 "metadata_json": entry.metadata_json,
                 "created_at": entry.created_at,

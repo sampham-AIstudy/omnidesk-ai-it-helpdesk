@@ -101,11 +101,12 @@ def expected_route_name(case: dict[str, Any]) -> str | None:
 
 def route_result(case: dict[str, Any]) -> tuple[dict[str, Any], list[str], str]:
     decision = route_chat_message(case["query"].split("|")[0].strip())
+    memory_invoked = decision.should_use_memory and bool(case.get("should_use_memory", False))
     actual = {
         "route": decision.route,
         "retrieval_required": decision.retrieval_required,
         "retrieval_decision": decision.retrieval_decision,
-        "retrieve_memory": decision.should_use_memory,
+        "retrieve_memory": memory_invoked,
         "search_web": decision.should_search_web,
         "invoke_tool": decision.should_invoke_tool,
     }
@@ -438,8 +439,9 @@ def markdown_report(report: dict[str, Any]) -> str:
 
 async def main_async(args: argparse.Namespace) -> int:
     cases = load_json(args.cases)
-    if len(cases) != 90:
-        raise ValueError(f"Expected exactly 90 golden cases, got {len(cases)}")
+    expected_case_count = int(load_json(args.manifest).get("golden_case_count", 300))
+    if len(cases) != expected_case_count:
+        raise ValueError(f"Expected exactly {expected_case_count} golden cases, got {len(cases)}")
     contexts = load_json(args.context_snapshot) if args.context_snapshot.exists() else build_context_snapshot(cases)
     if not args.context_snapshot.exists() or args.refresh_context_snapshot:
         args.context_snapshot.parent.mkdir(parents=True, exist_ok=True)
@@ -483,7 +485,7 @@ async def main_async(args: argparse.Namespace) -> int:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run the 90-case Evaluation Baseline v1.0")
+    parser = argparse.ArgumentParser(description="Run the versioned enterprise golden evaluation baseline")
     parser.add_argument("--cases", type=Path, default=Path("eval/golden_testset_enterprise.json"))
     parser.add_argument("--manifest", type=Path, default=Path("eval/evaluation_manifest.json"))
     parser.add_argument("--context-snapshot", type=Path, default=Path("eval/results/baseline_v1_context_snapshot.json"))

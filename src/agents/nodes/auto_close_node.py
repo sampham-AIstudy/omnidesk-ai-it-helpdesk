@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 
 from src.agents.state import TicketAgentState
+
 logger = logging.getLogger(__name__)
 
 
@@ -14,8 +15,6 @@ def _is_auto_close_eligible(state: TicketAgentState) -> bool:
 
 async def auto_close_check_node(state: TicketAgentState) -> TicketAgentState:
     """Record that the AI may suggest a resolution, but never close it."""
-    eligible = False
-
     logger.info(
         f"[ClosureGuard] Ticket #{state.get('ticket_number')} remains open for user or technician closure"
     )

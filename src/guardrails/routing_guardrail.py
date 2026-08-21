@@ -5,7 +5,7 @@ Auto-routes only if routing_confidence >= 0.85, assignment group exists/active, 
 """
 
 import logging
-from typing import Any, Dict
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ VALID_ASSIGNMENT_GROUPS = {
 }
 
 
-def evaluate_routing(proposed_group: str, confidence: float, ticket: Dict[str, Any]) -> Dict[str, Any]:
+def evaluate_routing(proposed_group: str, confidence: float, ticket: dict[str, Any]) -> dict[str, Any]:
     """Evaluate assignment group routing decision."""
     if proposed_group not in VALID_ASSIGNMENT_GROUPS:
         return {

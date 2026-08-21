@@ -7,7 +7,7 @@ Thresholds: BLOCK_RATE_THRESHOLD=0.5, JUDGE_FAIL_RATE_THRESHOLD=0.3.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 from src.config import get_settings
 
@@ -41,7 +41,7 @@ class MetricsTracker:
         if metric_name in self.metrics:
             self.metrics[metric_name] += count
 
-    def get_summary(self) -> Dict[str, Any]:
+    def get_summary(self) -> dict[str, Any]:
         total = max(self.metrics["total_requests"], 1)
         block_rate = round(self.metrics["blocked_requests"] / total, 2)
         hitl_rate = round(self.metrics["HITL_count"] / total, 2)

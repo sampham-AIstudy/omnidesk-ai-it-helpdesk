@@ -1,13 +1,13 @@
 {
-  "evaluation_contract_version": "enterprise-golden-v1.2",
+  "evaluation_contract_version": "enterprise-golden-v1.3",
   "scope": "canary_contract_v1_2",
   "golden": {
     "path": "eval/golden_testset_enterprise.json",
-    "sha256": "b5cf8ece34d68b41f7f7b4e23fb5cae72ec0ee6040e02105e4eade66aebda22b"
+    "sha256": "79d8c3902ecaf1edc1c3181ca16fe89e02ad5ff1d6e48c85a30b3cbe88d6fcec"
   },
   "manifest": {
     "path": "eval/evaluation_manifest.json",
-    "sha256": "fa4f577ef6f6ea80354ab0b28694d0b50729260ffaef2b7bf21d2353a2caf2f3"
+    "sha256": "a7003332dac2ad30b3a61b404922e2b008af0db1df906d2aeb30621fc16300c3"
   },
   "context_snapshot": {
     "path": "eval/snapshots/canary_contract_v1_2_context_snapshot.json",
