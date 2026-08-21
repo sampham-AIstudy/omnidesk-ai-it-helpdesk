@@ -18,5 +18,5 @@ activation: always-on
 - Always quote file paths that contain spaces.
 
 ## 3. Pytest & Testing on Windows
-- Always append `--basetemp=./data/pytest_tmp` to pytest commands to prevent Windows Temp folder `PermissionError [WinError 5]`.
+- Always append `--basetemp=./data/pytest_temp` to pytest commands to prevent Windows Temp folder `PermissionError [WinError 5]`.
 - Prefer running targeted test files rather than monolithic multi-suite runs to prevent test-runner timeout.

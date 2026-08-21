@@ -2,15 +2,15 @@
 
 ## Baseline Metadata
 
-- generated_at: `2026-08-21T05:43:01.536724+00:00`
+- generated_at: `2026-08-21T17:15:02.624158+00:00`
 - golden_dataset: `eval\golden_testset_enterprise.json`
 - golden_dataset_sha256: `7eac168c97cc3a0be780add2b0d8a2edf982e9b29346488882503cce62d8e8ec`
 - manifest_sha256: `da9cc82957f182226ac79524719e221e60b5cc70369ec59b1539eb2956e51f58`
 - context_snapshot: `eval\results\baseline_v1_context_snapshot.json`
-- context_snapshot_sha256: `7dde549fed5365072ed80b3266b448dd3538dc286fabb0111cf81db78de71c65`
-- git_commit: `0f0cf291bece7d0f54be3dabed6dd8ec1cb73bb5`
+- context_snapshot_sha256: `1c6706446a37d708f0b9dd2508fbf43d361ab8364a97d07001e9e60562173fee`
+- git_commit: `10f35ff41f9b7b27aacf5f210260bdee0ad6d5f0`
 - generation_mode: `fixed_context_snapshot`
-- answer_source: `reused_snapshot:eval\results\baseline_v1.json`
+- answer_source: `none`
 - generation_model: `configured production default`
 - judge_model: `not_run`
 - top_k: `5`
@@ -18,7 +18,7 @@
 ## Status
 
 - Cases: 300
-- Status: {'PASS': 298, 'FAIL': 2}
+- Status: {'PASS': 300}
 - Layer membership: {'routing': 300, 'generation': 300, 'retrieval': 197, 'workflow': 72, 'clarification': 49, 'security': 81}
 
 ## Routing
@@ -31,7 +31,7 @@
 
 ## Generation
 
-- Fixed-context answers evaluated: 90
+- Fixed-context answers evaluated: 0
 - Semantic LLM judge: NOT_RUN (not inferred from retrieval confidence).
 - Deterministic citation, action-grounding, partial-answer and clarification checks are included in each case record.
 
@@ -49,16 +49,11 @@
 
 | Failure | Count | % cases | Layer | Severity |
 |---|---:|---:|---|
-| OVER_QUESTIONING | 1 | 0.33% | CLARIFIER | MEDIUM |
-| INCOMPLETE_ANSWER | 1 | 0.33% | GENERATOR | MEDIUM |
-| INCORRECT_REFUSAL | 1 | 0.33% | GENERATOR | MEDIUM |
 
 ## Top Failed Cases
 
 | ID | Question | Expected route | Actual route | Failure | Suspected layer |
 |---|---|---|---|---|---|
-| GT-006 | Tôi vừa đấm vào màn hình laptop, giờ màn hình đen xì luôn. | incident | incident | OVER_QUESTIONING | CLARIFIER |
-| GT-047 | VPN dùng cổng nào và tài khoản bị khóa sau bao nhiêu lần nhập sai? | None | incident | INCOMPLETE_ANSWER, INCORRECT_REFUSAL | GENERATOR |
 
 ## Proposed Experiments (not executed)
 

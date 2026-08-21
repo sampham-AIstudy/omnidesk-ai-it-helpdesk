@@ -86,7 +86,7 @@ out/
 
 # Temp test & scratch files
 .pytest*/
-.pytest_tmp/
+data/pytest_temp/
 temp_pytest*/
 temp_rag.json
 restored_rag_service.py
@@ -98,4 +98,12 @@ scratch/
 *.backup
 *.old
 *.orig
+
+# Test & eval isolated datastores (never commit runtime state)
+data/test_chroma/
+data/eval_chroma/
+data/chroma_backups/
+
+# Evaluation temporary caches & intermediate experiment outputs
+eval/results/judge_cache*/
 

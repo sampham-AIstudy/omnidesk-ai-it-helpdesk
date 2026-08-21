@@ -7,16 +7,11 @@ Evaluates:
 4. Domain-specific technical slices (VPN, DNS, TCP, HTTP, WiFi, BitLocker, M365, Firewall)
 5. Latency metrics (Cold, Warm p50, Warm p95, Graph lookup isolation)
 """
-from __future__ import annotations
-
-import argparse
-import hashlib
 import json
 import math
 import os
 import sys
 import time
-from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
@@ -25,9 +20,9 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
 
-from eval.retrieval_metrics import evaluate_single_case, summarize_retrieval_evaluation
-from src.services.graph_retriever import get_knowledge_graph_index
-from src.services.rag_service import get_canonical_source_id, search_similar
+from eval.retrieval_metrics import evaluate_single_case, summarize_retrieval_evaluation  # noqa: E402
+from src.services.graph_retriever import GraphCandidate, get_knowledge_graph_index  # noqa: E402
+from src.services.rag_service import get_canonical_source_id, search_similar  # noqa: E402
 
 
 def search_with_graph_assisted_rrf(
@@ -303,7 +298,7 @@ def run_benchmark():
                 doc_ids = [d["doc_id"] for d in docs]
                 expected_ids = set(case.get("expected_source_ids", []))
                 hard_ids = set(case.get("hard_negative_source_ids", []))
-                
+
                 # Check rank of expected
                 rank = next((idx + 1 for idx, did in enumerate(doc_ids) if did in expected_ids), None)
                 ranks.append(rank)
@@ -362,7 +357,7 @@ def run_benchmark():
     graph_times.sort()
     g_p50 = graph_times[len(graph_times) // 2]
     g_p95 = graph_times[int(len(graph_times) * 0.95)]
-    print(f"\n--- 4. Graph Isolated Lookup Latency (800 iterations) ---")
+    print("\n--- 4. Graph Isolated Lookup Latency (800 iterations) ---")
     print(f"Graph lookup p50: {g_p50:.4f} ms, p95: {g_p95:.4f} ms")
 
     # Save benchmark results

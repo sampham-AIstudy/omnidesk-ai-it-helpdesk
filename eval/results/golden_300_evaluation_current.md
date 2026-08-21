@@ -2,15 +2,15 @@
 
 ## Baseline Metadata
 
-- generated_at: `2026-08-21T06:35:21.823808+00:00`
+- generated_at: `2026-08-21T16:31:08.234219+00:00`
 - golden_dataset: `eval\golden_testset_enterprise.json`
 - golden_dataset_sha256: `7eac168c97cc3a0be780add2b0d8a2edf982e9b29346488882503cce62d8e8ec`
 - manifest_sha256: `da9cc82957f182226ac79524719e221e60b5cc70369ec59b1539eb2956e51f58`
 - context_snapshot: `eval\results\baseline_v1_context_snapshot.json`
 - context_snapshot_sha256: `1c6706446a37d708f0b9dd2508fbf43d361ab8364a97d07001e9e60562173fee`
-- git_commit: `0f0cf291bece7d0f54be3dabed6dd8ec1cb73bb5`
+- git_commit: `10f35ff41f9b7b27aacf5f210260bdee0ad6d5f0`
 - generation_mode: `fixed_context_snapshot`
-- answer_source: `reused_snapshot:eval\results\baseline_v1.json`
+- answer_source: `none`
 - generation_model: `configured production default`
 - judge_model: `not_run`
 - top_k: `5`
@@ -31,7 +31,7 @@
 
 ## Generation
 
-- Fixed-context answers evaluated: 90
+- Fixed-context answers evaluated: 0
 - Semantic LLM judge: NOT_RUN (not inferred from retrieval confidence).
 - Deterministic citation, action-grounding, partial-answer and clarification checks are included in each case record.
 

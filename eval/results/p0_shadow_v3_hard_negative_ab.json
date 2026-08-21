@@ -1031,7 +1031,7 @@
           "web-windows-wifi-005",
           "kb-001",
           "web-m365-compromised-mailbox-003",
-          "mem-kgl-847"
+          "kb-028"
         ],
         "hard_negative_at_1": false,
         "hard_negative_in_top3": false,
@@ -4164,10 +4164,10 @@
         "primary_rank": 1,
         "retrieved_ids": [
           "p0-10-http-403-forbidden-c001",
+          "mem-kgl-740",
           "web-office-activation-error-001",
           "kb-031",
-          "kb-032",
-          "kb-033"
+          "kb-032"
         ],
         "hard_negative_at_1": false,
         "hard_negative_in_top3": false,
@@ -7334,7 +7334,7 @@
           "kb-003",
           "kb-028",
           "kb-008",
-          "kb-011"
+          "kb-027"
         ],
         "hard_negative_at_1": false,
         "hard_negative_in_top3": false,
