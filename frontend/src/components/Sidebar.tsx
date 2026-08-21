@@ -8,6 +8,7 @@ import {
   Activity,
   BarChart3,
   BookOpen,
+  CircleDollarSign,
   ClipboardCheck,
   ClipboardList,
   FilePlus2,
@@ -73,6 +74,7 @@ const SYSTEM_ADMIN_NAV: NavItem[] = [
   { href: '/admin/ai-review', label: 'AI review queue', icon: UserCheck, group: 'AI Governance' },
   { href: '/admin/ai-evaluation', label: 'Evaluation & benchmarks', icon: BarChart3 },
   { href: '/admin/rag', label: 'RAG pipeline', icon: BookOpen },
+  { href: '/admin/token-usage', label: 'Token & Cost', icon: CircleDollarSign, group: 'Billing & Usage' },
 ];
 
 export default function Sidebar() {

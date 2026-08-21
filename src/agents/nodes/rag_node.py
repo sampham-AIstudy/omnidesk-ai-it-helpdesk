@@ -18,6 +18,7 @@ from src.prompts import (
     remove_unrecognized_source_ids,
 )
 from src.services.llm import get_rag_llm
+from src.services.token_cost import dispatch_token_logging
 from src.services.rag_service import get_collection, search_similar
 from src.services.source_provenance_service import knowledge_source_payload
 from src.services.ticket_text import user_report
@@ -87,6 +88,13 @@ async def _research_or_safe_triage(title: str, description: str, docs: list[dict
             )),
         ])
         answer = str(response.content).strip()
+        # Theo dõi token cho lần tổng hợp external research (không có user_id ở đây)
+        _rag_llm = get_rag_llm()
+        dispatch_token_logging(
+            ai_message=response,
+            model_name=str(getattr(_rag_llm, "model_name", getattr(_rag_llm, "model", "mistral-small-latest"))),
+            user_id=None,
+        )
         answer, _ = remove_unrecognized_source_ids(answer, set())
         if answer:
             return answer, [_web_source_payload(source) for source in research.sources]
@@ -217,6 +225,12 @@ Category: {category}"""),
         ])
 
         solution = str(response.content).strip()
+        # --- Theo dõi token & chi phí (chạy nền, không chặn request) ---
+        dispatch_token_logging(
+            ai_message=response,
+            model_name=str(getattr(llm, "model_name", getattr(llm, "model", "mistral-small-latest"))),
+            user_id=state.get("submitter_id"),
+        )
         solution, _ = remove_unrecognized_source_ids(solution, evidence_source_ids(relevant_docs[:3]))
         if any(marker in solution.casefold() for marker in INSUFFICIENT_KB_MARKERS):
             logger.info("[RAG] Synthesis declined KB applicability for ticket #%s; handing off.", state.get("ticket_number"))

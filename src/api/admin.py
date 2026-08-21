@@ -544,3 +544,95 @@ async def get_ai_metrics(
             for r in recent_runs
         ],
     }
+
+
+# ─── Token & Cost Tracking ───────────────────────────────────────────────────
+
+@router.get("/token-usage", response_model=None)
+async def get_token_usage_metrics(
+    db: AsyncSession = Depends(get_db),
+    _admin: User = Depends(require_admin),
+):
+    """Return aggregated Mistral AI token usage and cost metrics for the Admin Dashboard.
+
+    All amounts are pre-computed and stored at write-time; this endpoint only
+    reads and aggregates immutable log rows — never recalculates costs.
+    """
+    from src.models.token_usage import TokenUsageLog
+    from src.models.schemas import (
+        TokenUsageMetricsResponse,
+        TokenUsageModelBreakdown,
+        TokenUsageUserBreakdown,
+    )
+
+    # 1. Overall totals
+    totals_row = await db.execute(
+        select(
+            func.count(TokenUsageLog.id).label("total_requests"),
+            func.coalesce(func.sum(TokenUsageLog.prompt_tokens), 0).label("total_prompt_tokens"),
+            func.coalesce(func.sum(TokenUsageLog.completion_tokens), 0).label("total_completion_tokens"),
+            func.coalesce(func.sum(TokenUsageLog.estimated_cost), 0.0).label("total_cost"),
+        )
+    )
+    totals = totals_row.one()
+
+    # 2. Per-user breakdown (LEFT JOIN users for username/email)
+    user_rows = await db.execute(
+        select(
+            TokenUsageLog.user_id,
+            User.username,
+            User.email,
+            func.count(TokenUsageLog.id).label("total_requests"),
+            func.coalesce(func.sum(TokenUsageLog.prompt_tokens), 0).label("total_prompt_tokens"),
+            func.coalesce(func.sum(TokenUsageLog.completion_tokens), 0).label("total_completion_tokens"),
+            func.coalesce(func.sum(TokenUsageLog.estimated_cost), 0.0).label("total_cost"),
+        )
+        .outerjoin(User, User.id == TokenUsageLog.user_id)
+        .group_by(TokenUsageLog.user_id, User.username, User.email)
+        .order_by(func.sum(TokenUsageLog.estimated_cost).desc())
+    )
+    user_breakdown = [
+        TokenUsageUserBreakdown(
+            user_id=row.user_id,
+            username=row.username,
+            email=row.email,
+            total_requests=row.total_requests,
+            total_prompt_tokens=row.total_prompt_tokens,
+            total_completion_tokens=row.total_completion_tokens,
+            total_cost_usd=round(float(row.total_cost), 6),
+        )
+        for row in user_rows.all()
+    ]
+
+    # 3. Per-model breakdown
+    model_rows = await db.execute(
+        select(
+            TokenUsageLog.model_name,
+            func.count(TokenUsageLog.id).label("total_requests"),
+            func.coalesce(func.sum(TokenUsageLog.prompt_tokens), 0).label("total_prompt_tokens"),
+            func.coalesce(func.sum(TokenUsageLog.completion_tokens), 0).label("total_completion_tokens"),
+            func.coalesce(func.sum(TokenUsageLog.estimated_cost), 0.0).label("total_cost"),
+        )
+        .group_by(TokenUsageLog.model_name)
+        .order_by(func.sum(TokenUsageLog.estimated_cost).desc())
+    )
+    model_breakdown = [
+        TokenUsageModelBreakdown(
+            model_name=row.model_name,
+            total_requests=row.total_requests,
+            total_prompt_tokens=row.total_prompt_tokens,
+            total_completion_tokens=row.total_completion_tokens,
+            total_cost_usd=round(float(row.total_cost), 6),
+        )
+        for row in model_rows.all()
+    ]
+
+    return TokenUsageMetricsResponse(
+        total_requests=totals.total_requests,
+        total_prompt_tokens=totals.total_prompt_tokens,
+        total_completion_tokens=totals.total_completion_tokens,
+        total_cost_usd=round(float(totals.total_cost), 4),
+        user_breakdown=user_breakdown,
+        model_breakdown=model_breakdown,
+    )
+

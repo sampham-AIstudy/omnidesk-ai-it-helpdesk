@@ -174,6 +174,12 @@ def _auto_migrate_sqlite(connection):
             for col_name, col_type in hitl_new_cols.items():
                 if col_name not in h_cols:
                     connection.execute(text(f"ALTER TABLE hitl_approvals ADD COLUMN {col_name} {col_type}"))
+        # 5. Bảng token_usage_logs (tạo qua create_all; migration bổ sung thêm index)
+        res_tul = connection.execute(text("PRAGMA table_info(token_usage_logs)"))
+        tul_cols = {row[1] for row in res_tul.fetchall()}
+        if tul_cols:
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_token_usage_user_created ON token_usage_logs (user_id, created_at DESC)"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_token_usage_model_created ON token_usage_logs (model_name, created_at DESC)"))
     except Exception as exc:
         logging.getLogger(__name__).warning("SQLite auto migration note: %s", exc)
 
@@ -192,6 +198,7 @@ async def init_db():
         technician_fulfillment_group,
         ticket,
         ticket_message,
+        token_usage,
         user,
         web_research,
     )
