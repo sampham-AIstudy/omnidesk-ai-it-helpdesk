@@ -1,6 +1,6 @@
 # P-236 Retrieval Evaluation Baseline & Release Gate Report
 
-- **Generated At**: `2026-08-21T06:26:41.463529+00:00`
+- **Generated At**: `2026-08-21T17:31:01.700585+00:00`
 - **Collection**: `helpdesk_kb_multilingual_v3_sentence_transformer`
 - **Embedding Model**: `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
 - **Collection Size**: 443 documents/chunks
@@ -73,7 +73,7 @@ No failures detected across all test cases. ✅
 | `RET-D03` | `D_typo_informal` | outlook ko sync | `kb-004` | 1 | `kb-004` (1.00): Outlook không đồng bộ email /  | ✅ PASS |
 | `RET-D04` | `D_typo_informal` | may tinh cham lag qua troi | `kb-009` | 1 | `kb-009` (0.83): Máy tính chạy chậm / lag | ✅ PASS |
 | `RET-D05` | `D_typo_informal` | ko nho mat khau may tinh | `kb-010` | 1 | `kb-010` (0.75): Quên mật khẩu Windows / tài kh | ✅ PASS |
-| `RET-E01` | `E_ambiguous` | Không vào được | `kb-001, kb-002, kb-003, kb-010, kb-011` | 3 | `kb-032` (0.75): Không submit được đơn xin nghỉ | ✅ PASS |
+| `RET-E01` | `E_ambiguous` | Không vào được | `kb-001, kb-002, kb-003, kb-010, kb-011` | 4 | `kb-019` (0.89): SAP không đăng nhập được / ses | ✅ PASS |
 | `RET-E02` | `E_ambiguous` | Bị lỗi rồi không biết làm sao | `kb-009, kb-015, kb-013` | 3 | `kb-035` (0.75): Dữ liệu bị mất / cần khôi phục | ✅ PASS |
 | `RET-F01` | `F_policy_authority` | Quy trình reset mật khẩu khi tài khoản b | `kb-010` | 1 | `kb-010` (0.86): Quên mật khẩu Windows / tài kh | ✅ PASS |
 | `RET-F02` | `F_policy_authority` | Quy trình xin cấp quyền truy cập thư mục | `kb-011` | 1 | `kb-011` (0.75): Cấp quyền truy cập thư mục/fil | ✅ PASS |

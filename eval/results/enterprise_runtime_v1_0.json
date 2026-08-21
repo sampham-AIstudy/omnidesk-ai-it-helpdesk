@@ -15262,7 +15262,7 @@
     "golden_testset_enterprise": "79d8c3902ecaf1edc1c3181ca16fe89e02ad5ff1d6e48c85a30b3cbe88d6fcec",
     "evaluation_manifest": "a7003332dac2ad30b3a61b404922e2b008af0db1df906d2aeb30621fc16300c3",
     "runtime_harness": "60c3a674176af6f5e248396fe0e137f87828376629ea5f4f6b00330a4fe54cb5",
-    "runtime_fixture": "14ce6fb7ed469be808cfac28479129564426ef18a069877e518c2610eac755e7",
+    "runtime_fixture": "8fda5e19b85912bf56192e3400c3e52c7cda2a554a646469d824aee84ad6a5d9",
     "contract_kb_source": "e8e0184ce939e45f7dc40b1e6d77bdbdea762e338e5e207dcb66a0a78796f6e8",
     "routing_contract": "89e5232ceb7382c3d8a7f938d2f23d752ee0551b4dbe47dd0846d479b5e49891",
     "active_expected_collection": "helpdesk_kb_multilingual_v3_sentence_transformer:443"
