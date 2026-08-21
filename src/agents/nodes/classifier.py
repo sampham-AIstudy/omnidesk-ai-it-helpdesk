@@ -12,6 +12,7 @@ from src.config import get_settings
 from src.observability.tracing import set_current_attributes, traced_async_operation
 from src.services.llm import get_classifier_llm
 from src.services.ticket_text import user_report
+from src.services.token_cost import dispatch_token_logging
 
 logger = logging.getLogger(__name__)
 settings = get_settings()
@@ -87,6 +88,14 @@ Trả về JSON phân loại."""
             "gen_ai.request.model": getattr(llm, "model", getattr(llm, "model_name", "unknown")),
             "helpdesk.ticket.workflow": "classified",
         })
+
+        # --- Theo dõi token & chi phí (chạy nền, không chặn request) ---
+        _model_name = str(getattr(llm, "model_name", getattr(llm, "model", "mistral-small-latest")))
+        dispatch_token_logging(
+            ai_message=response,
+            model_name=_model_name,
+            user_id=state.get("submitter_id"),
+        )
 
         content = response.content.strip()
         # Xử lý nếu LLM wrap trong ```json ... ```

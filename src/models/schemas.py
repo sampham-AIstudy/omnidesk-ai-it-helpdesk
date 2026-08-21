@@ -428,3 +428,40 @@ class AgentProcessResponse(BaseModel):
     hitl_required: bool
     action_taken: str
     message: str
+
+
+# ─── Token & Cost Tracking ───────────────────────────────────────────────────
+
+class TokenUsageUserBreakdown(BaseModel):
+    user_id: int | None
+    username: str | None = None
+    email: str | None = None
+    total_requests: int
+    total_prompt_tokens: int
+    total_completion_tokens: int
+    total_cost_usd: float
+
+
+class TokenUsageModelBreakdown(BaseModel):
+    model_name: str
+    total_requests: int
+    total_prompt_tokens: int
+    total_completion_tokens: int
+    total_cost_usd: float
+
+
+class TokenUsageMetricsResponse(BaseModel):
+    """Aggregated token usage and cost stats returned by GET /admin/token-usage."""
+
+    # Overall totals
+    total_requests: int
+    total_prompt_tokens: int
+    total_completion_tokens: int
+    total_cost_usd: float  # pre-rounded to 4 decimal places
+
+    # Per-user breakdown (sorted by cost desc)
+    user_breakdown: list[TokenUsageUserBreakdown]
+
+    # Per-model breakdown (sorted by cost desc)
+    model_breakdown: list[TokenUsageModelBreakdown]
+

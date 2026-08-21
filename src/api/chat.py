@@ -41,6 +41,7 @@ from src.services.context_query_service import (
 from src.services.knowledge_gap_telemetry import record_retrieval_outcome
 from src.services.llm import get_rag_llm
 from src.services.profile_chat_service import self_profile_reply
+from src.services.token_cost import dispatch_token_logging
 from src.services.query_decomposition_service import (
     DecompositionResult,
     decompose_knowledge_query,
@@ -572,6 +573,12 @@ QUY TẮC BẮT BUỘC:
                     HumanMessage(content=prompt),
                 ])
             reply = str(response.content).strip()
+            # --- Theo dõi token & chi phí (chạy nền, không chặn request) ---
+            dispatch_token_logging(
+                ai_message=response,
+                model_name=str(getattr(llm, "model_name", getattr(llm, "model", "mistral-small-latest"))),
+                user_id=current_user.id,
+            )
     except HTTPException:
         raise
     except Exception as exc:
