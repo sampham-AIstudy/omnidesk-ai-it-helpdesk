@@ -188,11 +188,24 @@ class _RemoteOnnxEmbedder:
         self.timeout = settings.embedding_service_timeout_seconds
         self.dimensions = settings.embedding_dimensions
         self._client: httpx.Client | None = None
+        self._lock = threading.Lock()
 
     def _get_client(self) -> httpx.Client:
-        if self._client is None or self._client.is_closed:
-            self._client = httpx.Client(timeout=self.timeout)
-        return self._client
+        with self._lock:
+            if self._client is None or self._client.is_closed:
+                self._client = httpx.Client(timeout=self.timeout)
+            return self._client
+
+    def close(self) -> None:
+        """Close the underlying HTTP client and release connection pool resources."""
+        with self._lock:
+            if self._client is not None:
+                if not self._client.is_closed:
+                    try:
+                        self._client.close()
+                    except Exception as exc:
+                        logger.warning("Error closing _RemoteOnnxEmbedder client: %s", exc)
+                self._client = None
 
     def _call_api(self, texts: list[str]) -> list[list[float]]:
         if not texts:
@@ -224,11 +237,12 @@ class _RemoteOnnxEmbedder:
             for emb in raw_embeddings:
                 if len(emb) != self.dimensions:
                     raise ValueError(f"Expected dimension {self.dimensions}, got {len(emb)}")
+                if not all(isinstance(v, (int, float)) and math.isfinite(v) for v in emb):
+                    raise ValueError("Embedding contains non-finite values (NaN/Inf)")
                 norm = math.sqrt(sum(v * v for v in emb))
-                if norm > 0:
-                    validated_embeddings.append([v / norm for v in emb])
-                else:
-                    validated_embeddings.append([float(v) for v in emb])
+                if not math.isfinite(norm) or norm < 1e-12:
+                    raise ValueError(f"Embedding service returned invalid or zero vector (norm={norm})")
+                validated_embeddings.append([v / norm for v in emb])
             return validated_embeddings
         except Exception as exc:
             logger.error("Remote ONNX embedding service call failed (%s): %s", self.url, exc)
@@ -316,6 +330,12 @@ def reset_rag_singletons() -> None:
     _collection = None
     _ticket_duplicate_collection = None
     _episodic_memory_collection = None
+    for embedder in list(_embedders.values()):
+        if hasattr(embedder, "close") and callable(embedder.close):
+            try:
+                embedder.close()
+            except Exception as exc:
+                logger.warning("Error closing embedder on reset: %s", exc)
     _embedders.clear()
     embed_query.cache_clear()
 

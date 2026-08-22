@@ -630,6 +630,10 @@ async def request_technician(
     )
 
 
+_join_locks: dict[int, asyncio.Lock] = {}
+_join_locks_guard = asyncio.Lock()
+
+
 @router.post("/{ticket_id}/join", response_model=TicketConversationResponse)
 async def join_ticket_conversation(
     ticket_id: int,
@@ -657,36 +661,43 @@ async def join_ticket_conversation(
     ticket.support_mode = TicketSupportMode.HUMAN
     await db.flush()
 
-    # Query for existing join announcement for this manager on this ticket
-    existing_join_res = await db.execute(
-        select(TicketMessage).where(
-            TicketMessage.ticket_id == ticket_id,
-            TicketMessage.sender_type == TicketMessageSender.SYSTEM,
-            TicketMessage.sender_id == current_user.id,
-            (TicketMessage.routing_hint == "manager_joined") | (TicketMessage.content.contains("tham gia"))
-        ).limit(1)
-    )
-    already_announced = existing_join_res.scalars().first() is not None
+    # Acquire per-ticket lock to guarantee atomicity during concurrent joins
+    async with _join_locks_guard:
+        if ticket_id not in _join_locks:
+            _join_locks[ticket_id] = asyncio.Lock()
+        ticket_lock = _join_locks[ticket_id]
 
-    if not already_announced:
-        await add_message(
-            db,
-            ticket_id=ticket_id,
-            sender_type=TicketMessageSender.SYSTEM,
-            sender_id=current_user.id,
-            routing_hint="manager_joined",
-            content=f"👔 **[QUẢN LÝ THAM GIA]** {current_user.full_name} ({current_user.department or 'Quản lý IT'}) đã tham gia vào cuộc trao đổi để chỉ đạo và hỗ trợ xử lý sự cố.",
+    async with ticket_lock:
+        # Query for existing join announcement for this manager on this ticket
+        existing_join_res = await db.execute(
+            select(TicketMessage).where(
+                TicketMessage.ticket_id == ticket_id,
+                TicketMessage.sender_type == TicketMessageSender.SYSTEM,
+                TicketMessage.sender_id == current_user.id,
+                (TicketMessage.routing_hint == "manager_joined") | (TicketMessage.content.contains("tham gia"))
+            ).limit(1)
         )
-        await ticket_service.write_audit_log(
-            db=db,
-            ticket_id=ticket_id,
-            actor_id=current_user.id,
-            actor_type="manager",
-            action=AuditAction.STATUS_CHANGED,
-            description=f"Quản lý {current_user.full_name} tham gia chỉ đạo cuộc trao đổi sự cố.",
-            metadata={"action_type": "manager_joined", "manager_id": current_user.id},
-        )
-        await db.flush()
+        already_announced = existing_join_res.scalars().first() is not None
+
+        if not already_announced:
+            await add_message(
+                db,
+                ticket_id=ticket_id,
+                sender_type=TicketMessageSender.SYSTEM,
+                sender_id=current_user.id,
+                routing_hint="manager_joined",
+                content=f"👔 **[QUẢN LÝ THAM GIA]** {current_user.full_name} ({current_user.department or 'Quản lý IT'}) đã tham gia vào cuộc trao đổi để chỉ đạo và hỗ trợ xử lý sự cố.",
+            )
+            await ticket_service.write_audit_log(
+                db=db,
+                ticket_id=ticket_id,
+                actor_id=current_user.id,
+                actor_type="manager",
+                action=AuditAction.STATUS_CHANGED,
+                description=f"Quản lý {current_user.full_name} tham gia chỉ đạo cuộc trao đổi sự cố.",
+                metadata={"action_type": "manager_joined", "manager_id": current_user.id},
+            )
+            await db.flush()
 
     messages = await list_messages(db, ticket_id)
     return TicketConversationResponse(
