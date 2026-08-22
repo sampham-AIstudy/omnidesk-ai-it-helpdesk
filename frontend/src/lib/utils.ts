@@ -4,11 +4,25 @@ import { vi } from 'date-fns/locale';
 
 export const VIETNAM_TIME_ZONE = 'Asia/Ho_Chi_Minh';
 
+export function parseUtcDate(value: string | Date | null | undefined): Date {
+  if (!value) return new Date();
+  if (value instanceof Date) return value;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.\d+)?$/.test(trimmed)) {
+      return new Date(trimmed.replace(' ', 'T') + 'Z');
+    }
+    return new Date(trimmed);
+  }
+  return new Date(value);
+}
+
 export function formatVietnamTime(
-  value: string | Date,
+  value: string | Date | null | undefined,
   options: Intl.DateTimeFormatOptions = { dateStyle: 'short', timeStyle: 'short' },
 ): string {
-  return new Intl.DateTimeFormat('vi-VN', { timeZone: VIETNAM_TIME_ZONE, ...options }).format(new Date(value));
+  if (!value) return '';
+  return new Intl.DateTimeFormat('vi-VN', { timeZone: VIETNAM_TIME_ZONE, ...options }).format(parseUtcDate(value));
 }
 
 export const CATEGORY_LABELS: Record<TicketCategory, string> = {
@@ -61,9 +75,9 @@ export const ROLE_LABELS: Record<string, string> = {
   admin: 'Quản trị',
 };
 
-export function getSLAStatus(slaDeadline: string | null): 'ok' | 'warning' | 'danger' | 'none' {
+export function getSLAStatus(slaDeadline: string | Date | null | undefined): 'ok' | 'warning' | 'danger' | 'none' {
   if (!slaDeadline) return 'none';
-  const deadline = new Date(slaDeadline);
+  const deadline = parseUtcDate(slaDeadline);
   const now = new Date();
   const hoursLeft = differenceInHours(deadline, now);
   if (hoursLeft < 0) return 'danger';
@@ -72,9 +86,9 @@ export function getSLAStatus(slaDeadline: string | null): 'ok' | 'warning' | 'da
   return 'ok';
 }
 
-export function formatSLACountdown(slaDeadline: string | null): string {
+export function formatSLACountdown(slaDeadline: string | Date | null | undefined): string {
   if (!slaDeadline) return 'Chưa gán SLA';
-  const deadline = new Date(slaDeadline);
+  const deadline = parseUtcDate(slaDeadline);
   const now = new Date();
   const minutesLeft = differenceInMinutes(deadline, now);
   if (minutesLeft < 0) return `Trễ ${Math.abs(minutesLeft)}p`;
@@ -84,8 +98,9 @@ export function formatSLACountdown(slaDeadline: string | null): string {
   return `Còn ${h}h ${m}p`;
 }
 
-export function formatRelative(date: string): string {
-  return formatDistanceToNow(new Date(date), { addSuffix: true, locale: vi });
+export function formatRelative(date: string | Date | null | undefined): string {
+  if (!date) return '';
+  return formatDistanceToNow(parseUtcDate(date), { addSuffix: true, locale: vi });
 }
 
 export const CONFIDENCE_AUTO_MIN = 0.75;
@@ -167,4 +182,36 @@ export function getErrorMessage(err: unknown): string {
     return err.message;
   }
   return 'Đã xảy ra lỗi';
+}
+
+/**
+ * Cleans raw ticket description containing metadata tags and base64 image strings
+ * into a neat, human-readable one-line summary for card previews.
+ */
+export function cleanTicketDescriptionSummary(desc: string | null | undefined): string {
+  if (!desc) return '';
+  let res = desc;
+
+  // Extract actual user description if "---" is present
+  if (res.includes('---')) {
+    const parts = res.split('---');
+    const actual = parts[parts.length - 1]?.trim();
+    if (actual) {
+      const withoutPrefix = actual.replace(/^(?:MÔ TẢ CHI TIẾT SỰ CỐ|Chi tiết sự cố)\s*[:\-\n]*/i, '').trim();
+      if (withoutPrefix) res = withoutPrefix;
+    }
+  }
+
+  // Strip attachment tags
+  res = res.replace(/\[Đính Kèm Ảnh:\s*[^|\]]+(?:\|[^\]]*)?\]/g, '📷 [Ảnh đính kèm]');
+  res = res.replace(/\[Đính Kèm(?: Tệp)?:\s*[^\]]+\]/g, '📎 [Tệp đính kèm]');
+
+  // Strip metadata brackets like [Hệ Thống / Dịch Vụ: ...]
+  res = res.replace(/\[(?:Hệ Thống|Phân Loại|Mức Độ|Mã Sự Cố|Môi Trường|Vị Trí)[^\]]+\]\s*/gi, '');
+
+  // Strip dangling base64 image strings if any
+  res = res.replace(/data:image\/[a-zA-Z0-9+]+;base64,[A-Za-z0-9+/=]+/g, '');
+
+  // Clean up whitespace
+  return res.replace(/\s+/g, ' ').trim();
 }

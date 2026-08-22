@@ -58,6 +58,7 @@ export interface Ticket {
   hitl_note: string | null;
   hitl_decided_at: string | null;
   submitter_id: number;
+  submitter?: User | null;
   /** Optional requester projection returned by detail-oriented ticket endpoints. */
   created_by_user?: User | null;
   assignee_id: number | null;
@@ -65,6 +66,7 @@ export interface Ticket {
   sla_deadline: string | null;
   sla_warning_sent: boolean;
   sla_escalated: boolean;
+  is_pinned?: boolean;
   first_response_at: string | null;
   resolved_at: string | null;
   closed_at?: string | null;
@@ -81,7 +83,7 @@ export interface TicketListResponse {
   page_size: number;
 }
 
-export type TicketMessageSender = 'user' | 'agent' | 'technician' | 'system';
+export type TicketMessageSender = 'user' | 'agent' | 'technician' | 'manager' | 'system';
 
 export interface TicketMessage {
   id: number;
@@ -92,6 +94,7 @@ export interface TicketMessage {
   sources_json: string | null;
   confidence_score: number | null;
   routing_hint: string | null;
+  is_internal?: boolean;
   created_at: string;
 }
 

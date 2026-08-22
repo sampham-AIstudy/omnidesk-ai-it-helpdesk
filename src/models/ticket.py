@@ -206,9 +206,11 @@ class Ticket(Base):
     sla_escalated: Mapped[bool] = mapped_column(Boolean, default=False)
     first_response_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     resolved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    closed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    reopened_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-
+    # Expedite & Pin
+    is_pinned: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    pinned_by_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    pinned_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    pin_reason: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(

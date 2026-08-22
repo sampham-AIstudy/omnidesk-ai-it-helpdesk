@@ -173,7 +173,10 @@ class TicketResponse(BaseModel):
     duplicate_confirmed_by: str | None = None
     parent_incident_ticket_id: int | None = None
     submitter_id: int
-    assignee_id: int | None
+    submitter: UserResponse | None = None
+    created_by_user: UserResponse | None = Field(default=None, validation_alias="submitter")
+    assignee_id: int | None = None
+    assignee: UserResponse | None = None
     sla_deadline: datetime | None
     sla_warning_sent: bool
     sla_escalated: bool
@@ -181,10 +184,11 @@ class TicketResponse(BaseModel):
     resolved_at: datetime | None
     closed_at: datetime | None = None
     reopened_at: datetime | None = None
+    is_pinned: bool = False
     created_at: datetime
     updated_at: datetime
 
-    model_config = {"from_attributes": True}
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)
 
 
 class TicketListResponse(BaseModel):
@@ -192,6 +196,11 @@ class TicketListResponse(BaseModel):
     total: int
     page: int
     page_size: int
+
+
+class TicketPinRequest(BaseModel):
+    pinned: bool = True
+    reason: str | None = Field(default=None, max_length=255)
 
 
 class HITLDecisionRequest(BaseModel):
@@ -202,6 +211,13 @@ class HITLDecisionRequest(BaseModel):
 class TicketStatusUpdate(BaseModel):
     status: TicketStatus
     note: str | None = None
+
+
+class TicketEscalateRequest(BaseModel):
+    reason: str = Field(min_length=3, max_length=500)
+    escalate_to: str = Field(default="manager", max_length=50)
+    bump_priority: bool = False
+    handover_notes: str | None = Field(default=None, max_length=2000)
 
 
 class TicketReopenRequest(BaseModel):
@@ -215,6 +231,7 @@ class TicketRatingRequest(BaseModel):
 
 class TicketMessageCreate(BaseModel):
     message: str = Field(min_length=1, max_length=8000)
+    is_internal: bool = False
 
 
 # ─── Service Request Schemas ──────────────────────────────────────────────────
@@ -313,6 +330,7 @@ class TicketMessageResponse(BaseModel):
     sources_json: str | None
     confidence_score: float | None
     routing_hint: str | None
+    is_internal: bool = False
     created_at: datetime
 
     model_config = {"from_attributes": True}
