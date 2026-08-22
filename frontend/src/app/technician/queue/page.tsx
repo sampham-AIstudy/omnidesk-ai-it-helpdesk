@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { CheckCircle2, ChevronDown, ChevronRight, ExternalLink, Eye, EyeOff, FileText, Maximize2, Pin, RefreshCw, Search, Siren, Sparkles, Wrench, X } from 'lucide-react';
+import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, ExternalLink, Eye, EyeOff, FileText, Maximize2, Pin, RefreshCw, Search, Siren, Sparkles, Wrench, X } from 'lucide-react';
 import TicketCard from '@/components/TicketCard';
 import TicketContextMenu from '@/components/TicketContextMenu';
 import AISolutionViewer from '@/components/AISolutionViewer';
@@ -355,6 +355,52 @@ export default function TechQueuePage() {
                         >
                           {selectedTicket.suggested_solution}
                         </div>
+
+                        {ragSources.length > 0 && (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, marginTop: 8, paddingTop: 6, borderTop: '1px solid #e0f2fe' }}>
+                            <span style={{ fontSize: 10, fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 3 }}>
+                              <BookOpen size={10} /> Nguồn:
+                            </span>
+                            {ragSources.map((source, idx) => {
+                              const label = typeof source === 'string' ? source : source?.label || source?.url || 'Nguồn RAG';
+                              const url = typeof source === 'object' && source?.url ? source.url : '';
+                              const isUrl = Boolean(url && url.startsWith('http')) || label.startsWith('http');
+                              const targetUrl = isUrl ? (url || label) : '';
+                              return (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (targetUrl) {
+                                      window.open(targetUrl, '_blank');
+                                    } else {
+                                      setActiveModal('ai_solution');
+                                    }
+                                  }}
+                                  style={{
+                                    fontSize: 10.5,
+                                    padding: '2px 7px',
+                                    borderRadius: 5,
+                                    background: '#ffffff',
+                                    border: '1px solid #bae6fd',
+                                    color: '#0284c7',
+                                    fontWeight: 700,
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: 3,
+                                    cursor: 'pointer',
+                                    boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                                  }}
+                                  title={targetUrl ? 'Mở liên kết ngoài' : 'Bấm để xem chi tiết bài viết tri thức này'}
+                                >
+                                  <span>{label.replace(/[\[\]]/g, '')}</span>
+                                  <ExternalLink size={9} style={{ opacity: 0.7 }} />
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <div style={{ padding: '8px 10px', background: 'var(--surface-subtle)', borderRadius: 8, fontSize: 11.5, color: 'var(--text-muted)', textAlign: 'center' }}>

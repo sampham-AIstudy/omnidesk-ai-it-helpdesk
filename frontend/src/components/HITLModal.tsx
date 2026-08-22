@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { CheckCircle2, Database, ShieldAlert, X, XCircle } from 'lucide-react';
+import { BookOpen, CheckCircle2, Database, ExternalLink, ShieldAlert, X, XCircle } from 'lucide-react';
 import { ConfidenceBadge, PriorityBadge, Spinner } from './ui';
 import { Ticket } from '@/types';
 import { CATEGORY_LABELS, formatRelative, getErrorMessage } from '@/lib/utils';
@@ -91,13 +91,46 @@ export default function HITLModal({ ticket, onClose }: Props) {
             </div>
             <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{ticket.suggested_solution}</p>
             {ragSources.length > 0 && (
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 10 }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginTop: 10 }}>
+                <span style={{ fontSize: 10.5, fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 3 }}>
+                  <BookOpen size={11} /> Nguồn:
+                </span>
                 {ragSources.map((source, idx) => {
                   const label = typeof source === 'string' ? source : source?.label || source?.url || 'Nguồn RAG';
+                  const url = typeof source === 'object' && source?.url ? source.url : '';
+                  const isUrl = Boolean(url && url.startsWith('http')) || label.startsWith('http');
+                  const targetUrl = isUrl ? (url || label) : '';
                   return (
-                    <span key={idx} className="badge badge-in_progress">
-                      {label}
-                    </span>
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        if (targetUrl) {
+                          window.open(targetUrl, '_blank');
+                        } else {
+                          window.open(`/employee/kb`, '_blank');
+                        }
+                      }}
+                      style={{
+                        fontSize: 11,
+                        padding: '3px 8px',
+                        borderRadius: 6,
+                        background: '#ffffff',
+                        border: '1px solid #bae6fd',
+                        color: '#0284c7',
+                        fontWeight: 700,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 4,
+                        cursor: 'pointer',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                      }}
+                      title={targetUrl ? 'Mở liên kết nguồn đã xác thực' : 'Mở kho tri thức chuẩn'}
+                    >
+                      <BookOpen size={10} />
+                      <span>{label.replace(/[\[\]]/g, '')}</span>
+                      <ExternalLink size={9} style={{ opacity: 0.7 }} />
+                    </button>
                   );
                 })}
               </div>

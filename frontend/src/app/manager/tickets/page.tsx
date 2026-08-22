@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import {
+  BookOpen,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
@@ -427,6 +428,62 @@ export default function ManagerTicketsPage() {
                         >
                           {selectedTicket.suggested_solution}
                         </div>
+
+                        {(() => {
+                          let ragSources: Array<string | { label?: string; url?: string }> = [];
+                          try {
+                            const parsed = JSON.parse(selectedTicket.rag_sources ?? '[]');
+                            ragSources = Array.isArray(parsed) ? parsed : [];
+                          } catch {
+                            ragSources = [];
+                          }
+                          if (ragSources.length === 0) return null;
+                          return (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, marginTop: 8, paddingTop: 6, borderTop: '1px solid #e0f2fe' }}>
+                              <span style={{ fontSize: 10, fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <BookOpen size={10} /> Nguồn:
+                              </span>
+                              {ragSources.map((source, idx) => {
+                                const label = typeof source === 'string' ? source : source?.label || source?.url || 'Nguồn RAG';
+                                const url = typeof source === 'object' && source?.url ? source.url : '';
+                                const isUrl = Boolean(url && url.startsWith('http')) || label.startsWith('http');
+                                const targetUrl = isUrl ? (url || label) : '';
+                                return (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (targetUrl) {
+                                        window.open(targetUrl, '_blank');
+                                      } else {
+                                        setActiveModal('ai_solution');
+                                      }
+                                    }}
+                                    style={{
+                                      fontSize: 10.5,
+                                      padding: '2px 7px',
+                                      borderRadius: 5,
+                                      background: '#ffffff',
+                                      border: '1px solid #bae6fd',
+                                      color: '#0284c7',
+                                      fontWeight: 700,
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: 3,
+                                      cursor: 'pointer',
+                                      boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                                    }}
+                                    title={targetUrl ? 'Mở liên kết ngoài' : 'Bấm để xem chi tiết bài viết tri thức này'}
+                                  >
+                                    <span>{label.replace(/[\[\]]/g, '')}</span>
+                                    <ExternalLink size={9} style={{ opacity: 0.7 }} />
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          );
+                        })()}
                       </div>
                     ) : (
                       <div style={{ padding: '8px 10px', background: 'var(--surface-subtle)', borderRadius: 8, fontSize: 11.5, color: 'var(--text-muted)', textAlign: 'center' }}>

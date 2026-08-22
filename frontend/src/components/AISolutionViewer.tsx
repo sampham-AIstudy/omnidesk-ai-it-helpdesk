@@ -59,6 +59,7 @@ type ParsedBlock =
   | { type: 'divider' }
   | { type: 'section_divider'; label: string }
   | { type: 'spec_tags'; tags: { label: string; value: string }[] }
+  | { type: 'sources'; sources: string[] }
   | { type: 'header'; text: string }
   | { type: 'table'; headers: string[]; rows: string[][] }
   | { type: 'step'; step: OrderedStep }
@@ -68,13 +69,7 @@ type ParsedBlock =
 function parseHierarchicalBlocks(text: string): ParsedBlock[] {
   if (!text) return [];
 
-  // Remove standalone repetitive lines like "• Nguồn: [kb-002]...", "Nguồn: [web-windows-wifi-007]..."
-  const cleaned = text.replace(
-    /^[•\-\*]?\s*(?:Nguồn|Tham khảo|Nguồn tham khảo):\s*(?:\[[A-Za-z0-9_.:-]+\](?:\s*,\s*\[[A-Za-z0-9_.:-]+\])*)\s*$/gim,
-    ''
-  );
-
-  const rawLines = cleaned.split('\n').map((l) => l.trim());
+  const rawLines = text.split('\n').map((l) => l.trim());
   const blocks: ParsedBlock[] = [];
 
   let currentStep: OrderedStep | null = null;
@@ -92,6 +87,19 @@ function parseHierarchicalBlocks(text: string): ParsedBlock[] {
   while (i < rawLines.length) {
     const line = rawLines[i];
     if (!line) {
+      i++;
+      continue;
+    }
+
+    // Sources line (e.g. "Nguồn tham khảo: [kb-002]", "Nguồn: KB-001", "• Nguồn: https://...")
+    const sourceMatch = line.match(/^[•\-\*]?\s*(?:Nguồn|Tham khảo|Nguồn tham khảo|Tài liệu tham khảo):\s*(.+)$/i);
+    if (sourceMatch) {
+      flush();
+      const rawSources = sourceMatch[1]
+        .split(/[,;]+/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+      blocks.push({ type: 'sources', sources: rawSources });
       i++;
       continue;
     }
@@ -532,8 +540,8 @@ function renderInlineContent(
 ): React.ReactNode[] {
   if (!text) return [];
 
-  // Match all special tokens
-  const regex = /(\[\[ticket:\d+\|[^\]]+\]\]|\[MEM-\d+-[^\]]+\]|\[[^\]]+\]\([^)]+\)|https?:\/\/[^\s<>)"]+|\[(?:kb|web|doc)-[A-Za-z0-9_.:-]+\]|\*\*[^*]+\*\*|`[^`]+`|\*\(Nguồn:[^)]+\)\*|SHOW PROCESSLIST|SELECT |KILL |EXPLAIN ANALYZE|ANALYZE TABLE|VACUUM ANALYZE)/gi;
+  // Match all special tokens including KB tags like [kb-001], KB-001, urls, markdown links
+  const regex = /(\[\[ticket:\d+\|[^\]]+\]\]|\[MEM-\d+-[^\]]+\]|\[[^\]]+\]\([^)]+\)|https?:\/\/[^\s<>)"]+|\[(?:kb|web|doc)-[A-Za-z0-9_.:-]+\]|\b(?:KB|kb|doc|web)-\d+\b|\*\*[^*]+\*\*|`[^`]+`|\*\(Nguồn:[^)]+\)\*|SHOW PROCESSLIST|SELECT |KILL |EXPLAIN ANALYZE|ANALYZE TABLE|VACUUM ANALYZE)/gi;
   const tokens = text.split(regex);
 
   return tokens.map((token, idx) => {
@@ -676,13 +684,15 @@ function renderInlineContent(
       );
     }
 
-    // KB references [kb-xxx] or [web-xxx]
-    if (/^\[(?:kb|web|doc)-[A-Za-z0-9_.:-]+\]$/i.test(token)) {
+    // KB references [kb-xxx], [web-xxx], or standalone KB-xxx / kb-xxx / doc-xxx
+    const kbMatch = token.match(/^(?:\[((?:kb|web|doc)-[A-Za-z0-9_.:-]+)\]|((?:kb|web|doc)-\d+))$/i);
+    if (kbMatch) {
+      const kbTag = kbMatch[1] || kbMatch[2];
       return (
         <button
           key={idx}
           type="button"
-          onClick={() => onSelectKB(token)}
+          onClick={() => onSelectKB(kbTag)}
           title="Bấm để xem chi tiết bài viết tri thức này"
           style={{
             display: 'inline-flex',
@@ -702,7 +712,7 @@ function renderInlineContent(
           }}
         >
           <BookOpen size={11} />
-          {token.slice(1, -1)}
+          {kbTag.toUpperCase()}
           <ExternalLink size={10} style={{ opacity: 0.8 }} />
         </button>
       );
@@ -838,6 +848,66 @@ export function AISolutionViewer({ content, className = '' }: AISolutionViewerPr
                     </span>
                   </div>
                 ))}
+              </div>
+            );
+          }
+
+          // Sources Section (Nguồn tham khảo)
+          if (block.type === 'sources') {
+            return (
+              <div
+                key={bIdx}
+                style={{
+                  marginTop: 8,
+                  padding: '10px 12px',
+                  background: '#f0f9ff',
+                  borderRadius: 10,
+                  border: '1px solid #bae6fd',
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  alignItems: 'center',
+                  gap: 8,
+                }}
+              >
+                <span style={{ fontSize: 11, fontWeight: 800, color: '#0369a1', display: 'flex', alignItems: 'center', gap: 4, textTransform: 'uppercase' }}>
+                  <BookOpen size={13} /> Nguồn tham khảo:
+                </span>
+                {block.sources.map((src, sIdx) => {
+                  const isUrl = src.startsWith('http://') || src.startsWith('https://');
+                  return (
+                    <button
+                      key={sIdx}
+                      type="button"
+                      onClick={() => {
+                        if (isUrl) {
+                          window.open(src, '_blank');
+                        } else {
+                          setSelectedKB(src);
+                        }
+                      }}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: 5,
+                        background: '#ffffff',
+                        color: '#0284c7',
+                        padding: '4px 10px',
+                        borderRadius: 6,
+                        fontSize: 11.5,
+                        fontWeight: 700,
+                        border: '1px solid #bae6fd',
+                        cursor: 'pointer',
+                        boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+                        transition: 'all 120ms ease',
+                      }}
+                      title={isUrl ? 'Mở liên kết ngoài' : 'Bấm để xem chi tiết bài viết tri thức này'}
+                    >
+                      <BookOpen size={11} />
+                      <span>{src.replace(/[\[\]]/g, '')}</span>
+                      <ExternalLink size={10} style={{ opacity: 0.8 }} />
+                    </button>
+                  );
+                })}
               </div>
             );
           }
