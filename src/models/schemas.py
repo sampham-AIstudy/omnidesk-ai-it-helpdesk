@@ -214,7 +214,7 @@ class TicketStatusUpdate(BaseModel):
 
 
 class TicketEscalateRequest(BaseModel):
-    reason: str = Field(min_length=3, max_length=500)
+    reason: str = Field(default="Chuyên viên kỹ thuật yêu cầu leo thang xử lý lên cấp Quản lý.", min_length=3, max_length=500)
     escalate_to: str = Field(default="manager", max_length=50)
     bump_priority: bool = False
     handover_notes: str | None = Field(default=None, max_length=2000)

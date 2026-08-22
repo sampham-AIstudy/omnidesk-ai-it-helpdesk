@@ -150,15 +150,6 @@ export default function ManagerTicketDetailPage({ params }: { params: Promise<{ 
     onError: (err) => toast.error(getErrorMessage(err)),
   });
 
-  const escalate = useMutation({
-    mutationFn: async () => (await api.post(`/tickets/${id}/escalate`)).data,
-    onSuccess: () => {
-      toast.success('Đã nâng mức độ leo thang sự cố');
-      refresh();
-    },
-    onError: (err) => toast.error(getErrorMessage(err)),
-  });
-
   if (isLoading)
     return (
       <div className="card" style={{ padding: 72, textAlign: 'center' }}>

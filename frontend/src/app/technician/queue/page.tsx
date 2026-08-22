@@ -7,6 +7,7 @@ import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, ExternalLink, Eye, E
 import TicketCard from '@/components/TicketCard';
 import TicketContextMenu from '@/components/TicketContextMenu';
 import AISolutionViewer from '@/components/AISolutionViewer';
+import EscalateModal from '@/components/EscalateModal';
 import { ConfidenceBadge, EmptyState, PageHeader, PriorityBadge, SLABadge, Spinner, StatusBadge } from '@/components/ui';
 import { Ticket, TicketStatus } from '@/types';
 import { CATEGORY_LABELS, extractTicketStructuredDescription, formatRelative, getErrorMessage } from '@/lib/utils';
@@ -29,6 +30,7 @@ export default function TechQueuePage() {
   const [showRightPanel, setShowRightPanel] = useState(true);
   const [activeModal, setActiveModal] = useState<'description' | 'ai_solution' | null>(null);
   const [inspectorTab, setInspectorTab] = useState<'content' | 'properties'>('content');
+  const [escalatingTicket, setEscalatingTicket] = useState<Ticket | null>(null);
   const [contextMenu, setContextMenu] = useState<{
     ticket: Ticket | null;
     position: { x: number; y: number } | null;
@@ -77,16 +79,6 @@ export default function TechQueuePage() {
     mutationFn: async (ticketId: number) => (await api.patch(`/tickets/${ticketId}/status`, { status: 'closed', note: 'Kỹ thuật viên xác nhận đã xử lý.' })).data,
     onSuccess: () => {
       toast.success('Ticket đã đóng');
-      queryClient.invalidateQueries({ queryKey: ['tech-queue'] });
-      queryClient.invalidateQueries({ queryKey: ['ticket'] });
-    },
-    onError: (err) => toast.error(getErrorMessage(err)),
-  });
-
-  const escalateMutation = useMutation({
-    mutationFn: async (ticketId: number) => (await api.post(`/tickets/${ticketId}/escalate`)).data,
-    onSuccess: () => {
-      toast.success('Ticket đã leo thang');
       queryClient.invalidateQueries({ queryKey: ['tech-queue'] });
       queryClient.invalidateQueries({ queryKey: ['ticket'] });
     },
@@ -510,8 +502,8 @@ export default function TechQueuePage() {
                   <button
                     className="btn-danger"
                     style={{ height: 28, fontSize: 11, padding: '0 4px' }}
-                    disabled={escalateMutation.isPending || selectedTicket.status === 'closed'}
-                    onClick={() => escalateMutation.mutate(selectedTicket.id)}
+                    disabled={selectedTicket.status === 'closed' || selectedTicket.status === 'resolved'}
+                    onClick={() => setEscalatingTicket(selectedTicket)}
                   >
                     <Siren size={12} />
                     <span>Leo thang</span>
@@ -588,13 +580,25 @@ export default function TechQueuePage() {
         </div>
       )}
 
+      {/* Escalate Modal */}
+      {escalatingTicket && (
+        <EscalateModal
+          ticket={escalatingTicket}
+          onClose={() => setEscalatingTicket(null)}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['tech-queue'] });
+            queryClient.invalidateQueries({ queryKey: ['ticket'] });
+          }}
+        />
+      )}
+
       {/* Right-Click Fast Action Menu */}
       <TicketContextMenu
         ticket={contextMenu.ticket}
         position={contextMenu.position}
         onClose={() => setContextMenu({ ticket: null, position: null })}
         onTogglePin={(t) => pinMutation.mutate({ ticketId: t.id, is_pinned: !t.is_pinned })}
-        onEscalate={(t) => escalateMutation.mutate(t.id)}
+        onEscalate={(t) => setEscalatingTicket(t)}
         isStaff={true}
       />
     </div>

@@ -174,7 +174,7 @@ export function getErrorMessage(err: unknown): string {
   if (err && typeof err === 'object' && 'message' in err) {
     const msg = (err as { message?: string }).message;
     if (msg === 'Network Error') {
-      return 'Lỗi kết nối: Không thể kết nối tới Server Backend (port 8000). Vui lòng kiểm tra lại xem Backend (python run.py) có đang chạy không.';
+      return 'Lỗi kết nối: Không thể kết nối tới Server Backend. Vui lòng kiểm tra lại dịch vụ Backend hoặc cấu hình mạng.';
     }
     if (msg) return msg;
   }

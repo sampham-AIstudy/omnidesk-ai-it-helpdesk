@@ -108,6 +108,8 @@ export default function TokenUsagePage() {
 
   useEffect(() => {
     fetchData();
+    const interval = setInterval(fetchData, 10000);
+    return () => clearInterval(interval);
   }, [fetchData]);
 
   return (
@@ -115,25 +117,31 @@ export default function TokenUsagePage() {
       {/* Header */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Token &amp; Cost Tracking</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-slate-900">Token &amp; Cost Tracking</h1>
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              Live Deployment
+            </span>
+          </div>
           <p className="mt-1 text-sm text-slate-500">
-            Chi phí sử dụng Mistral AI API — dữ liệu được ghi tại thời điểm gọi API
+            Chi phí sử dụng AI API thực tế — dữ liệu được ghi nhận và tổng hợp thời gian thực (Real-time).
           </p>
         </div>
         <div className="flex items-center gap-3">
           {lastRefreshed && (
             <span className="hidden text-xs text-slate-400 sm:block">
-              Cập nhật lúc {lastRefreshed.toLocaleTimeString('vi-VN')}
+              Tự động cập nhật lúc {lastRefreshed.toLocaleTimeString('vi-VN')}
             </span>
           )}
           <button
             id="btn-refresh-token-usage"
             onClick={fetchData}
             disabled={loading}
-            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60"
+            className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700 disabled:opacity-60 cursor-pointer"
           >
             <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
-            {loading ? 'Đang tải...' : 'Refresh'}
+            {loading ? 'Đang tải...' : 'Làm mới'}
           </button>
         </div>
       </div>

@@ -66,7 +66,7 @@ def _duplicate_response(check) -> DuplicateCheckResponse:
         shared_incident_signal=check.shared_incident_signal,
         matches=[DuplicateTicketCandidate(
             ticket_id=match.ticket.id, ticket_number=match.ticket.ticket_number, title=match.ticket.title,
-            status=match.ticket.status, resolved_at=match.ticket.resolved_at or match.ticket.closed_at,
+            status=match.ticket.status, resolved_at=getattr(match.ticket, "resolved_at", None) or getattr(match.ticket, "closed_at", None),
             solution=match.solution, classification=match.classification, score=round(match.score, 4),
             detection_method=match.method, is_active=match.is_active, is_resolved=match.is_resolved,
         ) for match in check.matches],

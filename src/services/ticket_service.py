@@ -13,7 +13,14 @@ from sqlalchemy.orm import selectinload
 
 from src.config import get_settings
 from src.models.audit_log import AuditAction, AuditLog
-from src.models.ticket import Ticket, TicketPriority, TicketStatus
+from src.models.ticket import (
+    Ticket,
+    TicketCategory,
+    TicketPriority,
+    TicketStatus,
+    TicketSupportMode,
+    TicketUrgency,
+)
 from src.models.user import User
 from src.timezone import vietnam_now
 
@@ -237,8 +244,6 @@ async def update_ticket_classification(
     if not ticket:
         return None
 
-    from src.models.ticket import TicketCategory, TicketPriority, TicketUrgency
-
     ticket.category = TicketCategory(category)
     ticket.priority = TicketPriority(priority)
     ticket.urgency = TicketUrgency(urgency)
@@ -380,7 +385,6 @@ async def escalate_ticket(
     old_status = ticket.status.value if hasattr(ticket.status, "value") else str(ticket.status)
     old_priority = ticket.priority.value if hasattr(ticket.priority, "value") and ticket.priority else str(ticket.priority)
 
-    from src.models.ticket import TicketPriority, TicketStatus
     ticket.status = TicketStatus.ESCALATED
     ticket.sla_escalated = True
 
@@ -445,7 +449,6 @@ async def takeover_ticket(
         return None
 
     old_status = ticket.status.value if hasattr(ticket.status, 'value') else str(ticket.status)
-    from src.models.ticket import TicketSupportMode
     ticket.assignee_id = technician_id
     ticket.status = TicketStatus.IN_PROGRESS
     ticket.support_mode = TicketSupportMode.HUMAN
