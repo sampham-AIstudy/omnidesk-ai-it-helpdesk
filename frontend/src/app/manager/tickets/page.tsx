@@ -57,6 +57,7 @@ export default function ManagerTicketsPage() {
   const [hitlTicket, setHitlTicket] = useState<Ticket | null>(null);
   const [showRightPanel, setShowRightPanel] = useState(true);
   const [activeModal, setActiveModal] = useState<'description' | 'ai_solution' | null>(null);
+  const [inspectorTab, setInspectorTab] = useState<'content' | 'properties'>('content');
   const [contextMenu, setContextMenu] = useState<{
     ticket: Ticket | null;
     position: { x: number; y: number } | null;
@@ -256,18 +257,23 @@ export default function ManagerTicketsPage() {
           )}
         </div>
 
-        {/* Streamlined Compact Right Inspector Panel (Linear / Intercom style) */}
+        {/* Streamlined Compact Right Inspector Panel (Linear / Intercom style with Tabs) */}
         {showRightPanel && (
-          <aside className="card queue-detail-panel" style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 12, position: 'sticky', top: 80, height: 'fit-content' }}>
+          <aside className="card queue-detail-panel" style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 10, position: 'sticky', top: 80, height: 'fit-content' }}>
             {!selectedTicket ? (
-              <EmptyState icon="inbox" title="Chọn một sự cố" desc="Thông tin thuộc tính và chỉ đạo xử lý sẽ hiển thị ở đây." />
+              <EmptyState icon="inbox" title="Chọn một sự cố" desc="Thông tin nội dung và chỉ đạo xử lý sẽ hiển thị ở đây." />
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {/* Inspector Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 8 }}>
                   <div style={{ minWidth: 0 }}>
-                    <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)' }}>#{selectedTicket.ticket_number}</span>
-                    <h3 style={{ margin: '2px 0 0', fontSize: 14, fontWeight: 800, lineHeight: 1.35, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 2 }}>
+                      <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)' }}>#{selectedTicket.ticket_number}</span>
+                      <StatusBadge status={selectedTicket.status} />
+                      <PriorityBadge priority={selectedTicket.priority ?? 'medium'} />
+                      {selectedTicket.is_pinned && <span style={{ fontSize: 10, fontWeight: 800, color: '#92400e', background: '#fef3c7', padding: '1px 5px', borderRadius: 4 }}>📌 Top</span>}
+                    </div>
+                    <h3 style={{ margin: '2px 0 0', fontSize: 13.5, fontWeight: 800, lineHeight: 1.35, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                       {selectedTicket.title}
                     </h3>
                   </div>
@@ -281,156 +287,207 @@ export default function ManagerTicketsPage() {
                   </a>
                 </div>
 
+                {/* Tab Switcher: Nội dung & AI vs Thuộc tính */}
+                <div style={{ display: 'flex', gap: 4, padding: 3, background: 'var(--surface-subtle)', borderRadius: 8, border: '1px solid var(--border-subtle)' }}>
+                  <button
+                    type="button"
+                    onClick={() => setInspectorTab('content')}
+                    style={{
+                      flex: 1,
+                      padding: '5px 8px',
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      borderRadius: 6,
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 5,
+                      background: inspectorTab === 'content' ? 'var(--surface)' : 'transparent',
+                      color: inspectorTab === 'content' ? 'var(--primary)' : 'var(--text-muted)',
+                      boxShadow: inspectorTab === 'content' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                      transition: 'all 120ms ease',
+                    }}
+                  >
+                    <Sparkles size={12} color={inspectorTab === 'content' ? 'var(--primary)' : 'currentColor'} />
+                    <span>Nội dung & AI</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setInspectorTab('properties')}
+                    style={{
+                      flex: 1,
+                      padding: '5px 8px',
+                      fontSize: 11.5,
+                      fontWeight: 700,
+                      borderRadius: 6,
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 5,
+                      background: inspectorTab === 'properties' ? 'var(--surface)' : 'transparent',
+                      color: inspectorTab === 'properties' ? 'var(--primary)' : 'var(--text-muted)',
+                      boxShadow: inspectorTab === 'properties' ? '0 1px 3px rgba(0,0,0,0.08)' : 'none',
+                      transition: 'all 120ms ease',
+                    }}
+                  >
+                    <FileText size={12} color={inspectorTab === 'properties' ? 'var(--primary)' : 'currentColor'} />
+                    <span>Thuộc tính</span>
+                  </button>
+                </div>
+
+                {/* Tab 1: Nội dung & Đề xuất AI */}
+                {inspectorTab === 'content' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {/* Clean Description Preview Card */}
+                    <div style={{ background: 'var(--surface-subtle)', borderRadius: 10, padding: '9px 11px', border: '1px solid var(--border-default)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                        <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 4 }}>
+                          <FileText size={11} /> Mô tả sự cố
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setActiveModal('description')}
+                          className="btn-ghost"
+                          style={{ fontSize: 11, padding: '1px 6px', height: 20, color: 'var(--primary)', display: 'inline-flex', alignItems: 'center', gap: 3 }}
+                          title="Mở toàn màn hình mô tả sự cố"
+                        >
+                          <Maximize2 size={10} />
+                          <span>Xem đủ</span>
+                        </button>
+                      </div>
+                      <div
+                        onClick={() => setActiveModal('description')}
+                        style={{
+                          fontSize: 12,
+                          color: 'var(--text-secondary)',
+                          lineHeight: 1.45,
+                          cursor: 'pointer',
+                          display: '-webkit-box',
+                          WebkitLineClamp: 3,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden',
+                        }}
+                        title="Nhấp để xem đầy đủ nội dung"
+                      >
+                        {selectedTicket.description}
+                      </div>
+                    </div>
+
+                    {/* Clean AI Suggestions Card */}
+                    {selectedTicket.suggested_solution ? (
+                      <div style={{ background: '#f8fcff', borderRadius: 10, padding: '9px 11px', border: '1px solid #b7e8f2' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                          <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--cyan, #0891b2)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Sparkles size={11} /> Đề xuất AI
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setActiveModal('ai_solution')}
+                            className="btn-ghost"
+                            style={{ fontSize: 11, padding: '1px 6px', height: 20, color: 'var(--cyan, #0891b2)', display: 'inline-flex', alignItems: 'center', gap: 3 }}
+                            title="Mở toàn màn hình giải pháp AI"
+                          >
+                            <Maximize2 size={10} />
+                            <span>Xem đủ</span>
+                          </button>
+                        </div>
+                        <div
+                          onClick={() => setActiveModal('ai_solution')}
+                          style={{
+                            fontSize: 12,
+                            color: 'var(--text-secondary)',
+                            lineHeight: 1.45,
+                            cursor: 'pointer',
+                            display: '-webkit-box',
+                            WebkitLineClamp: 3,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                          }}
+                          title="Nhấp để xem toàn bộ phân tích AI"
+                        >
+                          {selectedTicket.suggested_solution}
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ padding: '8px 10px', background: 'var(--surface-subtle)', borderRadius: 8, fontSize: 11.5, color: 'var(--text-muted)', textAlign: 'center' }}>
+                        Chưa có đề xuất giải pháp tự động
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Tab 2: Thuộc tính Kỹ thuật */}
+                {inspectorTab === 'properties' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7, padding: '8px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Hạn SLA</span>
+                      <SLABadge deadline={selectedTicket.sla_deadline} />
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
+                      <span style={{ color: 'var(--text-muted)' }}>Người gửi</span>
+                      {(() => {
+                        const userObj = selectedTicket.created_by_user || selectedTicket.submitter;
+                        const name = userObj?.full_name || (selectedTicket.submitter_id ? `Nhân viên #${selectedTicket.submitter_id}` : 'Người dùng');
+                        const dept = userObj?.department;
+                        return (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 5, maxWidth: 180 }}>
+                            <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'grid', placeItems: 'center', fontSize: 9.5, fontWeight: 800, flexShrink: 0 }}>
+                              {name.slice(0, 1)}
+                            </div>
+                            <span style={{ fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${name}${dept ? ` (${dept})` : ''}`}>
+                              {name}{dept ? ` (${dept})` : ''}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </div>
+
+                    {selectedTicket.category && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
+                        <span style={{ color: 'var(--text-muted)' }}>Phân loại</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)' }}>
+                          {CATEGORY_LABELS[selectedTicket.category]}
+                        </span>
+                      </div>
+                    )}
+
+                    {selectedTicket.routing_target && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
+                        <span style={{ color: 'var(--text-muted)' }}>Định tuyến</span>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: '#047857' }}>
+                          🎯 {selectedTicket.routing_target}
+                        </span>
+                      </div>
+                    )}
+
+                    {selectedTicket.confidence_score != null && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
+                        <span style={{ color: 'var(--text-muted)' }}>Tin cậy AI</span>
+                        <ConfidenceBadge score={selectedTicket.confidence_score} />
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: 'var(--text-muted)', paddingTop: 2 }}>
+                      <span>Thời gian tạo</span>
+                      <span>{formatRelative(selectedTicket.created_at)}</span>
+                    </div>
+                  </div>
+                )}
+
                 {/* Primary CTA Button */}
                 <a
                   className="btn-primary"
                   href={`/manager/tickets/${selectedTicket.id}`}
-                  style={{ justifyContent: 'center', textDecoration: 'none', height: 32, fontSize: 12 }}
+                  style={{ justifyContent: 'center', textDecoration: 'none', height: 32, fontSize: 12, marginTop: 2 }}
                 >
                   Mở Workspace Chỉ đạo ↗
                 </a>
-
-                {/* Clean Properties Key-Value Matrix */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 7, padding: '10px 0', borderTop: '1px solid var(--border-subtle)', borderBottom: '1px solid var(--border-subtle)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Trạng thái</span>
-                    <StatusBadge status={selectedTicket.status} />
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Mức ưu tiên</span>
-                    <div style={{ display: 'flex', gap: 5, alignItems: 'center' }}>
-                      {selectedTicket.is_pinned && <span style={{ fontSize: 10, fontWeight: 800, color: '#92400e', background: '#fef3c7', padding: '1px 5px', borderRadius: 4 }}>📌 Top</span>}
-                      <PriorityBadge priority={selectedTicket.priority ?? 'medium'} />
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Hạn SLA</span>
-                    <SLABadge deadline={selectedTicket.sla_deadline} />
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
-                    <span style={{ color: 'var(--text-muted)' }}>Người gửi</span>
-                    {(() => {
-                      const userObj = selectedTicket.created_by_user || selectedTicket.submitter;
-                      const name = userObj?.full_name || (selectedTicket.submitter_id ? `Nhân viên #${selectedTicket.submitter_id}` : 'Người dùng');
-                      const dept = userObj?.department;
-                      return (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 5, maxWidth: 180 }}>
-                          <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'var(--primary)', color: '#fff', display: 'grid', placeItems: 'center', fontSize: 9.5, fontWeight: 800, flexShrink: 0 }}>
-                            {name.slice(0, 1)}
-                          </div>
-                          <span style={{ fontWeight: 600, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={`${name}${dept ? ` (${dept})` : ''}`}>
-                            {name}{dept ? ` (${dept})` : ''}
-                          </span>
-                        </div>
-                      );
-                    })()}
-                  </div>
-
-                  {selectedTicket.category && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
-                      <span style={{ color: 'var(--text-muted)' }}>Phân loại</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)' }}>
-                        {CATEGORY_LABELS[selectedTicket.category]}
-                      </span>
-                    </div>
-                  )}
-
-                  {selectedTicket.routing_target && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
-                      <span style={{ color: 'var(--text-muted)' }}>Định tuyến</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: '#047857' }}>
-                        🎯 {selectedTicket.routing_target}
-                      </span>
-                    </div>
-                  )}
-
-                  {selectedTicket.confidence_score != null && (
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 12 }}>
-                      <span style={{ color: 'var(--text-muted)' }}>Tin cậy AI</span>
-                      <ConfidenceBadge score={selectedTicket.confidence_score} />
-                    </div>
-                  )}
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 11, color: 'var(--text-muted)', paddingTop: 2 }}>
-                    <span>Thời gian tạo</span>
-                    <span>{formatRelative(selectedTicket.created_at)}</span>
-                  </div>
-                </div>
-
-                {/* Clean Description Preview Card */}
-                <div style={{ background: 'var(--surface-subtle)', borderRadius: 10, padding: '9px 11px', border: '1px solid var(--border-default)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                    <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 4 }}>
-                      <FileText size={11} /> Mô tả sự cố
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setActiveModal('description')}
-                      className="btn-ghost"
-                      style={{ fontSize: 11, padding: '1px 6px', height: 20, color: 'var(--primary)', display: 'inline-flex', alignItems: 'center', gap: 3 }}
-                      title="Mở toàn màn hình mô tả sự cố"
-                    >
-                      <Maximize2 size={10} />
-                      <span>Xem đủ</span>
-                    </button>
-                  </div>
-                  <div
-                    onClick={() => setActiveModal('description')}
-                    style={{
-                      fontSize: 12,
-                      color: 'var(--text-secondary)',
-                      lineHeight: 1.45,
-                      cursor: 'pointer',
-                      display: '-webkit-box',
-                      WebkitLineClamp: 3,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden',
-                    }}
-                    title="Nhấp để xem đầy đủ nội dung"
-                  >
-                    {selectedTicket.description}
-                  </div>
-                </div>
-
-                {/* Clean AI Suggestions Card */}
-                {selectedTicket.suggested_solution && (
-                  <div style={{ background: '#f8fcff', borderRadius: 10, padding: '9px 11px', border: '1px solid #b7e8f2' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                      <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--cyan, #0891b2)', display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <Sparkles size={11} /> Đề xuất AI
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => setActiveModal('ai_solution')}
-                        className="btn-ghost"
-                        style={{ fontSize: 11, padding: '1px 6px', height: 20, color: 'var(--cyan, #0891b2)', display: 'inline-flex', alignItems: 'center', gap: 3 }}
-                        title="Mở toàn màn hình giải pháp AI"
-                      >
-                        <Maximize2 size={10} />
-                        <span>Xem đủ</span>
-                      </button>
-                    </div>
-                    <div
-                      onClick={() => setActiveModal('ai_solution')}
-                      style={{
-                        fontSize: 12,
-                        color: 'var(--text-secondary)',
-                        lineHeight: 1.45,
-                        cursor: 'pointer',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical',
-                        overflow: 'hidden',
-                      }}
-                      title="Nhấp để xem toàn bộ phân tích AI"
-                    >
-                      {selectedTicket.suggested_solution}
-                    </div>
-                  </div>
-                )}
 
                 {/* Fast Action Buttons */}
                 <div style={{ display: 'grid', gridTemplateColumns: selectedTicket.status === 'pending_hitl' ? '1fr 1fr' : '1fr 1fr', gap: 6, marginTop: 2 }}>
