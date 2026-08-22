@@ -57,6 +57,8 @@ interface OrderedStep {
 
 type ParsedBlock =
   | { type: 'divider' }
+  | { type: 'section_divider'; label: string }
+  | { type: 'spec_tags'; tags: { label: string; value: string }[] }
   | { type: 'header'; text: string }
   | { type: 'table'; headers: string[]; rows: string[][] }
   | { type: 'step'; step: OrderedStep }
@@ -91,6 +93,32 @@ function parseHierarchicalBlocks(text: string): ParsedBlock[] {
     const line = rawLines[i];
     if (!line) {
       i++;
+      continue;
+    }
+
+    // Section Divider like "--- MÔ TẢ CHI TIẾT SỰ CỐ ---"
+    const sectionDividerMatch = line.match(/^(?:---+|\*\*\*+|===+)?\s*(?:---\s*)?(MÔ TẢ CHI TIẾT SỰ CỐ|MÔ TẢ SỰ CỐ|CHI TIẾT SỰ CỐ|CHI TIẾT YÊU CẦU|CHI TIẾT LỖI|MÔ TẢ LỖI)(?:\s*---)?\s*(?:---+|\*\*\*+|===+)?$/i);
+    if (sectionDividerMatch) {
+      flush();
+      blocks.push({ type: 'section_divider', label: sectionDividerMatch[1].trim() });
+      i++;
+      continue;
+    }
+
+    // Bracket Spec Tags: [Key: Value]
+    if (/^\[([^:\]]+):\s*([^\]]+)\]$/.test(line)) {
+      flush();
+      const tags: { label: string; value: string }[] = [];
+      while (i < rawLines.length && /^\[([^:\]]+):\s*([^\]]+)\]$/.test(rawLines[i])) {
+        const m = rawLines[i].match(/^\[([^:\]]+):\s*([^\]]+)\]$/);
+        if (m) {
+          tags.push({ label: m[1].trim(), value: m[2].trim() });
+        }
+        i++;
+      }
+      if (tags.length > 0) {
+        blocks.push({ type: 'spec_tags', tags });
+      }
       continue;
     }
 
@@ -736,6 +764,81 @@ export function AISolutionViewer({ content, className = '' }: AISolutionViewerPr
                   margin: '4px 0',
                 }}
               />
+            );
+          }
+
+          // Section Divider (e.g. "--- MÔ TẢ CHI TIẾT SỰ CỐ ---")
+          if (block.type === 'section_divider') {
+            return (
+              <div
+                key={bIdx}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  margin: '12px 0 6px',
+                }}
+              >
+                <div style={{ height: 1, flex: 1, background: 'var(--border, #e2e8f0)' }} />
+                <span
+                  style={{
+                    fontSize: 10.5,
+                    fontWeight: 800,
+                    color: 'var(--primary, #2563eb)',
+                    background: 'var(--primary-soft, #eff6ff)',
+                    border: '1px solid var(--border-subtle, #bfdbfe)',
+                    padding: '3px 12px',
+                    borderRadius: 20,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                  }}
+                >
+                  {block.label}
+                </span>
+                <div style={{ height: 1, flex: 1, background: 'var(--border, #e2e8f0)' }} />
+              </div>
+            );
+          }
+
+          // Structured Spec Tags (e.g. [Hệ Thống / Dịch Vụ: ...], [Môi Trường HĐH: ...])
+          if (block.type === 'spec_tags') {
+            return (
+              <div
+                key={bIdx}
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gap: 8,
+                  padding: 10,
+                  background: 'var(--surface-subtle, #f8fafc)',
+                  borderRadius: 10,
+                  border: '1px solid var(--border, #e2e8f0)',
+                  margin: '4px 0',
+                }}
+              >
+                {block.tags.map((tag, tIdx) => (
+                  <div
+                    key={tIdx}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 2,
+                      padding: '6px 9px',
+                      background: 'var(--surface, #ffffff)',
+                      borderRadius: 6,
+                      border: '1px solid var(--border-subtle, #e2e8f0)',
+                      boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                    }}
+                  >
+                    <span style={{ fontSize: 9.5, fontWeight: 800, color: 'var(--text-muted, #64748b)', textTransform: 'uppercase', letterSpacing: '0.03em' }}>
+                      {tag.label}
+                    </span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary, #0f172a)', lineHeight: 1.35 }}>
+                      {tag.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
             );
           }
 

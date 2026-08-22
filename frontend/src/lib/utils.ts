@@ -215,3 +215,40 @@ export function cleanTicketDescriptionSummary(desc: string | null | undefined): 
   // Clean up whitespace
   return res.replace(/\s+/g, ' ').trim();
 }
+
+/**
+ * Extracts clean user problem description and structured metadata tags from ticket description.
+ */
+export function extractTicketStructuredDescription(desc: string | null | undefined): {
+  cleanText: string;
+  specs: { label: string; value: string }[];
+} {
+  if (!desc) return { cleanText: '', specs: [] };
+
+  const specs: { label: string; value: string }[] = [];
+  const tagRegex = /\[([^:\]]+):\s*([^\]]+)\]/g;
+  let match;
+  while ((match = tagRegex.exec(desc)) !== null) {
+    const label = match[1].trim();
+    const value = match[2].trim();
+    if (!label.startsWith('Đính Kèm')) {
+      specs.push({ label, value });
+    }
+  }
+
+  let cleanText = desc;
+  if (desc.includes('---')) {
+    const parts = desc.split(/---+|\*\*\*+|===+/);
+    cleanText = parts[parts.length - 1]?.trim() || desc;
+  }
+
+  cleanText = cleanText
+    .replace(/\[[^:\]]+:[^\]]+\]/g, '')
+    .replace(/^(?:MÔ TẢ CHI TIẾT SỰ CỐ|Chi tiết sự cố|MÔ TẢ SỰ CỐ)\s*[:\-\n]*/i, '')
+    .trim();
+
+  return {
+    cleanText: cleanText || desc,
+    specs,
+  };
+}

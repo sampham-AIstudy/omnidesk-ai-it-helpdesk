@@ -9,7 +9,7 @@ import TicketContextMenu from '@/components/TicketContextMenu';
 import AISolutionViewer from '@/components/AISolutionViewer';
 import { ConfidenceBadge, EmptyState, PageHeader, PriorityBadge, SLABadge, Spinner, StatusBadge } from '@/components/ui';
 import { Ticket, TicketStatus } from '@/types';
-import { CATEGORY_LABELS, formatRelative, getErrorMessage } from '@/lib/utils';
+import { CATEGORY_LABELS, extractTicketStructuredDescription, formatRelative, getErrorMessage } from '@/lib/utils';
 import api from '@/lib/api';
 
 type QueueFilter = 'all' | 'open' | 'classifying' | 'pending_hitl' | 'working' | 'escalated';
@@ -272,39 +272,55 @@ export default function TechQueuePage() {
                 {inspectorTab === 'content' && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                     {/* Clean Description Preview Card */}
-                    <div style={{ background: 'var(--surface-subtle)', borderRadius: 10, padding: '9px 11px', border: '1px solid var(--border-default)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
-                        <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 4 }}>
-                          <FileText size={11} /> Mô tả sự cố
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setActiveModal('description')}
-                          className="btn-ghost"
-                          style={{ fontSize: 11, padding: '1px 6px', height: 20, color: 'var(--primary)', display: 'inline-flex', alignItems: 'center', gap: 3 }}
-                          title="Mở toàn màn hình mô tả sự cố"
-                        >
-                          <Maximize2 size={10} />
-                          <span>Xem đủ</span>
-                        </button>
-                      </div>
-                      <div
-                        onClick={() => setActiveModal('description')}
-                        style={{
-                          fontSize: 12,
-                          color: 'var(--text-secondary)',
-                          lineHeight: 1.45,
-                          cursor: 'pointer',
-                          display: '-webkit-box',
-                          WebkitLineClamp: 3,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                        }}
-                        title="Nhấp để xem đầy đủ nội dung"
-                      >
-                        {selectedTicket.description}
-                      </div>
-                    </div>
+                    {(() => {
+                      const { cleanText, specs } = extractTicketStructuredDescription(selectedTicket.description);
+                      return (
+                        <div style={{ background: 'var(--surface-subtle)', borderRadius: 10, padding: '9px 11px', border: '1px solid var(--border-default)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
+                            <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 4 }}>
+                              <FileText size={11} /> Mô tả sự cố
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setActiveModal('description')}
+                              className="btn-ghost"
+                              style={{ width: 22, height: 22, padding: 0, color: 'var(--text-muted)', display: 'grid', placeItems: 'center', borderRadius: 4 }}
+                              title="Mở toàn màn hình mô tả sự cố"
+                            >
+                              <Maximize2 size={12} />
+                            </button>
+                          </div>
+
+                          {specs.length > 0 && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 6 }}>
+                              {specs.slice(0, 3).map((s, idx) => (
+                                <span key={idx} style={{ fontSize: 10, padding: '1px 5px', background: 'var(--surface)', border: '1px solid var(--border-subtle)', borderRadius: 4, color: 'var(--text-secondary)' }}>
+                                  <strong style={{ color: 'var(--text-muted)' }}>{s.label.split('/')[0].trim()}:</strong> {s.value.length > 22 ? s.value.slice(0, 22) + '…' : s.value}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+
+                          <div
+                            onClick={() => setActiveModal('description')}
+                            style={{
+                              fontSize: 12,
+                              color: 'var(--text-secondary)',
+                              lineHeight: 1.45,
+                              cursor: 'pointer',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              fontWeight: 500,
+                            }}
+                            title="Nhấp để xem đầy đủ nội dung"
+                          >
+                            {cleanText}
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                     {/* Clean AI Suggestions Card */}
                     {selectedTicket.suggested_solution ? (
@@ -317,11 +333,10 @@ export default function TechQueuePage() {
                             type="button"
                             onClick={() => setActiveModal('ai_solution')}
                             className="btn-ghost"
-                            style={{ fontSize: 11, padding: '1px 6px', height: 20, color: 'var(--cyan, #0891b2)', display: 'inline-flex', alignItems: 'center', gap: 3 }}
+                            style={{ width: 22, height: 22, padding: 0, color: 'var(--cyan, #0891b2)', display: 'grid', placeItems: 'center', borderRadius: 4 }}
                             title="Mở toàn màn hình giải pháp AI"
                           >
-                            <Maximize2 size={10} />
-                            <span>Xem đủ</span>
+                            <Maximize2 size={12} />
                           </button>
                         </div>
                         <div
