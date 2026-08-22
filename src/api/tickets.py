@@ -651,17 +651,22 @@ async def join_ticket_conversation(
         raise HTTPException(status_code=400, detail="Không thể tham gia sự cố đã kết thúc")
 
     from src.models.ticket import TicketSupportMode
-    from src.models.ticket_message import TicketMessageSender
+    from src.models.ticket_message import TicketMessage, TicketMessageSender
     from src.services.ticket_conversation_service import add_message, list_messages
 
     ticket.support_mode = TicketSupportMode.HUMAN
     await db.flush()
 
-    messages = await list_messages(db, ticket_id)
-    already_announced = any(
-        m.sender_type == TicketMessageSender.SYSTEM and current_user.full_name in m.content and "tham gia" in m.content
-        for m in messages
+    # Query for existing join announcement for this manager on this ticket
+    existing_join_res = await db.execute(
+        select(TicketMessage).where(
+            TicketMessage.ticket_id == ticket_id,
+            TicketMessage.sender_type == TicketMessageSender.SYSTEM,
+            TicketMessage.sender_id == current_user.id,
+            (TicketMessage.routing_hint == "manager_joined") | (TicketMessage.content.contains("tham gia"))
+        ).limit(1)
     )
+    already_announced = existing_join_res.scalars().first() is not None
 
     if not already_announced:
         await add_message(
@@ -669,14 +674,15 @@ async def join_ticket_conversation(
             ticket_id=ticket_id,
             sender_type=TicketMessageSender.SYSTEM,
             sender_id=current_user.id,
+            routing_hint="manager_joined",
             content=f"👔 **[QUẢN LÝ THAM GIA]** {current_user.full_name} ({current_user.department or 'Quản lý IT'}) đã tham gia vào cuộc trao đổi để chỉ đạo và hỗ trợ xử lý sự cố.",
         )
-        await write_audit_log(
+        await ticket_service.write_audit_log(
             db=db,
             ticket_id=ticket_id,
             actor_id=current_user.id,
             actor_type="manager",
-            action=AuditAction.TICKET_UPDATED,
+            action=AuditAction.STATUS_CHANGED,
             description=f"Quản lý {current_user.full_name} tham gia chỉ đạo cuộc trao đổi sự cố.",
             metadata={"action_type": "manager_joined", "manager_id": current_user.id},
         )

@@ -13,6 +13,7 @@ import threading
 # Mitigate native SentenceTransformer / safetensors async loader race conditions on Windows.
 if sys.platform == "win32":
     os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
+import httpx
 import unicodedata
 import urllib.parse
 from dataclasses import dataclass
@@ -186,20 +187,25 @@ class _RemoteOnnxEmbedder:
         self.token = settings.embedding_service_token
         self.timeout = settings.embedding_service_timeout_seconds
         self.dimensions = settings.embedding_dimensions
+        self._client: httpx.Client | None = None
+
+    def _get_client(self) -> httpx.Client:
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.Client(timeout=self.timeout)
+        return self._client
 
     def _call_api(self, texts: list[str]) -> list[list[float]]:
-        import requests
         if not texts:
             return []
         headers = {"Content-Type": "application/json"}
         if self.token:
             headers["Authorization"] = f"Bearer {self.token}"
         try:
-            response = requests.post(
+            client = self._get_client()
+            response = client.post(
                 self.url,
                 json={"texts": texts},
                 headers=headers,
-                timeout=self.timeout,
             )
             response.raise_for_status()
             data = response.json()

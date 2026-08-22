@@ -144,13 +144,6 @@ async def add_message(
         except Exception as exc:
             logger.warning("Could not index message %s for memory: %s", message.id, exc)
     return message
-    if index_for_memory:
-        try:
-            from src.services.zero_mem_service import index_message_by_id
-            await index_message_by_id(db, message)
-        except Exception as exc:
-            logger.warning("Could not index episodic message %s: %s", message.id, exc)
-    return message
 
 
 async def seed_agent_opening(db: AsyncSession, ticket: Ticket) -> None:
