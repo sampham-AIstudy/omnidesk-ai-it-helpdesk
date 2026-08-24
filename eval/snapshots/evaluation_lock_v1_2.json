@@ -3,11 +3,11 @@
   "scope": "canary_contract_v1_2",
   "golden": {
     "path": "eval/golden_testset_enterprise.json",
-    "sha256": "79d8c3902ecaf1edc1c3181ca16fe89e02ad5ff1d6e48c85a30b3cbe88d6fcec"
+    "sha256": "254d9f9b97426e7bf40bdbf8b03da6322eb698ed9762f2d4760c238a847ea573"
   },
   "manifest": {
     "path": "eval/evaluation_manifest.json",
-    "sha256": "a7003332dac2ad30b3a61b404922e2b008af0db1df906d2aeb30621fc16300c3"
+    "sha256": "f9814c23dd6783a496b2f19fa0e7cd15743ee07c4c0465cd50e7f755d79ab95b"
   },
   "context_snapshot": {
     "path": "eval/snapshots/canary_contract_v1_2_context_snapshot.json",
@@ -19,7 +19,7 @@
   },
   "ticket_fixture": {
     "path": "tests/conftest.py",
-    "sha256": "2c9acfc5c62a5f272c621d2e66f86d2dc1d065304865ccb74d988d77049529f8"
+    "sha256": "b9b9bfac13e3c8a769351beb0f6a514933475abf497bdb2e960a54776321ac58"
   },
   "routing_contract_ids": [
     "GT-001", "GT-002", "GT-003", "GT-004", "GT-005", "GT-006", "GT-007",

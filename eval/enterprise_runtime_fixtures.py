@@ -23,6 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker
 from sqlalchemy.orm import selectinload
 
 from eval.contract_kb_fixture import COLLECTION, EVAL_DIR, build_contract_collection, contract_metadata
+from eval.evaluation_contract import sha256_text_file
 from src.database import Base
 from src.models.episodic_memory import EpisodicMemoryTrace
 from src.models.hitl_approval import HITLApproval, HITLApprovalStatus
@@ -62,7 +63,7 @@ TICKETS = {
 
 
 def _file_hash(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return sha256_text_file(path)
 
 
 def _hash_schema() -> str:

@@ -16,14 +16,19 @@ PROTECTED_TECHNICAL_TERMS: set[str] = {
     "sap", "teams", "zoom", "autocad", "adobe", "workday", "hris", "gitlab",
     "github", "windows", "office", "word", "excel", "powerpoint", "azure",
     "entra", "okta", "pacs", "dicom", "his", "wms", "erp", "crm", "salesforce",
+    "docker", "wsl", "wsl2", "hyper-v", "dbeaver", "ssms", "powershell",
+    "scanpst", "onedrive", "keychain", "finder",
     # Protocols & Acronyms
     "vpn", "mfa", "2fa", "sspr", "bsod", "dns", "dhcp", "lan", "wan", "wifi",
     "wi-fi", "wireless", "ost", "pst", "ntfs", "pos", "mri", "x-quang", "dlp",
     "cpu", "ram", "gpu", "ssd", "hdd", "usb", "ip", "tcp", "udp", "ssl", "tls",
+    "ssh", "rdp", "cifs", "smb", "pac", "wpad", "hsts", "prt", "tpm", "pcr",
+    "gcm", "pip", "npm", "ed25519", "credssp",
     # Error phrases & Technical tokens
     "stop code", "blue screen", "recovery key", "authentication failed",
     "maximum sessions exceeded", "session timeout", "outbox", "disconnected",
-    "phishing", "malware", "ransomware", "403", "401", "404", "500", "502",
+    "phishing", "malware", "ransomware", "403", "401", "404", "500", "502", "504",
+    "error 26", "error 10061", "ora-12541", "tns-12541", "0x80090016", "0x204", "0x104",
 }
 
 # Conservative Help Desk informal abbreviations -> canonical Vietnamese
@@ -152,8 +157,12 @@ def extract_exact_technical_tokens(text: str) -> set[str]:
         if re.search(pattern, text_lower):
             found.add(term)
 
-    # Match HTTP error codes (e.g., "HTTP 403", "403")
-    for code_match in re.finditer(r"\b(?:http\s*)?(401|403|404|500|502)\b", text_lower):
+    # Match HTTP error codes (e.g., "HTTP 403", "403", "504")
+    for code_match in re.finditer(r"\b(?:http\s*)?(401|403|404|500|502|504)\b", text_lower):
+        found.add(code_match.group(0))
+
+    # Match hexadecimal and database error codes (e.g., "0x80090016", "ora-12541")
+    for code_match in re.finditer(r"\b(0x[0-9a-fA-F]+|ora-\d+)\b", text_lower):
         found.add(code_match.group(0))
 
     return found

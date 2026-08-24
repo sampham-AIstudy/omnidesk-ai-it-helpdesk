@@ -1,0 +1,3512 @@
+[
+  {
+    "id": "COV-001",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không",
+    "expected_doc_ids": [
+      "kb-009",
+      "sr-004"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-002",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "Làm thế nào để màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không vậy ad?",
+    "expected_doc_ids": [
+      "kb-009",
+      "sr-004"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-003",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "Máy báo lỗi: màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "kb-009",
+      "sr-004"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-004",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "màn hình laptop bị nứt vỡ",
+    "expected_doc_ids": [
+      "kb-009",
+      "sr-004"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-005",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "runbook xử lý màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không cho IT Helpdesk",
+    "expected_doc_ids": [
+      "kb-009",
+      "sr-004"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-006",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "kiểm tra độ chai pin laptop bằng lệnh powercfg battery report",
+    "expected_doc_ids": [
+      "web-windows-battery-health-report-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-007",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "Làm thế nào để kiểm tra độ chai pin laptop bằng lệnh powercfg battery report vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-battery-health-report-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-008",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "Máy báo lỗi: kiểm tra độ chai pin laptop bằng lệnh powercfg battery report, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-battery-health-report-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-009",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "kiểm tra độ chai pin laptop",
+    "expected_doc_ids": [
+      "web-windows-battery-health-report-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-010",
+    "domain": "workplace_endpoint",
+    "issue_family": "laptop_physical_damage",
+    "query": "runbook xử lý kiểm tra độ chai pin laptop bằng lệnh powercfg battery report cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-battery-health-report-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-011",
+    "domain": "workplace_endpoint",
+    "issue_family": "performance_storage",
+    "query": "máy tính chạy chậm đơ ram 99% kiểm tra memory diagnostic mdsched",
+    "expected_doc_ids": [
+      "web-windows-memory-diagnostic-tool-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-012",
+    "domain": "workplace_endpoint",
+    "issue_family": "performance_storage",
+    "query": "Làm thế nào để máy tính chạy chậm đơ ram 99% kiểm tra memory diagnostic mdsched vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-memory-diagnostic-tool-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-013",
+    "domain": "workplace_endpoint",
+    "issue_family": "performance_storage",
+    "query": "Máy báo lỗi: máy tính chạy chậm đơ ram 99% kiểm tra memory diagnostic mdsched, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-memory-diagnostic-tool-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-014",
+    "domain": "workplace_endpoint",
+    "issue_family": "performance_storage",
+    "query": "máy tính chạy chậm đơ ram",
+    "expected_doc_ids": [
+      "web-windows-memory-diagnostic-tool-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-015",
+    "domain": "workplace_endpoint",
+    "issue_family": "performance_storage",
+    "query": "runbook xử lý máy tính chạy chậm đơ ram 99% kiểm tra memory diagnostic mdsched cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-memory-diagnostic-tool-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-016",
+    "domain": "workplace_endpoint",
+    "issue_family": "windows_update_driver",
+    "query": "chạy lệnh dism cleanup-image restorehealth và sfc scannow sửa lỗi win",
+    "expected_doc_ids": [
+      "web-windows-dism-sfc-system-repair-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-017",
+    "domain": "workplace_endpoint",
+    "issue_family": "windows_update_driver",
+    "query": "Làm thế nào để chạy lệnh dism cleanup-image restorehealth và sfc scannow sửa lỗi win vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-dism-sfc-system-repair-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-018",
+    "domain": "workplace_endpoint",
+    "issue_family": "windows_update_driver",
+    "query": "Máy báo lỗi: chạy lệnh dism cleanup-image restorehealth và sfc scannow sửa lỗi win, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-dism-sfc-system-repair-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-019",
+    "domain": "workplace_endpoint",
+    "issue_family": "windows_update_driver",
+    "query": "chạy lệnh dism cleanup-image restorehealth và",
+    "expected_doc_ids": [
+      "web-windows-dism-sfc-system-repair-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-020",
+    "domain": "workplace_endpoint",
+    "issue_family": "windows_update_driver",
+    "query": "runbook xử lý chạy lệnh dism cleanup-image restorehealth và sfc scannow sửa lỗi win cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-dism-sfc-system-repair-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-021",
+    "domain": "workplace_endpoint",
+    "issue_family": "display_monitors",
+    "query": "màn hình ngoài 4k bị mờ chữ scale dpi trên windows 11",
+    "expected_doc_ids": [
+      "web-windows-display-hdr-scaling-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-022",
+    "domain": "workplace_endpoint",
+    "issue_family": "display_monitors",
+    "query": "Làm thế nào để màn hình ngoài 4k bị mờ chữ scale dpi trên windows 11 vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-display-hdr-scaling-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-023",
+    "domain": "workplace_endpoint",
+    "issue_family": "display_monitors",
+    "query": "Máy báo lỗi: màn hình ngoài 4k bị mờ chữ scale dpi trên windows 11, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-display-hdr-scaling-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-024",
+    "domain": "workplace_endpoint",
+    "issue_family": "display_monitors",
+    "query": "màn hình ngoài 4k bị mờ",
+    "expected_doc_ids": [
+      "web-windows-display-hdr-scaling-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-025",
+    "domain": "workplace_endpoint",
+    "issue_family": "display_monitors",
+    "query": "runbook xử lý màn hình ngoài 4k bị mờ chữ scale dpi trên windows 11 cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-display-hdr-scaling-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-026",
+    "domain": "workplace_endpoint",
+    "issue_family": "peripherals_docking",
+    "query": "cắm dock usb-c thunderbolt nhưng 2 màn hình phụ không nhận mst",
+    "expected_doc_ids": [
+      "web-usb-c-dock-dual-display-mst-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-027",
+    "domain": "workplace_endpoint",
+    "issue_family": "peripherals_docking",
+    "query": "Làm thế nào để cắm dock usb-c thunderbolt nhưng 2 màn hình phụ không nhận mst vậy ad?",
+    "expected_doc_ids": [
+      "web-usb-c-dock-dual-display-mst-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-028",
+    "domain": "workplace_endpoint",
+    "issue_family": "peripherals_docking",
+    "query": "Máy báo lỗi: cắm dock usb-c thunderbolt nhưng 2 màn hình phụ không nhận mst, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-usb-c-dock-dual-display-mst-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-029",
+    "domain": "workplace_endpoint",
+    "issue_family": "peripherals_docking",
+    "query": "cắm dock usb-c thunderbolt nhưng 2",
+    "expected_doc_ids": [
+      "web-usb-c-dock-dual-display-mst-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-030",
+    "domain": "workplace_endpoint",
+    "issue_family": "peripherals_docking",
+    "query": "runbook xử lý cắm dock usb-c thunderbolt nhưng 2 màn hình phụ không nhận mst cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-usb-c-dock-dual-display-mst-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-031",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "máy in báo offline sửa bằng cách đổi cổng wsd sang standard tcp ip port 9100",
+    "expected_doc_ids": [
+      "web-printer-wsd-to-tcp-ip-port-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-032",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "Làm thế nào để máy in báo offline sửa bằng cách đổi cổng wsd sang standard tcp ip port 9100 vậy ad?",
+    "expected_doc_ids": [
+      "web-printer-wsd-to-tcp-ip-port-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-033",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "Máy báo lỗi: máy in báo offline sửa bằng cách đổi cổng wsd sang standard tcp ip port 9100, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-printer-wsd-to-tcp-ip-port-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-034",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "máy in báo offline sửa bằng",
+    "expected_doc_ids": [
+      "web-printer-wsd-to-tcp-ip-port-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-035",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "runbook xử lý máy in báo offline sửa bằng cách đổi cổng wsd sang standard tcp ip port 9100 cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-printer-wsd-to-tcp-ip-port-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-036",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "xóa hàng đợi máy in bị kẹt net stop spooler xóa file trong spool printers",
+    "expected_doc_ids": [
+      "web-printer-clear-spooler-corrupt-job-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-037",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "Làm thế nào để xóa hàng đợi máy in bị kẹt net stop spooler xóa file trong spool printers vậy ad?",
+    "expected_doc_ids": [
+      "web-printer-clear-spooler-corrupt-job-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-038",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "Máy báo lỗi: xóa hàng đợi máy in bị kẹt net stop spooler xóa file trong spool printers, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-printer-clear-spooler-corrupt-job-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-039",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "xóa hàng đợi máy in bị",
+    "expected_doc_ids": [
+      "web-printer-clear-spooler-corrupt-job-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-040",
+    "domain": "workplace_endpoint",
+    "issue_family": "printer_scanner",
+    "query": "runbook xử lý xóa hàng đợi máy in bị kẹt net stop spooler xóa file trong spool printers cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-printer-clear-spooler-corrupt-job-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-041",
+    "domain": "workplace_endpoint",
+    "issue_family": "audio_webcam",
+    "query": "tai nghe bluetooth bị rè mất tiếng khi bật mic trong cuộc gọi teams",
+    "expected_doc_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-042",
+    "domain": "workplace_endpoint",
+    "issue_family": "audio_webcam",
+    "query": "Làm thế nào để tai nghe bluetooth bị rè mất tiếng khi bật mic trong cuộc gọi teams vậy ad?",
+    "expected_doc_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-043",
+    "domain": "workplace_endpoint",
+    "issue_family": "audio_webcam",
+    "query": "Máy báo lỗi: tai nghe bluetooth bị rè mất tiếng khi bật mic trong cuộc gọi teams, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-044",
+    "domain": "workplace_endpoint",
+    "issue_family": "audio_webcam",
+    "query": "tai nghe bluetooth bị rè mất",
+    "expected_doc_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-045",
+    "domain": "workplace_endpoint",
+    "issue_family": "audio_webcam",
+    "query": "runbook xử lý tai nghe bluetooth bị rè mất tiếng khi bật mic trong cuộc gọi teams cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-046",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "quên mật khẩu windows tự reset mật khẩu bằng sspr mysignins",
+    "expected_doc_ids": [
+      "web-sspr-security-questions-reset-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-047",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "Làm thế nào để quên mật khẩu windows tự reset mật khẩu bằng sspr mysignins vậy ad?",
+    "expected_doc_ids": [
+      "web-sspr-security-questions-reset-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-048",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "Máy báo lỗi: quên mật khẩu windows tự reset mật khẩu bằng sspr mysignins, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-sspr-security-questions-reset-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-049",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "quên mật khẩu windows tự reset",
+    "expected_doc_ids": [
+      "web-sspr-security-questions-reset-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-050",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "runbook xử lý quên mật khẩu windows tự reset mật khẩu bằng sspr mysignins cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-sspr-security-questions-reset-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-051",
+    "domain": "identity_access",
+    "issue_family": "mfa_authenticator",
+    "query": "đổi điện thoại mới muốn chuyển microsoft authenticator backup cloud",
+    "expected_doc_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-052",
+    "domain": "identity_access",
+    "issue_family": "mfa_authenticator",
+    "query": "Làm thế nào để đổi điện thoại mới muốn chuyển microsoft authenticator backup cloud vậy ad?",
+    "expected_doc_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-053",
+    "domain": "identity_access",
+    "issue_family": "mfa_authenticator",
+    "query": "Máy báo lỗi: đổi điện thoại mới muốn chuyển microsoft authenticator backup cloud, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-054",
+    "domain": "identity_access",
+    "issue_family": "mfa_authenticator",
+    "query": "đổi điện thoại mới muốn chuyển",
+    "expected_doc_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-055",
+    "domain": "identity_access",
+    "issue_family": "mfa_authenticator",
+    "query": "runbook xử lý đổi điện thoại mới muốn chuyển microsoft authenticator backup cloud cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-056",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "lỗi windows hello mã 0x80090016 pin không dùng được xóa thư mục ngc",
+    "expected_doc_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-057",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "Làm thế nào để lỗi windows hello mã 0x80090016 pin không dùng được xóa thư mục ngc vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-058",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "Máy báo lỗi: lỗi windows hello mã 0x80090016 pin không dùng được xóa thư mục ngc, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-059",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "lỗi windows hello mã 0x80090016 pin",
+    "expected_doc_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-060",
+    "domain": "identity_access",
+    "issue_family": "password_sspr",
+    "query": "runbook xử lý lỗi windows hello mã 0x80090016 pin không dùng được xóa thư mục ngc cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-061",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "sửa lỗi stale password xóa cached credentials trong windows credential manager",
+    "expected_doc_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-062",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "Làm thế nào để sửa lỗi stale password xóa cached credentials trong windows credential manager vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-063",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "Máy báo lỗi: sửa lỗi stale password xóa cached credentials trong windows credential manager, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-064",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "sửa lỗi stale password xóa cached",
+    "expected_doc_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-065",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "runbook xử lý sửa lỗi stale password xóa cached credentials trong windows credential manager cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-066",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "lỗi the trust relationship between this workstation and domain failed",
+    "expected_doc_ids": [
+      "web-windows-domain-trust-relationship-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-067",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "Làm thế nào để lỗi the trust relationship between this workstation and domain failed vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-domain-trust-relationship-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-068",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "Máy báo lỗi: lỗi the trust relationship between this workstation and domain failed, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-domain-trust-relationship-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-069",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "lỗi the trust relationship between this",
+    "expected_doc_ids": [
+      "web-windows-domain-trust-relationship-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-070",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "runbook xử lý lỗi the trust relationship between this workstation and domain failed cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-domain-trust-relationship-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-071",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "kiểm tra trạng thái primary refresh token prt bằng lệnh dsregcmd status",
+    "expected_doc_ids": [
+      "web-entra-cached-credentials-stale-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-072",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "Làm thế nào để kiểm tra trạng thái primary refresh token prt bằng lệnh dsregcmd status vậy ad?",
+    "expected_doc_ids": [
+      "web-entra-cached-credentials-stale-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-073",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "Máy báo lỗi: kiểm tra trạng thái primary refresh token prt bằng lệnh dsregcmd status, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-entra-cached-credentials-stale-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-074",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "kiểm tra trạng thái primary refresh",
+    "expected_doc_ids": [
+      "web-entra-cached-credentials-stale-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-075",
+    "domain": "identity_access",
+    "issue_family": "enterprise_sso_login",
+    "query": "runbook xử lý kiểm tra trạng thái primary refresh token prt bằng lệnh dsregcmd status cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-entra-cached-credentials-stale-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-076",
+    "domain": "identity_access",
+    "issue_family": "folder_file_permissions",
+    "query": "xin quyền truy cập folder chia sẻ phòng kế toán trên file server",
+    "expected_doc_ids": [
+      "kb-012",
+      "sr-007"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-077",
+    "domain": "identity_access",
+    "issue_family": "folder_file_permissions",
+    "query": "Làm thế nào để xin quyền truy cập folder chia sẻ phòng kế toán trên file server vậy ad?",
+    "expected_doc_ids": [
+      "kb-012",
+      "sr-007"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-078",
+    "domain": "identity_access",
+    "issue_family": "folder_file_permissions",
+    "query": "Máy báo lỗi: xin quyền truy cập folder chia sẻ phòng kế toán trên file server, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "kb-012",
+      "sr-007"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-079",
+    "domain": "identity_access",
+    "issue_family": "folder_file_permissions",
+    "query": "xin quyền truy cập folder chia",
+    "expected_doc_ids": [
+      "kb-012",
+      "sr-007"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-080",
+    "domain": "identity_access",
+    "issue_family": "folder_file_permissions",
+    "query": "runbook xử lý xin quyền truy cập folder chia sẻ phòng kế toán trên file server cho IT Helpdesk",
+    "expected_doc_ids": [
+      "kb-012",
+      "sr-007"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-081",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "sửa file ost bị lỗi hỏng bằng công cụ scanpst exe inbox repair tool",
+    "expected_doc_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-082",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "Làm thế nào để sửa file ost bị lỗi hỏng bằng công cụ scanpst exe inbox repair tool vậy ad?",
+    "expected_doc_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-083",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "Máy báo lỗi: sửa file ost bị lỗi hỏng bằng công cụ scanpst exe inbox repair tool, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-084",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "sửa file ost bị lỗi hỏng",
+    "expected_doc_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-085",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "runbook xử lý sửa file ost bị lỗi hỏng bằng công cụ scanpst exe inbox repair tool cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-086",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "tìm kiếm trong outlook không ra kết quả rebuild search index",
+    "expected_doc_ids": [
+      "web-outlook-search-indexing-fix-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-087",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "Làm thế nào để tìm kiếm trong outlook không ra kết quả rebuild search index vậy ad?",
+    "expected_doc_ids": [
+      "web-outlook-search-indexing-fix-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-088",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "Máy báo lỗi: tìm kiếm trong outlook không ra kết quả rebuild search index, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-outlook-search-indexing-fix-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-089",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "tìm kiếm trong outlook không ra",
+    "expected_doc_ids": [
+      "web-outlook-search-indexing-fix-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-090",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "runbook xử lý tìm kiếm trong outlook không ra kết quả rebuild search index cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-outlook-search-indexing-fix-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-091",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "tạo lại profile outlook mới trong control panel mail 32 bit",
+    "expected_doc_ids": [
+      "web-outlook-profile-rebuild-m365-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-092",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "Làm thế nào để tạo lại profile outlook mới trong control panel mail 32 bit vậy ad?",
+    "expected_doc_ids": [
+      "web-outlook-profile-rebuild-m365-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-093",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "Máy báo lỗi: tạo lại profile outlook mới trong control panel mail 32 bit, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-outlook-profile-rebuild-m365-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-094",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "tạo lại profile outlook mới trong",
+    "expected_doc_ids": [
+      "web-outlook-profile-rebuild-m365-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-095",
+    "domain": "cloud_productivity",
+    "issue_family": "outlook_sync_ost",
+    "query": "runbook xử lý tạo lại profile outlook mới trong control panel mail 32 bit cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-outlook-profile-rebuild-m365-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-096",
+    "domain": "cloud_productivity",
+    "issue_family": "shared_mailbox_dl",
+    "query": "lỗi you do not have permission to send messages on behalf of this user shared mailbox",
+    "expected_doc_ids": [
+      "web-m365-shared-mailbox-send-as-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-097",
+    "domain": "cloud_productivity",
+    "issue_family": "shared_mailbox_dl",
+    "query": "Làm thế nào để lỗi you do not have permission to send messages on behalf of this user shared mailbox vậy ad?",
+    "expected_doc_ids": [
+      "web-m365-shared-mailbox-send-as-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-098",
+    "domain": "cloud_productivity",
+    "issue_family": "shared_mailbox_dl",
+    "query": "Máy báo lỗi: lỗi you do not have permission to send messages on behalf of this user shared mailbox, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-m365-shared-mailbox-send-as-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-099",
+    "domain": "cloud_productivity",
+    "issue_family": "shared_mailbox_dl",
+    "query": "lỗi you do not have permission",
+    "expected_doc_ids": [
+      "web-m365-shared-mailbox-send-as-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-100",
+    "domain": "cloud_productivity",
+    "issue_family": "shared_mailbox_dl",
+    "query": "runbook xử lý lỗi you do not have permission to send messages on behalf of this user shared mailbox cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-m365-shared-mailbox-send-as-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-101",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "bật quyền camera và microphone cho teams trong windows privacy settings",
+    "expected_doc_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-102",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "Làm thế nào để bật quyền camera và microphone cho teams trong windows privacy settings vậy ad?",
+    "expected_doc_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-103",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "Máy báo lỗi: bật quyền camera và microphone cho teams trong windows privacy settings, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-104",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "bật quyền camera và microphone cho",
+    "expected_doc_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-105",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "runbook xử lý bật quyền camera và microphone cho teams trong windows privacy settings cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-106",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "macbook không chia sẻ được màn hình trong teams privacy screen recording tcc",
+    "expected_doc_ids": [
+      "web-teams-macos-screen-camera-privacy-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-107",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "Làm thế nào để macbook không chia sẻ được màn hình trong teams privacy screen recording tcc vậy ad?",
+    "expected_doc_ids": [
+      "web-teams-macos-screen-camera-privacy-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-108",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "Máy báo lỗi: macbook không chia sẻ được màn hình trong teams privacy screen recording tcc, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-teams-macos-screen-camera-privacy-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-109",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "macbook không chia sẻ được màn",
+    "expected_doc_ids": [
+      "web-teams-macos-screen-camera-privacy-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-110",
+    "domain": "cloud_productivity",
+    "issue_family": "audio_webcam",
+    "query": "runbook xử lý macbook không chia sẻ được màn hình trong teams privacy screen recording tcc cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-teams-macos-screen-camera-privacy-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-111",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "onedrive báo lỗi the file is open in another program conflict lock",
+    "expected_doc_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-112",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "Làm thế nào để onedrive báo lỗi the file is open in another program conflict lock vậy ad?",
+    "expected_doc_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-113",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "Máy báo lỗi: onedrive báo lỗi the file is open in another program conflict lock, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-114",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "onedrive báo lỗi the file is",
+    "expected_doc_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-115",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "runbook xử lý onedrive báo lỗi the file is open in another program conflict lock cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-116",
+    "domain": "cloud_productivity",
+    "issue_family": "office_licensing_activation",
+    "query": "sửa lỗi office báo unlicensed product xóa licensing token",
+    "expected_doc_ids": [
+      "web-m365-office-licensing-token-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-117",
+    "domain": "cloud_productivity",
+    "issue_family": "office_licensing_activation",
+    "query": "Làm thế nào để sửa lỗi office báo unlicensed product xóa licensing token vậy ad?",
+    "expected_doc_ids": [
+      "web-m365-office-licensing-token-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-118",
+    "domain": "cloud_productivity",
+    "issue_family": "office_licensing_activation",
+    "query": "Máy báo lỗi: sửa lỗi office báo unlicensed product xóa licensing token, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-m365-office-licensing-token-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-119",
+    "domain": "cloud_productivity",
+    "issue_family": "office_licensing_activation",
+    "query": "sửa lỗi office báo unlicensed product",
+    "expected_doc_ids": [
+      "web-m365-office-licensing-token-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-120",
+    "domain": "cloud_productivity",
+    "issue_family": "office_licensing_activation",
+    "query": "runbook xử lý sửa lỗi office báo unlicensed product xóa licensing token cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-m365-office-licensing-token-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-121",
+    "domain": "cloud_productivity",
+    "issue_family": "teams_meeting_collab",
+    "query": "xóa cache teams trên windows 11 reset app trong installed apps",
+    "expected_doc_ids": [
+      "web-teams-clear-client-cache-win-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-122",
+    "domain": "cloud_productivity",
+    "issue_family": "teams_meeting_collab",
+    "query": "Làm thế nào để xóa cache teams trên windows 11 reset app trong installed apps vậy ad?",
+    "expected_doc_ids": [
+      "web-teams-clear-client-cache-win-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-123",
+    "domain": "cloud_productivity",
+    "issue_family": "teams_meeting_collab",
+    "query": "Máy báo lỗi: xóa cache teams trên windows 11 reset app trong installed apps, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-teams-clear-client-cache-win-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-124",
+    "domain": "cloud_productivity",
+    "issue_family": "teams_meeting_collab",
+    "query": "xóa cache teams trên windows 11",
+    "expected_doc_ids": [
+      "web-teams-clear-client-cache-win-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-125",
+    "domain": "cloud_productivity",
+    "issue_family": "teams_meeting_collab",
+    "query": "runbook xử lý xóa cache teams trên windows 11 reset app trong installed apps cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-teams-clear-client-cache-win-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-126",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "reset lại onedrive khi bị treo processing changes",
+    "expected_doc_ids": [
+      "web-onedrive-reset-client-win-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-127",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "Làm thế nào để reset lại onedrive khi bị treo processing changes vậy ad?",
+    "expected_doc_ids": [
+      "web-onedrive-reset-client-win-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-128",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "Máy báo lỗi: reset lại onedrive khi bị treo processing changes, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-onedrive-reset-client-win-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-129",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "reset lại onedrive khi bị treo",
+    "expected_doc_ids": [
+      "web-onedrive-reset-client-win-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-130",
+    "domain": "cloud_productivity",
+    "issue_family": "onedrive_sync_conflict",
+    "query": "runbook xử lý reset lại onedrive khi bị treo processing changes cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-onedrive-reset-client-win-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-131",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "lỗi vpn forticlient dừng ở 48% certificate auth mismatch",
+    "expected_doc_ids": [
+      "p0-06-vpn-forticlient-ssl-vpn-c001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-132",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "Làm thế nào để lỗi vpn forticlient dừng ở 48% certificate auth mismatch vậy ad?",
+    "expected_doc_ids": [
+      "p0-06-vpn-forticlient-ssl-vpn-c001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-133",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "Máy báo lỗi: lỗi vpn forticlient dừng ở 48% certificate auth mismatch, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "p0-06-vpn-forticlient-ssl-vpn-c001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-134",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "lỗi vpn forticlient dừng ở 48%",
+    "expected_doc_ids": [
+      "p0-06-vpn-forticlient-ssl-vpn-c001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-135",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "runbook xử lý lỗi vpn forticlient dừng ở 48% certificate auth mismatch cho IT Helpdesk",
+    "expected_doc_ids": [
+      "p0-06-vpn-forticlient-ssl-vpn-c001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-136",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "vpn forticlient đã connected nhưng không vào được ip server nội bộ",
+    "expected_doc_ids": [
+      "p0-07-vpn-connected-internal-unreachable-c001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-137",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "Làm thế nào để vpn forticlient đã connected nhưng không vào được ip server nội bộ vậy ad?",
+    "expected_doc_ids": [
+      "p0-07-vpn-connected-internal-unreachable-c001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-138",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "Máy báo lỗi: vpn forticlient đã connected nhưng không vào được ip server nội bộ, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "p0-07-vpn-connected-internal-unreachable-c001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-139",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "vpn forticlient đã connected nhưng không",
+    "expected_doc_ids": [
+      "p0-07-vpn-connected-internal-unreachable-c001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-140",
+    "domain": "network_remote",
+    "issue_family": "vpn_forticlient",
+    "query": "runbook xử lý vpn forticlient đã connected nhưng không vào được ip server nội bộ cho IT Helpdesk",
+    "expected_doc_ids": [
+      "p0-07-vpn-connected-internal-unreachable-c001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-141",
+    "domain": "network_remote",
+    "issue_family": "dns_resolution",
+    "query": "xung đột dns split brain khi kết nối vpn cấu hình nrpt",
+    "expected_doc_ids": [
+      "web-dns-split-brain-vpn-timeout-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-142",
+    "domain": "network_remote",
+    "issue_family": "dns_resolution",
+    "query": "Làm thế nào để xung đột dns split brain khi kết nối vpn cấu hình nrpt vậy ad?",
+    "expected_doc_ids": [
+      "web-dns-split-brain-vpn-timeout-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-143",
+    "domain": "network_remote",
+    "issue_family": "dns_resolution",
+    "query": "Máy báo lỗi: xung đột dns split brain khi kết nối vpn cấu hình nrpt, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-dns-split-brain-vpn-timeout-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-144",
+    "domain": "network_remote",
+    "issue_family": "dns_resolution",
+    "query": "xung đột dns split brain khi",
+    "expected_doc_ids": [
+      "web-dns-split-brain-vpn-timeout-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-145",
+    "domain": "network_remote",
+    "issue_family": "dns_resolution",
+    "query": "runbook xử lý xung đột dns split brain khi kết nối vpn cấu hình nrpt cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-dns-split-brain-vpn-timeout-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-146",
+    "domain": "network_remote",
+    "issue_family": "static_ip_dhcp",
+    "query": "lỗi trùng địa chỉ ip duplicate ip conflict arp event 4199",
+    "expected_doc_ids": [
+      "web-windows-ip-conflict-arp-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-147",
+    "domain": "network_remote",
+    "issue_family": "static_ip_dhcp",
+    "query": "Làm thế nào để lỗi trùng địa chỉ ip duplicate ip conflict arp event 4199 vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-ip-conflict-arp-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-148",
+    "domain": "network_remote",
+    "issue_family": "static_ip_dhcp",
+    "query": "Máy báo lỗi: lỗi trùng địa chỉ ip duplicate ip conflict arp event 4199, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-ip-conflict-arp-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-149",
+    "domain": "network_remote",
+    "issue_family": "static_ip_dhcp",
+    "query": "lỗi trùng địa chỉ ip duplicate",
+    "expected_doc_ids": [
+      "web-windows-ip-conflict-arp-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-150",
+    "domain": "network_remote",
+    "issue_family": "static_ip_dhcp",
+    "query": "runbook xử lý lỗi trùng địa chỉ ip duplicate ip conflict arp event 4199 cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-ip-conflict-arp-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-151",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "lỗi rdp credssp encryption oracle remediation sau khi update win",
+    "expected_doc_ids": [
+      "web-rdp-credssp-encryption-oracle-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-152",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "Làm thế nào để lỗi rdp credssp encryption oracle remediation sau khi update win vậy ad?",
+    "expected_doc_ids": [
+      "web-rdp-credssp-encryption-oracle-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-153",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "Máy báo lỗi: lỗi rdp credssp encryption oracle remediation sau khi update win, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-rdp-credssp-encryption-oracle-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-154",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "lỗi rdp credssp encryption oracle remediation",
+    "expected_doc_ids": [
+      "web-rdp-credssp-encryption-oracle-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-155",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "runbook xử lý lỗi rdp credssp encryption oracle remediation sau khi update win cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-rdp-credssp-encryption-oracle-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-156",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "sửa lỗi remote desktop error 0x204 mở port 3389 inbound firewall",
+    "expected_doc_ids": [
+      "web-rdp-error-0x204-firewall-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-157",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "Làm thế nào để sửa lỗi remote desktop error 0x204 mở port 3389 inbound firewall vậy ad?",
+    "expected_doc_ids": [
+      "web-rdp-error-0x204-firewall-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-158",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "Máy báo lỗi: sửa lỗi remote desktop error 0x204 mở port 3389 inbound firewall, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-rdp-error-0x204-firewall-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-159",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "sửa lỗi remote desktop error 0x204",
+    "expected_doc_ids": [
+      "web-rdp-error-0x204-firewall-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-160",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "runbook xử lý sửa lỗi remote desktop error 0x204 mở port 3389 inbound firewall cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-rdp-error-0x204-firewall-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-161",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "kỹ thuật viên remote support session shadowing bằng lệnh mstsc shadow",
+    "expected_doc_ids": [
+      "web-windows-rdp-session-shadowing-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-162",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "Làm thế nào để kỹ thuật viên remote support session shadowing bằng lệnh mstsc shadow vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-rdp-session-shadowing-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-163",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "Máy báo lỗi: kỹ thuật viên remote support session shadowing bằng lệnh mstsc shadow, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-rdp-session-shadowing-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-164",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "kỹ thuật viên remote support session",
+    "expected_doc_ids": [
+      "web-windows-rdp-session-shadowing-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-165",
+    "domain": "network_remote",
+    "issue_family": "rdp_remote_desktop",
+    "query": "runbook xử lý kỹ thuật viên remote support session shadowing bằng lệnh mstsc shadow cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-rdp-session-shadowing-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-166",
+    "domain": "network_remote",
+    "issue_family": "network",
+    "query": "bật log ghi nhận dropped packets trong windows defender firewall pfirewall log",
+    "expected_doc_ids": [
+      "web-windows-firewall-log-dropped-packets-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-167",
+    "domain": "network_remote",
+    "issue_family": "network",
+    "query": "Làm thế nào để bật log ghi nhận dropped packets trong windows defender firewall pfirewall log vậy ad?",
+    "expected_doc_ids": [
+      "web-windows-firewall-log-dropped-packets-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-168",
+    "domain": "network_remote",
+    "issue_family": "network",
+    "query": "Máy báo lỗi: bật log ghi nhận dropped packets trong windows defender firewall pfirewall log, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-windows-firewall-log-dropped-packets-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-169",
+    "domain": "network_remote",
+    "issue_family": "network",
+    "query": "bật log ghi nhận dropped packets",
+    "expected_doc_ids": [
+      "web-windows-firewall-log-dropped-packets-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-170",
+    "domain": "network_remote",
+    "issue_family": "network",
+    "query": "runbook xử lý bật log ghi nhận dropped packets trong windows defender firewall pfirewall log cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-windows-firewall-log-dropped-packets-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-171",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "cấu hình git credential manager gcm lưu token đăng nhập github gitlab",
+    "expected_doc_ids": [
+      "web-git-credential-manager-setup-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-172",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Làm thế nào để cấu hình git credential manager gcm lưu token đăng nhập github gitlab vậy ad?",
+    "expected_doc_ids": [
+      "web-git-credential-manager-setup-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-173",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Máy báo lỗi: cấu hình git credential manager gcm lưu token đăng nhập github gitlab, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-git-credential-manager-setup-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-174",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "cấu hình git credential manager gcm",
+    "expected_doc_ids": [
+      "web-git-credential-manager-setup-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-175",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "runbook xử lý cấu hình git credential manager gcm lưu token đăng nhập github gitlab cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-git-credential-manager-setup-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-176",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "cấu hình http proxy và http sslcainfo cho git clone trong mạng cty",
+    "expected_doc_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-177",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "Làm thế nào để cấu hình http proxy và http sslcainfo cho git clone trong mạng cty vậy ad?",
+    "expected_doc_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-178",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "Máy báo lỗi: cấu hình http proxy và http sslcainfo cho git clone trong mạng cty, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-179",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "cấu hình http proxy và http",
+    "expected_doc_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-180",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "runbook xử lý cấu hình http proxy và http sslcainfo cho git clone trong mạng cty cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-181",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "tạo ssh key ed25519 bằng lệnh ssh-keygen và add vào ssh-agent",
+    "expected_doc_ids": [
+      "web-github-ssh-keygen-ed25519-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-182",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Làm thế nào để tạo ssh key ed25519 bằng lệnh ssh-keygen và add vào ssh-agent vậy ad?",
+    "expected_doc_ids": [
+      "web-github-ssh-keygen-ed25519-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-183",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Máy báo lỗi: tạo ssh key ed25519 bằng lệnh ssh-keygen và add vào ssh-agent, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-github-ssh-keygen-ed25519-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-184",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "tạo ssh key ed25519 bằng lệnh",
+    "expected_doc_ids": [
+      "web-github-ssh-keygen-ed25519-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-185",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "runbook xử lý tạo ssh key ed25519 bằng lệnh ssh-keygen và add vào ssh-agent cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-github-ssh-keygen-ed25519-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-186",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "sửa lỗi git clone permission denied publickey chmod 600 id_ed25519",
+    "expected_doc_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-187",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Làm thế nào để sửa lỗi git clone permission denied publickey chmod 600 id_ed25519 vậy ad?",
+    "expected_doc_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-188",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Máy báo lỗi: sửa lỗi git clone permission denied publickey chmod 600 id_ed25519, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-189",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "sửa lỗi git clone permission denied",
+    "expected_doc_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-190",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "runbook xử lý sửa lỗi git clone permission denied publickey chmod 600 id_ed25519 cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-191",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "cấu hình ssh qua port 443 https khi firewall chặn port 22",
+    "expected_doc_ids": [
+      "web-github-proxy-ssh-tunnel-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-192",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "Làm thế nào để cấu hình ssh qua port 443 https khi firewall chặn port 22 vậy ad?",
+    "expected_doc_ids": [
+      "web-github-proxy-ssh-tunnel-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-193",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "Máy báo lỗi: cấu hình ssh qua port 443 https khi firewall chặn port 22, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-github-proxy-ssh-tunnel-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-194",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "cấu hình ssh qua port 443",
+    "expected_doc_ids": [
+      "web-github-proxy-ssh-tunnel-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-195",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "runbook xử lý cấu hình ssh qua port 443 https khi firewall chặn port 22 cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-github-proxy-ssh-tunnel-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-196",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "sửa lỗi docker desktop không khởi động được wsl2 restart lxssmanager",
+    "expected_doc_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-197",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "Làm thế nào để sửa lỗi docker desktop không khởi động được wsl2 restart lxssmanager vậy ad?",
+    "expected_doc_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-198",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "Máy báo lỗi: sửa lỗi docker desktop không khởi động được wsl2 restart lxssmanager, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-199",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "sửa lỗi docker desktop không khởi",
+    "expected_doc_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-200",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "runbook xử lý sửa lỗi docker desktop không khởi động được wsl2 restart lxssmanager cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-201",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "cấu hình http proxy trong docker desktop settings để pull image",
+    "expected_doc_ids": [
+      "web-docker-desktop-http-proxy-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-202",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "Làm thế nào để cấu hình http proxy trong docker desktop settings để pull image vậy ad?",
+    "expected_doc_ids": [
+      "web-docker-desktop-http-proxy-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-203",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "Máy báo lỗi: cấu hình http proxy trong docker desktop settings để pull image, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-docker-desktop-http-proxy-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-204",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "cấu hình http proxy trong docker",
+    "expected_doc_ids": [
+      "web-docker-desktop-http-proxy-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-205",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "runbook xử lý cấu hình http proxy trong docker desktop settings để pull image cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-docker-desktop-http-proxy-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-206",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "cấu hình proxy và cafile strict-ssl cho npm cli",
+    "expected_doc_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-207",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "Làm thế nào để cấu hình proxy và cafile strict-ssl cho npm cli vậy ad?",
+    "expected_doc_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-208",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "Máy báo lỗi: cấu hình proxy và cafile strict-ssl cho npm cli, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-209",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "cấu hình proxy và cafile strict-ssl",
+    "expected_doc_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-210",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "runbook xử lý cấu hình proxy và cafile strict-ssl cho npm cli cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-211",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "sửa lỗi pip install ssl certificate verify failed trusted-host",
+    "expected_doc_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-212",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "Làm thế nào để sửa lỗi pip install ssl certificate verify failed trusted-host vậy ad?",
+    "expected_doc_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-213",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "Máy báo lỗi: sửa lỗi pip install ssl certificate verify failed trusted-host, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-214",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "sửa lỗi pip install ssl certificate",
+    "expected_doc_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-215",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_proxy_ssl",
+    "query": "runbook xử lý sửa lỗi pip install ssl certificate verify failed trusted-host cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-216",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "wsl2 mất mạng khi bật vpn cấu hình networkingMode mirrored trong wslconfig",
+    "expected_doc_ids": [
+      "web-wsl2-networking-dns-mirror-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-217",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "Làm thế nào để wsl2 mất mạng khi bật vpn cấu hình networkingMode mirrored trong wslconfig vậy ad?",
+    "expected_doc_ids": [
+      "web-wsl2-networking-dns-mirror-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-218",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "Máy báo lỗi: wsl2 mất mạng khi bật vpn cấu hình networkingMode mirrored trong wslconfig, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-wsl2-networking-dns-mirror-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-219",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "wsl2 mất mạng khi bật vpn",
+    "expected_doc_ids": [
+      "web-wsl2-networking-dns-mirror-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-220",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "runbook xử lý wsl2 mất mạng khi bật vpn cấu hình networkingMode mirrored trong wslconfig cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-wsl2-networking-dns-mirror-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-221",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "xung đột ip virtual switch hyper-v default switch tạo netnat",
+    "expected_doc_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-222",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "Làm thế nào để xung đột ip virtual switch hyper-v default switch tạo netnat vậy ad?",
+    "expected_doc_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-223",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "Máy báo lỗi: xung đột ip virtual switch hyper-v default switch tạo netnat, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-224",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "xung đột ip virtual switch hyper-v",
+    "expected_doc_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-225",
+    "domain": "developer_tooling",
+    "issue_family": "container_docker_desktop",
+    "query": "runbook xử lý xung đột ip virtual switch hyper-v default switch tạo netnat cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-226",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "cập nhật git submodule update init recursive bị lỗi xác thực",
+    "expected_doc_ids": [
+      "web-git-submodule-authentication-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-227",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Làm thế nào để cập nhật git submodule update init recursive bị lỗi xác thực vậy ad?",
+    "expected_doc_ids": [
+      "web-git-submodule-authentication-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-228",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Máy báo lỗi: cập nhật git submodule update init recursive bị lỗi xác thực, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-git-submodule-authentication-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-229",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "cập nhật git submodule update init",
+    "expected_doc_ids": [
+      "web-git-submodule-authentication-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-230",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "runbook xử lý cập nhật git submodule update init recursive bị lỗi xác thực cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-git-submodule-authentication-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-231",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "cấu hình git lfs tải dataset weights dung lượng lớn qua proxy",
+    "expected_doc_ids": [
+      "web-git-lfs-bandwidth-proxy-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-232",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Làm thế nào để cấu hình git lfs tải dataset weights dung lượng lớn qua proxy vậy ad?",
+    "expected_doc_ids": [
+      "web-git-lfs-bandwidth-proxy-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-233",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "Máy báo lỗi: cấu hình git lfs tải dataset weights dung lượng lớn qua proxy, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-git-lfs-bandwidth-proxy-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-234",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "cấu hình git lfs tải dataset",
+    "expected_doc_ids": [
+      "web-git-lfs-bandwidth-proxy-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-235",
+    "domain": "developer_tooling",
+    "issue_family": "dev_git_repo_access",
+    "query": "runbook xử lý cấu hình git lfs tải dataset weights dung lượng lớn qua proxy cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-git-lfs-bandwidth-proxy-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-236",
+    "domain": "developer_tooling",
+    "issue_family": "software",
+    "query": "sửa lỗi file cannot be loaded execution policy powershell remotesigned",
+    "expected_doc_ids": [
+      "web-powershell-execution-policy-it-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-237",
+    "domain": "developer_tooling",
+    "issue_family": "software",
+    "query": "Làm thế nào để sửa lỗi file cannot be loaded execution policy powershell remotesigned vậy ad?",
+    "expected_doc_ids": [
+      "web-powershell-execution-policy-it-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-238",
+    "domain": "developer_tooling",
+    "issue_family": "software",
+    "query": "Máy báo lỗi: sửa lỗi file cannot be loaded execution policy powershell remotesigned, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-powershell-execution-policy-it-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-239",
+    "domain": "developer_tooling",
+    "issue_family": "software",
+    "query": "sửa lỗi file cannot be loaded",
+    "expected_doc_ids": [
+      "web-powershell-execution-policy-it-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-240",
+    "domain": "developer_tooling",
+    "issue_family": "software",
+    "query": "runbook xử lý sửa lỗi file cannot be loaded execution policy powershell remotesigned cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-powershell-execution-policy-it-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-241",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "sửa lỗi sql server error 26 locating server instance port 1433",
+    "expected_doc_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-242",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Làm thế nào để sửa lỗi sql server error 26 locating server instance port 1433 vậy ad?",
+    "expected_doc_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-243",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Máy báo lỗi: sửa lỗi sql server error 26 locating server instance port 1433, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-244",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "sửa lỗi sql server error 26",
+    "expected_doc_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-245",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "runbook xử lý sửa lỗi sql server error 26 locating server instance port 1433 cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-246",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "bật tcp ip protocol port 1433 trong sql server configuration manager",
+    "expected_doc_ids": [
+      "web-mssql-enable-tcp-port-1433-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-247",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Làm thế nào để bật tcp ip protocol port 1433 trong sql server configuration manager vậy ad?",
+    "expected_doc_ids": [
+      "web-mssql-enable-tcp-port-1433-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-248",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Máy báo lỗi: bật tcp ip protocol port 1433 trong sql server configuration manager, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-mssql-enable-tcp-port-1433-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-249",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "bật tcp ip protocol port 1433",
+    "expected_doc_ids": [
+      "web-mssql-enable-tcp-port-1433-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-250",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "runbook xử lý bật tcp ip protocol port 1433 trong sql server configuration manager cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-mssql-enable-tcp-port-1433-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-251",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "sửa lỗi fatal no pg_hba.conf entry for host dbeaver postgres",
+    "expected_doc_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-252",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Làm thế nào để sửa lỗi fatal no pg_hba.conf entry for host dbeaver postgres vậy ad?",
+    "expected_doc_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-253",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Máy báo lỗi: sửa lỗi fatal no pg_hba.conf entry for host dbeaver postgres, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-254",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "sửa lỗi fatal no pg_hba.conf entry",
+    "expected_doc_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-255",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "runbook xử lý sửa lỗi fatal no pg_hba.conf entry for host dbeaver postgres cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-256",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "cấu hình sslmode verify-full và sslrootcert trong postgresql libpq",
+    "expected_doc_ids": [
+      "web-postgres-ssl-client-mode-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-257",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Làm thế nào để cấu hình sslmode verify-full và sslrootcert trong postgresql libpq vậy ad?",
+    "expected_doc_ids": [
+      "web-postgres-ssl-client-mode-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-258",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Máy báo lỗi: cấu hình sslmode verify-full và sslrootcert trong postgresql libpq, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-postgres-ssl-client-mode-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-259",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "cấu hình sslmode verify-full và sslrootcert",
+    "expected_doc_ids": [
+      "web-postgres-ssl-client-mode-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-260",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "runbook xử lý cấu hình sslmode verify-full và sslrootcert trong postgresql libpq cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-postgres-ssl-client-mode-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-261",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "sửa lỗi oracle sql developer ora-12541 tns no listener lsnrctl status",
+    "expected_doc_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-262",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Làm thế nào để sửa lỗi oracle sql developer ora-12541 tns no listener lsnrctl status vậy ad?",
+    "expected_doc_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-263",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "Máy báo lỗi: sửa lỗi oracle sql developer ora-12541 tns no listener lsnrctl status, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-264",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "sửa lỗi oracle sql developer ora-12541",
+    "expected_doc_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-265",
+    "domain": "database_infra",
+    "issue_family": "database_client_access",
+    "query": "runbook xử lý sửa lỗi oracle sql developer ora-12541 tns no listener lsnrctl status cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-266",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "kết nối wifi wpa2 enterprise 802.1x trên macbook trust certificate",
+    "expected_doc_ids": [
+      "web-macos-wifi-enterprise-8021x-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-267",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "Làm thế nào để kết nối wifi wpa2 enterprise 802.1x trên macbook trust certificate vậy ad?",
+    "expected_doc_ids": [
+      "web-macos-wifi-enterprise-8021x-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-268",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "Máy báo lỗi: kết nối wifi wpa2 enterprise 802.1x trên macbook trust certificate, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-macos-wifi-enterprise-8021x-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-269",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "kết nối wifi wpa2 enterprise 802.1x",
+    "expected_doc_ids": [
+      "web-macos-wifi-enterprise-8021x-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-270",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "runbook xử lý kết nối wifi wpa2 enterprise 802.1x trên macbook trust certificate cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-macos-wifi-enterprise-8021x-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-271",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "cài đặt chứng chỉ root ca vào keychain access trên macos always trust",
+    "expected_doc_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-272",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "Làm thế nào để cài đặt chứng chỉ root ca vào keychain access trên macos always trust vậy ad?",
+    "expected_doc_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-273",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "Máy báo lỗi: cài đặt chứng chỉ root ca vào keychain access trên macos always trust, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-274",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "cài đặt chứng chỉ root ca",
+    "expected_doc_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-275",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "runbook xử lý cài đặt chứng chỉ root ca vào keychain access trên macos always trust cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-276",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "kết nối share folder windows smb trên macos finder cmd k",
+    "expected_doc_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-277",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "Làm thế nào để kết nối share folder windows smb trên macos finder cmd k vậy ad?",
+    "expected_doc_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-278",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "Máy báo lỗi: kết nối share folder windows smb trên macos finder cmd k, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-279",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "kết nối share folder windows smb",
+    "expected_doc_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-280",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "runbook xử lý kết nối share folder windows smb trên macos finder cmd k cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-281",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "kết nối wifi cty peap mschapv2 trên ubuntu linux nmcli",
+    "expected_doc_ids": [
+      "web-ubuntu-wifi-wpa2-enterprise-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-282",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "Làm thế nào để kết nối wifi cty peap mschapv2 trên ubuntu linux nmcli vậy ad?",
+    "expected_doc_ids": [
+      "web-ubuntu-wifi-wpa2-enterprise-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-283",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "Máy báo lỗi: kết nối wifi cty peap mschapv2 trên ubuntu linux nmcli, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-ubuntu-wifi-wpa2-enterprise-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-284",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "kết nối wifi cty peap mschapv2",
+    "expected_doc_ids": [
+      "web-ubuntu-wifi-wpa2-enterprise-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-285",
+    "domain": "cross_platform",
+    "issue_family": "wifi_office_connection",
+    "query": "runbook xử lý kết nối wifi cty peap mschapv2 trên ubuntu linux nmcli cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-ubuntu-wifi-wpa2-enterprise-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-286",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "cài đặt root ca vào usr local share ca-certificates update-ca-certificates ubuntu",
+    "expected_doc_ids": [
+      "web-ubuntu-ca-certificates-update-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-287",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "Làm thế nào để cài đặt root ca vào usr local share ca-certificates update-ca-certificates ubuntu vậy ad?",
+    "expected_doc_ids": [
+      "web-ubuntu-ca-certificates-update-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-288",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "Máy báo lỗi: cài đặt root ca vào usr local share ca-certificates update-ca-certificates ubuntu, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-ubuntu-ca-certificates-update-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-289",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "cài đặt root ca vào usr",
+    "expected_doc_ids": [
+      "web-ubuntu-ca-certificates-update-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-290",
+    "domain": "cross_platform",
+    "issue_family": "browser_enterprise_web",
+    "query": "runbook xử lý cài đặt root ca vào usr local share ca-certificates update-ca-certificates ubuntu cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-ubuntu-ca-certificates-update-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-291",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "mount ổ đĩa chia sẻ windows trên linux bằng lệnh mount.cifs cifs-utils",
+    "expected_doc_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-292",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "Làm thế nào để mount ổ đĩa chia sẻ windows trên linux bằng lệnh mount.cifs cifs-utils vậy ad?",
+    "expected_doc_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-293",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "Máy báo lỗi: mount ổ đĩa chia sẻ windows trên linux bằng lệnh mount.cifs cifs-utils, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-294",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "mount ổ đĩa chia sẻ windows",
+    "expected_doc_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-295",
+    "domain": "cross_platform",
+    "issue_family": "folder_file_permissions",
+    "query": "runbook xử lý mount ổ đĩa chia sẻ windows trên linux bằng lệnh mount.cifs cifs-utils cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-296",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "sửa lỗi net err_cert_authority_invalid trên edge devtools security",
+    "expected_doc_ids": [
+      "web-browser-err-cert-authority-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-297",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "Làm thế nào để sửa lỗi net err_cert_authority_invalid trên edge devtools security vậy ad?",
+    "expected_doc_ids": [
+      "web-browser-err-cert-authority-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-298",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "Máy báo lỗi: sửa lỗi net err_cert_authority_invalid trên edge devtools security, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-browser-err-cert-authority-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-299",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "sửa lỗi net err_cert_authority_invalid trên edge",
+    "expected_doc_ids": [
+      "web-browser-err-cert-authority-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-300",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "runbook xử lý sửa lỗi net err_cert_authority_invalid trên edge devtools security cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-browser-err-cert-authority-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-301",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "nguyên nhân lỗi err_ssl_protocol_error do proxy intercept tls 1.3",
+    "expected_doc_ids": [
+      "web-browser-err-ssl-protocol-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-302",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "Làm thế nào để nguyên nhân lỗi err_ssl_protocol_error do proxy intercept tls 1.3 vậy ad?",
+    "expected_doc_ids": [
+      "web-browser-err-ssl-protocol-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-303",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "Máy báo lỗi: nguyên nhân lỗi err_ssl_protocol_error do proxy intercept tls 1.3, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-browser-err-ssl-protocol-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-304",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "nguyên nhân lỗi err_ssl_protocol_error do proxy",
+    "expected_doc_ids": [
+      "web-browser-err-ssl-protocol-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-305",
+    "domain": "security_browser",
+    "issue_family": "browser_enterprise_web",
+    "query": "runbook xử lý nguyên nhân lỗi err_ssl_protocol_error do proxy intercept tls 1.3 cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-browser-err-ssl-protocol-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-306",
+    "domain": "security_browser",
+    "issue_family": "proxy_pac_waf",
+    "query": "cấu hình và debug file proxy auto-configuration pac findproxyforurl",
+    "expected_doc_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-307",
+    "domain": "security_browser",
+    "issue_family": "proxy_pac_waf",
+    "query": "Làm thế nào để cấu hình và debug file proxy auto-configuration pac findproxyforurl vậy ad?",
+    "expected_doc_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-308",
+    "domain": "security_browser",
+    "issue_family": "proxy_pac_waf",
+    "query": "Máy báo lỗi: cấu hình và debug file proxy auto-configuration pac findproxyforurl, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-309",
+    "domain": "security_browser",
+    "issue_family": "proxy_pac_waf",
+    "query": "cấu hình và debug file proxy",
+    "expected_doc_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-310",
+    "domain": "security_browser",
+    "issue_family": "proxy_pac_waf",
+    "query": "runbook xử lý cấu hình và debug file proxy auto-configuration pac findproxyforurl cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-311",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "phân biệt http 502 bad gateway do backend app service sập",
+    "expected_doc_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-312",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "Làm thế nào để phân biệt http 502 bad gateway do backend app service sập vậy ad?",
+    "expected_doc_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-313",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "Máy báo lỗi: phân biệt http 502 bad gateway do backend app service sập, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-314",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "phân biệt http 502 bad gateway",
+    "expected_doc_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-315",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "runbook xử lý phân biệt http 502 bad gateway do backend app service sập cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-316",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "lỗi http 504 gateway timeout do upstream database truy vấn chậm",
+    "expected_doc_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-317",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "Làm thế nào để lỗi http 504 gateway timeout do upstream database truy vấn chậm vậy ad?",
+    "expected_doc_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-318",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "Máy báo lỗi: lỗi http 504 gateway timeout do upstream database truy vấn chậm, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-319",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "lỗi http 504 gateway timeout do",
+    "expected_doc_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-320",
+    "domain": "security_browser",
+    "issue_family": "infrastructure",
+    "query": "runbook xử lý lỗi http 504 gateway timeout do upstream database truy vấn chậm cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-321",
+    "domain": "security_browser",
+    "issue_family": "enterprise_sso_login",
+    "query": "phân biệt http 401 unauthorized và 403 forbidden",
+    "expected_doc_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-322",
+    "domain": "security_browser",
+    "issue_family": "enterprise_sso_login",
+    "query": "Làm thế nào để phân biệt http 401 unauthorized và 403 forbidden vậy ad?",
+    "expected_doc_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-323",
+    "domain": "security_browser",
+    "issue_family": "enterprise_sso_login",
+    "query": "Máy báo lỗi: phân biệt http 401 unauthorized và 403 forbidden, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-324",
+    "domain": "security_browser",
+    "issue_family": "enterprise_sso_login",
+    "query": "phân biệt http 401 unauthorized và",
+    "expected_doc_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-325",
+    "domain": "security_browser",
+    "issue_family": "enterprise_sso_login",
+    "query": "runbook xử lý phân biệt http 401 unauthorized và 403 forbidden cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-326",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "bị hỏi bitlocker recovery key sau khi update bios pcr validation loop",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-327",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "Làm thế nào để bị hỏi bitlocker recovery key sau khi update bios pcr validation loop vậy ad?",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-328",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "Máy báo lỗi: bị hỏi bitlocker recovery key sau khi update bios pcr validation loop, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-329",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "bị hỏi bitlocker recovery key sau",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-330",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "runbook xử lý bị hỏi bitlocker recovery key sau khi update bios pcr validation loop cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-331",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "kiểm tra trạng thái tpm 2.0 bằng lệnh get-tpm và tpm.msc",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-clear-troubleshoot-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-332",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "Làm thế nào để kiểm tra trạng thái tpm 2.0 bằng lệnh get-tpm và tpm.msc vậy ad?",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-clear-troubleshoot-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-333",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "Máy báo lỗi: kiểm tra trạng thái tpm 2.0 bằng lệnh get-tpm và tpm.msc, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-clear-troubleshoot-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-334",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "kiểm tra trạng thái tpm 2.0",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-clear-troubleshoot-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-335",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "runbook xử lý kiểm tra trạng thái tpm 2.0 bằng lệnh get-tpm và tpm.msc cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-bitlocker-tpm-clear-troubleshoot-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-336",
+    "domain": "security_browser",
+    "issue_family": "malware_defender_alert",
+    "query": "khôi phục file bị defender chặn cách ly nhầm mpcmdrun restore",
+    "expected_doc_ids": [
+      "web-defender-remediation-quarantine-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-337",
+    "domain": "security_browser",
+    "issue_family": "malware_defender_alert",
+    "query": "Làm thế nào để khôi phục file bị defender chặn cách ly nhầm mpcmdrun restore vậy ad?",
+    "expected_doc_ids": [
+      "web-defender-remediation-quarantine-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-338",
+    "domain": "security_browser",
+    "issue_family": "malware_defender_alert",
+    "query": "Máy báo lỗi: khôi phục file bị defender chặn cách ly nhầm mpcmdrun restore, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-defender-remediation-quarantine-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-339",
+    "domain": "security_browser",
+    "issue_family": "malware_defender_alert",
+    "query": "khôi phục file bị defender chặn",
+    "expected_doc_ids": [
+      "web-defender-remediation-quarantine-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-340",
+    "domain": "security_browser",
+    "issue_family": "malware_defender_alert",
+    "query": "runbook xử lý khôi phục file bị defender chặn cách ly nhầm mpcmdrun restore cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-defender-remediation-quarantine-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-341",
+    "domain": "security_browser",
+    "issue_family": "security",
+    "query": "bỏ qua cảnh báo smartscreen windows protected your pc more info run anyway",
+    "expected_doc_ids": [
+      "web-defender-smartscreen-override-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-342",
+    "domain": "security_browser",
+    "issue_family": "security",
+    "query": "Làm thế nào để bỏ qua cảnh báo smartscreen windows protected your pc more info run anyway vậy ad?",
+    "expected_doc_ids": [
+      "web-defender-smartscreen-override-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-343",
+    "domain": "security_browser",
+    "issue_family": "security",
+    "query": "Máy báo lỗi: bỏ qua cảnh báo smartscreen windows protected your pc more info run anyway, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-defender-smartscreen-override-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-344",
+    "domain": "security_browser",
+    "issue_family": "security",
+    "query": "bỏ qua cảnh báo smartscreen windows",
+    "expected_doc_ids": [
+      "web-defender-smartscreen-override-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-345",
+    "domain": "security_browser",
+    "issue_family": "security",
+    "query": "runbook xử lý bỏ qua cảnh báo smartscreen windows protected your pc more info run anyway cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-defender-smartscreen-override-001"
+    ],
+    "type": "technician_runbook"
+  },
+  {
+    "id": "COV-346",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "quản lý filevault disk encryption và recovery key trên macos",
+    "expected_doc_ids": [
+      "web-macos-filevault-encryption-001"
+    ],
+    "type": "standard_query"
+  },
+  {
+    "id": "COV-347",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "Làm thế nào để quản lý filevault disk encryption và recovery key trên macos vậy ad?",
+    "expected_doc_ids": [
+      "web-macos-filevault-encryption-001"
+    ],
+    "type": "colloquial_question"
+  },
+  {
+    "id": "COV-348",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "Máy báo lỗi: quản lý filevault disk encryption và recovery key trên macos, hướng dẫn cách fix",
+    "expected_doc_ids": [
+      "web-macos-filevault-encryption-001"
+    ],
+    "type": "error_symptom"
+  },
+  {
+    "id": "COV-349",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "quản lý filevault disk encryption và",
+    "expected_doc_ids": [
+      "web-macos-filevault-encryption-001"
+    ],
+    "type": "keyword_query"
+  },
+  {
+    "id": "COV-350",
+    "domain": "security_browser",
+    "issue_family": "bitlocker_recovery_pin",
+    "query": "runbook xử lý quản lý filevault disk encryption và recovery key trên macos cho IT Helpdesk",
+    "expected_doc_ids": [
+      "web-macos-filevault-encryption-001"
+    ],
+    "type": "technician_runbook"
+  }
+]
