@@ -3,34 +3,62 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
-import { BookOpen, CheckCircle2, ChevronDown, ChevronRight, ExternalLink, Eye, EyeOff, FileText, Maximize2, Pin, RefreshCw, Search, Siren, Sparkles, Wrench, X } from 'lucide-react';
+import {
+  BookOpen,
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  ExternalLink,
+  Eye,
+  EyeOff,
+  FileText,
+  Inbox,
+  Maximize2,
+  Pin,
+  RefreshCw,
+  Search,
+  ShieldAlert,
+  ShieldCheck,
+  Siren,
+  Sparkles,
+  Wrench,
+  X,
+} from 'lucide-react';
+import HITLModal from '@/components/HITLModal';
 import TicketCard from '@/components/TicketCard';
 import TicketContextMenu from '@/components/TicketContextMenu';
 import AISolutionViewer from '@/components/AISolutionViewer';
-import EscalateModal from '@/components/EscalateModal';
-import { ConfidenceBadge, EmptyState, PageHeader, PriorityBadge, SLABadge, Spinner, StatusBadge } from '@/components/ui';
+import {
+  ConfidenceBadge,
+  EmptyState,
+  PageHeader,
+  PriorityBadge,
+  SLABadge,
+  Spinner,
+  StatusBadge,
+} from '@/components/ui';
 import { Ticket, TicketStatus } from '@/types';
 import { CATEGORY_LABELS, extractTicketStructuredDescription, formatRelative, getErrorMessage } from '@/lib/utils';
 import api from '@/lib/api';
 
-type QueueFilter = 'all' | 'open' | 'classifying' | 'pending_hitl' | 'working' | 'escalated';
-const FILTERS: { value: QueueFilter; label: string }[] = [
+type ManagerFilter = 'all' | 'pending_hitl' | 'working' | 'escalated' | 'closed';
+
+const FILTERS: { value: ManagerFilter; label: string }[] = [
   { value: 'all', label: 'Tất cả' },
-  { value: 'open', label: 'Mới' },
-  { value: 'classifying', label: 'AI đang đọc' },
-  { value: 'pending_hitl', label: 'Chờ HITL' },
+  { value: 'pending_hitl', label: 'Chờ duyệt HITL' },
   { value: 'working', label: 'Đang xử lý' },
   { value: 'escalated', label: 'Leo thang' },
+  { value: 'closed', label: 'Đã hoàn tất' },
 ];
 
-export default function TechQueuePage() {
-  const [filter, setFilter] = useState<QueueFilter>('all');
+export default function ManagerTicketsPage() {
+  const [filter, setFilter] = useState<ManagerFilter>('all');
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [search, setSearch] = useState('');
+  const [hitlTicket, setHitlTicket] = useState<Ticket | null>(null);
   const [showRightPanel, setShowRightPanel] = useState(true);
   const [activeModal, setActiveModal] = useState<'description' | 'ai_solution' | null>(null);
   const [inspectorTab, setInspectorTab] = useState<'content' | 'properties'>('content');
-  const [escalatingTicket, setEscalatingTicket] = useState<Ticket | null>(null);
   const [contextMenu, setContextMenu] = useState<{
     ticket: Ticket | null;
     position: { x: number; y: number } | null;
@@ -39,71 +67,90 @@ export default function TechQueuePage() {
 
   const pinMutation = useMutation({
     mutationFn: async ({ ticketId, is_pinned }: { ticketId: number; is_pinned: boolean }) =>
-      (await api.post(`/tickets/${ticketId}/pin`, { is_pinned, pin_reason: is_pinned ? 'Ưu tiên gấp bởi Kỹ thuật viên' : '' })).data,
+      (await api.post(`/tickets/${ticketId}/pin`, { is_pinned, pin_reason: is_pinned ? 'Ưu tiên gấp bởi Quản lý' : '' })).data,
     onSuccess: (_, vars) => {
       toast.success(vars.is_pinned ? 'Đã ghim ticket lên đầu hàng đợi 📌' : 'Đã bỏ ghim ticket');
-      queryClient.invalidateQueries({ queryKey: ['tech-queue'] });
-      queryClient.invalidateQueries({ queryKey: ['ticket'] });
+      queryClient.invalidateQueries({ queryKey: ['manager-tickets-queue'] });
+      queryClient.invalidateQueries({ queryKey: ['ticket', defaultSelected] });
     },
     onError: (err) => toast.error(getErrorMessage(err)),
   });
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ['tech-queue'],
+    queryKey: ['manager-tickets-queue'],
     queryFn: async () => {
-      return (await api.get('/tickets?page=1&page_size=100')).data as { items: Ticket[]; total: number };
+      return (await api.get('/tickets?page=1&page_size=100')).data as {
+        items: Ticket[];
+        total: number;
+      };
     },
-    refetchInterval: 12000,
+    refetchInterval: 15000,
   });
+
+  const allTickets = data?.items ?? [];
+
+  const counts = useMemo(() => {
+    return {
+      all: allTickets.length,
+      pending_hitl: allTickets.filter((t) => t.status === 'pending_hitl').length,
+      working: allTickets.filter((t) =>
+        ['in_progress', 'waiting_for_agent', 'human_active', 'reopened'].includes(t.status)
+      ).length,
+      escalated: allTickets.filter((t) => t.status === 'escalated').length,
+      closed: allTickets.filter((t) => ['closed', 'resolved', 'rejected'].includes(t.status)).length,
+    };
+  }, [allTickets]);
 
   const tickets = useMemo(() => {
     const term = search.trim().toLocaleLowerCase('vi-VN');
-    const source = (data?.items ?? []).filter((ticket) => {
+    const source = allTickets.filter((ticket) => {
       if (filter === 'all') return true;
-      if (filter === 'working') return ['in_progress', 'waiting_for_agent', 'human_active', 'reopened'].includes(ticket.status);
-      return ticket.status === filter;
+      if (filter === 'pending_hitl') return ticket.status === 'pending_hitl';
+      if (filter === 'working')
+        return ['in_progress', 'waiting_for_agent', 'human_active', 'reopened'].includes(ticket.status);
+      if (filter === 'escalated') return ticket.status === 'escalated';
+      if (filter === 'closed') return ['closed', 'resolved', 'rejected'].includes(ticket.status);
+      return true;
     });
+
     if (!term) return source;
-    return source.filter((ticket) => `${ticket.ticket_number} ${ticket.title} ${ticket.description}`.toLocaleLowerCase('vi-VN').includes(term));
-  }, [data, filter, search]);
+    return source.filter((ticket) =>
+      `${ticket.ticket_number} ${ticket.title} ${ticket.description || ''} ${ticket.created_by_user?.full_name || ''} ${ticket.created_by_user?.department || ''}`
+        .toLocaleLowerCase('vi-VN')
+        .includes(term)
+    );
+  }, [allTickets, filter, search]);
+
   const defaultSelected = selectedId ?? tickets[0]?.id ?? null;
 
   const { data: selectedTicket } = useQuery({
     queryKey: ['ticket', defaultSelected],
     queryFn: async () => (await api.get(`/tickets/${defaultSelected}`)).data as Ticket,
     enabled: !!defaultSelected,
-    refetchInterval: 6000,
+    refetchInterval: 8000,
   });
 
   const closeMutation = useMutation({
-    mutationFn: async (ticketId: number) => (await api.patch(`/tickets/${ticketId}/status`, { status: 'closed', note: 'Kỹ thuật viên xác nhận đã xử lý.' })).data,
+    mutationFn: async (ticketId: number) =>
+      (
+        await api.patch(`/tickets/${ticketId}/status`, {
+          status: 'closed',
+          note: 'Quản lý xác nhận đóng ticket sau khi kiểm tra.',
+        })
+      ).data,
     onSuccess: () => {
-      toast.success('Ticket đã đóng');
-      queryClient.invalidateQueries({ queryKey: ['tech-queue'] });
-      queryClient.invalidateQueries({ queryKey: ['ticket'] });
+      toast.success('Ticket đã được đóng');
+      queryClient.invalidateQueries({ queryKey: ['manager-tickets-queue'] });
+      queryClient.invalidateQueries({ queryKey: ['ticket', defaultSelected] });
     },
     onError: (err) => toast.error(getErrorMessage(err)),
   });
 
-  const counts = useMemo(() => ({
-    urgent: tickets.filter((ticket) => ticket.priority === 'critical' || ticket.sla_escalated).length,
-    hitl: tickets.filter((ticket) => ticket.status === 'pending_hitl').length,
-    lowConfidence: tickets.filter((ticket) => (ticket.confidence_score ?? 1) < 0.6).length,
-  }), [tickets]);
-
-  let ragSources: Array<string | { label?: string; url?: string; kind?: string }> = [];
-  try {
-    const parsed = JSON.parse(selectedTicket?.rag_sources ?? '[]');
-    ragSources = Array.isArray(parsed) ? parsed : [];
-  } catch {
-    ragSources = [];
-  }
-
   return (
     <div>
       <PageHeader
-        title="Workbench kỹ thuật viên"
-        subtitle={`${data?.total ?? 0} ticket trong hàng đợi theo quyền công ty/phòng ban`}
+        title="Hàng đợi & Giám sát sự cố"
+        subtitle={`${data?.total ?? 0} sự cố trong phạm vi quản lý đơn vị phụ trách`}
         action={
           <button className="btn-ghost" onClick={() => refetch()}>
             <RefreshCw size={15} />
@@ -112,33 +159,65 @@ export default function TechQueuePage() {
         }
       />
 
-      <div className="responsive-grid-2" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 12, marginBottom: 16 }}>
-        {[
-          { label: 'Khẩn cấp / escalated', value: counts.urgent, color: 'var(--red)' },
-          { label: 'Chờ HITL', value: counts.hitl, color: 'var(--amber)' },
-          { label: 'Confidence thấp', value: counts.lowConfidence, color: 'var(--violet)' },
-        ].map((item) => (
-          <div key={item.label} className="stat-card">
-            <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 800, textTransform: 'uppercase', marginBottom: 8 }}>{item.label}</div>
-            <div style={{ color: item.color, fontSize: 26, fontWeight: 800 }}>{item.value}</div>
+      {/* Top Stat Cards */}
+      <div className="responsive-grid-2" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 12, marginBottom: 16 }}>
+        <div className="stat-card">
+          <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 800, textTransform: 'uppercase', marginBottom: 6 }}>
+            Tổng sự cố đơn vị
           </div>
-        ))}
+          <div style={{ color: 'var(--primary, #2563eb)', fontSize: 26, fontWeight: 800 }}>{counts.all}</div>
+        </div>
+
+        <div className="stat-card">
+          <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 800, textTransform: 'uppercase', marginBottom: 6 }}>
+            Chờ duyệt HITL
+          </div>
+          <div style={{ color: 'var(--amber, #f59e0b)', fontSize: 26, fontWeight: 800 }}>{counts.pending_hitl}</div>
+        </div>
+
+        <div className="stat-card">
+          <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 800, textTransform: 'uppercase', marginBottom: 6 }}>
+            Đang xử lý
+          </div>
+          <div style={{ color: 'var(--cyan, #0891b2)', fontSize: 26, fontWeight: 800 }}>{counts.working}</div>
+        </div>
+
+        <div className="stat-card">
+          <div style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 800, textTransform: 'uppercase', marginBottom: 6 }}>
+            Leo thang (Escalated)
+          </div>
+          <div style={{ color: 'var(--red, #ef4444)', fontSize: 26, fontWeight: 800 }}>{counts.escalated}</div>
+        </div>
       </div>
 
+      {/* Toolbar */}
       <div className="queue-toolbar">
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
           {FILTERS.map((item) => (
-            <button key={item.value} className={filter === item.value ? 'btn-primary' : 'btn-ghost'} style={{ height: 32 }} onClick={() => setFilter(item.value)}>
+            <button
+              key={item.value}
+              className={filter === item.value ? 'btn-primary' : 'btn-ghost'}
+              style={{ height: 32 }}
+              onClick={() => setFilter(item.value)}
+            >
               {item.label}
+              {counts[item.value] > 0 && ` (${counts[item.value]})`}
             </button>
           ))}
         </div>
+
         <label className="queue-search">
           <Search size={15} aria-hidden="true" />
-          <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Tìm ticket, tiêu đề…" aria-label="Tìm trong hàng đợi" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Tìm mã, tiêu đề, phòng ban…"
+            aria-label="Tìm sự cố"
+          />
         </label>
       </div>
 
+      {/* Main Grid */}
       <div className="workbench-grid" style={{ gridTemplateColumns: showRightPanel ? 'minmax(0, 1fr) 330px' : '1fr', gap: 16 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
@@ -157,10 +236,12 @@ export default function TechQueuePage() {
           </div>
 
           {isLoading ? (
-            <div className="card" style={{ display: 'flex', justifyContent: 'center', padding: 54 }}><Spinner size={32} /></div>
+            <div className="card" style={{ display: 'flex', justifyContent: 'center', padding: 54 }}>
+              <Spinner size={32} />
+            </div>
           ) : tickets.length === 0 ? (
             <div className="card">
-              <EmptyState icon="check" title="Hàng đợi trống" desc="Không có ticket cần xử lý với bộ lọc hiện tại." />
+              <EmptyState icon="check" title="Không có sự cố nào" desc="Không tìm thấy sự cố nào với bộ lọc hiện tại." />
             </div>
           ) : (
             tickets.map((ticket) => (
@@ -181,7 +262,7 @@ export default function TechQueuePage() {
         {showRightPanel && (
           <aside className="card queue-detail-panel" style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 10, position: 'sticky', top: 80, height: 'fit-content' }}>
             {!selectedTicket ? (
-              <EmptyState icon="inbox" title="Chọn một ticket" desc="Thông tin nội dung và thao tác nhanh sẽ hiển thị ở đây." />
+              <EmptyState icon="inbox" title="Chọn một sự cố" desc="Thông tin nội dung và chỉ đạo xử lý sẽ hiển thị ở đây." />
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                 {/* Inspector Header */}
@@ -190,7 +271,7 @@ export default function TechQueuePage() {
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 2 }}>
                       <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-muted)' }}>#{selectedTicket.ticket_number}</span>
                       <StatusBadge status={selectedTicket.status} />
-                      {selectedTicket.priority && <PriorityBadge priority={selectedTicket.priority} />}
+                      <PriorityBadge priority={selectedTicket.priority ?? 'medium'} />
                       {selectedTicket.is_pinned && <span style={{ fontSize: 10, fontWeight: 800, color: '#92400e', background: '#fef3c7', padding: '1px 5px', borderRadius: 4 }}>📌 Top</span>}
                     </div>
                     <h3 style={{ margin: '2px 0 0', fontSize: 13.5, fontWeight: 800, lineHeight: 1.35, color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
@@ -199,7 +280,7 @@ export default function TechQueuePage() {
                   </div>
                   <a
                     className="btn-ghost"
-                    href={`/technician/tickets/${selectedTicket.id}`}
+                    href={`/manager/tickets/${selectedTicket.id}`}
                     style={{ width: 28, height: 28, padding: 0, flexShrink: 0 }}
                     title="Mở toàn màn hình"
                   >
@@ -348,51 +429,61 @@ export default function TechQueuePage() {
                           {selectedTicket.suggested_solution}
                         </div>
 
-                        {ragSources.length > 0 && (
-                          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, marginTop: 8, paddingTop: 6, borderTop: '1px solid #e0f2fe' }}>
-                            <span style={{ fontSize: 10, fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 3 }}>
-                              <BookOpen size={10} /> Nguồn:
-                            </span>
-                            {ragSources.map((source, idx) => {
-                              const label = typeof source === 'string' ? source : source?.label || source?.url || 'Nguồn RAG';
-                              const url = typeof source === 'object' && source?.url ? source.url : '';
-                              const isUrl = Boolean(url && url.startsWith('http')) || label.startsWith('http');
-                              const targetUrl = isUrl ? (url || label) : '';
-                              return (
-                                <button
-                                  key={idx}
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (targetUrl) {
-                                      window.open(targetUrl, '_blank');
-                                    } else {
-                                      setActiveModal('ai_solution');
-                                    }
-                                  }}
-                                  style={{
-                                    fontSize: 10.5,
-                                    padding: '2px 7px',
-                                    borderRadius: 5,
-                                    background: '#ffffff',
-                                    border: '1px solid #bae6fd',
-                                    color: '#0284c7',
-                                    fontWeight: 700,
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: 3,
-                                    cursor: 'pointer',
-                                    boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
-                                  }}
-                                  title={targetUrl ? 'Mở liên kết ngoài' : 'Bấm để xem chi tiết bài viết tri thức này'}
-                                >
-                                  <span>{label.replace(/[\[\]]/g, '')}</span>
-                                  <ExternalLink size={9} style={{ opacity: 0.7 }} />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
+                        {(() => {
+                          let ragSources: Array<string | { label?: string; url?: string }> = [];
+                          try {
+                            const parsed = JSON.parse(selectedTicket.rag_sources ?? '[]');
+                            ragSources = Array.isArray(parsed) ? parsed : [];
+                          } catch {
+                            ragSources = [];
+                          }
+                          if (ragSources.length === 0) return null;
+                          return (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 4, marginTop: 8, paddingTop: 6, borderTop: '1px solid #e0f2fe' }}>
+                              <span style={{ fontSize: 10, fontWeight: 800, color: '#0369a1', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <BookOpen size={10} /> Nguồn:
+                              </span>
+                              {ragSources.map((source, idx) => {
+                                const label = typeof source === 'string' ? source : source?.label || source?.url || 'Nguồn RAG';
+                                const url = typeof source === 'object' && source?.url ? source.url : '';
+                                const isUrl = Boolean(url && url.startsWith('http')) || label.startsWith('http');
+                                const targetUrl = isUrl ? (url || label) : '';
+                                return (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (targetUrl) {
+                                        window.open(targetUrl, '_blank');
+                                      } else {
+                                        setActiveModal('ai_solution');
+                                      }
+                                    }}
+                                    style={{
+                                      fontSize: 10.5,
+                                      padding: '2px 7px',
+                                      borderRadius: 5,
+                                      background: '#ffffff',
+                                      border: '1px solid #bae6fd',
+                                      color: '#0284c7',
+                                      fontWeight: 700,
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: 3,
+                                      cursor: 'pointer',
+                                      boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                                    }}
+                                    title={targetUrl ? 'Mở liên kết ngoài' : 'Bấm để xem chi tiết bài viết tri thức này'}
+                                  >
+                                    <span>{label.replace(/[\[\]]/g, '')}</span>
+                                    <ExternalLink size={9} style={{ opacity: 0.7 }} />
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          );
+                        })()}
                       </div>
                     ) : (
                       <div style={{ padding: '8px 10px', background: 'var(--surface-subtle)', borderRadius: 8, fontSize: 11.5, color: 'var(--text-muted)', textAlign: 'center' }}>
@@ -464,22 +555,22 @@ export default function TechQueuePage() {
                 {/* Primary CTA Button */}
                 <a
                   className="btn-primary"
-                  href={`/technician/tickets/${selectedTicket.id}`}
+                  href={`/manager/tickets/${selectedTicket.id}`}
                   style={{ justifyContent: 'center', textDecoration: 'none', height: 32, fontSize: 12, marginTop: 2 }}
                 >
-                  Mở Workspace Xử lý ↗
+                  Mở Workspace Chỉ đạo ↗
                 </a>
 
                 {/* Fast Action Buttons */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: selectedTicket.status === 'pending_hitl' ? '1fr 1fr' : '1fr 1fr', gap: 6, marginTop: 2 }}>
                   <button
                     type="button"
                     onClick={() => pinMutation.mutate({ ticketId: selectedTicket.id, is_pinned: !selectedTicket.is_pinned })}
                     className="btn-ghost"
                     style={{
-                      height: 28,
+                      height: 30,
                       fontSize: 11,
-                      padding: '0 4px',
+                      padding: '0 6px',
                       color: selectedTicket.is_pinned ? '#b45309' : 'var(--text-secondary)',
                       borderColor: selectedTicket.is_pinned ? '#f59e0b' : 'var(--border-default)',
                     }}
@@ -489,25 +580,24 @@ export default function TechQueuePage() {
                     <span>{selectedTicket.is_pinned ? 'Bỏ ghim' : 'Ghim'}</span>
                   </button>
 
-                  <button
-                    className="btn-success"
-                    style={{ height: 28, fontSize: 11, padding: '0 4px' }}
-                    disabled={closeMutation.isPending || !['open', 'in_progress'].includes(selectedTicket.status)}
-                    onClick={() => closeMutation.mutate(selectedTicket.id)}
-                  >
-                    <CheckCircle2 size={12} />
-                    <span>Đóng</span>
-                  </button>
-
-                  <button
-                    className="btn-danger"
-                    style={{ height: 28, fontSize: 11, padding: '0 4px' }}
-                    disabled={selectedTicket.status === 'closed' || selectedTicket.status === 'resolved'}
-                    onClick={() => setEscalatingTicket(selectedTicket)}
-                  >
-                    <Siren size={12} />
-                    <span>Leo thang</span>
-                  </button>
+                  {selectedTicket.status === 'pending_hitl' ? (
+                    <button
+                      className="btn-primary"
+                      style={{ height: 30, fontSize: 11, background: 'var(--amber, #f59e0b)', borderColor: '#d97706' }}
+                      onClick={() => setHitlTicket(selectedTicket)}
+                    >
+                      <ShieldCheck size={13} /> Duyệt HITL
+                    </button>
+                  ) : (
+                    <button
+                      className="btn-success"
+                      style={{ height: 30, fontSize: 11 }}
+                      disabled={closeMutation.isPending || ['closed', 'resolved', 'rejected'].includes(selectedTicket.status)}
+                      onClick={() => closeMutation.mutate(selectedTicket.id)}
+                    >
+                      <CheckCircle2 size={13} /> Đóng
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -580,14 +670,12 @@ export default function TechQueuePage() {
         </div>
       )}
 
-      {/* Escalate Modal */}
-      {escalatingTicket && (
-        <EscalateModal
-          ticket={escalatingTicket}
-          onClose={() => setEscalatingTicket(null)}
-          onSuccess={() => {
-            queryClient.invalidateQueries({ queryKey: ['tech-queue'] });
-            queryClient.invalidateQueries({ queryKey: ['ticket'] });
+      {hitlTicket && (
+        <HITLModal
+          ticket={hitlTicket}
+          onClose={() => {
+            setHitlTicket(null);
+            refetch();
           }}
         />
       )}
@@ -598,7 +686,6 @@ export default function TechQueuePage() {
         position={contextMenu.position}
         onClose={() => setContextMenu({ ticket: null, position: null })}
         onTogglePin={(t) => pinMutation.mutate({ ticketId: t.id, is_pinned: !t.is_pinned })}
-        onEscalate={(t) => setEscalatingTicket(t)}
         isStaff={true}
       />
     </div>

@@ -8,6 +8,8 @@ import {
   Activity,
   BarChart3,
   BookOpen,
+  ChevronLeft,
+  ChevronRight,
   CircleDollarSign,
   ClipboardCheck,
   ClipboardList,
@@ -21,6 +23,8 @@ import {
   MessageSquareText,
   Package,
   PackageCheck,
+  PanelLeftClose,
+  PanelLeftOpen,
   Search,
   Settings,
   TicketCheck,
@@ -64,6 +68,7 @@ const TECH_AGENT_NAV: NavItem[] = [
 
 const IT_MANAGER_NAV: NavItem[] = [
   { href: '/manager/dashboard', label: 'Control tower', icon: Gauge, group: 'Điều hành' },
+  { href: '/manager/tickets', label: 'Hàng đợi sự cố', icon: Inbox },
   { href: '/manager/approvals', label: 'HITL approvals', icon: ClipboardCheck, group: 'Quyết định' },
   { href: '/manager/analytics', label: 'Phân tích hiệu suất', icon: BarChart3 },
 ];
@@ -86,7 +91,32 @@ export default function Sidebar() {
   const [quickSearchOpen, setQuickSearchOpen] = useState(false);
   const [aiChatStarted, setAiChatStarted] = useState(false);
   const [aiChatOpen, setAiChatOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const quickSearchRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('omni_sidebar_collapsed');
+      if (saved === 'true') {
+        setCollapsed(true);
+        document.querySelector('.main-content')?.classList.add('collapsed');
+      }
+    } catch {}
+  }, []);
+
+  const toggleCollapsed = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    try {
+      localStorage.setItem('omni_sidebar_collapsed', String(next));
+    } catch {}
+    const main = document.querySelector('.main-content');
+    if (next) {
+      main?.classList.add('collapsed');
+    } else {
+      main?.classList.remove('collapsed');
+    }
+  };
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
@@ -150,21 +180,33 @@ export default function Sidebar() {
         </div>
       </header>
       {mobileOpen && <button className="sidebar-backdrop" aria-label="Đóng menu điều hướng" onClick={() => setMobileOpen(false)} />}
-      <aside className={`sidebar ${mobileOpen ? 'mobile-open' : ''}`} aria-label="Điều hướng chính">
+      <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`} aria-label="Điều hướng chính">
         <button className="sidebar-close" onClick={() => setMobileOpen(false)} aria-label="Đóng menu điều hướng">
           <X size={20} aria-hidden="true" />
         </button>
 
+        {/* Floating edge toggle protruding on the right border */}
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          className="sidebar-edge-toggle"
+          title={collapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}
+          aria-label={collapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}
+          aria-expanded={!collapsed}
+        >
+          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+        </button>
+
         <div className="sidebar-brand">
-          <div className="sidebar-brand-mark">
-              AI
+          <div className="sidebar-brand-mark" title="OmniDesk.AI">
+            AI
+          </div>
+          <div className="sidebar-brand-copy">
+            <div>OmniDesk.AI</div>
+            <div>
+              {user?.role === 'admin' ? 'Super Admin Console' : user?.role === 'manager' ? 'IT Manager Tower' : user?.role === 'technician' ? 'IT Agent Workbench' : 'End-User Portal'}
             </div>
-            <div className="sidebar-brand-copy">
-              <div>OmniDesk.AI</div>
-              <div>
-                {user?.role === 'admin' ? 'Super Admin Console' : user?.role === 'manager' ? 'IT Manager Tower' : user?.role === 'technician' ? 'IT Agent Workbench' : 'End-User Portal'}
-              </div>
-            </div>
+          </div>
         </div>
 
         <div className="sidebar-quick-search">
@@ -235,7 +277,12 @@ export default function Sidebar() {
 
         {user && (
           <div className="sidebar-footer">
-            <Link href={user.role === 'employee' ? '/employee/profile' : user.role === 'technician' ? '/technician/queue' : user.role === 'manager' ? '/manager/dashboard' : '/admin/ai-review'} className="sidebar-user-card" style={{ display: 'flex', gap: 10, alignItems: 'center', padding: 8, borderRadius: 12, background: '#152033', marginBottom: 8, color: 'inherit', textDecoration: 'none' }} title={user.role === 'employee' ? 'Mở hồ sơ cá nhân' : 'Mở trang chính'}>
+            <Link
+              href={user.role === 'employee' ? '/employee/profile' : user.role === 'technician' ? '/technician/queue' : user.role === 'manager' ? '/manager/dashboard' : '/admin/ai-review'}
+              className="sidebar-user-card"
+              style={{ display: 'flex', gap: 10, alignItems: 'center', padding: 8, borderRadius: 12, marginBottom: 8, color: 'inherit', textDecoration: 'none' }}
+              title={collapsed ? `${user.full_name} (${ROLE_LABELS[user.role]})` : 'Mở hồ sơ cá nhân'}
+            >
               <div className="sidebar-user-avatar">
                 {user.full_name.slice(0, 1)}
               </div>
@@ -249,9 +296,14 @@ export default function Sidebar() {
               </div>
               {user.role === 'employee' && <Settings className="sidebar-profile-shortcut" size={16} aria-hidden="true" />}
             </Link>
-            <button onClick={logout} className="btn-ghost sidebar-logout">
+
+            <button
+              onClick={logout}
+              className="btn-ghost sidebar-logout"
+              title="Đăng xuất khỏi hệ thống"
+            >
               <LogOut size={15} />
-              Đăng xuất
+              <span>Đăng xuất</span>
             </button>
           </div>
         )}
