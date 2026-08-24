@@ -1365,7 +1365,7 @@
     "issue_family": "vpn_forticlient",
     "query": "vpn forticlient đã connected nhưng không vào được ip server nội bộ",
     "expected_doc_ids": [
-      "p0-07-vpn-connected-internal-unreachable-c001"
+      "p0-06-vpn-connected-internal-unreachable-c001"
     ],
     "type": "standard_query"
   },
@@ -1375,7 +1375,7 @@
     "issue_family": "vpn_forticlient",
     "query": "Làm thế nào để vpn forticlient đã connected nhưng không vào được ip server nội bộ vậy ad?",
     "expected_doc_ids": [
-      "p0-07-vpn-connected-internal-unreachable-c001"
+      "p0-06-vpn-connected-internal-unreachable-c001"
     ],
     "type": "colloquial_question"
   },
@@ -1385,7 +1385,7 @@
     "issue_family": "vpn_forticlient",
     "query": "Máy báo lỗi: vpn forticlient đã connected nhưng không vào được ip server nội bộ, hướng dẫn cách fix",
     "expected_doc_ids": [
-      "p0-07-vpn-connected-internal-unreachable-c001"
+      "p0-06-vpn-connected-internal-unreachable-c001"
     ],
     "type": "error_symptom"
   },
@@ -1395,7 +1395,7 @@
     "issue_family": "vpn_forticlient",
     "query": "vpn forticlient đã connected nhưng không",
     "expected_doc_ids": [
-      "p0-07-vpn-connected-internal-unreachable-c001"
+      "p0-06-vpn-connected-internal-unreachable-c001"
     ],
     "type": "keyword_query"
   },
@@ -1405,7 +1405,7 @@
     "issue_family": "vpn_forticlient",
     "query": "runbook xử lý vpn forticlient đã connected nhưng không vào được ip server nội bộ cho IT Helpdesk",
     "expected_doc_ids": [
-      "p0-07-vpn-connected-internal-unreachable-c001"
+      "p0-06-vpn-connected-internal-unreachable-c001"
     ],
     "type": "technician_runbook"
   },

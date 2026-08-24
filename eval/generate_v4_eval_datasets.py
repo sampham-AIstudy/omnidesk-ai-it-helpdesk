@@ -37,7 +37,7 @@ domains_and_queries = [
     
     # Domain 4: Network & Remote Access (Families 23-29)
     ("network_remote", "vpn_forticlient", "lỗi vpn forticlient dừng ở 48% certificate auth mismatch", ["p0-06-vpn-forticlient-ssl-vpn-c001"]),
-    ("network_remote", "vpn_forticlient", "vpn forticlient đã connected nhưng không vào được ip server nội bộ", ["p0-07-vpn-connected-internal-unreachable-c001"]),
+    ("network_remote", "vpn_forticlient", "vpn forticlient đã connected nhưng không vào được ip server nội bộ", ["p0-06-vpn-connected-internal-unreachable-c001"]),
     ("network_remote", "dns_resolution", "xung đột dns split brain khi kết nối vpn cấu hình nrpt", ["web-dns-split-brain-vpn-timeout-001"]),
     ("network_remote", "static_ip_dhcp", "lỗi trùng địa chỉ ip duplicate ip conflict arp event 4199", ["web-windows-ip-conflict-arp-001"]),
     ("network_remote", "rdp_remote_desktop", "lỗi rdp credssp encryption oracle remediation sau khi update win", ["web-rdp-credssp-encryption-oracle-001"]),
