@@ -104,6 +104,11 @@ data/test_chroma/
 data/eval_chroma/
 data/chroma_backups/
 
+# Assignment pipeline and local performance outputs (the directory is retained
+# with outputs/.gitkeep because the pipeline writes these paths at runtime).
+/outputs/*.json
+/outputs/*.md
+
 # Evaluation temporary caches & intermediate experiment outputs
 eval/results/judge_cache*/
 
