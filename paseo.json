@@ -1,0 +1,39 @@
+{
+  "worktree": {
+    "setup": [
+      "py -3 -m venv .venv",
+      ".\\.venv\\Scripts\\python.exe -m pip install -r requirements.txt"
+    ]
+  },
+  "scripts": {
+    "Golden 300": {
+      "command": ".\\.venv\\Scripts\\python.exe eval\\baseline_v1.py --output-json eval\\results\\golden_300_evaluation_current.json --output-md eval\\results\\golden_300_evaluation_current.md"
+    },
+    "Behavior Gate": {
+      "command": ".\\.venv\\Scripts\\python.exe scripts\\run_behavior_gate.py"
+    },
+    "Retrieval Gate": {
+      "command": ".\\.venv\\Scripts\\python.exe scripts\\run_retrieval_gate.py"
+    },
+    "Hard Negative": {
+      "command": ".\\.venv\\Scripts\\python.exe scripts\\evaluate_p0_hard_negatives.py"
+    },
+    "Production Gate": {
+      "command": ".\\.venv\\Scripts\\python.exe scripts\\run_production_gate_v3.py"
+    },
+    "Full Pytest": {
+      "command": ".\\.venv\\Scripts\\python.exe -m pytest -q"
+    }
+  },
+  "metadataGeneration": {
+    "branchName": {
+      "instructions": "Use lowercase kebab-case branch names with one of these prefixes: feat/, fix/, refactor/, eval/, test/, docs/, chore/. Keep names concise and describe the actual change. Examples: feat/async-ticket-evidence, fix/golden-partial-evidence, eval/graph-rag-benchmark. Do not include AI/agent names."
+    },
+    "commitMessage": {
+      "instructions": "Use Conventional Commits. Format: <type>(optional-scope): <concise imperative summary>. Allowed types: feat, fix, refactor, perf, test, docs, eval, chore. Keep the subject concise, describe the actual repository change, and do not mention AI, Codex, AGY, or generated code. Add a body only when useful for explaining behavior, safety, migration, or evaluation impact."
+    },
+    "pullRequest": {
+      "instructions": "Generate a concise PR title using Conventional Commit style.\n\nThe PR description should use this structure:\n\n## Summary\nExplain what changed and why.\n\n## Key Changes\nList only meaningful implementation and architecture changes.\n\n## Validation\nReport only tests and evaluation results that were actually executed. Include Golden 300, behavior gate, retrieval gate, hard-negative gate, full pytest, and production gate when relevant.\n\n## Safety / Regression\nDescribe impact on ACL, tenant isolation, memory, citations, guardrails, HITL, tool execution, and web research when relevant.\n\n## Performance\nInclude measured before/after results only when a benchmark was actually run. Clearly distinguish controlled benchmarks from production end-to-end measurements.\n\n## Deferred / Known Limitations\nDocument non-blocking limitations or experiment-only features.\n\nNever claim a test passed unless verified from execution. Never change or hide failing results. Do not mention AI, Codex, AGY, or agent-generated code in the PR title or description."
+    }
+  }
+}

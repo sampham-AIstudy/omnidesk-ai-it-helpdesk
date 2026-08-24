@@ -1,0 +1,138 @@
+{
+  "experiment": "step6b_hierarchical_metadata_v1",
+  "source_collection": "helpdesk_kb_multilingual_v3_sentence_transformer",
+  "shadow_collection": "helpdesk_kb_multilingual_v3_hierarchical_shadow",
+  "source_count": 443,
+  "shadow_count": 443,
+  "content_or_embedding_rechunked": false,
+  "relationship_policy": "authoritative_manifest_only",
+  "metadata_contract": {
+    "required_for_eligible": [
+      "document_id",
+      "canonical_source_id",
+      "parent_document_id",
+      "section_id",
+      "section_heading",
+      "chunk_index",
+      "total_chunks",
+      "document_type",
+      "expansion_eligible",
+      "source_type",
+      "topic",
+      "authority",
+      "content_hash"
+    ],
+    "acl_fields_preserved": [
+      "company_unit",
+      "department",
+      "applicable_to_all"
+    ]
+  },
+  "raw_source_structure": [
+    {
+      "source_id": "P0-01-forticlient-ssl-vpn",
+      "canonical_url_or_path": "https://docs.fortinet.com/document/forticlient/7.4.4/administration-guide/205286/configuring-an-ssl-vpn-connection",
+      "content_chars": 475,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-01-forticlient-ssl-vpn"
+    },
+    {
+      "source_id": "P0-02-l3-vs-l4",
+      "canonical_url_or_path": "https://learn.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection?view=windowsserver2025-ps",
+      "content_chars": 494,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-02-l3-vs-l4"
+    },
+    {
+      "source_id": "P0-03-tcp-failure-semantics",
+      "canonical_url_or_path": "https://learn.microsoft.com/en-us/troubleshoot/windows-client/networking/tcp-ip-connectivity-issues-troubleshooting",
+      "content_chars": 558,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-03-tcp-failure-semantics"
+    },
+    {
+      "source_id": "P0-04-service-listening",
+      "canonical_url_or_path": "https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/configure",
+      "content_chars": 499,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-04-service-listening"
+    },
+    {
+      "source_id": "P0-05-firewall-acl-nat",
+      "canonical_url_or_path": "https://docs.fortinet.com/document/fortigate/7.0.0/administration-guide/993282/troubleshooting-common-issues",
+      "content_chars": 504,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-05-firewall-acl-nat"
+    },
+    {
+      "source_id": "P0-06-vpn-connected-internal-unreachable",
+      "canonical_url_or_path": "https://docs.fortinet.com/document/forticlient/7.2.4/windows-release-notes/991883/known-issues",
+      "content_chars": 484,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-06-vpn-connected-internal-unreachable"
+    },
+    {
+      "source_id": "P0-07-routing-split-tunnel",
+      "canonical_url_or_path": "https://docs.fortinet.com/document/forticlient/7.4.4/administration-guide/205286/configuring-an-ssl-vpn-connection",
+      "content_chars": 494,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-07-routing-split-tunnel"
+    },
+    {
+      "source_id": "P0-08-dns-proxy",
+      "canonical_url_or_path": "https://learn.microsoft.com/en-us/powershell/module/dnsclient/resolve-dnsname?view=windowsserver2025-ps",
+      "content_chars": 483,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-08-dns-proxy"
+    },
+    {
+      "source_id": "P0-09-tcp-port-403",
+      "canonical_url_or_path": "https://learn.microsoft.com/en-us/powershell/module/nettcpip/test-netconnection?view=windowsserver2025-ps",
+      "content_chars": 423,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-09-tcp-port-403"
+    },
+    {
+      "source_id": "P0-10-http-403-forbidden",
+      "canonical_url_or_path": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/403",
+      "content_chars": 464,
+      "deterministic_chunk_count": 1,
+      "heading_count": 0,
+      "classification": "SINGLE_CHUNK",
+      "document_id": "P0-10-http-403-forbidden"
+    }
+  ],
+  "annotated_single_chunk_ids": [
+    "p0-01-forticlient-ssl-vpn-c001",
+    "p0-02-l3-vs-l4-c001",
+    "p0-03-tcp-failure-semantics-c001",
+    "p0-04-service-listening-c001",
+    "p0-05-firewall-acl-nat-c001",
+    "p0-06-vpn-connected-internal-unreachable-c001",
+    "p0-07-routing-split-tunnel-c001",
+    "p0-08-dns-proxy-c001",
+    "p0-09-tcp-port-403-c001",
+    "p0-10-http-403-forbidden-c001"
+  ],
+  "eligible_hierarchical_source_count": 0,
+  "created_at": "2026-08-20T16:35:34.569900+00:00",
+  "manifest_sha256": "19823ac79adbd465c217ec9a15c873badd7570f7c26c36ce972b83ffc2d490aa"
+}

@@ -1,4 +1,4 @@
-from src.agents.state import AgentState
+from src.agents.state import TicketAgentState as AgentState
 
 
 async def analyze_node(state: AgentState) -> dict:

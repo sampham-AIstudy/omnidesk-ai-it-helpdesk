@@ -16,22 +16,47 @@ env/
 .env
 .env.local
 .env.production
+.env.*.local
+.env.test
 
-# IDE
+# IDE & AI Assistant Configurations
 .vscode/
 .idea/
+.claude/
+.gemini/
+.codex/
+.cursor/
+.fleet/
+.vs/
+*.code-workspace
 *.swp
 *.swo
 *~
 
+# Linter & Type-checker caches
+.ruff_cache/
+.mypy_cache/
+.pytype/
+.pyre/
+.hypothesis/
+
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
+ehthumbs.db
+$RECYCLE.BIN/
 
 # Data (never commit large data)
-data/
+/data/
+/frontend/data/
 *.db
+*.db-journal
+*.db-wal
+*.db-shm
 *.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
 
 # Logs
 logs/
@@ -58,3 +83,27 @@ out/
 # AI logs — tracked structure, ignored content
 .ai-log/*.jsonl
 .ai-log/archive/
+
+# Temp test & scratch files
+.pytest*/
+data/pytest_temp/
+temp_pytest*/
+temp_rag.json
+restored_rag_service.py
+temp_*
+*.tmp
+*.temp
+scratch/
+*.bak
+*.backup
+*.old
+*.orig
+
+# Test & eval isolated datastores (never commit runtime state)
+data/test_chroma/
+data/eval_chroma/
+data/chroma_backups/
+
+# Evaluation temporary caches & intermediate experiment outputs
+eval/results/judge_cache*/
+

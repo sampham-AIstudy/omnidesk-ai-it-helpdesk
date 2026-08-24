@@ -1,0 +1,104 @@
+'use client';
+
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
+import { ArrowLeft, Bot, CheckCircle2, Send, ShieldCheck, Siren, UserCheck } from 'lucide-react';
+import api from '@/lib/api';
+import { Ticket, TicketConversationResponse, TicketMessage } from '@/types';
+import { ConfidenceBadge, EmptyState, PriorityBadge, SLABadge, Spinner, StatusBadge } from '@/components/ui';
+import { getErrorMessage } from '@/lib/utils';
+import { useAuthStore } from '@/lib/authStore';
+import { useState } from 'react';
+
+const CLOSED = ['closed', 'resolved', 'rejected'];
+
+export default function TechnicianTicketPage() {
+  const { id } = useParams<{ id: string }>();
+  const queryClient = useQueryClient();
+  const { user } = useAuthStore();
+  const [message, setMessage] = useState('');
+  const [hitlNote, setHitlNote] = useState('');
+  const isApprover = user?.role === 'manager' || user?.role === 'admin';
+  const ticketKey = ['technician-ticket', id];
+
+  const { data: ticket, isLoading } = useQuery({
+    queryKey: ticketKey,
+    queryFn: async () => (await api.get(`/tickets/${id}`)).data as Ticket,
+    enabled: Boolean(id),
+    refetchInterval: 10000,
+  });
+  const { data: conversation } = useQuery({
+    queryKey: ['ticket-messages', id],
+    queryFn: async () => (await api.get(`/tickets/${id}/messages`)).data as TicketConversationResponse,
+    enabled: Boolean(id),
+    refetchInterval: 8000,
+  });
+  const refresh = () => {
+    queryClient.invalidateQueries({ queryKey: ticketKey });
+    queryClient.invalidateQueries({ queryKey: ['ticket-messages', id] });
+    queryClient.invalidateQueries({ queryKey: ['tech-queue'] });
+    queryClient.invalidateQueries({ queryKey: ['technician-all-tickets'] });
+  };
+  const takeover = useMutation({
+    mutationFn: async () => (await api.post(`/tickets/${id}/takeover`)).data,
+    onSuccess: () => { toast.success('Bạn đã tiếp nhận ticket. Các phản hồi tiếp theo sẽ do chuyên viên xử lý.'); refresh(); },
+    onError: (error) => toast.error(getErrorMessage(error)),
+  });
+  const send = useMutation({
+    mutationFn: async () => (await api.post(`/tickets/${id}/messages`, { message: message.trim() })).data,
+    onSuccess: () => { setMessage(''); toast.success('Đã gửi phản hồi cho người dùng'); refresh(); },
+    onError: (error) => toast.error(getErrorMessage(error)),
+  });
+  const decideHitl = useMutation({
+    mutationFn: async (approved: boolean) => (await api.post(`/tickets/${id}/approve`, { approved, note: hitlNote.trim() || null })).data,
+    onSuccess: () => { toast.success('Đã ghi nhận quyết định HITL'); setHitlNote(''); refresh(); },
+    onError: (error) => toast.error(getErrorMessage(error)),
+  });
+  const close = useMutation({
+    mutationFn: async () => (await api.patch(`/tickets/${id}/status`, { status: 'closed', note: 'Đóng bởi chuyên viên từ workspace.' })).data,
+    onSuccess: () => { toast.success('Đã đóng ticket'); refresh(); },
+    onError: (error) => toast.error(getErrorMessage(error)),
+  });
+  const escalate = useMutation({
+    mutationFn: async () => (await api.post(`/tickets/${id}/escalate`)).data,
+    onSuccess: () => { toast.success('Đã leo thang ticket'); refresh(); },
+    onError: (error) => toast.error(getErrorMessage(error)),
+  });
+
+  if (isLoading) return <div className="card" style={{ padding: 72, textAlign: 'center' }}><Spinner size={30} /></div>;
+  if (!ticket) return <EmptyState icon="inbox" title="Không tìm thấy ticket" desc="Ticket có thể đã bị xóa hoặc bạn không có quyền truy cập." />;
+  const isClosed = CLOSED.includes(ticket.status);
+  const hasTakenOver = ticket.assignee_id === user?.id;
+  const canReply = !isClosed && ticket.status !== 'pending_hitl' && hasTakenOver;
+
+  return <main style={{ maxWidth: 1440, margin: '0 auto' }}>
+    <Link href="/technician/queue" className="btn-ghost" style={{ width: 'fit-content', textDecoration: 'none', marginBottom: 16 }}><ArrowLeft size={15} /> Quay lại hàng đợi</Link>
+    <header className="card" style={{ padding: 22, marginBottom: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap' }}>
+        <div><div style={{ color: 'var(--text-muted)', fontSize: 12, fontWeight: 800 }}>{ticket.ticket_number}</div><h1 style={{ margin: '5px 0 10px', fontSize: 25 }}>{ticket.title}</h1><div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}><StatusBadge status={ticket.status} />{ticket.priority && <PriorityBadge priority={ticket.priority} />}</div></div>
+        <div style={{ display: 'flex', gap: 8, alignItems: 'start', flexWrap: 'wrap' }}>
+          {!ticket.assignee_id && !isClosed && <button className="btn-primary" disabled={takeover.isPending} onClick={() => takeover.mutate()}><UserCheck size={15} /> Tiếp nhận ticket</button>}
+          <button className="btn-danger" disabled={isClosed || escalate.isPending} onClick={() => escalate.mutate()}><Siren size={15} /> Leo thang</button>
+          <button className="btn-success" disabled={isClosed || close.isPending} onClick={() => close.mutate()}><CheckCircle2 size={15} /> Đóng ticket</button>
+        </div>
+      </div>
+      <p style={{ margin: '16px 0 0', color: 'var(--text-secondary)', lineHeight: 1.65 }}>{ticket.description}</p>
+    </header>
+    {ticket.status === 'pending_hitl' && <section className="card" style={{ padding: 18, marginBottom: 16, borderColor: 'var(--amber)' }}>
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}><ShieldCheck color="var(--amber)" /><div><strong>Quyết định HITL đang chờ phê duyệt</strong><div style={{ color: 'var(--text-secondary)', fontSize: 13, marginTop: 3 }}>Chuyên viên có thể xem ngữ cảnh; chỉ Manager/Admin được phê duyệt hoặc từ chối.</div></div></div>
+      {isApprover && <div style={{ display: 'flex', gap: 9, marginTop: 14, flexWrap: 'wrap' }}><input className="input" value={hitlNote} onChange={(e) => setHitlNote(e.target.value)} placeholder="Ghi chú quyết định (không bắt buộc)" style={{ flex: '1 1 280px' }} /><button className="btn-success" onClick={() => decideHitl.mutate(true)}>Phê duyệt</button><button className="btn-danger" onClick={() => decideHitl.mutate(false)}>Từ chối</button></div>}
+    </section>}
+    <div className="workbench-grid">
+      <section className="card tech-chat-shell">
+        <header className="tech-chat-header"><div><h2>Trao đổi với người dùng</h2><p>Bạn đang thay thế AI trong cuộc hội thoại này.</p></div><span>{conversation?.items.length ?? 0} tin nhắn</span></header>
+        <div className="tech-chat-thread">
+          {(conversation?.items ?? []).map((item: TicketMessage) => <article key={item.id} className={`tech-message tech-message--${item.sender_type}`}><div className="tech-message__meta">{item.sender_type === 'technician' ? 'Bạn · Chuyên viên' : item.sender_type === 'agent' ? 'AI Agent' : item.sender_type === 'user' ? 'Người dùng' : 'Hệ thống'}</div><div className="tech-message__bubble">{item.content}</div></article>)}
+        </div>
+        {canReply ? <div className="tech-chat-composer"><div className="tech-chat-presence"><span />Bạn đang phản hồi với tư cách chuyên viên</div><textarea value={message} onChange={(e) => setMessage(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey) && message.trim()) { e.preventDefault(); send.mutate(); } }} rows={3} className="input" placeholder="Viết phản hồi gửi trực tiếp cho người dùng…" /><div><small>Ctrl + Enter để gửi</small><button className="btn-primary" disabled={!message.trim() || send.isPending} onClick={() => send.mutate()}>{send.isPending ? <Spinner size={15} /> : <Send size={15} />} Gửi phản hồi</button></div></div> : <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '16px 18px' }}>{isClosed ? 'Ticket đã đóng, không thể gửi thêm tin nhắn.' : ticket.status === 'pending_hitl' ? 'Cần hoàn tất quyết định HITL trước khi phản hồi.' : ticket.assignee_id ? 'Ticket đang do một chuyên viên khác xử lý. Bạn chỉ có thể đọc cuộc trao đổi.' : 'Tiếp nhận ticket để bắt đầu phản hồi người dùng.'}</p>}
+      </section>
+      <aside className="card" style={{ padding: 18, alignSelf: 'start' }}><h2 style={{ fontSize: 15, marginTop: 0 }}>Ngữ cảnh xử lý</h2><div style={{ display: 'grid', gap: 14, fontSize: 13 }}><div><span style={{ color: 'var(--text-muted)' }}>SLA</span><div style={{ marginTop: 5 }}><SLABadge deadline={ticket.sla_deadline} /></div></div><div><span style={{ color: 'var(--text-muted)' }}>Độ chắc chắn phân loại</span><div style={{ marginTop: 5 }}><ConfidenceBadge score={ticket.confidence_score} /></div></div><div><span style={{ color: 'var(--text-muted)' }}>Định tuyến</span><div style={{ marginTop: 5, fontWeight: 700 }}>{ticket.routing_target ?? 'Chưa định tuyến'}</div></div>{ticket.suggested_solution && <div style={{ borderTop: '1px solid var(--border)', paddingTop: 12 }}><div style={{ display: 'flex', gap: 6, alignItems: 'center', fontWeight: 800 }}><Bot size={15} /> Gợi ý AI</div><p style={{ color: 'var(--text-secondary)', lineHeight: 1.6 }}>{ticket.suggested_solution}</p></div>}</div></aside>
+    </div>
+  </main>;
+}

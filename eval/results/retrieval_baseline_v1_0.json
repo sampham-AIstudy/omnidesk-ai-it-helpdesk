@@ -1,0 +1,146 @@
+{
+  "meta": {
+    "timestamp": "2026-08-19T10:30:00+00:00",
+    "collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "collection_count": 433,
+    "top_k": 5,
+    "elapsed_seconds": 8.99,
+    "golden_sha256": "ca55989f841372f75f299492f4be8a3f9215acc37b7a7da72ecc7498b1eb59b3"
+  },
+  "gate_status": "PASSED",
+  "thresholds": {
+    "min_hit_rate_at_1": 0.8,
+    "min_recall_at_1": 0.75,
+    "min_hit_rate_at_3": 0.9,
+    "min_recall_at_3": 0.88,
+    "min_hit_rate_at_5": 0.97,
+    "min_recall_at_5": 0.94,
+    "min_mrr_at_5": 0.86,
+    "min_ndcg_at_5": 0.83,
+    "max_cross_tenant_leaks": 0,
+    "max_forbidden_doc_leaks": 0,
+    "max_policy_authority_violations": 0
+  },
+  "summary": {
+    "total_cases": 44,
+    "scorable_cases": 39,
+    "hit_rate_at_1": 0.8461538461538461,
+    "recall_at_1": 0.7948717948717948,
+    "hit_rate_at_3": 0.9487179487179487,
+    "recall_at_3": 0.9230769230769231,
+    "hit_rate_at_5": 1.0,
+    "recall_at_5": 0.9743589743589743,
+    "mrr_at_5": 0.9047008547008547,
+    "ndcg_at_5": 0.8718204642878477,
+    "ndcg_at_10": 0.8718204642878477,
+    "cross_tenant_leak_count": 0,
+    "forbidden_doc_retrieval_count": 0,
+    "policy_authority_violation_count": 0,
+    "category_summary": {
+      "A_semantic_paraphrase": {
+        "total_cases": 7,
+        "scorable_cases": 7,
+        "hit_at_1": 0.857143,
+        "hit_at_5": 1.0,
+        "recall_at_5": 0.857143,
+        "mrr": 0.928571,
+        "ndcg_at_5": 0.869048,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "B_exact_token": {
+        "total_cases": 7,
+        "scorable_cases": 7,
+        "hit_at_1": 0.714286,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 0.833333,
+        "ndcg_at_5": 0.875882,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "C_multilingual": {
+        "total_cases": 5,
+        "scorable_cases": 5,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.952381,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "D_typo_informal": {
+        "total_cases": 5,
+        "scorable_cases": 5,
+        "hit_at_1": 0.4,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 0.59,
+        "ndcg_at_5": 0.687786,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "E_ambiguous": {
+        "total_cases": 2,
+        "scorable_cases": 0,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 1.0,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "F_policy_authority": {
+        "total_cases": 4,
+        "scorable_cases": 4,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.980735,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "G_tenant_isolation": {
+        "total_cases": 5,
+        "scorable_cases": 5,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.985294,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "H_no_evidence": {
+        "total_cases": 3,
+        "scorable_cases": 0,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 1.0,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      },
+      "I_hard_negative": {
+        "total_cases": 6,
+        "scorable_cases": 6,
+        "hit_at_1": 1.0,
+        "hit_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "mrr": 1.0,
+        "ndcg_at_5": 0.952381,
+        "forbidden_leaks": 0,
+        "cross_tenant_leaks": 0
+      }
+    },
+    "failure_breakdown": {
+      "LEXICAL_MISS": 3,
+      "SEMANTIC_MISS": 2
+    }
+  }
+}

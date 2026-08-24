@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "purpose": "Post-ranking KB context-completeness evaluation; it does not modify retrieval golden datasets.",
+  "cases": [
+    {
+      "id": "CTX-01-ping-tcp-port",
+      "query": "Ping works but the TCP port fails: what should I check next?",
+      "anchor_expected_source": "p0-02-l3-vs-l4-c001",
+      "required_context_facts": ["ICMP response", "Test-NetConnection", "TcpTestSucceeded"],
+      "optional_context_facts": ["remote address", "route"],
+      "forbidden_unrelated_context": ["HTTP 403", "password reset"]
+    },
+    {
+      "id": "CTX-02-vpn-internal-resource",
+      "query": "VPN connects but an internal resource cannot be accessed.",
+      "anchor_expected_source": "p0-06-vpn-connected-internal-unreachable-c001",
+      "required_context_facts": ["IP/FQDN", "TCP-port result", "route selected"],
+      "optional_context_facts": ["assigned VPN address", "access policy"],
+      "forbidden_unrelated_context": ["HTTP 403", "printer"]
+    },
+    {
+      "id": "CTX-03-timeout-sequence",
+      "query": "What is the diagnostic sequence for a connection timeout?",
+      "anchor_expected_source": "p0-03-tcp-failure-semantics-c001",
+      "required_context_facts": ["routing", "filtering", "silent drop"],
+      "optional_context_facts": ["NAT", "timestamp"],
+      "forbidden_unrelated_context": ["connection refused means a listener" ]
+    },
+    {
+      "id": "CTX-04-refused-sequence",
+      "query": "What should I check when a connection is refused?",
+      "anchor_expected_source": "p0-04-service-listening-c001",
+      "required_context_facts": ["process is running", "listening", "firewall allow rule"],
+      "optional_context_facts": ["local address", "firewall profile"],
+      "forbidden_unrelated_context": ["VPN password", "HTTP 403"]
+    },
+    {
+      "id": "CTX-05-forticlient-process",
+      "query": "What is the FortiClient troubleshooting process after the tunnel connects?",
+      "anchor_expected_source": "p0-06-vpn-connected-internal-unreachable-c001",
+      "required_context_facts": ["affected resource", "resolved address", "route selected"],
+      "optional_context_facts": ["one resource or many", "VPN address"],
+      "forbidden_unrelated_context": ["mailbox", "printer"]
+    },
+    {
+      "id": "CTX-06-dns-routing-proxy",
+      "query": "Give the DNS versus routing versus proxy diagnostic sequence.",
+      "anchor_expected_source": "p0-08-dns-proxy-c001",
+      "required_context_facts": ["Resolve-DnsName", "target port", "route actually selected"],
+      "optional_context_facts": ["proxy authentication", "DNS server"],
+      "forbidden_unrelated_context": ["password reset", "Windows activation"]
+    },
+    {
+      "id": "CTX-07-firewall-listener-order",
+      "query": "What order should I use for firewall and service-listening diagnostics?",
+      "anchor_expected_source": "p0-05-firewall-acl-nat-c001",
+      "required_context_facts": ["source address", "destination address and port", "security policy match"],
+      "optional_context_facts": ["translation expectation", "device logs"],
+      "forbidden_unrelated_context": ["HTTP 403", "VPN password"]
+    }
+  ]
+}

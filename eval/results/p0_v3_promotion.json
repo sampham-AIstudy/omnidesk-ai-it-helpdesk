@@ -1,0 +1,144 @@
+{
+  "created_at": "2026-08-20T09:22:31.195590+00:00",
+  "pre_promotion": {
+    "active_runtime_collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+    "v2": {
+      "name": "helpdesk_kb_multilingual_v2_sentence_transformer",
+      "chunk_count": 433,
+      "collection_metadata": {
+        "created_at": "2026-08-15T17:06:56.927411+00:00",
+        "source_collection": "helpdesk_kb_multilingual_v1",
+        "embedding_normalized": true,
+        "migration": "c4_3_reembedding",
+        "embedding_version": "c4_3",
+        "hnsw:space": "cosine",
+        "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+        "embedding_provider": "sentence_transformers",
+        "embedding_dimension": 384,
+        "embedding_backend": "sentence_transformer"
+      },
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "embedding_backend": "sentence_transformer",
+      "embedding_dimension": 384,
+      "distance_metric": "cosine",
+      "source_counts": {
+        "historical_resolved_ticket": 200,
+        "internal_curated_kb": 35,
+        "official_web_documentation": 192,
+        "unknown": 6
+      },
+      "record_digest": "c50b700ac872aab1271103d4e8cbca0f50e676121d9e98dc7fd12cb7fed3b399"
+    },
+    "shadow": {
+      "name": "helpdesk_kb_multilingual_v3_shadow",
+      "chunk_count": 443,
+      "collection_metadata": {
+        "created_at": "2026-08-20T07:48:21.704714+00:00",
+        "embedding_dimension": 384,
+        "embedding_version": "c4_3",
+        "shadow_only": true,
+        "hnsw:space": "cosine",
+        "migration": "c4_3_reembedding",
+        "source_collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+        "p0_batch_id": "p0-network-v3-shadow-20260820",
+        "embedding_backend": "sentence_transformer",
+        "embedding_normalized": true,
+        "shadow_version": "v3",
+        "embedding_provider": "sentence_transformers",
+        "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+      },
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "embedding_backend": "sentence_transformer",
+      "embedding_dimension": 384,
+      "distance_metric": "cosine",
+      "source_counts": {
+        "historical_resolved_ticket": 200,
+        "internal_curated_kb": 35,
+        "official_vendor_documentation": 10,
+        "official_web_documentation": 192,
+        "unknown": 6
+      },
+      "record_digest": "bdcac6d55f65b94201e8e9a930c4fe6a4aa730918290118973b81ee85f1c86de"
+    },
+    "manifest": {
+      "manifest_path": "C:\\Users\\Admin\\Python Advanced\\VinAI Lab\\P-236\\data\\p0_shadow_v3_sources.json",
+      "manifest_sha256": "19823ac79adbd465c217ec9a15c873badd7570f7c26c36ce972b83ffc2d490aa",
+      "batch_id": "p0-network-v3-shadow-20260820",
+      "internal_procedure_status": "MISSING",
+      "source_count": 10,
+      "source_content_hashes": {
+        "P0-01-forticlient-ssl-vpn": "eaea7f4d7b80dd33538c315b9d0d3e3090c1f297f37f14105f5b1b989f28b6c8",
+        "P0-02-l3-vs-l4": "574e2c9a9948500163fb3214b840ad167cc194481b7b6e7cf126bef7c848a8e8",
+        "P0-03-tcp-failure-semantics": "b4e52c1b2b80fad0e9055d1b95dc4e0d77f27dcf96b24162096a2e124a684455",
+        "P0-04-service-listening": "4bb52f5a581812fb5d2b4297ddbadd24f8762c7c94a054d084679449f211cd92",
+        "P0-05-firewall-acl-nat": "924d9cbae7922d2ab32e36b76732510e496e20ff095c2597db6eab40de85c7a0",
+        "P0-06-vpn-connected-internal-unreachable": "46ceb9aca07bf768dd2c2e96d5350f72643d073ab73bc5985726eaeae39579bb",
+        "P0-07-routing-split-tunnel": "f65bca2a4fbfbc7406da180cc32de72ba28f184465f9035977f7b47956a9dca3",
+        "P0-08-dns-proxy": "18c62525d344f3449882ec9a3c2cb389ec6c8329dc9b509bf3bd8a25fdbc8f2d",
+        "P0-09-tcp-port-403": "cd054b04fa038d8efef0514d7612dadf9c0eaf1bea354e04a0eebcc0816cf00c",
+        "P0-10-http-403-forbidden": "d09b4323f43150236e376cf1d73d70c27503c6743c0557a842c2d2dd1275ae51"
+      },
+      "source_types": [
+        "official_vendor_documentation"
+      ]
+    }
+  },
+  "canonical_v3": {
+    "name": "helpdesk_kb_multilingual_v3_sentence_transformer",
+    "chunk_count": 443,
+    "collection_metadata": {
+      "migration": "c4_3_reembedding",
+      "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+      "shadow_version": "v3",
+      "created_at": "2026-08-20T07:48:21.704714+00:00",
+      "embedding_provider": "sentence_transformers",
+      "p0_batch_id": "p0-network-v3-shadow-20260820",
+      "promotion_source_collection": "helpdesk_kb_multilingual_v3_shadow",
+      "shadow_only": false,
+      "embedding_normalized": true,
+      "embedding_version": "c4_3",
+      "embedding_dimension": 384,
+      "canonical_version": "v3",
+      "source_collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
+      "embedding_backend": "sentence_transformer",
+      "hnsw:space": "cosine",
+      "promoted_at": "2026-08-20T09:21:03.042154+00:00"
+    },
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    "embedding_backend": "sentence_transformer",
+    "embedding_dimension": 384,
+    "distance_metric": "cosine",
+    "source_counts": {
+      "historical_resolved_ticket": 200,
+      "internal_curated_kb": 35,
+      "official_vendor_documentation": 10,
+      "official_web_documentation": 192,
+      "unknown": 6
+    },
+    "record_digest": "dc377f7e4619a8d16088455736e18be79744dd7291076945e6d8f8d44e969c0c"
+  },
+  "collection_integrity": {
+    "same_count": true,
+    "same_expected_ids": true,
+    "document_ids_preserved": true,
+    "document_content_preserved": true,
+    "embeddings_preserved_within_float32_roundtrip_tolerance": true,
+    "content_hashes_preserved": true,
+    "source_metadata_preserved": true,
+    "topic_metadata_preserved": true,
+    "tenant_acl_metadata_preserved": true,
+    "authority_metadata_preserved": true,
+    "embedding_dimension_preserved": true,
+    "distance_metric_preserved": true,
+    "no_duplicate_chunks": true,
+    "max_abs_embedding_delta": 1.4901161193847656e-08,
+    "pass": true
+  },
+  "rollback": {
+    "collection_name": "helpdesk_kb_multilingual_v2_sentence_transformer",
+    "configuration": {
+      "CHROMA_COLLECTION_NAME": "helpdesk_kb_multilingual_v2_sentence_transformer"
+    },
+    "procedure": "Set CHROMA_COLLECTION_NAME to the v2 collection and restart/reload the application."
+  }
+}

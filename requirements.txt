@@ -1,25 +1,93 @@
-# Core
+# ============================================================
+# Help Desk AI Agent — Complete Dependencies
+# ============================================================
+
+# --- Core Web Framework & API ---
 fastapi>=0.115.0
 uvicorn[standard]>=0.34.0
 pydantic>=2.10.0
 pydantic-settings>=2.7.0
 python-dotenv>=1.0.0
+python-multipart>=0.0.9
 
-# AI / LangChain
-langchain>=0.3.0
-langchain-openai>=0.3.0
-langgraph>=0.2.0
+# --- AI Frameworks & Orchestration ---
+langchain>=1.0.0
+langchain-core>=1.0.0
+langchain-community>=0.4.0
+langchain-text-splitters>=1.0.0
+langgraph>=1.0.0
+langsmith>=0.10.0
 
-# Database (uncomment as needed)
-# sqlalchemy>=2.0.0
-# alembic>=1.14.0
-# psycopg2-binary>=2.9.0
+# --- LLM Providers & Integrations ---
+langchain-mistralai>=1.0.0
+langchain-openai>=1.0.0
+langchain-google-genai>=4.0.0
+langchain-groq>=1.0.0
+langchain-ollama>=1.0.0
+openai>=2.0.0
+google-genai>=2.0.0
+groq>=0.30.0
+ollama>=0.6.0
+tiktoken>=0.7.0
 
-# Vector Store (uncomment as needed)
-# chromadb>=0.5.0
+# --- Vector Store, Embeddings & RAG ---
+chromadb>=1.0.0
+sentence-transformers>=3.0.0
+torch>=2.2.0
+transformers>=4.40.0
+numpy>=1.26.0
 
-# Dev tools
+# --- Database & Migrations ---
+sqlalchemy>=2.0.0
+aiosqlite>=0.20.0
+alembic>=1.14.0
+greenlet>=3.0.0
+
+# --- Authentication & Security ---
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+bcrypt>=4.0.0
+cryptography>=42.0.0
+
+# --- HTTP, Network & Utilities ---
+httpx>=0.28.0
+trafilatura>=2.0.0
+requests>=2.31.0
+anyio>=4.0.0
+tenacity>=9.0.0
+tqdm>=4.66.0
+
+# --- Local MCP Servers (Model Context Protocol) ---
+# The bundled servers import ``mcp.server.fastmcp`` (MCP 1.x API)
+mcp>=1.6.0,<2.0.0
+
+# --- Cache & Distributed Store ---
+redis>=5.0.0
+upstash-redis>=1.1.0
+
+# --- Observability & Distributed Tracing (OpenTelemetry) ---
+opentelemetry-api>=1.30.0
+opentelemetry-sdk>=1.30.0
+opentelemetry-exporter-otlp-proto-grpc>=1.30.0
+opentelemetry-instrumentation-fastapi>=0.51b0
+opentelemetry-instrumentation-httpx>=0.51b0
+opentelemetry-instrumentation-sqlalchemy>=0.51b0
+
+# --- Security & Guardrails (PII Masking & Privacy) ---
+presidio-analyzer>=2.2.0
+presidio-anonymizer>=2.2.0
+spacy>=3.7.0
+
+# --- Evaluation & Benchmarking ---
+pandas>=2.2.0
+scikit-learn>=1.4.0
+datasets>=2.18.0
+
+# NOTE: The in-repository evaluation runner works natively without RAGAS.
+# Do not add RAGAS here: its current dependency chain is incompatible with
+# LangChain 1.x stack and has no Windows Python 3.14 scikit-network wheel.
+
+# --- Development, Testing & Code Quality ---
 ruff>=0.8.0
 pytest>=8.0.0
 pytest-asyncio>=0.24.0
-httpx>=0.28.0

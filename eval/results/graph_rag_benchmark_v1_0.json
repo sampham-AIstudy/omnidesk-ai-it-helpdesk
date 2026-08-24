@@ -1,0 +1,292 @@
+{
+  "benchmark": "Graph-assisted RAG vs Hybrid Baseline",
+  "collection": "helpdesk_kb_multilingual_v3_sentence_transformer",
+  "golden_44": {
+    "baseline": {
+      "total_cases": 44,
+      "scorable_cases": 39,
+      "hit_rate_at_1": 1.0,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "recall_at_1": 0.9743589743589743,
+      "recall_at_3": 0.9743589743589743,
+      "recall_at_5": 0.9743589743589743,
+      "mrr_at_5": 1.0,
+      "ndcg_at_5": 0.9616631355539943,
+      "ndcg_at_10": 0.9616631355539943,
+      "cross_tenant_leak_count": 0,
+      "forbidden_doc_retrieval_count": 0,
+      "policy_authority_violation_count": 0,
+      "category_summary": {
+        "A_semantic_paraphrase": {
+          "total_cases": 7,
+          "scorable_cases": 7,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8571428571428571,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9071686086991576,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "B_exact_token": {
+          "total_cases": 7,
+          "scorable_cases": 7,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 1.0,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "C_multilingual": {
+          "total_cases": 5,
+          "scorable_cases": 5,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9520375066863738,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "D_typo_informal": {
+          "total_cases": 5,
+          "scorable_cases": 5,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9520375066863738,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "E_ambiguous": {
+          "total_cases": 2,
+          "scorable_cases": 0,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 1.0,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "F_policy_authority": {
+          "total_cases": 4,
+          "scorable_cases": 4,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 1.0,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "G_tenant_isolation": {
+          "total_cases": 5,
+          "scorable_cases": 5,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9847770017252475,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "H_no_evidence": {
+          "total_cases": 3,
+          "scorable_cases": 0,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 1.0,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "I_hard_negative": {
+          "total_cases": 6,
+          "scorable_cases": 6,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9517369917036174,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        }
+      },
+      "failure_breakdown": {},
+      "p50_ms": 99.31250000045111,
+      "p95_ms": 145.8872999992309,
+      "total_time_s": 4.466376999998829
+    },
+    "graph_assisted": {
+      "total_cases": 44,
+      "scorable_cases": 39,
+      "hit_rate_at_1": 0.9743589743589743,
+      "hit_rate_at_3": 1.0,
+      "hit_rate_at_5": 1.0,
+      "recall_at_1": 0.9487179487179487,
+      "recall_at_3": 0.9743589743589743,
+      "recall_at_5": 0.9743589743589743,
+      "mrr_at_5": 0.9871794871794872,
+      "ndcg_at_5": 0.9521997959019805,
+      "ndcg_at_10": 0.9521997959019805,
+      "cross_tenant_leak_count": 0,
+      "forbidden_doc_retrieval_count": 0,
+      "policy_authority_violation_count": 0,
+      "category_summary": {
+        "A_semantic_paraphrase": {
+          "total_cases": 7,
+          "scorable_cases": 7,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 0.8571428571428571,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9071686086991576,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "B_exact_token": {
+          "total_cases": 7,
+          "scorable_cases": 7,
+          "hit_at_1": 0.8571428571428571,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 0.9285714285714286,
+          "ndcg_at_5": 0.9472756790816368,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "C_multilingual": {
+          "total_cases": 5,
+          "scorable_cases": 5,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9520375066863738,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "D_typo_informal": {
+          "total_cases": 5,
+          "scorable_cases": 5,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9520375066863738,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "E_ambiguous": {
+          "total_cases": 2,
+          "scorable_cases": 0,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 1.0,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "F_policy_authority": {
+          "total_cases": 4,
+          "scorable_cases": 4,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 1.0,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "G_tenant_isolation": {
+          "total_cases": 5,
+          "scorable_cases": 5,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9847770017252475,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "H_no_evidence": {
+          "total_cases": 3,
+          "scorable_cases": 0,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 1.0,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        },
+        "I_hard_negative": {
+          "total_cases": 6,
+          "scorable_cases": 6,
+          "hit_at_1": 1.0,
+          "hit_at_5": 1.0,
+          "recall_at_5": 1.0,
+          "mrr": 1.0,
+          "ndcg_at_5": 0.9517369917036174,
+          "forbidden_leaks": 0,
+          "cross_tenant_leaks": 0
+        }
+      },
+      "failure_breakdown": {},
+      "p50_ms": 60.05569999979343,
+      "p95_ms": 84.0952999988076,
+      "total_time_s": 2.639950200000385
+    }
+  },
+  "hard_negative_50": {
+    "baseline": {
+      "hit@1": 0.88,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "mrr": 0.9266666666666665,
+      "ndcg": 0.9452371901428583,
+      "hard@1_rate": 0.0,
+      "hard@3_rate": 0.04
+    },
+    "graph_assisted": {
+      "hit@1": 0.88,
+      "hit@3": 0.98,
+      "hit@5": 1.0,
+      "mrr": 0.9216666666666665,
+      "ndcg": 0.941232126232897,
+      "hard@1_rate": 0.0,
+      "hard@3_rate": 0.08
+    }
+  },
+  "p0_11": {
+    "baseline": {
+      "hit@1": 0.5454545454545454,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "mrr": 0.7575757575757575,
+      "ndcg": 0.8203380922078028,
+      "hard@1_rate": 0.0,
+      "hard@3_rate": 0.0
+    },
+    "graph_assisted": {
+      "hit@1": 0.5454545454545454,
+      "hit@3": 1.0,
+      "hit@5": 1.0,
+      "mrr": 0.7575757575757575,
+      "ndcg": 0.8203380922078028,
+      "hard@1_rate": 0.0,
+      "hard@3_rate": 0.0
+    }
+  },
+  "graph_isolated_latency": {
+    "p50_ms": 1.9527000004018191,
+    "p95_ms": 7.269300000189105
+  }
+}
