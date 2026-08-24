@@ -4,7 +4,7 @@ from pathlib import Path
 # Let's generate 350 realistic Vietnamese IT Help Desk queries covering all 8 domains and 52 families
 domains_and_queries = [
     # Domain 1: Workplace Endpoint & OS (Families 01-08)
-    ("workplace_endpoint", "laptop_physical_damage", "màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không", ["kb-009", "sr-004"]),
+    ("workplace_endpoint", "laptop_physical_damage", "màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không", ["sr-004"]),
     ("workplace_endpoint", "laptop_physical_damage", "kiểm tra độ chai pin laptop bằng lệnh powercfg battery report", ["web-windows-battery-health-report-001"]),
     ("workplace_endpoint", "performance_storage", "máy tính chạy chậm đơ ram 99% kiểm tra memory diagnostic mdsched", ["web-windows-memory-diagnostic-tool-001"]),
     ("workplace_endpoint", "windows_update_driver", "chạy lệnh dism cleanup-image restorehealth và sfc scannow sửa lỗi win", ["web-windows-dism-sfc-system-repair-001"]),

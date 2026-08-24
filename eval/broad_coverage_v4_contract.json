@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "benchmark": "broad_coverage_v4",
   "scoring_contract": {
     "raw_all_cases": "Every dataset case remains in raw reporting. A target that is absent from the collection cannot be a hit, but is not silently removed.",
@@ -8,9 +8,26 @@
     "ambiguous": "A query whose wording no longer identifies its intended technical outcome remains in raw reporting but is excluded from primary ranking scoring."
   },
   "case_overrides": {
+    "COV-001": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The original kb-009 label is objectively unrelated: it is the slow-performance runbook, while this query asks about physical screen damage and replacement. The intended sr-004 service-request source is absent from V4."
+    },
+    "COV-002": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The original kb-009 label is objectively unrelated: it is the slow-performance runbook, while this query asks about physical screen damage and replacement. The intended sr-004 service-request source is absent from V4."
+    },
+    "COV-003": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The original kb-009 label is objectively unrelated: it is the slow-performance runbook, while this query asks about physical screen damage and replacement. The intended sr-004 service-request source is absent from V4."
+    },
     "COV-004": {
       "classification": "AMBIGUOUS",
-      "reason": "The keyword-only wording says only that a laptop screen is cracked; it omits the intended replacement-policy question."
+      "additional_classifications": ["COVERAGE_GAP"],
+      "reason": "The keyword-only wording omits the intended replacement-policy question, and its sole intended sr-004 service-request source is absent from V4 after removing the objectively unrelated kb-009 slow-performance label."
+    },
+    "COV-005": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The original kb-009 label is objectively unrelated: it is the slow-performance runbook, while this query asks about physical screen damage and replacement. The intended sr-004 service-request source is absent from V4."
     },
     "COV-014": {
       "classification": "AMBIGUOUS",

@@ -5,7 +5,6 @@
     "issue_family": "laptop_physical_damage",
     "query": "màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không",
     "expected_doc_ids": [
-      "kb-009",
       "sr-004"
     ],
     "type": "standard_query"
@@ -16,7 +15,6 @@
     "issue_family": "laptop_physical_damage",
     "query": "Làm thế nào để màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không vậy ad?",
     "expected_doc_ids": [
-      "kb-009",
       "sr-004"
     ],
     "type": "colloquial_question"
@@ -27,7 +25,6 @@
     "issue_family": "laptop_physical_damage",
     "query": "Máy báo lỗi: màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không, hướng dẫn cách fix",
     "expected_doc_ids": [
-      "kb-009",
       "sr-004"
     ],
     "type": "error_symptom"
@@ -38,7 +35,6 @@
     "issue_family": "laptop_physical_damage",
     "query": "màn hình laptop bị nứt vỡ",
     "expected_doc_ids": [
-      "kb-009",
       "sr-004"
     ],
     "type": "keyword_query"
@@ -49,7 +45,6 @@
     "issue_family": "laptop_physical_damage",
     "query": "runbook xử lý màn hình laptop bị nứt vỡ chảy mực có được đổi máy mới không cho IT Helpdesk",
     "expected_doc_ids": [
-      "kb-009",
       "sr-004"
     ],
     "type": "technician_runbook"

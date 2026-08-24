@@ -34,6 +34,13 @@ def case_override(contract: dict[str, Any], case_id: str) -> dict[str, Any]:
     return contract["case_overrides"].get(case_id, {})
 
 
+def case_classifications(contract: dict[str, Any], case_id: str) -> frozenset[str]:
+    """Return all explicit scoring classifications for one benchmark case."""
+    override = case_override(contract, case_id)
+    values = [override.get("classification"), *override.get("additional_classifications", [])]
+    return frozenset(value for value in values if value)
+
+
 def acceptable_doc_ids(contract: dict[str, Any], case_id: str) -> list[str]:
     """Return explicit source-level alternatives for one evaluation case."""
     return contract["acceptable_alternatives"].get(case_id, {}).get("acceptable_doc_ids", [])
@@ -64,10 +71,13 @@ def validate_contract(dataset: list[dict[str, Any]], contract: dict[str, Any]) -
             raise ValueError(f"BROAD_CONTRACT_EMPTY_ALTERNATIVE_ALIASES:{case['id']}")
 
         override = case_override(contract, case["id"])
-        classification = override.get("classification")
-        if classification and classification not in {AMBIGUOUS, COVERAGE_GAP}:
+        classifications = case_classifications(contract, case["id"])
+        if not classifications <= {AMBIGUOUS, COVERAGE_GAP}:
             raise ValueError(f"BROAD_CONTRACT_UNKNOWN_CLASSIFICATION:{case['id']}")
-        if classification and not isinstance(override.get("reason"), str):
+        additional = override.get("additional_classifications", [])
+        if not isinstance(additional, list) or not all(isinstance(value, str) for value in additional):
+            raise ValueError(f"BROAD_CONTRACT_MALFORMED_ADDITIONAL_CLASSIFICATIONS:{case['id']}")
+        if classifications and not isinstance(override.get("reason"), str):
             raise ValueError(f"BROAD_CONTRACT_CLASSIFICATION_REASON_MISSING:{case['id']}")
 
 
@@ -75,12 +85,18 @@ def metric_summary(outcomes: list[dict[str, Any]]) -> dict[str, Any]:
     """Produce raw and product-ranking metrics with explicit denominators."""
     total = len(outcomes)
     available = [outcome for outcome in outcomes if outcome["target_available"]]
-    gaps = [outcome for outcome in outcomes if outcome["classification"] == COVERAGE_GAP]
-    ambiguous = [outcome for outcome in outcomes if outcome["classification"] == AMBIGUOUS]
+    def classifications(outcome: dict[str, Any]) -> frozenset[str]:
+        explicit = outcome.get("classifications")
+        if explicit is not None:
+            return frozenset(explicit)
+        return frozenset([outcome["classification"]]) if outcome.get("classification") else frozenset()
+
+    gaps = [outcome for outcome in outcomes if COVERAGE_GAP in classifications(outcome)]
+    ambiguous = [outcome for outcome in outcomes if AMBIGUOUS in classifications(outcome)]
     scorable = [
         outcome
         for outcome in outcomes
-        if outcome["target_available"] and outcome["classification"] not in {AMBIGUOUS, COVERAGE_GAP}
+        if outcome["target_available"] and not classifications(outcome) & {AMBIGUOUS, COVERAGE_GAP}
     ]
 
     def rates(items: list[dict[str, Any]]) -> dict[str, float]:
@@ -114,7 +130,11 @@ def domain_metric_summary(outcomes: list[dict[str, Any]]) -> dict[str, dict[str,
 
 def contract_counts(contract: dict[str, Any]) -> dict[str, int]:
     """Expose declared classifications for integrity assertions and reporting."""
-    classifications = Counter(override.get("classification") for override in contract["case_overrides"].values())
+    classifications = Counter(
+        classification
+        for case_id in contract["case_overrides"]
+        for classification in case_classifications(contract, case_id)
+    )
     return {
         "ambiguous_cases": classifications[AMBIGUOUS],
         "coverage_gap_cases": classifications[COVERAGE_GAP],

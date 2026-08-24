@@ -20,6 +20,7 @@ contract_helpers = importlib.import_module("eval.broad_coverage_contract")
 matching = importlib.import_module("eval.v4_eval_matching")
 COVERAGE_GAP = contract_helpers.COVERAGE_GAP
 case_override = contract_helpers.case_override
+case_classifications = contract_helpers.case_classifications
 domain_metric_summary = contract_helpers.domain_metric_summary
 load_contract = contract_helpers.load_contract
 metric_summary = contract_helpers.metric_summary
@@ -67,8 +68,9 @@ def evaluate_dataset(collection_name: str, dataset: list[dict[str, Any]], contra
         targets = target_doc_ids(item, contract)
         target_aliases = targets_canonical_aliases(targets)
         classification = case_override(contract, item["id"]).get("classification")
+        classifications = case_classifications(contract, item["id"])
         target_available = bool(target_aliases & aliases_in_collection)
-        if classification == COVERAGE_GAP and target_available:
+        if COVERAGE_GAP in classifications and target_available:
             raise ValueError(f"BROAD_CONTRACT_COVERAGE_GAP_IS_AVAILABLE:{item['id']}")
 
         results = rag.search_similar(query=item["query"], n_results=5)
@@ -83,6 +85,7 @@ def evaluate_dataset(collection_name: str, dataset: list[dict[str, Any]], contra
                 "query": item["query"],
                 "target_doc_ids": targets,
                 "classification": classification,
+                "classifications": sorted(classifications),
                 "target_available": target_available,
                 "rank": rank,
                 "top5_doc_ids": [result["doc_id"] for result in results],

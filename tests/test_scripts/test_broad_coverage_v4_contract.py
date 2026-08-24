@@ -8,6 +8,7 @@ from eval.broad_coverage_contract import (
     AMBIGUOUS,
     COVERAGE_GAP,
     acceptable_doc_ids,
+    case_classifications,
     case_override,
     contract_counts,
     load_contract,
@@ -38,7 +39,7 @@ def test_contract_has_valid_source_level_targets_and_explicit_classifications() 
     dataset = _dataset()
     contract = load_contract()
     validate_contract(dataset, contract)
-    assert contract_counts(contract) == {"ambiguous_cases": 7, "coverage_gap_cases": 10}
+    assert contract_counts(contract) == {"ambiguous_cases": 7, "coverage_gap_cases": 15}
 
     for item in dataset:
         alternatives = acceptable_doc_ids(contract, item["id"])
@@ -51,9 +52,16 @@ def test_contract_has_valid_source_level_targets_and_explicit_classifications() 
 def test_ambiguous_and_coverage_cases_are_explicit_not_removed_from_contract() -> None:
     contract = load_contract()
     assert case_override(contract, "COV-004")["classification"] == AMBIGUOUS
+    assert case_classifications(contract, "COV-004") == {AMBIGUOUS, COVERAGE_GAP}
     assert case_override(contract, "COV-239")["classification"] == AMBIGUOUS
-    for number in [131, 132, 133, 134, 135, 286, 287, 288, 289, 290]:
-        assert case_override(contract, f"COV-{number}")["classification"] == COVERAGE_GAP
+    for number in [1, 2, 3, 5, 131, 132, 133, 134, 135, 286, 287, 288, 289, 290]:
+        assert case_override(contract, f"COV-{number:03d}")["classification"] == COVERAGE_GAP
+
+
+def test_physical_damage_cases_do_not_score_an_unrelated_performance_runbook() -> None:
+    dataset = {item["id"]: item for item in _dataset()}
+    for number in range(1, 6):
+        assert dataset[f"COV-{number:03d}"]["expected_doc_ids"] == ["sr-004"]
 
 
 def test_raw_and_scorable_metrics_use_documented_denominators() -> None:
