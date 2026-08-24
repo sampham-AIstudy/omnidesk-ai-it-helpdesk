@@ -41,7 +41,6 @@ from src.services.context_query_service import (
 from src.services.knowledge_gap_telemetry import record_retrieval_outcome
 from src.services.llm import get_rag_llm
 from src.services.profile_chat_service import self_profile_reply
-from src.services.token_cost import dispatch_token_logging
 from src.services.query_decomposition_service import (
     DecompositionResult,
     decompose_knowledge_query,
@@ -56,6 +55,7 @@ from src.services.source_provenance_service import (
     knowledge_source_payload,
     source_id_for_document,
 )
+from src.services.token_cost import dispatch_token_logging
 from src.services.web_research_service import (
     ResearchResult,
     citation_source_payload,

@@ -1,4 +1,3 @@
-from __future__ import annotations
 """Dịch vụ tính chi phí token — Tra cứu bảng giá, tính toán chi phí và ghi log bất đồng bộ vào DB.
 
 Ghi chú thiết kế:
@@ -10,6 +9,7 @@ Ghi chú thiết kế:
   đảm bảo không làm chậm hoặc block request của người dùng.
 """
 
+from __future__ import annotations
 
 import asyncio
 import logging

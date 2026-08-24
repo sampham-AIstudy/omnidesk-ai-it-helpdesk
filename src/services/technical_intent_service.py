@@ -42,14 +42,14 @@ def _has_any(text: str, terms: tuple[str, ...]) -> bool:
 def infer_technical_facets(query: str) -> TechnicalFacets:
     """Compose general technical primitives into a compact diagnostic intent."""
     text = _fold(query)
-    has_http_marker = _has_any(text, ("http", "https", "api", "browser", "web", "website", "forbidden"))
-    http_codes = [int(value) for value in re.findall(r"\b(401|403|404|500|502)\b", text)]
+    has_http_marker = _has_any(text, ("http", "https", "api", "browser", "web", "website", "forbidden", "unauthorized", "gateway"))
+    http_codes = [int(value) for value in re.findall(r"\b(401|403|404|500|502|504)\b", text)]
     port_match = _PORT_NUMBER.search(text)
-    explicit_raw_port = port_match is not None and bool(
+    explicit_raw_port = (port_match is not None and not has_http_marker) or bool(
         re.search(r"\b(?:not|khong(?:\s+phai)?|no)\s+(?:a\s+)?http\b", text)
     )
     http_status = (
-        403 if has_http_marker and "forbidden" in text else (http_codes[-1] if has_http_marker and http_codes else None)
+        403 if has_http_marker and "forbidden" in text and "401" not in text else (http_codes[-1] if has_http_marker and http_codes else None)
     )
     if explicit_raw_port:
         http_status = None
@@ -110,8 +110,82 @@ def infer_technical_facets(query: str) -> TechnicalFacets:
     else:
         area = "generic"
 
-    if http_status is not None:
-        predicted = "http.status_403" if http_status == 403 else "http.application"
+    # Specific technical intents (evaluated before generic transport fallbacks)
+    if _has_any(text, ("ssh", "keygen", "ssh-keygen", "ed25519", "id_ed25519", "ssh-add", "publickey", "permission denied (publickey)", "known_hosts")):
+        predicted = "developer.ssh"
+    elif _has_any(text, ("git", "gcm", "git clone")) and _has_any(text, ("proxy", "sslverify", "cainfo", "certificate", "self-signed", "http.proxy")):
+        predicted = "developer.git_proxy"
+    elif _has_any(text, ("git", "github", "gitlab")) and _has_any(text, ("gcm", "credential manager", "submodule", "git lfs", "token", "clone", "push", "pull")):
+        predicted = "developer.git_auth"
+    elif _has_any(text, ("docker", "docker desktop", "lxssmanager", "container")):
+        predicted = "developer.docker"
+    elif _has_any(text, ("wsl", "wsl2", "wslconfig", "networkingmode mirrored")):
+        predicted = "developer.wsl"
+    elif _has_any(text, ("hyper-v", "default switch", "netnat", "virtual switch", "virtualization")):
+        predicted = "developer.virtualization"
+    elif _has_any(text, ("pip", "pypi", "pip.ini", "pip.conf", "trusted-host")):
+        predicted = "developer.pip"
+    elif _has_any(text, ("npm", "node.js", "strict-ssl", "cafile", "package.json")):
+        predicted = "developer.npm"
+    elif _has_any(text, ("powershell", "executionpolicy", "execution policy", "remotesigned")):
+        predicted = "developer.powershell"
+    elif _has_any(text, ("err_cert_authority_invalid", "err_ssl_protocol_error", "root ca", "certificate chain", "keychain", "ca-certificates", "x509")):
+        predicted = "browser.ssl_certificate"
+    elif _has_any(text, ("pac", "findproxyforurl", "wpad", "hsts", "net-internals")):
+        predicted = "browser.proxy"
+    elif _has_any(text, ("sql server", "ssms", "error 26", "error 10061", "1433", "pg_hba.conf", "scram-sha-256", "postgresql", "postgres", "dbeaver", "oracle", "tns-12541", "ora-12541", "lsnrctl", "tnsnames.ora", "libpq")):
+        predicted = "database.client_connectivity"
+    elif _has_any(text, ("rdp", "credssp", "mstsc", "0x204", "0x104", "remote desktop", "shadowing", "qwinsta")):
+        predicted = "remote.rdp"
+    elif _has_any(text, ("bitlocker", "tpm", "pcr", "recovery key", "manage-bde", "filevault")):
+        predicted = "security.bitlocker"
+    elif _has_any(text, ("defender", "smartscreen", "quarantine", "protection history", "mpcmdrun", "malware", "antivirus")):
+        predicted = "security.defender"
+    elif _has_any(text, ("mfa", "authenticator", "sspr", "windows hello", "0x80090016", "primary refresh token", "dsregcmd", "ngc", "mysignins")):
+        predicted = "identity.mfa"
+    elif _has_any(text, ("credential manager", "stale password", "domain trust")):
+        predicted = "identity.mfa"
+    elif _has_any(text, ("scanpst", "ost", "outlook profile", "mail 32 bit", "inbox repair tool")) or (_has_any(text, ("outlook",)) and _has_any(text, ("crash", "search", "index", "hỏng", "loi"))):
+        predicted = "productivity.outlook"
+    elif _has_any(text, ("teams",)) and _has_any(text, ("camera", "mic", "microphone", "screen recording", "privacy", "cache", "installed apps", "permissions")):
+        predicted = "productivity.teams"
+    elif _has_any(text, ("onedrive",)) and _has_any(text, ("file lock", "conflict", "processing changes", "reset", "treo")):
+        predicted = "productivity.onedrive"
+    elif _has_any(text, ("office", "m365")) and _has_any(text, ("unlicensed", "licensing", "activation", "token")):
+        predicted = "productivity.office"
+    elif _has_any(text, ("powercfg", "battery report", "chai pin")):
+        predicted = "hardware.battery"
+    elif _has_any(text, ("mdsched", "memory diagnostic", "ram 99%")):
+        predicted = "hardware.ram"
+    elif _has_any(text, ("spooler", "wsd", "port 9100", "print spooler", "hang doi may in")):
+        predicted = "hardware.printer"
+    elif _has_any(text, ("display hdr", "scaling", "mst", "4k bi mo", "scale dpi")):
+        predicted = "hardware.display"
+    elif _has_any(text, ("bluetooth le", "tai nghe bluetooth", "desync", "re mat tieng")):
+        predicted = "hardware.audio"
+    elif _has_any(text, ("dism", "sfc", "restorehealth", "scannow", "cleanup-image")):
+        predicted = "os.windows_repair"
+    elif _has_any(text, ("macos", "macbook", "apple", "finder", "smb://", "802.1x")):
+        predicted = "client.macos_network"
+    elif _has_any(text, ("ubuntu", "linux", "cifs", "mount.cifs", "nmcli", "cifs-utils")):
+        predicted = "client.linux_network"
+    elif http_status is not None:
+        if http_status == 403:
+            predicted = "http.status_403"
+        elif http_status == 401:
+            predicted = "http.status_401"
+        elif http_status == 502:
+            predicted = "http.status_502"
+        elif http_status == 504:
+            predicted = "http.status_504"
+        else:
+            predicted = "http.application"
+    elif _has_any(text, ("502 bad gateway", "bad gateway", "502")) and has_http_marker:
+        predicted = "http.status_502"
+    elif _has_any(text, ("504 gateway timeout", "gateway timeout", "504")) and has_http_marker:
+        predicted = "http.status_504"
+    elif _has_any(text, ("401 unauthorized", "unauthorized vs forbidden", "401")) and has_http_marker:
+        predicted = "http.status_401"
     elif has_ping and has_tcp:
         predicted = "network.tcp_connectivity"
     elif vpn_stage == "authentication":
@@ -153,6 +227,21 @@ _TOPIC_ALIASES = {
     "http.status_403": "http.status_403",
 }
 
+_INCOMPATIBLE_TOPICS: dict[str, set[str]] = {
+    "developer.ssh": {"network.firewall_acl", "network.l3_vs_l4", "network.port_connectivity", "network.tcp_connectivity"},
+    "developer.git_proxy": {"network.dns_proxy", "routing", "network.firewall_acl"},
+    "developer.npm": {"browser.proxy", "network.dns_proxy"},
+    "developer.pip": {"browser.ssl_certificate", "browser.proxy"},
+    "database.client_connectivity": {"network.port_connectivity", "network.firewall_acl", "network.service_not_listening", "network.tcp_connectivity"},
+    "productivity.outlook": {"hardware.battery", "hardware.ram", "hardware.display", "hardware.audio"},
+    "productivity.teams": {"hardware.audio", "hardware.battery"},
+    "productivity.onedrive": {"hardware.ram", "hardware.battery"},
+    "identity.mfa": {"security.bitlocker"},
+    "http.status_502": {"network.service_not_listening", "network.connection_refused"},
+    "http.status_504": {"network.tcp.timeout_refused_reset", "network.port_timeout"},
+    "http.status_401": {"http.status_403"},
+}
+
 
 def topic_compatibility(facets: TechnicalFacets, metadata: dict[str, Any]) -> tuple[float, str]:
     """Return a bounded relevance multiplier and human-readable derived reason.
@@ -179,6 +268,9 @@ def topic_compatibility(facets: TechnicalFacets, metadata: dict[str, Any]) -> tu
         ):
             return 1.35, "inferred_vpn_auth_metadata_topic"
         return 0.72, "untyped_candidate_for_explicit_technical_intent"
+
+    if predicted in _INCOMPATIBLE_TOPICS and normalized_topic in _INCOMPATIBLE_TOPICS[predicted]:
+        return 0.20, f"{predicted}_vs_{normalized_topic}_incompatibility"
 
     if predicted == "http.status_403":
         if normalized_topic == "http.status_403":
@@ -237,4 +329,9 @@ def topic_compatibility(facets: TechnicalFacets, metadata: dict[str, Any]) -> tu
             return 0.35, "routing_vs_dns_incompatibility"
     if predicted == "proxy" and normalized_topic == "dns_proxy":
         return 1.35, "proxy_diagnostic_intent"
+
+    # Expanded domain topic matching
+    if predicted == normalized_topic:
+        return 1.35, f"exact_{predicted}_intent"
+
     return 1.0, "topic_neutral"

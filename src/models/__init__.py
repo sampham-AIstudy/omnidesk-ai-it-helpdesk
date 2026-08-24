@@ -9,8 +9,8 @@ from src.models.service_request import ServiceRequest, ServiceRequestStatus
 from src.models.technician_fulfillment_group import TechnicianFulfillmentGroup
 from src.models.ticket import Ticket, TicketCategory, TicketPriority, TicketStatus, TicketUrgency
 from src.models.ticket_message import TicketMessage, TicketMessageSender
-from src.models.user import CompanyUnit, User, UserRole
 from src.models.token_usage import TokenUsageLog
+from src.models.user import CompanyUnit, User, UserRole
 from src.models.web_research import WebResearchRun, WebResearchSource
 
 __all__ = [

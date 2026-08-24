@@ -177,11 +177,11 @@ async def set_ticket_pinned(
     if ticket.status in {TicketStatus.CLOSED, TicketStatus.RESOLVED, TicketStatus.REJECTED}:
         raise ValueError(f"Không thể thay đổi ghim sự cố đã kết thúc ({ticket.status})")
 
-    from datetime import datetime, timezone
+    from datetime import datetime
     ticket.is_pinned = pinned
     if pinned:
         ticket.pinned_by_id = actor.id
-        ticket.pinned_at = datetime.now(timezone.utc)
+        ticket.pinned_at = datetime.now(UTC)
         ticket.pin_reason = reason.strip() if reason else None
         action = AuditAction.TICKET_PINNED
         desc = f"Sự cố đã được ghim ưu tiên đầu hàng đợi bởi {actor.full_name}" + (f": {reason.strip()}" if reason and reason.strip() else "")
@@ -215,7 +215,11 @@ async def set_ticket_pinned(
 async def get_pending_hitl(
     db: AsyncSession, submitter_company_unit: str | None = None
 ) -> list[Ticket]:
-    query = select(Ticket).where(Ticket.status == TicketStatus.PENDING_HITL)
+    query = (
+        select(Ticket)
+        .options(selectinload(Ticket.submitter), selectinload(Ticket.assignee))
+        .where(Ticket.status == TicketStatus.PENDING_HITL)
+    )
     if submitter_company_unit:
         query = query.join(User, Ticket.submitter_id == User.id).where(
             User.company_unit == submitter_company_unit
@@ -397,7 +401,7 @@ async def escalate_ticket(
     actor_name = actor.full_name if actor else "Hệ thống"
     actor_role = actor.role.value if actor and hasattr(actor.role, "value") else "system"
     msg_parts = [
-        f"🚨 **[SỰ CỐ LEO THANG / ESCALATED]**",
+        "🚨 **[SỰ CỐ LEO THANG / ESCALATED]**",
         f"• **Người thực hiện:** {actor_name} ({actor_role})",
         f"• **Chuyển cấp:** {escalate_to.upper()}",
         f"• **Lý do:** {reason}",

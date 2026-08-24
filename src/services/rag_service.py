@@ -13,7 +13,6 @@ import threading
 # Mitigate native SentenceTransformer / safetensors async loader race conditions on Windows.
 if sys.platform == "win32":
     os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
-import httpx
 import unicodedata
 import urllib.parse
 from dataclasses import dataclass
@@ -22,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import chromadb
+import httpx
 from chromadb.config import Settings as ChromaSettings
 from langchain_community.embeddings import HuggingFaceEmbeddings
 

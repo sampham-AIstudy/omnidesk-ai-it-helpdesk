@@ -1,10 +1,8 @@
 """Integration tests for manager join endpoint idempotency in src.api.tickets."""
 import asyncio
-from unittest.mock import AsyncMock, patch
+
 import pytest
 from httpx import AsyncClient
-
-from src.models.user import User, UserRole
 
 
 @pytest.mark.asyncio

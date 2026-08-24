@@ -9,6 +9,8 @@ from typing import Any
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 
+from eval.evaluation_contract import sha256_text_file
+
 ROOT = Path(__file__).parent.parent
 SOURCE_PATH = ROOT / "eval" / "fixtures" / "enterprise_contract_kb_v1.json"
 EVAL_DIR = ROOT / "data" / "eval_chroma"
@@ -36,7 +38,7 @@ def contract_metadata(source_path: Path = SOURCE_PATH) -> dict[str, Any]:
     records = [{"id": item["fixture_source_id"], "content": item["content"], "metadata": {key: value for key, value in item.items() if key not in {"fixture_source_id", "title", "content"}}} for item in docs]
     return {
         "fixture_kb_contract": "enterprise-contract-kb-v1", "evaluation_only": True,
-        "source_sha256": hashlib.sha256(source_path.read_bytes()).hexdigest(), "document_count": len(docs),
+        "source_sha256": sha256_text_file(source_path), "document_count": len(docs),
         "chunk_count": len(docs), "chunk_id_digest": _hash([item["fixture_source_id"] for item in docs]),
         "metadata_digest": _hash(records), "embedding_model": EMBEDDING_MODEL,
         "embedding_dimension": 384, "distance_metric": "cosine",

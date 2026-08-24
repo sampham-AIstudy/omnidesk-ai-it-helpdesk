@@ -1,20 +1,16 @@
 """Shared test fixtures cho toàn bộ test suite."""
-import os
 from unittest.mock import AsyncMock, patch
 
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
-# Set test DB before importing app
-os.environ["DATABASE_URL"] = "sqlite+aiosqlite:///./data/test.db"
-# Do not let deterministic duplicate/memory indexes leak from the developer's
-# real Chroma store into an isolated test database.
-os.environ["CHROMA_PERSIST_DIR"] = "./data/test_chroma"
-
+from src._test_environment import TEST_RUN_ID
 from src.data.knowledge_base import get_all_kb_entries
 from src.database import AsyncSessionLocal, Base, engine
 from src.main import _seed_demo_users, _seed_knowledge_base, app
+
+TEST_DATASTORE_RUN_ID = TEST_RUN_ID
 
 
 @pytest_asyncio.fixture(scope="session", autouse=True)

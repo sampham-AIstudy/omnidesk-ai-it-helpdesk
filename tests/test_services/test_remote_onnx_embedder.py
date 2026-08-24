@@ -1,13 +1,14 @@
 """Unit tests for _RemoteOnnxEmbedder in src.services.rag_service."""
 from unittest.mock import MagicMock, patch
+
 import httpx
 import pytest
 
 from src.services.rag_service import (
-    _RemoteOnnxEmbedder,
     EmbeddingInitializationError,
-    reset_rag_singletons,
     _embedders,
+    _RemoteOnnxEmbedder,
+    reset_rag_singletons,
 )
 
 
