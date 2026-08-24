@@ -83,12 +83,13 @@ def _minimum_agent_relevance() -> float:
     return 0.24 if backend == "hashing" else MIN_AGENT_RELEVANCE
 
 
-async def list_messages(db: AsyncSession, ticket_id: int) -> list[TicketMessage]:
-    result = await db.execute(
-        select(TicketMessage)
-        .where(TicketMessage.ticket_id == ticket_id)
-        .order_by(TicketMessage.created_at.asc(), TicketMessage.id.asc())
-    )
+async def list_messages(
+    db: AsyncSession, ticket_id: int, include_internal: bool = True
+) -> list[TicketMessage]:
+    query = select(TicketMessage).where(TicketMessage.ticket_id == ticket_id)
+    if not include_internal:
+        query = query.where(TicketMessage.is_internal == False)
+    result = await db.execute(query.order_by(TicketMessage.created_at.asc(), TicketMessage.id.asc()))
     return list(result.scalars().all())
 
 
@@ -117,6 +118,7 @@ async def add_message(
     sources: Sequence[str | dict[str, Any]] | None = None,
     confidence_score: float | None = None,
     routing_hint: str | None = None,
+    is_internal: bool = False,
     index_for_memory: bool = True,
 ) -> TicketMessage:
     message = TicketMessage(
@@ -127,18 +129,20 @@ async def add_message(
         sources_json=json.dumps(sources or [], ensure_ascii=False) if sources else None,
         confidence_score=confidence_score,
         routing_hint=routing_hint,
+        is_internal=is_internal,
     )
     db.add(message)
     await db.flush()
     await db.refresh(message)
     # Keep the provenance index in sync for every visible interaction. A
     # retrieval-index failure never prevents the authoritative message write.
-    if index_for_memory:
+    # Never index internal notes for semantic retrieval or employee memory.
+    if index_for_memory and not is_internal:
         try:
             from src.services.zero_mem_service import index_message_by_id
             await index_message_by_id(db, message)
         except Exception as exc:
-            logger.warning("Could not index episodic message %s: %s", message.id, exc)
+            logger.warning("Could not index message %s for memory: %s", message.id, exc)
     return message
 
 
@@ -402,6 +406,8 @@ async def _handle_ticket_message(
     sender_type = (
         TicketMessageSender.USER
         if user.role == UserRole.EMPLOYEE
+        else TicketMessageSender.MANAGER
+        if user.role in (UserRole.MANAGER, UserRole.ADMIN)
         else TicketMessageSender.TECHNICIAN
     )
 
@@ -423,7 +429,7 @@ async def _handle_ticket_message(
     record_ticket_stage_latency("context_resolution", (perf_counter() - context_started) * 1000)
     resolved_query = resolution.resolved_query
 
-    # 3. Technician Message / Takeover Handling
+    # 3. Technician / Manager Message Handling
     if user.role != UserRole.EMPLOYEE:
         current_message = await add_message(
             db,
@@ -432,28 +438,34 @@ async def _handle_ticket_message(
             sender_id=user.id,
             content=content,
         )
-        first_tech_join = ticket.assignee_id != user.id or ticket.status in (TicketStatus.WAITING_FOR_AGENT, TicketStatus.ESCALATED)
-        ticket.assignee_id = user.id
-        ticket.status = TicketStatus.HUMAN_ACTIVE
-        ticket.support_mode = TicketSupportMode.HUMAN
-        await db.flush()
+        if user.role == UserRole.TECHNICIAN:
+            first_tech_join = ticket.assignee_id != user.id or ticket.status in (TicketStatus.WAITING_FOR_AGENT, TicketStatus.ESCALATED)
+            ticket.assignee_id = user.id
+            ticket.status = TicketStatus.HUMAN_ACTIVE
+            ticket.support_mode = TicketSupportMode.HUMAN
+            await db.flush()
 
-        if first_tech_join:
-            await add_message(
-                db,
-                ticket_id=ticket.id,
-                sender_type=TicketMessageSender.SYSTEM,
-                sender_id=user.id,
-                content=f"👨‍💻 {user.full_name} ({user.department or 'IT Support'}) đã tham gia cuộc trò chuyện.",
-            )
-            await write_audit_log(
-                db=db,
-                ticket_id=ticket.id,
-                actor_id=user.id,
-                actor_type="technician",
-                action=AuditAction.TICKET_ASSIGNED,
-                description=f"Chuyên viên {user.full_name} đã tham gia cuộc trò chuyện.",
-            )
+            if first_tech_join:
+                await add_message(
+                    db,
+                    ticket_id=ticket.id,
+                    sender_type=TicketMessageSender.SYSTEM,
+                    sender_id=user.id,
+                    content=f"👨‍💻 {user.full_name} ({user.department or 'IT Support'}) đã tham gia cuộc trò chuyện.",
+                )
+                await write_audit_log(
+                    db=db,
+                    ticket_id=ticket.id,
+                    actor_id=user.id,
+                    actor_type="technician",
+                    action=AuditAction.TICKET_ASSIGNED,
+                    description=f"Chuyên viên {user.full_name} đã tham gia cuộc trò chuyện.",
+                )
+        else:
+            ticket.support_mode = TicketSupportMode.HUMAN
+            if ticket.status == TicketStatus.WAITING_FOR_AGENT:
+                ticket.status = TicketStatus.HUMAN_ACTIVE
+            await db.flush()
 
         return await list_messages(db, ticket.id)
 

@@ -296,6 +296,40 @@ export default function RiotStyleTicketDetailPage() {
         <p className="text-xs text-slate-500 font-medium">
           Được gửi bởi bạn • Mức ưu tiên: <strong className="text-slate-700">{ticket.priority ? ticket.priority.toUpperCase() : 'MEDIUM'}</strong>
         </p>
+
+        {/* 4-Step Incident Lifecycle Stepper */}
+        {(() => {
+          const step = ['closed', 'resolved'].includes(ticket.status)
+            ? 4
+            : ['in_progress', 'waiting_for_agent'].includes(ticket.status)
+            ? 3
+            : ['pending_hitl', 'needs_clarification', 'escalated'].includes(ticket.status)
+            ? 2
+            : 1;
+          return (
+            <div className="lifecycle-stepper" style={{ margin: '18px 0 6px' }}>
+              <div className={`stepper-step ${step >= 1 ? (step > 1 ? 'completed' : 'active') : ''}`}>
+                <div className="stepper-circle">{step > 1 ? '✓' : '1'}</div>
+                <div className="stepper-label">Tiếp nhận</div>
+              </div>
+              <div className={`stepper-line ${step >= 2 ? 'completed' : ''}`} />
+              <div className={`stepper-step ${step >= 2 ? (step > 2 ? 'completed' : 'active') : ''}`}>
+                <div className="stepper-circle">{step > 2 ? '✓' : '2'}</div>
+                <div className="stepper-label">AI Phân tích</div>
+              </div>
+              <div className={`stepper-line ${step >= 3 ? 'completed' : ''}`} />
+              <div className={`stepper-step ${step >= 3 ? (step > 3 ? 'completed' : 'active') : ''}`}>
+                <div className="stepper-circle">{step > 3 ? '✓' : '3'}</div>
+                <div className="stepper-label">Đang xử lý</div>
+              </div>
+              <div className={`stepper-line ${step >= 4 ? 'completed' : ''}`} />
+              <div className={`stepper-step ${step >= 4 ? 'completed' : ''}`}>
+                <div className="stepper-circle">{step >= 4 ? '✓' : '4'}</div>
+                <div className="stepper-label">Hoàn tất</div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* Riot Games Support Layout: Left Sidebar Metadata + Right Continuous Conversation */}

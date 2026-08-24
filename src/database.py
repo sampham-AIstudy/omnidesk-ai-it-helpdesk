@@ -99,6 +99,10 @@ def _auto_migrate_sqlite(connection):
                 "duplicate_detection_method": "VARCHAR(50)",
                 "duplicate_confirmed_by": "VARCHAR(100)",
                 "parent_incident_ticket_id": "INTEGER",
+                "is_pinned": "BOOLEAN DEFAULT 0",
+                "pinned_by_id": "INTEGER",
+                "pinned_at": "DATETIME",
+                "pin_reason": "VARCHAR(255)",
             }
             for col_name, col_type in new_ticket_cols.items():
                 if col_name not in t_cols:
@@ -108,6 +112,14 @@ def _auto_migrate_sqlite(connection):
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_tickets_submitter_created_at ON tickets (submitter_id, created_at DESC)"))
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_tickets_duplicate_of ON tickets (duplicate_of_ticket_id)"))
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_tickets_parent_incident ON tickets (parent_incident_ticket_id)"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_tickets_pinned ON tickets (is_pinned, created_at DESC)"))
+
+        # 1b. Ticket messages table
+        res_m = connection.execute(text("PRAGMA table_info(ticket_messages)"))
+        m_cols = {row[1] for row in res_m.fetchall()}
+        if m_cols and "is_internal" not in m_cols:
+            connection.execute(text("ALTER TABLE ticket_messages ADD COLUMN is_internal BOOLEAN DEFAULT 0"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_ticket_messages_internal ON ticket_messages (ticket_id, is_internal)"))
 
         # 2. Audit logs trace_id
         res_a = connection.execute(text("PRAGMA table_info(audit_logs)"))
@@ -174,6 +186,12 @@ def _auto_migrate_sqlite(connection):
             for col_name, col_type in hitl_new_cols.items():
                 if col_name not in h_cols:
                     connection.execute(text(f"ALTER TABLE hitl_approvals ADD COLUMN {col_name} {col_type}"))
+        # 5. Bảng token_usage_logs (tạo qua create_all; migration bổ sung thêm index)
+        res_tul = connection.execute(text("PRAGMA table_info(token_usage_logs)"))
+        tul_cols = {row[1] for row in res_tul.fetchall()}
+        if tul_cols:
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_token_usage_user_created ON token_usage_logs (user_id, created_at DESC)"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_token_usage_model_created ON token_usage_logs (model_name, created_at DESC)"))
     except Exception as exc:
         logging.getLogger(__name__).warning("SQLite auto migration note: %s", exc)
 
@@ -192,6 +210,7 @@ async def init_db():
         technician_fulfillment_group,
         ticket,
         ticket_message,
+        token_usage,
         user,
         web_research,
     )

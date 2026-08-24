@@ -23,9 +23,11 @@ from src.models.schemas import (
     HITLDecisionRequest,
     TicketConversationResponse,
     TicketCreate,
+    TicketEscalateRequest,
     TicketListResponse,
     TicketMessageCreate,
     TicketMessageResponse,
+    TicketPinRequest,
     TicketRatingRequest,
     TicketReopenRequest,
     TicketResponse,
@@ -64,7 +66,7 @@ def _duplicate_response(check) -> DuplicateCheckResponse:
         shared_incident_signal=check.shared_incident_signal,
         matches=[DuplicateTicketCandidate(
             ticket_id=match.ticket.id, ticket_number=match.ticket.ticket_number, title=match.ticket.title,
-            status=match.ticket.status, resolved_at=match.ticket.resolved_at or match.ticket.closed_at,
+            status=match.ticket.status, resolved_at=getattr(match.ticket, "resolved_at", None) or getattr(match.ticket, "closed_at", None),
             solution=match.solution, classification=match.classification, score=round(match.score, 4),
             detection_method=match.method, is_active=match.is_active, is_resolved=match.is_resolved,
         ) for match in check.matches],
@@ -468,7 +470,8 @@ async def get_ticket_messages(
     from src.services.ticket_conversation_service import list_messages, seed_agent_opening
 
     await seed_agent_opening(db, ticket)
-    messages = await list_messages(db, ticket_id)
+    is_staff = current_user.role in (UserRole.TECHNICIAN, UserRole.MANAGER, UserRole.ADMIN)
+    messages = await list_messages(db, ticket_id, include_internal=is_staff)
     return TicketConversationResponse(
         items=[TicketMessageResponse.model_validate(item) for item in messages]
     )
@@ -498,14 +501,41 @@ async def post_ticket_message(
             detail="Ticket đã được xử lý hoặc đã đóng. Không thể gửi thêm tin nhắn.",
         )
 
+    # Internal technical notes: Staff only
+    if payload.is_internal:
+        if current_user.role == UserRole.EMPLOYEE:
+            raise HTTPException(status_code=403, detail="Nhân viên không có quyền tạo ghi chú nội bộ")
 
-    if current_user.role != UserRole.EMPLOYEE and ticket.assignee_id != current_user.id:
+        from src.services.ticket_conversation_service import add_message, list_messages
+        from src.models.ticket_message import TicketMessageSender
+
+        sender_type = (
+            TicketMessageSender.MANAGER
+            if current_user.role == UserRole.MANAGER
+            else TicketMessageSender.TECHNICIAN
+        )
+        await add_message(
+            db,
+            ticket_id=ticket.id,
+            sender_type=sender_type,
+            sender_id=current_user.id,
+            content=payload.message,
+            is_internal=True,
+            index_for_memory=False,
+        )
+        await db.commit()
+        messages = await list_messages(db, ticket_id, include_internal=True)
+        return TicketConversationResponse(
+            items=[TicketMessageResponse.model_validate(item) for item in messages]
+        )
+
+    if current_user.role == UserRole.TECHNICIAN and ticket.assignee_id != current_user.id:
         raise HTTPException(
             status_code=409,
             detail="Bạn cần tiếp nhận ticket trước khi gửi phản hồi cho người dùng.",
         )
 
-    from src.services.ticket_conversation_service import handle_ticket_message
+    from src.services.ticket_conversation_service import handle_ticket_message, list_messages
 
     messages = await handle_ticket_message(
         db,
@@ -514,6 +544,8 @@ async def post_ticket_message(
         content=payload.message,
     )
     await db.commit()
+    is_staff = current_user.role in (UserRole.TECHNICIAN, UserRole.MANAGER, UserRole.ADMIN)
+    messages = await list_messages(db, ticket_id, include_internal=is_staff)
     return TicketConversationResponse(
         items=[TicketMessageResponse.model_validate(item) for item in messages]
     )
@@ -598,6 +630,81 @@ async def request_technician(
     )
 
 
+_join_locks: dict[int, asyncio.Lock] = {}
+_join_locks_guard = asyncio.Lock()
+
+
+@router.post("/{ticket_id}/join", response_model=TicketConversationResponse)
+async def join_ticket_conversation(
+    ticket_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Manager / Admin tham gia chỉ đạo cuộc trao đổi (Step-In / Supervisor Join)."""
+    if current_user.role not in (UserRole.MANAGER, UserRole.ADMIN):
+        raise HTTPException(status_code=403, detail="Chỉ Quản lý hoặc Admin mới có quyền tham gia chỉ đạo sự cố")
+
+    ticket = await ticket_service.get_ticket(db, ticket_id)
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket không tồn tại")
+
+    if not auth_service.can_view_ticket(current_user, ticket):
+        raise HTTPException(status_code=403, detail="Không có quyền truy cập sự cố này")
+
+    if ticket.status in (TicketStatus.CLOSED, TicketStatus.RESOLVED, TicketStatus.REJECTED):
+        raise HTTPException(status_code=400, detail="Không thể tham gia sự cố đã kết thúc")
+
+    from src.models.ticket import TicketSupportMode
+    from src.models.ticket_message import TicketMessage, TicketMessageSender
+    from src.services.ticket_conversation_service import add_message, list_messages
+
+    ticket.support_mode = TicketSupportMode.HUMAN
+    await db.flush()
+
+    # Acquire per-ticket lock to guarantee atomicity during concurrent joins
+    async with _join_locks_guard:
+        if ticket_id not in _join_locks:
+            _join_locks[ticket_id] = asyncio.Lock()
+        ticket_lock = _join_locks[ticket_id]
+
+    async with ticket_lock:
+        # Query for existing join announcement for this manager on this ticket
+        existing_join_res = await db.execute(
+            select(TicketMessage).where(
+                TicketMessage.ticket_id == ticket_id,
+                TicketMessage.sender_type == TicketMessageSender.SYSTEM,
+                TicketMessage.sender_id == current_user.id,
+                (TicketMessage.routing_hint == "manager_joined") | (TicketMessage.content.contains("tham gia"))
+            ).limit(1)
+        )
+        already_announced = existing_join_res.scalars().first() is not None
+
+        if not already_announced:
+            await add_message(
+                db,
+                ticket_id=ticket_id,
+                sender_type=TicketMessageSender.SYSTEM,
+                sender_id=current_user.id,
+                routing_hint="manager_joined",
+                content=f"👔 **[QUẢN LÝ THAM GIA]** {current_user.full_name} ({current_user.department or 'Quản lý IT'}) đã tham gia vào cuộc trao đổi để chỉ đạo và hỗ trợ xử lý sự cố.",
+            )
+            await ticket_service.write_audit_log(
+                db=db,
+                ticket_id=ticket_id,
+                actor_id=current_user.id,
+                actor_type="manager",
+                action=AuditAction.STATUS_CHANGED,
+                description=f"Quản lý {current_user.full_name} tham gia chỉ đạo cuộc trao đổi sự cố.",
+                metadata={"action_type": "manager_joined", "manager_id": current_user.id},
+            )
+            await db.flush()
+
+    messages = await list_messages(db, ticket_id)
+    return TicketConversationResponse(
+        items=[TicketMessageResponse.model_validate(item) for item in messages]
+    )
+
+
 @router.post("/{ticket_id}/takeover", response_model=TicketResponse)
 async def takeover_ticket_api(
     ticket_id: int,
@@ -627,6 +734,79 @@ async def takeover_ticket_api(
     )
     return TicketResponse.model_validate(updated)
 
+
+@router.post("/{ticket_id}/escalate", response_model=TicketResponse)
+async def escalate_ticket_api(
+    ticket_id: int,
+    payload: TicketEscalateRequest | None = None,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Technician / Manager leo thang sự cố lên cấp cao hơn (kèm tùy chọn nâng ưu tiên khẩn cấp)."""
+    if current_user.role == UserRole.EMPLOYEE:
+        raise HTTPException(status_code=403, detail="Nhân viên không có quyền leo thang sự cố")
+
+    ticket = await ticket_service.get_ticket(db, ticket_id)
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket không tồn tại")
+
+    if not auth_service.can_view_ticket(current_user, ticket):
+        raise HTTPException(status_code=403, detail="Không có quyền truy cập sự cố này")
+
+    reason = payload.reason if payload and payload.reason else "Chuyên viên kỹ thuật yêu cầu leo thang xử lý lên cấp Quản lý."
+    escalate_to = payload.escalate_to if payload and payload.escalate_to else "manager"
+    bump_priority = payload.bump_priority if payload else False
+    handover_notes = payload.handover_notes if payload else None
+
+    try:
+        updated = await ticket_service.escalate_ticket(
+            db=db,
+            ticket_id=ticket_id,
+            reason=reason,
+            actor=current_user,
+            escalate_to=escalate_to,
+            bump_priority=bump_priority,
+            handover_notes=handover_notes,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return TicketResponse.model_validate(updated)
+
+
+@router.post("/{ticket_id}/pin", response_model=TicketResponse)
+async def pin_ticket_api(
+    ticket_id: int,
+    payload: TicketPinRequest | None = None,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+):
+    """Ghim hoặc bỏ ghim sự cố lên đầu hàng đợi ưu tiên (Expedite / Fast-Track)."""
+    if current_user.role == UserRole.EMPLOYEE:
+        raise HTTPException(status_code=403, detail="Nhân viên không có quyền ghim sự cố")
+
+    ticket = await ticket_service.get_ticket(db, ticket_id)
+    if not ticket:
+        raise HTTPException(status_code=404, detail="Ticket không tồn tại")
+
+    if not auth_service.can_view_ticket(current_user, ticket):
+        raise HTTPException(status_code=403, detail="Không có quyền truy cập sự cố này")
+
+    pinned = payload.pinned if payload is not None else True
+    reason = payload.reason if payload else None
+
+    try:
+        updated = await ticket_service.set_ticket_pinned(
+            db=db,
+            ticket_id=ticket_id,
+            pinned=pinned,
+            actor=current_user,
+            reason=reason,
+        )
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    return TicketResponse.model_validate(updated)
 
 
 # ─── HITL Decision ─────────────────────────────────────────────────────────────
@@ -706,26 +886,6 @@ async def update_status(
         )
 
     await db.refresh(ticket)
-    return TicketResponse.model_validate(ticket)
-
-
-@router.post("/{ticket_id}/escalate", response_model=TicketResponse)
-async def escalate_ticket(
-    ticket_id: int,
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_active_user),
-):
-    """Technician leo thang ticket thủ công."""
-    if current_user.role == UserRole.EMPLOYEE:
-        raise HTTPException(status_code=403, detail="Không có quyền leo thang")
-
-    ticket = await ticket_service.escalate_ticket(
-        db=db,
-        ticket_id=ticket_id,
-        reason=f"Leo thang thủ công bởi {current_user.full_name}",
-    )
-    if not ticket:
-        raise HTTPException(status_code=404, detail="Ticket không tồn tại")
     return TicketResponse.model_validate(ticket)
 
 
