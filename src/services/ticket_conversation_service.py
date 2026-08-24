@@ -88,7 +88,7 @@ async def list_messages(
 ) -> list[TicketMessage]:
     query = select(TicketMessage).where(TicketMessage.ticket_id == ticket_id)
     if not include_internal:
-        query = query.where(TicketMessage.is_internal == False)
+        query = query.where(TicketMessage.is_internal.is_(False))
     result = await db.execute(query.order_by(TicketMessage.created_at.asc(), TicketMessage.id.asc()))
     return list(result.scalars().all())
 

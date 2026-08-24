@@ -558,12 +558,12 @@ async def get_token_usage_metrics(
     All amounts are pre-computed and stored at write-time; this endpoint only
     reads and aggregates immutable log rows — never recalculates costs.
     """
-    from src.models.token_usage import TokenUsageLog
     from src.models.schemas import (
         TokenUsageMetricsResponse,
         TokenUsageModelBreakdown,
         TokenUsageUserBreakdown,
     )
+    from src.models.token_usage import TokenUsageLog
 
     # 1. Overall totals
     totals_row = await db.execute(

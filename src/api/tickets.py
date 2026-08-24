@@ -506,8 +506,8 @@ async def post_ticket_message(
         if current_user.role == UserRole.EMPLOYEE:
             raise HTTPException(status_code=403, detail="Nhân viên không có quyền tạo ghi chú nội bộ")
 
-        from src.services.ticket_conversation_service import add_message, list_messages
         from src.models.ticket_message import TicketMessageSender
+        from src.services.ticket_conversation_service import add_message, list_messages
 
         sender_type = (
             TicketMessageSender.MANAGER
