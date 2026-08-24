@@ -1,8 +1,8 @@
 {
   "canonical_collection": "helpdesk_kb_multilingual_v2_sentence_transformer",
   "shadow_collection": "helpdesk_kb_multilingual_v3_shadow",
-  "locked_dataset": "eval\\retrieval_golden_v1.json",
-  "p0_dataset": "eval\\p0_shadow_v3_cases.json",
+  "locked_dataset": "C:\\Users\\Admin\\Python Advanced\\VinAI Lab\\P-236\\eval\\retrieval_golden_v1.json",
+  "p0_dataset": "C:\\Users\\Admin\\Python Advanced\\VinAI Lab\\P-236\\eval\\p0_shadow_v3_cases.json",
   "locked_baseline": {
     "v2": {
       "hit_rate_at_1": 1.0,
@@ -47,14 +47,14 @@
       "ndcg_at_5": 0.0
     },
     "v3": {
-      "hit_rate_at_1": 0.5454545454545454,
-      "hit_rate_at_3": 0.9090909090909091,
+      "hit_rate_at_1": 0.6363636363636364,
+      "hit_rate_at_3": 1.0,
       "hit_rate_at_5": 1.0,
-      "recall_at_1": 0.45454545454545453,
-      "recall_at_3": 0.9090909090909091,
+      "recall_at_1": 0.6363636363636364,
+      "recall_at_3": 1.0,
       "recall_at_5": 1.0,
-      "mrr_at_5": 0.7348484848484848,
-      "ndcg_at_5": 0.7665771392531308
+      "mrr_at_5": 0.8181818181818182,
+      "ndcg_at_5": 0.8394673604097759
     },
     "per_case": [
       {
@@ -99,7 +99,7 @@
           "p0-05-firewall-acl-nat-c001"
         ],
         "v2_rank": null,
-        "v3_rank": 1,
+        "v3_rank": 2,
         "outcome": "improved"
       },
       {
@@ -108,7 +108,7 @@
           "p0-06-vpn-connected-internal-unreachable-c001"
         ],
         "v2_rank": null,
-        "v3_rank": 2,
+        "v3_rank": 1,
         "outcome": "improved"
       },
       {
@@ -117,7 +117,7 @@
           "p0-08-dns-proxy-c001"
         ],
         "v2_rank": null,
-        "v3_rank": 4,
+        "v3_rank": 1,
         "outcome": "improved"
       },
       {
@@ -126,7 +126,7 @@
           "p0-07-routing-split-tunnel-c001"
         ],
         "v2_rank": null,
-        "v3_rank": 3,
+        "v3_rank": 2,
         "outcome": "improved"
       },
       {
@@ -294,9 +294,9 @@
         "retrieved_ids": [
           "kb-001",
           "auto-kb-ticket-63",
-          "kb-008",
-          "auto-kb-ticket-64",
-          "web-windows-vpn-003"
+          "web-teams-restore-access-002",
+          "kb-012",
+          "kb-008"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -412,10 +412,10 @@
         "rank": 1,
         "retrieved_ids": [
           "kb-001",
+          "web-teams-restore-access-002",
+          "auto-kb-ticket-63",
           "web-windows-update-005",
-          "web-windows-vpn-003",
-          "kb-008",
-          "web-teams-restore-access-002"
+          "web-windows-vpn-003"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -497,10 +497,10 @@
         "rank": 1,
         "retrieved_ids": [
           "kb-001",
-          "kb-008",
           "auto-kb-ticket-63",
-          "kb-003",
-          "web-windows-update-005"
+          "kb-008",
+          "web-teams-restore-access-002",
+          "kb-012"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -577,16 +577,16 @@
       {
         "id": "RET-E01",
         "expected_source": [],
-        "rank": 3,
+        "rank": 4,
         "retrieved_ids": [
+          "kb-019",
           "kb-032",
           "kb-015",
           "kb-003",
-          "kb-019",
           "kb-002"
         ],
         "hit_at_1": false,
-        "hit_at_3": true,
+        "hit_at_3": false,
         "hit_at_5": true
       },
       {
@@ -794,9 +794,9 @@
         "retrieved_ids": [
           "kb-035",
           "kb-023",
+          "web-outlook-shared-mailbox-performance-005",
           "kb-001",
-          "kb-016",
-          "kb-011"
+          "kb-016"
         ],
         "hit_at_1": false,
         "hit_at_3": false,
@@ -1034,9 +1034,9 @@
         "retrieved_ids": [
           "kb-001",
           "p0-01-forticlient-ssl-vpn-c001",
-          "p0-06-vpn-connected-internal-unreachable-c001",
           "auto-kb-ticket-63",
-          "kb-008"
+          "web-teams-restore-access-002",
+          "kb-012"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -1152,10 +1152,10 @@
         "rank": 1,
         "retrieved_ids": [
           "kb-001",
-          "web-windows-update-005",
-          "web-windows-vpn-003",
           "p0-01-forticlient-ssl-vpn-c001",
-          "p0-06-vpn-connected-internal-unreachable-c001"
+          "web-teams-restore-access-002",
+          "auto-kb-ticket-63",
+          "web-windows-update-005"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -1237,10 +1237,10 @@
         "rank": 1,
         "retrieved_ids": [
           "kb-001",
-          "kb-008",
           "auto-kb-ticket-63",
-          "kb-003",
-          "auto-kb-ticket-64"
+          "kb-008",
+          "kb-012",
+          "web-teams-restore-access-002"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -1403,10 +1403,10 @@
         "rank": 1,
         "retrieved_ids": [
           "kb-001",
+          "p0-06-vpn-connected-internal-unreachable-c001",
           "web-windows-vpn-003",
-          "kb-012",
-          "kb-008",
-          "p0-06-vpn-connected-internal-unreachable-c001"
+          "p0-01-forticlient-ssl-vpn-c001",
+          "kb-012"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -1534,9 +1534,9 @@
         "retrieved_ids": [
           "kb-035",
           "kb-023",
-          "web-outlook-shared-mailbox-performance-005",
           "kb-001",
-          "kb-016"
+          "kb-016",
+          "kb-027"
         ],
         "hit_at_1": false,
         "hit_at_3": false,
@@ -1791,9 +1791,9 @@
         "retrieved_ids": [
           "kb-001",
           "auto-kb-ticket-63",
+          "web-teams-restore-access-002",
           "auto-kb-ticket-64",
-          "web-windows-vpn-003",
-          "kb-029"
+          "web-windows-vpn-003"
         ],
         "hit_at_1": false,
         "hit_at_3": false,
@@ -1844,9 +1844,9 @@
         "retrieved_ids": [
           "p0-02-l3-vs-l4-c001",
           "p0-04-service-listening-c001",
-          "p0-08-dns-proxy-c001",
           "p0-03-tcp-failure-semantics-c001",
-          "kb-003"
+          "p0-05-firewall-acl-nat-c001",
+          "p0-06-vpn-connected-internal-unreachable-c001"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -1863,7 +1863,7 @@
           "p0-03-tcp-failure-semantics-c001",
           "p0-04-service-listening-c001",
           "p0-08-dns-proxy-c001",
-          "kb-028"
+          "p0-05-firewall-acl-nat-c001"
         ],
         "hit_at_1": false,
         "hit_at_3": true,
@@ -1876,11 +1876,11 @@
         ],
         "rank": 1,
         "retrieved_ids": [
-          "p0-04-service-listening-c001",
-          "p0-09-tcp-port-403-c001",
           "p0-03-tcp-failure-semantics-c001",
           "p0-10-http-403-forbidden-c001",
-          "p0-08-dns-proxy-c001"
+          "p0-08-dns-proxy-c001",
+          "p0-06-vpn-connected-internal-unreachable-c001",
+          "p0-01-forticlient-ssl-vpn-c001"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -1894,8 +1894,8 @@
         "rank": 1,
         "retrieved_ids": [
           "p0-04-service-listening-c001",
-          "web-windows-rdp-troubleshoot-007",
           "p0-09-tcp-port-403-c001",
+          "web-windows-rdp-troubleshoot-007",
           "p0-06-vpn-connected-internal-unreachable-c001",
           "mem-kgl-724"
         ],
@@ -1908,15 +1908,15 @@
         "expected_source": [
           "p0-05-firewall-acl-nat-c001"
         ],
-        "rank": 1,
+        "rank": 2,
         "retrieved_ids": [
+          "p0-09-tcp-port-403-c001",
           "p0-05-firewall-acl-nat-c001",
           "p0-04-service-listening-c001",
-          "p0-09-tcp-port-403-c001",
           "p0-03-tcp-failure-semantics-c001",
           "p0-06-vpn-connected-internal-unreachable-c001"
         ],
-        "hit_at_1": true,
+        "hit_at_1": false,
         "hit_at_3": true,
         "hit_at_5": true
       },
@@ -1925,15 +1925,15 @@
         "expected_source": [
           "p0-06-vpn-connected-internal-unreachable-c001"
         ],
-        "rank": 2,
+        "rank": 1,
         "retrieved_ids": [
-          "kb-001",
           "p0-06-vpn-connected-internal-unreachable-c001",
-          "p0-01-forticlient-ssl-vpn-c001",
+          "kb-001",
+          "p0-07-routing-split-tunnel-c001",
           "web-windows-vpn-004",
           "web-windows-update-005"
         ],
-        "hit_at_1": false,
+        "hit_at_1": true,
         "hit_at_3": true,
         "hit_at_5": true
       },
@@ -1942,16 +1942,16 @@
         "expected_source": [
           "p0-08-dns-proxy-c001"
         ],
-        "rank": 4,
+        "rank": 1,
         "retrieved_ids": [
-          "kb-003",
-          "kb-001",
-          "p0-06-vpn-connected-internal-unreachable-c001",
           "p0-08-dns-proxy-c001",
-          "p0-07-routing-split-tunnel-c001"
+          "p0-06-vpn-connected-internal-unreachable-c001",
+          "p0-01-forticlient-ssl-vpn-c001",
+          "kb-001",
+          "kb-003"
         ],
-        "hit_at_1": false,
-        "hit_at_3": false,
+        "hit_at_1": true,
+        "hit_at_3": true,
         "hit_at_5": true
       },
       {
@@ -1959,13 +1959,13 @@
         "expected_source": [
           "p0-07-routing-split-tunnel-c001"
         ],
-        "rank": 3,
+        "rank": 2,
         "retrieved_ids": [
-          "kb-001",
           "p0-06-vpn-connected-internal-unreachable-c001",
           "p0-07-routing-split-tunnel-c001",
-          "web-windows-vpn-001",
-          "p0-05-firewall-acl-nat-c001"
+          "kb-001",
+          "p0-05-firewall-acl-nat-c001",
+          "p0-08-dns-proxy-c001"
         ],
         "hit_at_1": false,
         "hit_at_3": true,
@@ -1981,8 +1981,8 @@
           "kb-001",
           "p0-01-forticlient-ssl-vpn-c001",
           "auto-kb-ticket-63",
-          "p0-06-vpn-connected-internal-unreachable-c001",
-          "p0-05-firewall-acl-nat-c001"
+          "p0-05-firewall-acl-nat-c001",
+          "web-teams-restore-access-002"
         ],
         "hit_at_1": false,
         "hit_at_3": true,
@@ -1996,10 +1996,10 @@
         "rank": 1,
         "retrieved_ids": [
           "p0-09-tcp-port-403-c001",
-          "p0-10-http-403-forbidden-c001",
           "p0-04-service-listening-c001",
-          "web-windows-rdp-troubleshoot-007",
-          "p0-03-tcp-failure-semantics-c001"
+          "p0-03-tcp-failure-semantics-c001",
+          "p0-08-dns-proxy-c001",
+          "web-windows-rdp-troubleshoot-007"
         ],
         "hit_at_1": true,
         "hit_at_3": true,
@@ -2013,9 +2013,9 @@
         "rank": 1,
         "retrieved_ids": [
           "p0-10-http-403-forbidden-c001",
-          "p0-09-tcp-port-403-c001",
           "web-office-activation-error-001",
           "mem-kgl-914",
+          "mem-kgl-740",
           "web-windows-rdp-troubleshoot-001"
         ],
         "hit_at_1": true,
