@@ -215,7 +215,11 @@ async def set_ticket_pinned(
 async def get_pending_hitl(
     db: AsyncSession, submitter_company_unit: str | None = None
 ) -> list[Ticket]:
-    query = select(Ticket).where(Ticket.status == TicketStatus.PENDING_HITL)
+    query = (
+        select(Ticket)
+        .options(selectinload(Ticket.submitter), selectinload(Ticket.assignee))
+        .where(Ticket.status == TicketStatus.PENDING_HITL)
+    )
     if submitter_company_unit:
         query = query.join(User, Ticket.submitter_id == User.id).where(
             User.company_unit == submitter_company_unit
