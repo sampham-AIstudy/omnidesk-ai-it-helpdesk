@@ -192,20 +192,44 @@ def _auto_migrate_sqlite(connection):
         if tul_cols:
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_token_usage_user_created ON token_usage_logs (user_id, created_at DESC)"))
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_token_usage_model_created ON token_usage_logs (model_name, created_at DESC)"))
+
+        # 6. Feedback pipeline fields introduced after the initial append-only
+        # tables.  Additive only: existing tickets and event rows are never
+        # rewritten or removed.
+        res_feedback = connection.execute(text("PRAGMA table_info(feedback_events)"))
+        feedback_cols = {row[1] for row in res_feedback.fetchall()}
+        if feedback_cols and "outcome_reason" not in feedback_cols:
+            connection.execute(text("ALTER TABLE feedback_events ADD COLUMN outcome_reason TEXT"))
+        res_candidate = connection.execute(text("PRAGMA table_info(preference_candidates)"))
+        candidate_cols = {row[1] for row in res_candidate.fetchall()}
+        if candidate_cols and "quality_tier" not in candidate_cols:
+            connection.execute(text("ALTER TABLE preference_candidates ADD COLUMN quality_tier VARCHAR(10) NOT NULL DEFAULT 'LOW'"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_preference_candidates_quality_tier ON preference_candidates (quality_tier)"))
+        if candidate_cols and "excluded_from_training" not in candidate_cols:
+            connection.execute(text("ALTER TABLE preference_candidates ADD COLUMN excluded_from_training BOOLEAN NOT NULL DEFAULT 0"))
+            connection.execute(text("CREATE INDEX IF NOT EXISTS idx_preference_candidates_excluded_from_training ON preference_candidates (excluded_from_training)"))
+        if candidate_cols and "training_exclusion_reason" not in candidate_cols:
+            connection.execute(text("ALTER TABLE preference_candidates ADD COLUMN training_exclusion_reason VARCHAR(160)"))
+        if candidate_cols and "training_excluded_by" not in candidate_cols:
+            connection.execute(text("ALTER TABLE preference_candidates ADD COLUMN training_excluded_by VARCHAR(80)"))
+        if candidate_cols and "training_excluded_at" not in candidate_cols:
+            connection.execute(text("ALTER TABLE preference_candidates ADD COLUMN training_excluded_at DATETIME"))
     except Exception as exc:
         logging.getLogger(__name__).warning("SQLite auto migration note: %s", exc)
 
 
 async def init_db():
-    """Create all tables and perform lightweight SQLite column migration."""
+    """Create application tables, excluding explicitly approved feedback migrations."""
     from src.models import (  # noqa: F401
         ai_run,
         audit_log,
         chat_conversation,
         episodic_memory,
+        feedback_event,
         hitl_approval,
         knowledge_base,
         knowledge_gap,
+        preference_candidate,
         service_request,
         technician_fulfillment_group,
         ticket,
@@ -216,5 +240,40 @@ async def init_db():
     )
 
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(_create_application_schema_without_feedback)
         await conn.run_sync(_auto_migrate_sqlite)
+
+
+def _create_application_schema_without_feedback(connection) -> None:
+    """Keep additive feedback tables behind the explicit migration command.
+
+    This prevents a normal production service restart from changing the
+    database. Test/staging (and a separately approved production rollout) use
+    ``migrate_feedback_pipeline_schema`` instead.
+    """
+    feedback_tables = {"feedback_events", "preference_candidates"}
+    tables = [
+        table for name, table in Base.metadata.tables.items() if name not in feedback_tables
+    ]
+    Base.metadata.create_all(connection, tables=tables)
+
+
+def _migrate_feedback_pipeline_schema(connection) -> None:
+    """Create/upgrade feedback tables without destructive schema operations."""
+    from src.models.feedback_event import FeedbackEvent
+    from src.models.preference_candidate import PreferenceCandidate
+
+    FeedbackEvent.__table__.create(connection, checkfirst=True)
+    PreferenceCandidate.__table__.create(connection, checkfirst=True)
+    if connection.dialect.name == "sqlite":
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS feedback_events_no_update BEFORE UPDATE ON feedback_events BEGIN SELECT RAISE(ABORT, 'feedback_events are immutable'); END"))
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS feedback_events_no_delete BEFORE DELETE ON feedback_events BEGIN SELECT RAISE(ABORT, 'feedback_events are append-only'); END"))
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS preference_candidates_review_status_final BEFORE UPDATE OF review_status ON preference_candidates WHEN OLD.review_status != 'PENDING_REVIEW' BEGIN SELECT RAISE(ABORT, 'reviewed preference candidate status is immutable'); END"))
+
+
+async def migrate_feedback_pipeline_schema(target_engine) -> None:
+    """Idempotent migration entry point for an explicitly selected database."""
+    async with target_engine.begin() as conn:
+        await conn.run_sync(_migrate_feedback_pipeline_schema)
+        if conn.dialect.name == "sqlite":
+            await conn.run_sync(_auto_migrate_sqlite)

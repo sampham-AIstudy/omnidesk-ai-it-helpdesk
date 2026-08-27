@@ -13,6 +13,11 @@ import { PageHeader, Spinner } from '@/components/ui';
 import { getErrorMessage } from '@/lib/utils';
 import api from '@/lib/api';
 
+type KnowledgeBaseSuggestion = {
+  id: number | string;
+  title: string;
+};
+
 const PRODUCTS = [
   { id: 'VPN_NETWORK', name: 'Kết Nối Mạng Nội Bộ & SSL VPN FortiClient', icon: '🌐' },
   { id: 'OFFICE_EMAIL', name: 'Hệ Thống Email & Bộ Ứng Dụng Văn Phòng (Outlook/Office 365)', icon: '📧' },
@@ -139,13 +144,13 @@ export default function NewTicketPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [createdTicket, setCreatedTicket] = useState<{ id: number; number: string } | null>(null);
-  const [deflectionResults, setDeflectionResults] = useState<any[]>([]);
+  const [deflectionResults, setDeflectionResults] = useState<KnowledgeBaseSuggestion[]>([]);
 
   useEffect(() => {
     const q = title.trim();
     if (q.length < 4) {
-      setDeflectionResults([]);
-      return;
+      const clearResults = window.setTimeout(() => setDeflectionResults([]), 0);
+      return () => window.clearTimeout(clearResults);
     }
     const timer = setTimeout(async () => {
       try {
@@ -431,7 +436,7 @@ export default function NewTicketPage() {
                     <BookOpen size={14} /> 💡 Bài viết Knowledge Base có thể giải quyết ngay vấn đề này:
                   </div>
                   <div style={{ display: 'grid', gap: 6 }}>
-                    {deflectionResults.map((kb: any) => (
+                    {deflectionResults.map((kb) => (
                       <a
                         key={kb.id}
                         href={`/employee/kb?id=${kb.id}`}

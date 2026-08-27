@@ -1,20 +1,25 @@
 """Admin API — User management, KB management."""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException
+import json
+from datetime import datetime
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import and_, delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.api.auth import get_current_active_user
 from src.database import get_db
-from src.models.audit_log import AuditAction
+from src.models.audit_log import AuditAction, AuditLog
 from src.models.knowledge_base import KnowledgeBaseEntry
+from src.models.preference_candidate import PreferenceCandidate
 from src.models.schemas import (
     AdminUserUpdate,
     FulfillmentGroupListResponse,
     KBEntryCreate,
     KBEntryResponse,
     KBEntryUpdate,
+    PreferenceCandidateReviewRequest,
     TechnicianFulfillmentGroupsResponse,
     TechnicianFulfillmentGroupsUpdate,
     UserCreate,
@@ -62,6 +67,101 @@ def _kb_visibility_clause(user: User):
         KnowledgeBaseEntry.department == department,
     )
     return and_(company_allowed, department_allowed)
+
+
+def _preference_candidate_payload(candidate: PreferenceCandidate) -> dict:
+    """Only return the pre-sanitized dataset representation to reviewers."""
+    evidence = json.loads(candidate.label_evidence_json)
+    return {
+        "candidate_id": candidate.candidate_id,
+        "tenant_id": candidate.tenant_id,
+        "group_key": candidate.group_key,
+        "prompt": candidate.prompt,
+        "chosen": candidate.chosen,
+        "rejected": candidate.rejected,
+        "source_event_ids": json.loads(candidate.source_event_ids_json),
+        "quality_score": candidate.quality_score,
+        "quality_tier": candidate.quality_tier,
+        "review_status": candidate.review_status,
+        "reviewed_by_id": candidate.reviewed_by_id,
+        "reviewed_at": candidate.reviewed_at,
+        "review_note": candidate.review_note,
+        "excluded_from_training": candidate.excluded_from_training,
+        "training_exclusion_reason": candidate.training_exclusion_reason,
+        "training_excluded_by": candidate.training_excluded_by,
+        "training_excluded_at": candidate.training_excluded_at,
+        "created_at": candidate.created_at,
+        "evidence": evidence,
+    }
+
+
+@router.get("/preference-candidates")
+async def list_preference_candidates(
+    tenant: str | None = Query(default=None),
+    status: str | None = Query(default=None, pattern="^(PENDING_REVIEW|APPROVED|REJECTED)$"),
+    quality_tier: str | None = Query(default=None, pattern="^(HIGH|MEDIUM|LOW)$"),
+    rating: int | None = Query(default=None, ge=1, le=5),
+    date_from: datetime | None = Query(default=None),
+    date_to: datetime | None = Query(default=None),
+    source_type: str | None = Query(default=None, max_length=80),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_manager_or_admin),
+):
+    requested_tenant = tenant or str(getattr(current_user.company_unit, "value", current_user.company_unit))
+    if tenant is None and auth_service.scoped_company_unit(current_user) is None:
+        requested_tenant = None
+    if requested_tenant is not None and not auth_service.can_access_company_unit(current_user, requested_tenant):
+        raise HTTPException(status_code=403, detail="Tenant review scope is forbidden")
+    stmt = select(PreferenceCandidate).order_by(PreferenceCandidate.created_at.desc(), PreferenceCandidate.candidate_id.desc())
+    if requested_tenant is not None:
+        stmt = stmt.where(PreferenceCandidate.tenant_id == requested_tenant)
+    if status:
+        stmt = stmt.where(PreferenceCandidate.review_status == status)
+    if quality_tier:
+        stmt = stmt.where(PreferenceCandidate.quality_tier == quality_tier)
+    if date_from:
+        stmt = stmt.where(PreferenceCandidate.created_at >= date_from)
+    if date_to:
+        stmt = stmt.where(PreferenceCandidate.created_at <= date_to)
+    candidates = list((await db.execute(stmt)).scalars())
+    payload = [_preference_candidate_payload(item) for item in candidates]
+    if rating is not None:
+        payload = [item for item in payload if rating in item["evidence"].get("ratings", [])]
+    if source_type:
+        payload = [item for item in payload if source_type in item["evidence"].get("source_types", [])]
+    return {"items": payload, "total": len(payload)}
+
+
+@router.post("/preference-candidates/{candidate_id}/review")
+async def review_preference_candidate_api(
+    candidate_id: str,
+    payload: PreferenceCandidateReviewRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_manager_or_admin),
+):
+    candidate = await db.get(PreferenceCandidate, candidate_id)
+    if candidate is None:
+        raise HTTPException(status_code=404, detail="Preference candidate not found")
+    if not auth_service.can_access_company_unit(current_user, candidate.tenant_id):
+        raise HTTPException(status_code=403, detail="Tenant review scope is forbidden")
+    from src.services.feedback_dataset_service import review_preference_candidate
+
+    try:
+        candidate = await review_preference_candidate(
+            db, candidate_id=candidate_id, reviewer=current_user, status=payload.status, note=payload.note,
+        )
+    except (LookupError, PermissionError, ValueError) as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    db.add(AuditLog(
+        actor_id=current_user.id,
+        actor_type="user",
+        action=AuditAction.STATUS_CHANGED,
+        description=f"Preference candidate {candidate_id} reviewed as {payload.status}",
+        metadata_json=json.dumps({"candidate_id": candidate_id, "tenant_id": candidate.tenant_id, "quality_tier": candidate.quality_tier}),
+    ))
+    await db.commit()
+    await db.refresh(candidate)
+    return _preference_candidate_payload(candidate)
 
 
 # ─── User Management ──────────────────────────────────────────────────────────

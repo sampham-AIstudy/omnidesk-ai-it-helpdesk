@@ -108,6 +108,8 @@ data/chroma_backups/
 # with outputs/.gitkeep because the pipeline writes these paths at runtime).
 /outputs/*.json
 /outputs/*.md
+/outputs/preference_datasets/
+*.preference.jsonl
 
 # Evaluation temporary caches & intermediate experiment outputs
 eval/results/judge_cache*/

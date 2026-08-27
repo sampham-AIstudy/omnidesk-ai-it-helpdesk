@@ -107,9 +107,13 @@ export default function TokenUsagePage() {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    // Defer the initial request so this effect only schedules external work.
+    const initialFetch = window.setTimeout(fetchData, 0);
     const interval = setInterval(fetchData, 10000);
-    return () => clearInterval(interval);
+    return () => {
+      window.clearTimeout(initialFetch);
+      clearInterval(interval);
+    };
   }, [fetchData]);
 
   return (
