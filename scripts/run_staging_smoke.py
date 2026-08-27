@@ -32,16 +32,17 @@ from httpx import ASGITransport, AsyncClient
 from sqlalchemy import select
 
 from src.config import get_settings
+
 get_settings.cache_clear()
 
-from src.database import AsyncSessionLocal, init_db
-from src.main import app
-from src.models.knowledge_base import KnowledgeBaseEntry
-from src.models.service_request import ServiceRequest, ServiceRequestStatus
-from src.models.ticket import Ticket, TicketCategory, TicketPriority, TicketStatus
-from src.models.user import CompanyUnit, User, UserRole
-from src.services.auth_service import authenticate_user, create_access_token, decode_token
-from src.services.rag_service import get_collection_count, search_similar
+from src.database import AsyncSessionLocal, init_db  # noqa: E402
+from src.main import app  # noqa: E402
+from src.models.knowledge_base import KnowledgeBaseEntry  # noqa: E402
+from src.models.service_request import ServiceRequest  # noqa: E402
+from src.models.ticket import Ticket  # noqa: E402
+from src.models.user import CompanyUnit, User, UserRole  # noqa: E402
+from src.services.auth_service import create_access_token  # noqa: E402
+from src.services.rag_service import get_collection_count, search_similar  # noqa: E402
 
 
 def safe_print(*args):
