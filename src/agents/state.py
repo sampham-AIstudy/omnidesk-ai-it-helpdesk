@@ -30,8 +30,9 @@ class TicketAgentState(TypedDict, total=False):
     suggested_solution: str    # Synthesized answer từ RAG + LLM
     rag_sources: list[Any]     # Persisted provenance links for KB/web sources
     runbook_steps: list[str]   # Extracted runbook steps nếu có
-    retrieval_confidence: float | None
-    groundedness_score: float | None
+    # Các thành phần tín hiệu trung gian RAG confidence (tính tại rag_node, dùng ở output_guardrail_node)
+    c_retrieval: float | None     # C_retrieval: độ tương quan top-1 & uy tín nguồn
+    c_consensus: float | None     # C_consensus: độ đồng thuận thứ hạng giữa Dense Vector và BM25
 
     # ── Routing & Risk (output từ policy/hitl node) ───────────────────────────
     routing_target: str        # Đội kỹ thuật được route tới

@@ -151,8 +151,6 @@ class TicketResponse(BaseModel):
     priority: TicketPriority | None
     urgency: TicketUrgency | None
     confidence_score: float | None
-    retrieval_confidence: float | None = None
-    groundedness_score: float | None = None
     suggested_solution: str | None
     rag_sources: str | None
     agent_reasoning: str | None

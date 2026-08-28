@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   // Limit static-generation concurrency so a local production build does not
   // monopolize every CPU core.
+  allowedDevOrigins: ['192.168.232.1'],
   experimental: {
     cpus: 4,
   },

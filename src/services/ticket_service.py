@@ -235,8 +235,6 @@ async def update_ticket_classification(
     priority: str,
     urgency: str,
     confidence_score: float,
-    retrieval_confidence: float | None,
-    groundedness_score: float | None,
     suggested_solution: str | None,
     rag_sources: list[str | dict[str, Any]] | None,
     agent_reasoning: str | None,
@@ -252,8 +250,6 @@ async def update_ticket_classification(
     ticket.priority = TicketPriority(priority)
     ticket.urgency = TicketUrgency(urgency)
     ticket.confidence_score = confidence_score
-    ticket.retrieval_confidence = retrieval_confidence
-    ticket.groundedness_score = groundedness_score
     ticket.suggested_solution = suggested_solution
     ticket.rag_sources = json.dumps(rag_sources or [])
     ticket.agent_reasoning = agent_reasoning
@@ -284,8 +280,6 @@ async def update_ticket_classification(
             "category": category,
             "priority": priority,
             "classification_confidence": confidence_score,
-            "retrieval_confidence": retrieval_confidence,
-            "groundedness_score": groundedness_score,
         },
         confidence_score=confidence_score,
         model_used=model_used,

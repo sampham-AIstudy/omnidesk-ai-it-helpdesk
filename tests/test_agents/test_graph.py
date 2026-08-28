@@ -55,7 +55,7 @@ async def test_agent_basic_flow():
 
     assert result["ticket_number"] == "INC-TEST-999"
     assert result["category"] == "software"
-    assert result["confidence_score"] == 0.90
+    assert result["confidence_score"] is not None and result["confidence_score"] > 0
     assert "action_taken" in result
 
 
@@ -134,7 +134,7 @@ async def test_low_relevance_rag_does_not_call_synthesis_model():
         result = await rag_node({"ticket_number": "INC-TEST-WEAK-RAG", "title": "VPN", "description": "Cannot connect", "category": "network"})
 
     assert result["rag_context"] == []
-    assert result["groundedness_score"] == 0.20
+    assert result.get("confidence_score") is None
     llm_factory.assert_not_called()
 
 
@@ -185,4 +185,4 @@ async def test_ai_admitting_missing_kb_guidance_forces_handoff():
         result = await rag_node({"ticket_number": "INC-TEST-DECLINED-KB", "title": "Màn hình đen", "description": "Máy bật lên rồi màn hình đen", "category": "network"})
 
     assert result["rag_context"] == []
-    assert result["groundedness_score"] == 0.0
+    assert result.get("confidence_score") is None

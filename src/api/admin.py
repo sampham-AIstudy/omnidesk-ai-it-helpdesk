@@ -604,12 +604,12 @@ async def get_ai_metrics(
     stats_res = await db.execute(
         scoped_runs(select(
             func.avg(AIRun.latency_ms),
-            func.avg(AIRun.groundedness_score),
+            func.avg(AIRun.confidence_score),
             func.avg(AIRun.classification_confidence),
             func.sum(AIRun.estimated_cost),
         ))
     )
-    avg_latency, avg_ground, avg_conf, total_cost = stats_res.fetchone() or (0, 0, 0, 0)
+    avg_latency, avg_confidence, avg_conf, total_cost = stats_res.fetchone() or (0, 0, 0, 0)
 
     hitl_count_res = await db.execute(
         scoped_runs(select(func.count(AIRun.id)).where(AIRun.decision == "HITL"))
@@ -624,8 +624,8 @@ async def get_ai_metrics(
     return {
         "total_ai_runs": total_runs,
         "avg_latency_ms": round(float(avg_latency or 0), 2),
-        "avg_groundedness": round(float(avg_ground or 0), 3),
-        "avg_confidence": round(float(avg_conf or 0), 3),
+        "avg_confidence": round(float(avg_confidence or 0), 3),
+        "avg_classification_confidence": round(float(avg_conf or 0), 3),
         "hitl_trigger_rate": round(float(hitl_count / total_runs), 3) if total_runs > 0 else 0.0,
         "total_estimated_cost_usd": round(float(total_cost or 0), 4),
         "recent_runs": [
@@ -637,7 +637,7 @@ async def get_ai_metrics(
                 "provider": r.provider,
                 "model": r.model,
                 "latency_ms": r.latency_ms,
-                "groundedness_score": r.groundedness_score,
+                "confidence_score": r.confidence_score,
                 "hitl_triggered": r.decision == "HITL",
                 "created_at": r.created_at.isoformat() if r.created_at else None,
             }
