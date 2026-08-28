@@ -250,6 +250,157 @@ class PreferenceCandidateReviewRequest(BaseModel):
     note: str | None = Field(default=None, max_length=2000)
 
 
+# Policy administration schemas. These are management-only contracts.
+class PolicyCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    policy_key: str = Field(min_length=1, max_length=80)
+    tenant_id: str | None = Field(default=None, max_length=64)
+    global_policy: bool = False
+    name: str = Field(min_length=1, max_length=255)
+    category: str = Field(min_length=1, max_length=64)
+    description: str | None = Field(default=None, max_length=50_000)
+
+
+class PolicyUpdateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    name: str | None = Field(default=None, min_length=1, max_length=255)
+    description: str | None = Field(default=None, max_length=50_000)
+    category: str | None = Field(default=None, min_length=1, max_length=64)
+
+
+class PolicyVersionCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    title: str = Field(min_length=1, max_length=255)
+    content: str = Field(min_length=1, max_length=50_000)
+    rule_definition: dict
+    priority: int = Field(ge=0, le=10_000)
+    effective_from: datetime
+    effective_until: datetime | None = None
+    scopes: list[dict] = Field(min_length=1, max_length=100)
+    supersedes_version_id: str | None = Field(default=None, max_length=36)
+
+
+class PolicyExceptionCreateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    subject_type: Literal["user", "department", "role"]
+    subject_id: str = Field(min_length=1, max_length=80)
+    action_type: str | None = Field(default=None, max_length=80)
+    resource_type: str | None = Field(default=None, max_length=80)
+    resource_selector: dict | None = None
+    override_effect: Literal["allow"] = "allow"
+    reason: str = Field(min_length=1, max_length=50_000)
+    valid_from: datetime
+    valid_until: datetime
+    policy_version_id: str | None = Field(default=None, max_length=36)
+    tenant_id: str | None = Field(default=None, max_length=64)
+
+
+class PolicySummaryResponse(BaseModel):
+    id: str
+    policy_key: str
+    tenant_id: str | None
+    name: str
+    category: str
+    status: str
+    current_version_id: str | None
+    created_at: datetime
+    updated_at: datetime
+
+
+class PolicyDetailResponse(PolicySummaryResponse):
+    description: str | None
+    version_count: int
+    exception_count: int
+    current_version: dict | None = None
+
+
+class PolicyListResponse(BaseModel):
+    items: list[PolicySummaryResponse]
+    total: int
+    page: int
+    page_size: int
+
+
+class PolicyVersionSummaryResponse(BaseModel):
+    version_number: int
+    status: str
+    title: str
+    priority: int
+    effective_from: datetime
+    effective_until: datetime | None
+    approved_by: int | None
+    approved_at: datetime | None
+    activated_by: int | None
+    activated_at: datetime | None
+    content_hash: str
+
+
+class PolicyVersionResponse(PolicyVersionSummaryResponse):
+    id: str
+    content: str
+    rule_definition: dict
+    scopes: list[dict]
+    supersedes_version_id: str | None
+
+
+class PolicyExceptionResponse(BaseModel):
+    id: str
+    policy_version_id: str | None
+    tenant_id: str
+    subject_type: str
+    subject_id: str
+    action_type: str | None
+    resource_type: str | None
+    resource_selector: dict | None
+    override_effect: str
+    reason: str
+    status: str
+    valid_from: datetime
+    valid_until: datetime
+    created_by: int | None
+    approved_by: int | None
+    approved_at: datetime | None
+    revoked_by: int | None
+    revoked_at: datetime | None
+
+
+class PolicyExceptionListResponse(BaseModel):
+    items: list[PolicyExceptionResponse]
+    total: int
+    page: int
+    page_size: int
+
+
+class PolicyAuditResponse(BaseModel):
+    id: str
+    event_type: str
+    actor_id: int | None
+    policy_version_id: str | None
+    policy_exception_id: str | None
+    decision: str | None
+    reason_code: str | None
+    before_snapshot: dict
+    after_snapshot: dict
+    trace_id: str | None
+    created_at: datetime
+
+
+class PolicyAuditListResponse(BaseModel):
+    items: list[PolicyAuditResponse]
+    total: int
+    page: int
+    page_size: int
+
+
+class LifecycleActionResponse(BaseModel):
+    id: str
+    status: str
+
+
 # ─── Service Request Schemas ──────────────────────────────────────────────────
 
 class ServiceRequestCreate(BaseModel):
