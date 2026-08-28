@@ -251,7 +251,10 @@ def _create_application_schema_without_feedback(connection) -> None:
     database. Test/staging (and a separately approved production rollout) use
     ``migrate_feedback_pipeline_schema`` instead.
     """
-    feedback_tables = {"feedback_events", "preference_candidates"}
+    feedback_tables = {
+        "feedback_events", "preference_candidates", "policies", "policy_versions",
+        "policy_scopes", "policy_exceptions", "policy_audit_events",
+    }
     tables = [
         table for name, table in Base.metadata.tables.items() if name not in feedback_tables
     ]
@@ -271,9 +274,32 @@ def _migrate_feedback_pipeline_schema(connection) -> None:
         connection.execute(text("CREATE TRIGGER IF NOT EXISTS preference_candidates_review_status_final BEFORE UPDATE OF review_status ON preference_candidates WHEN OLD.review_status != 'PENDING_REVIEW' BEGIN SELECT RAISE(ABORT, 'reviewed preference candidate status is immutable'); END"))
 
 
+def _migrate_policy_engine_schema(connection) -> None:
+    """Create policy-core governance tables only when explicitly invoked."""
+    from src.models.policy import Policy, PolicyAuditEvent, PolicyException, PolicyScope, PolicyVersion
+
+    for model in (Policy, PolicyVersion, PolicyScope, PolicyException, PolicyAuditEvent):
+        model.__table__.create(connection, checkfirst=True)
+    if connection.dialect.name == "sqlite":
+        connection.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS uq_policies_global_key ON policies(policy_key) WHERE tenant_id IS NULL"))
+        connection.execute(text("CREATE UNIQUE INDEX IF NOT EXISTS uq_policy_versions_one_active ON policy_versions(policy_id) WHERE status = 'active'"))
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS policy_versions_immutable_after_approval BEFORE UPDATE ON policy_versions WHEN OLD.status IN ('approved','active') AND (NEW.title != OLD.title OR NEW.content != OLD.content OR NEW.rule_definition_json != OLD.rule_definition_json OR NEW.effect_summary != OLD.effect_summary OR NEW.priority != OLD.priority OR NEW.effective_from != OLD.effective_from OR COALESCE(NEW.effective_until, '') != COALESCE(OLD.effective_until, '') OR NEW.content_hash != OLD.content_hash OR NEW.policy_id != OLD.policy_id OR NEW.version_number != OLD.version_number) BEGIN SELECT RAISE(ABORT, 'approved and active policy versions are immutable'); END"))
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS policy_versions_no_delete_after_activation BEFORE DELETE ON policy_versions WHEN OLD.status IN ('approved','active','superseded','expired') BEGIN SELECT RAISE(ABORT, 'governed policy versions cannot be deleted'); END"))
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS policy_scopes_immutable_after_approval BEFORE UPDATE ON policy_scopes WHEN EXISTS (SELECT 1 FROM policy_versions v WHERE v.id = OLD.policy_version_id AND v.status IN ('approved','active')) BEGIN SELECT RAISE(ABORT, 'scopes for approved and active policy versions are immutable'); END"))
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS policy_scopes_no_delete_after_approval BEFORE DELETE ON policy_scopes WHEN EXISTS (SELECT 1 FROM policy_versions v WHERE v.id = OLD.policy_version_id AND v.status IN ('approved','active')) BEGIN SELECT RAISE(ABORT, 'scopes for approved and active policy versions are immutable'); END"))
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS policy_audit_events_no_update BEFORE UPDATE ON policy_audit_events BEGIN SELECT RAISE(ABORT, 'policy audit events are immutable'); END"))
+        connection.execute(text("CREATE TRIGGER IF NOT EXISTS policy_audit_events_no_delete BEFORE DELETE ON policy_audit_events BEGIN SELECT RAISE(ABORT, 'policy audit events are append-only'); END"))
+
+
 async def migrate_feedback_pipeline_schema(target_engine) -> None:
     """Idempotent migration entry point for an explicitly selected database."""
     async with target_engine.begin() as conn:
         await conn.run_sync(_migrate_feedback_pipeline_schema)
         if conn.dialect.name == "sqlite":
             await conn.run_sync(_auto_migrate_sqlite)
+
+
+async def migrate_policy_engine_schema(target_engine) -> None:
+    """Idempotent, explicit policy-core migration for a selected database."""
+    async with target_engine.begin() as conn:
+        await conn.run_sync(_migrate_policy_engine_schema)
