@@ -93,6 +93,18 @@ def evaluate_policy(state: TicketAgentState, risk_score: float) -> dict[str, Any
             "reason": reason_msg,
         }
 
+    # ── Rule 4b: KB docs tồn tại nhưng không có điểm C_RAG ────────────────────────
+    # Xảy ra khi: RAG pipeline chạy có docs nhưng output_guardrail bị lỗi / không ghi
+    # confidence_score vào state. Không thể tự động đóng ticket khi thiếu điểm tin cậy.
+    if confidence is None and not no_kb_context:
+        return {
+            "decision": "ESCALATE",
+            "action_type": "HUMAN_HANDOFF",
+            "target_status": "waiting_for_agent",
+            "policy_triggered": "POLICY_MISSING_CONFIDENCE_SCORE_ESCALATE",
+            "reason": "Có ngữ cảnh KB nhưng thiếu điểm C_RAG — Không đủ căn cứ tự động đóng, chuyển KTV",
+        }
+
     if confidence is not None:
         # Rule 5: C_RAG Confidence cao (>= 0.85) → Trả lời tự động & Đóng Ticket
         # Câu trả lời AI được đánh giá đủ tin cậy để tự động giải quyết Ticket.

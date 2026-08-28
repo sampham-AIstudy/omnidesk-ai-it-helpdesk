@@ -18,6 +18,8 @@ import math
 import threading
 from typing import Any
 
+import numpy as np
+
 from src.config import get_settings
 # Bảng hệ số uy tín nguồn tài liệu dành riêng cho C_retrieval (giá trị trong [0.0, 1.0]).
 # Không dùng bảng từ rag_service vì bảng đó có giá trị > 1.0 (dùng để boost rerank),
@@ -71,13 +73,25 @@ def _get_nli_encoder() -> Any:
                 device = "cpu"
 
             print(f"[NLI] Đang tải model groundedness: {model_name} | device={device} | max_length={max_length}")
-            _cached_nli_encoder = CrossEncoder(
-                model_name,
-                max_length=max_length,
-                device=device,
-                local_files_only=True,
-            )
-            print(f"[NLI] Load thành công: {model_name}")
+            # Chiến lược load 2 bước: ưu tiên cache local (để offline / giảm latency).
+            # Nếu chưa cache (OSError/EnvironmentError), fall-through sang download tự động.
+            # Không dùng local_files_only=True cho toàn bộ session —
+            # tránh trường hợp model có thể tải được nhưng bị block vĩnh viễn.
+            try:
+                _cached_nli_encoder = CrossEncoder(
+                    model_name, max_length=max_length, device=device,
+                    local_files_only=True,
+                )
+                print(f"[NLI] Load từ cache local: {model_name}")
+            except (OSError, EnvironmentError):
+                logger.warning(
+                    "[NLI] '%s' chưa có trong local cache. Tải từ Hugging Face Hub...",
+                    model_name,
+                )
+                _cached_nli_encoder = CrossEncoder(
+                    model_name, max_length=max_length, device=device,
+                )
+                print(f"[NLI] Tải từ Hub thành công: {model_name}")
             logger.info("Loaded NLI groundedness model: %s on %s", model_name, device)
         except Exception as exc:
             logger.warning(
@@ -184,7 +198,7 @@ def calculate_groundedness_with_reranker(
 ) -> float:
     """Tính C_groundedness trong khoảng [0.0, 1.0] bằng NLI CrossEncoder đa ngôn ngữ.
 
-    Dùng model NLI (multilingual-MiniLMv2-L6-mnli-xnli) thay vì ms-marco reranker.
+    Dùng model NLI (multilingual-MiniLMv2-L6-mnli-xnli).
     Model NLI được train để phân loại quan hệ giữa 2 văn bản thành 3 nhãn:
         - Index 0: entailment   (câu trả lời được hỗ trợ bởi tài liệu KB)  ← dùng cái này
         - Index 1: neutral      (không liên quan)
@@ -216,27 +230,19 @@ def calculate_groundedness_with_reranker(
         if not pairs:
             return 0.0
 
-        import numpy as np
-
-        # NLI model trả về ma trận logit thô (n_pairs, 3): [entailment, neutral, contradiction]
-        # ĐÃ XÁC NHẬN qua test: model trả về logit âm/dương → phải áp dụng softmax
+        # Dùng apply_softmax=True — CrossEncoder tự chuẩn hóa, không cần viết softmax thủ công.
+        # Đồng thời giữ raw logits riêng để hiển thị trong debug log.
         # Labels: {0: 'entailment', 1: 'neutral', 2: 'contradiction'}
-        raw_logits = encoder.predict(pairs)
-        scores_arr = np.array(raw_logits)
+        raw_logits = np.array(encoder.predict(pairs))
+        probs       = np.array(encoder.predict(pairs, apply_softmax=True))
 
-        # Softmax theo axis=1 để chuyển logit → xác suất (tổng mỗi hàng = 1.0)
-        def _softmax(x: np.ndarray) -> np.ndarray:
-            e = np.exp(x - x.max(axis=-1, keepdims=True))
-            return e / e.sum(axis=-1, keepdims=True)
+        # Đảm bảo luôn là 2D (n_pairs, 3) dù model trả về 1D khi chỉ có 1 cặp
+        if raw_logits.ndim == 1:
+            raw_logits = raw_logits.reshape(1, -1)
+        if probs.ndim == 1:
+            probs = probs.reshape(1, -1)
 
-        if scores_arr.ndim == 2:
-            probs = _softmax(scores_arr)             # (n_pairs, 3)
-            entailment_probs = probs[:, 0]           # cột 0 = entailment
-        else:
-            # Trường hợp model trả về 1D (1 cặp)
-            probs = _softmax(scores_arr.reshape(1, -1))
-            entailment_probs = probs[:, 0]
-
+        entailment_probs = probs[:, 0]           # cột 0 = entailment
         max_entailment = float(entailment_probs.max())
         c_groundedness = round(max(0.0, min(1.0, max_entailment)), 3)
 
@@ -247,9 +253,7 @@ def calculate_groundedness_with_reranker(
         for i, (doc_c, _) in enumerate(pairs):
             print(f"  Doc {i+1} (chars) : {len(doc_c)} / {_DOC_MAX_CHARS}")
         print(f"  Điểm NLI (logit thô → sau softmax):")
-        for i, (logit_row, prob_row) in enumerate(zip(scores_arr, probs)):
-            l = np.array(logit_row).flatten()
-            p = np.array(prob_row).flatten()
+        for i, (l, p) in enumerate(zip(raw_logits, probs)):
             print(f"    Doc {i+1} logit : entail={l[0]:.3f} | neutral={l[1]:.3f} | contra={l[2]:.3f}")
             print(f"    Doc {i+1} prob  : entail={p[0]:.4f} | neutral={p[1]:.4f} | contra={p[2]:.4f}")
         print(f"  Entailment max : {max_entailment:.4f}")

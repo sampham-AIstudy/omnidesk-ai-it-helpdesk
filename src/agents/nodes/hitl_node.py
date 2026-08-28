@@ -18,7 +18,9 @@ def calculate_ticket_risk_score(state: TicketAgentState) -> tuple[float, dict[st
     Thành phần uncertainty sử dụng điểm C_RAG confidence duy nhất:
         uncertainty = 1.0 - confidence   (AI càng tự tin, rủi ro bất định càng thấp)
     """
-    # Dùng điểm C_RAG confidence duy nhất — None khi Chat thường (không RAG), mặc định 0.5
+    # Default 0.5 CHỈ dùng cho tính toán uncertainty trong Risk Score (thành phần nội bộ).
+    # Không ảnh hưởng đến policy_engine — policy engine đọc state["confidence_score"] trực tiếp
+    # và xử lý None theo logic riêng (Rule 4 / Rule 4b).
     confidence = float(state.get("confidence_score") or 0.5)
     is_production = state.get("is_production_impact", False)
     is_vip = state.get("submitter_is_vip", False)
