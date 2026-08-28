@@ -18,10 +18,10 @@ from src.prompts import (
     remove_unrecognized_source_ids,
 )
 from src.services.llm import get_rag_llm
-from src.services.token_cost import dispatch_token_logging
 from src.services.rag_service import get_collection, search_similar
 from src.services.source_provenance_service import knowledge_source_payload
 from src.services.ticket_text import user_report
+from src.services.token_cost import dispatch_token_logging
 from src.services.web_research_service import has_actionable_external_context, maybe_research_web
 
 logger = logging.getLogger(__name__)

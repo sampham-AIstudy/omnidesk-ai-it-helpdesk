@@ -96,8 +96,12 @@ class Settings(BaseSettings):
     chroma_persist_dir: str = "./data/chroma"
     chroma_collection_name: str = "helpdesk_kb_multilingual_v3_sentence_transformer"
     embedding_model: str = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-    embedding_backend: Literal["sentence_transformer", "hashing"] = "sentence_transformer"
+    embedding_backend: Literal["sentence_transformer", "hashing", "remote_onnx"] = "sentence_transformer"
     embedding_allow_network_downloads: bool = False
+    embedding_service_url: str = "https://p236-embedding-production.up.railway.app"
+    embedding_service_token: str = ""
+    embedding_service_timeout_seconds: float = Field(default=10.0, ge=1.0, le=60.0)
+    embedding_dimensions: int = 384
 
     # Cross-Encoder Reranker (Optional second-stage reranker on top of hybrid retrieval)
     reranker_enabled: bool = False

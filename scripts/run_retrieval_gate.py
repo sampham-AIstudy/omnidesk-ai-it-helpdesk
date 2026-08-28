@@ -26,6 +26,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 os.environ.setdefault("HF_DEACTIVATE_ASYNC_LOAD", "1")
 
+from eval.evaluation_contract import sha256_text_file  # noqa: E402
 from eval.retrieval_metrics import (  # noqa: E402
     CaseRetrievalResult,
     GateDecision,
@@ -42,9 +43,7 @@ def compute_file_sha256(path: Path) -> str:
     """Compute SHA-256 digest of a dataset file for provenance locking."""
     if not path.exists():
         return ""
-    hasher = hashlib.sha256()
-    hasher.update(path.read_bytes())
-    return hasher.hexdigest()
+    return sha256_text_file(path)
 
 
 def run_retrieval_evaluation(

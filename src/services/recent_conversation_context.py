@@ -109,6 +109,7 @@ async def load_ticket_recent_history(
         .where(
             TicketMessage.ticket_id == ticket_id,
             TicketMessage.sender_type.in_(_CONVERSATIONAL_TICKET_SENDERS),
+            TicketMessage.is_internal.is_(False),
         )
         .order_by(TicketMessage.created_at.desc(), TicketMessage.id.desc())
         .limit(window)

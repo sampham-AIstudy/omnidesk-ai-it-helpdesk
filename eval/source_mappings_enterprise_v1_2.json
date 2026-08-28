@@ -2,6 +2,12 @@
   "schema_version": 1,
   "source_mapping_version": "enterprise-source-map-v1.2",
   "entries": {
+    "GT-273": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-001"], "expected_topic": "VPN authentication and timeout troubleshooting"},
+    "GT-277": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-004"], "expected_topic": "Outlook stuck Outbox troubleshooting"},
+    "GT-278": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-005"], "expected_topic": "external email delivery troubleshooting"},
+    "GT-279": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-033"], "expected_topic": "Teams microphone and audio troubleshooting"},
+    "GT-281": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-010"], "expected_topic": "Active Directory account lockout"},
+    "GT-282": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-010"], "expected_topic": "Microsoft 365 self-service password reset"},
     "GT-020": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-004"], "expected_topic": "Outlook software incident"},
     "GT-021": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-033"], "expected_topic": "Teams collaboration application issue"},
     "GT-022": {"expected_evidence_mode": "SUPPORTED", "acceptable_source_ids": ["kb-009"], "expected_topic": "client performance issue"},

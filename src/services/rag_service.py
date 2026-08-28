@@ -21,6 +21,7 @@ from pathlib import Path
 from typing import Any
 
 import chromadb
+import httpx
 from chromadb.config import Settings as ChromaSettings
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
@@ -178,6 +179,92 @@ class _HashingEmbedder:
         return self._embed(text)
 
 
+class _RemoteOnnxEmbedder:
+    """Embeds texts by calling the remote ONNX microservice with strict response validation."""
+
+    def __init__(self):
+        self.url = settings.embedding_service_url.rstrip("/") + "/v1/embeddings"
+        self.token = settings.embedding_service_token
+        self.timeout = settings.embedding_service_timeout_seconds
+        self.dimensions = settings.embedding_dimensions
+        self._client: httpx.Client | None = None
+        self._lock = threading.Lock()
+
+    def _get_client(self) -> httpx.Client:
+        with self._lock:
+            if self._client is None or self._client.is_closed:
+                self._client = httpx.Client(timeout=self.timeout)
+            return self._client
+
+    def close(self) -> None:
+        """Close the underlying HTTP client and release connection pool resources."""
+        with self._lock:
+            if self._client is not None:
+                if not self._client.is_closed:
+                    try:
+                        self._client.close()
+                    except Exception as exc:
+                        logger.warning("Error closing _RemoteOnnxEmbedder client: %s", exc)
+                self._client = None
+
+    def _call_api(self, texts: list[str]) -> list[list[float]]:
+        if not texts:
+            return []
+        headers = {"Content-Type": "application/json"}
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+        try:
+            client = self._get_client()
+            response = client.post(
+                self.url,
+                json={"texts": texts},
+                headers=headers,
+            )
+            response.raise_for_status()
+            data = response.json()
+            raw_embeddings: list[Any] = []
+            if "embeddings" in data and isinstance(data["embeddings"], list):
+                raw_embeddings = data["embeddings"]
+            elif "data" in data and isinstance(data["data"], list):
+                raw_embeddings = [item["embedding"] for item in data["data"]]
+            else:
+                raise ValueError(f"Unexpected response format from embedding service: {data}")
+
+            if len(raw_embeddings) != len(texts):
+                raise ValueError(f"Expected {len(texts)} embeddings, got {len(raw_embeddings)}")
+
+            validated_embeddings: list[list[float]] = []
+            for emb in raw_embeddings:
+                if len(emb) != self.dimensions:
+                    raise ValueError(f"Expected dimension {self.dimensions}, got {len(emb)}")
+                if not all(isinstance(v, (int, float)) and math.isfinite(v) for v in emb):
+                    raise ValueError("Embedding contains non-finite values (NaN/Inf)")
+                norm = math.sqrt(sum(v * v for v in emb))
+                if not math.isfinite(norm) or norm < 1e-12:
+                    raise ValueError(f"Embedding service returned invalid or zero vector (norm={norm})")
+                validated_embeddings.append([v / norm for v in emb])
+            return validated_embeddings
+        except Exception as exc:
+            logger.error("Remote ONNX embedding service call failed (%s): %s", self.url, exc)
+            raise EmbeddingInitializationError(
+                f"Remote ONNX embedding service unavailable or invalid response: {exc}"
+            ) from exc
+
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
+        batch_size = 16
+        results = []
+        for i in range(0, len(texts), batch_size):
+            chunk = texts[i : i + batch_size]
+            results.extend(self._call_api(chunk))
+        return results
+
+    def embed_query(self, text: str) -> list[float]:
+        batch = self._call_api([text])
+        if not batch:
+            raise EmbeddingInitializationError("Empty embedding returned from remote service")
+        return batch[0]
+
+
 class EmbeddingProvenanceError(RuntimeError):
     """Raised when collection embedding provenance conflicts with runtime expectations."""
 
@@ -205,6 +292,14 @@ def effective_embedding_provenance() -> EmbeddingProvenance:
             dimension=384,
             normalized=True,
         )
+    elif backend == "remote_onnx":
+        return EmbeddingProvenance(
+            backend="remote_onnx",
+            provider="remote_onnx",
+            model="paraphrase-multilingual-MiniLM-L12-v2-int8",
+            dimension=settings.embedding_dimensions,
+            normalized=True,
+        )
     elif backend == "hashing":
         return EmbeddingProvenance(
             backend="hashing",
@@ -229,13 +324,29 @@ def validate_collection_embedding_provenance(
     return expected
 
 
+def reset_rag_singletons() -> None:
+    global _chroma_client, _collection, _ticket_duplicate_collection, _episodic_memory_collection, _embedders
+    _chroma_client = None
+    _collection = None
+    _ticket_duplicate_collection = None
+    _episodic_memory_collection = None
+    for embedder in list(_embedders.values()):
+        if hasattr(embedder, "close") and callable(embedder.close):
+            try:
+                embedder.close()
+            except Exception as exc:
+                logger.warning("Error closing embedder on reset: %s", exc)
+    _embedders.clear()
+    embed_query.cache_clear()
+
+
 _embedders: dict[str, Any] = {}
 _embedder_lock = threading.Lock()
 
 
 def _get_embedder(backend: str | None = None) -> Any:
     requested_backend = backend or settings.embedding_backend
-    if requested_backend not in {"sentence_transformer", "hashing"}:
+    if requested_backend not in {"sentence_transformer", "hashing", "remote_onnx"}:
         raise EmbeddingProvenanceError(f"Unsupported embedding backend: {requested_backend}")
 
     if requested_backend not in _embedders:
@@ -243,6 +354,8 @@ def _get_embedder(backend: str | None = None) -> Any:
             if requested_backend not in _embedders:
                 if requested_backend == "hashing":
                     _embedders[requested_backend] = _HashingEmbedder()
+                elif requested_backend == "remote_onnx":
+                    _embedders[requested_backend] = _RemoteOnnxEmbedder()
                 else:
                     logger.info("Loading embedding model (%s)...", settings.embedding_model)
                     try:
@@ -274,14 +387,19 @@ def get_collection() -> chromadb.Collection:
     global _collection
     if _collection is None:
         client = get_chroma_client()
+        provider_name = (
+            "sentence_transformers"
+            if settings.embedding_backend == "sentence_transformer"
+            else ("remote_onnx" if settings.embedding_backend == "remote_onnx" else "local_hashing")
+        )
         col = client.get_or_create_collection(
             name=settings.chroma_collection_name,
             metadata={
                 "hnsw:space": "cosine",
-                "embedding_model": settings.embedding_model,
+                "embedding_model": settings.embedding_model if settings.embedding_backend != "remote_onnx" else "paraphrase-multilingual-MiniLM-L12-v2-int8",
                 "embedding_backend": settings.embedding_backend,
-                "embedding_provider": "sentence_transformers" if settings.embedding_backend == "sentence_transformer" else "local_hashing",
-                "embedding_dimension": 384,
+                "embedding_provider": provider_name,
+                "embedding_dimension": settings.embedding_dimensions if settings.embedding_backend == "remote_onnx" else 384,
                 "embedding_normalized": True,
             },
         )
@@ -339,7 +457,7 @@ def embed_query_for_collection(text: str, collection: Any = None) -> list[float]
         return embed_query(text)
     metadata = getattr(collection, "metadata", None) or {}
     backend = metadata.get("embedding_backend") or settings.embedding_backend
-    if backend not in {"sentence_transformer", "hashing"}:
+    if backend not in {"sentence_transformer", "hashing", "remote_onnx"}:
         raise EmbeddingProvenanceError(f"Collection has no supported embedding backend: {backend}")
     embedder = _get_embedder(backend)
     return embedder.embed_query(text)

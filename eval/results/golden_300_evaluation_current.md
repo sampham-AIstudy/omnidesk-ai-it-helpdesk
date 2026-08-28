@@ -2,15 +2,15 @@
 
 ## Baseline Metadata
 
-- generated_at: `2026-08-21T16:31:08.234219+00:00`
+- generated_at: `2026-08-24T14:35:57.617595+00:00`
 - golden_dataset: `eval\golden_testset_enterprise.json`
-- golden_dataset_sha256: `7eac168c97cc3a0be780add2b0d8a2edf982e9b29346488882503cce62d8e8ec`
+- golden_dataset_sha256: `3a7fa2c33032670774b74ec6fbdfb49ef284dcf605a0ce272369a48ea8ac5233`
 - manifest_sha256: `da9cc82957f182226ac79524719e221e60b5cc70369ec59b1539eb2956e51f58`
 - context_snapshot: `eval\results\baseline_v1_context_snapshot.json`
 - context_snapshot_sha256: `1c6706446a37d708f0b9dd2508fbf43d361ab8364a97d07001e9e60562173fee`
-- git_commit: `10f35ff41f9b7b27aacf5f210260bdee0ad6d5f0`
+- git_commit: `11de4f9cf2ad4c5b8ba0a55cc33cd145d5ed8572`
 - generation_mode: `fixed_context_snapshot`
-- answer_source: `none`
+- answer_source: `reused_snapshot:eval\results\baseline_v1.json`
 - generation_model: `configured production default`
 - judge_model: `not_run`
 - top_k: `5`
@@ -19,11 +19,11 @@
 
 - Cases: 300
 - Status: {'PASS': 300}
-- Layer membership: {'routing': 300, 'generation': 300, 'retrieval': 197, 'workflow': 72, 'clarification': 49, 'security': 81}
+- Layer membership: {'routing': 300, 'generation': 300, 'retrieval': 216, 'workflow': 83, 'clarification': 33, 'security': 84}
 
 ## Routing
 
-- Accuracy: 1.0 (78/78)
+- Accuracy: 1.0 (53/53)
 
 ## Retrieval
 
@@ -37,12 +37,12 @@
 
 ## Workflow
 
-- Golden cases mapped: 72
+- Golden cases mapped: 83
 - DB contract suite: `tests/test_eval/test_baseline_v1_workflow.py`
 
 ## Security
 
-- Golden cases mapped: 81
+- Golden cases mapped: 84
 - Security failures: 0 (kept outside any quality average).
 
 ## Failure Distribution

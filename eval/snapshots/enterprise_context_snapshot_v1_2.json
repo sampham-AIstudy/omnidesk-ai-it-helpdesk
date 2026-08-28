@@ -1,13 +1,13 @@
 {
   "__metadata__": {
     "snapshot_version": "enterprise-context-snapshot-v1.2",
-    "golden_sha256": "79d8c3902ecaf1edc1c3181ca16fe89e02ad5ff1d6e48c85a30b3cbe88d6fcec",
-    "manifest_sha256": "a7003332dac2ad30b3a61b404922e2b008af0db1df906d2aeb30621fc16300c3",
-    "source_mapping_sha256": "3f47beadbc08c90c80a1ebd183775fd87785c32bef91452b3ee002218ec5fc35",
+    "golden_sha256": "254d9f9b97426e7bf40bdbf8b03da6322eb698ed9762f2d4760c238a847ea573",
+    "manifest_sha256": "f9814c23dd6783a496b2f19fa0e7cd15743ee07c4c0465cd50e7f755d79ab95b",
+    "source_mapping_sha256": "27d10a143bc0e4c581588fba729b2fef2144ca43002c05fe495b63568637cb59",
     "kb_fixture_sha256": "610ed1661e076400bd866e2ff83e34443d744054129289e33089964c97684499",
-    "ticket_fixture_sha256": "2c9acfc5c62a5f272c621d2e66f86d2dc1d065304865ccb74d988d77049529f8",
+    "ticket_fixture_sha256": "b9b9bfac13e3c8a769351beb0f6a514933475abf497bdb2e960a54776321ac58",
     "builder_version": "stable-id-builder-v1.2",
-    "git_commit": "442e0bd5f287823d0225eada289ec92a4db6a2a4",
+    "git_commit": "9167dcb483184610828044dabefe4f0b4e2f29e4",
     "fixture_integrity": {
       "total": 300,
       "passed": 300,
@@ -1963,8 +1963,10 @@
         },
         {
           "id": "GT-273",
-          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
-          "context_source_ids": [],
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-001"
+          ],
           "integrity": "PASS",
           "errors": []
         },
@@ -1991,22 +1993,28 @@
         },
         {
           "id": "GT-277",
-          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
-          "context_source_ids": [],
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-004"
+          ],
           "integrity": "PASS",
           "errors": []
         },
         {
           "id": "GT-278",
-          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
-          "context_source_ids": [],
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-005"
+          ],
           "integrity": "PASS",
           "errors": []
         },
         {
           "id": "GT-279",
-          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
-          "context_source_ids": [],
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-033"
+          ],
           "integrity": "PASS",
           "errors": []
         },
@@ -2019,15 +2027,19 @@
         },
         {
           "id": "GT-281",
-          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
-          "context_source_ids": [],
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-010"
+          ],
           "integrity": "PASS",
           "errors": []
         },
         {
           "id": "GT-282",
-          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
-          "context_source_ids": [],
+          "expected_evidence_mode": "SUPPORTED",
+          "context_source_ids": [
+            "kb-010"
+          ],
           "integrity": "PASS",
           "errors": []
         },
@@ -2152,7 +2164,7 @@
         },
         {
           "id": "GT-300",
-          "expected_evidence_mode": "NO_EVIDENCE_REQUIRED",
+          "expected_evidence_mode": "UNSUPPORTED",
           "context_source_ids": [],
           "integrity": "PASS",
           "errors": []
@@ -2728,16 +2740,94 @@
   "GT-270": [],
   "GT-271": [],
   "GT-272": [],
-  "GT-273": [],
+  "GT-273": [
+    {
+      "doc_id": "kb-001",
+      "content": "Nhân viên báo lỗi không đăng nhập được VPN, thông báo lỗi authentication failed hoặc connection timeout khi kết nối VPN Cisco AnyConnect/FortiClient.\n1. Kiểm tra username/password VPN (thường khác email). 2. Xóa profile VPN cũ và tạo mới. 3. Kiểm tra firewall máy tính local. 4. Thử đổi network (4G thay WiFi). 5. Reset MFA app nếu dùng 2FA. 6. Liên hệ IT reset VPN account nếu vẫn lỗi.",
+      "metadata": {
+        "source_id": "kb-001",
+        "source_type": "INTERNAL",
+        "title": "Không kết nối được VPN công ty",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "8c28aa90616450c1ff8bb86977d664cbc0cd9fbcd9e053e629b4e77de3e6d931",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
   "GT-274": [],
   "GT-275": [],
   "GT-276": [],
-  "GT-277": [],
-  "GT-278": [],
-  "GT-279": [],
+  "GT-277": [
+    {
+      "doc_id": "kb-004",
+      "content": "Email bị kẹt trong Outbox, Outlook báo Disconnected hoặc không đồng bộ với Exchange Server.\n1. Kiểm tra trạng thái kết nối góc dưới Outlook. 2. File → Account Settings → kiểm tra server settings. 3. Xóa email kẹt trong Outbox. 4. Repair OST: Account Settings → Data Files → Repair. 5. Tạo profile Outlook mới nếu vẫn lỗi.",
+      "metadata": {
+        "source_id": "kb-004",
+        "source_type": "INTERNAL",
+        "title": "Outlook không đồng bộ email / stuck sending",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "7bbbd9acc00212029da94e43b91bb50e03d6eebab28b1e3b768fe21f2b0670c7",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-278": [
+    {
+      "doc_id": "kb-005",
+      "content": "Nhân viên không nhận được email từ đối tác/khách hàng bên ngoài. Email nội bộ vẫn hoạt động bình thường.\n1. Kiểm tra thư mục Junk/Spam. 2. Kiểm tra rules Outlook có auto-delete không. 3. Kiểm tra quota mailbox. 4. Kiểm tra MX records từ Exchange Admin. 5. Check spam filter gateway logs.",
+      "metadata": {
+        "source_id": "kb-005",
+        "source_type": "INTERNAL",
+        "title": "Không nhận được email từ bên ngoài",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "7a3d49638fc4358ff20fb25ab2a903b2a49bed29588a96134166f17cfa9ca6de",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-279": [
+    {
+      "doc_id": "kb-033",
+      "content": "Microsoft Teams hoặc Zoom không kết nối được cuộc họp, mic/camera không nhận, hoặc âm thanh bị vỡ.\n1. Kiểm tra permission mic/camera trong Windows Settings → Privacy. 2. Chọn đúng thiết bị audio trong Teams/Zoom settings. 3. Kiểm tra bandwidth: Teams cần tối thiểu 2Mbps. 4. Update Teams/Zoom lên phiên bản mới nhất. 5. Thử web browser thay vì app.",
+      "metadata": {
+        "source_id": "kb-033",
+        "source_type": "INTERNAL",
+        "title": "Teams/Zoom không hoạt động khi họp online",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "f04ba1db14de346eaabfb7c172e08dea85bc8f25d7aba5863acc44b94551ecd4",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
   "GT-280": [],
-  "GT-281": [],
-  "GT-282": [],
+  "GT-281": [
+    {
+      "doc_id": "kb-010",
+      "content": "Nhân viên quên mật khẩu đăng nhập máy tính Windows hoặc tài khoản domain Active Directory.\n1. Self-service: truy cập SSPR portal (https://sspr.company.local). 2. IT reset: Xác thực identity → AD Users and Computers → Reset password. 3. Enforce change at next logon. 4. Unlock account nếu bị khóa sau nhiều lần sai.",
+      "metadata": {
+        "source_id": "kb-010",
+        "source_type": "INTERNAL",
+        "title": "Quên mật khẩu Windows / tài khoản domain",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "e926ed726a00ef174279bfe00658ee771b3241c3fc7e498d7eb4058038a3788c",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
+  "GT-282": [
+    {
+      "doc_id": "kb-010",
+      "content": "Nhân viên quên mật khẩu đăng nhập máy tính Windows hoặc tài khoản domain Active Directory.\n1. Self-service: truy cập SSPR portal (https://sspr.company.local). 2. IT reset: Xác thực identity → AD Users and Computers → Reset password. 3. Enforce change at next logon. 4. Unlock account nếu bị khóa sau nhiều lần sai.",
+      "metadata": {
+        "source_id": "kb-010",
+        "source_type": "INTERNAL",
+        "title": "Quên mật khẩu Windows / tài khoản domain",
+        "snapshot_version": "enterprise-context-snapshot-v1.2",
+        "content_hash": "e926ed726a00ef174279bfe00658ee771b3241c3fc7e498d7eb4058038a3788c",
+        "provenance": "frozen KB fixture"
+      }
+    }
+  ],
   "GT-283": [],
   "GT-284": [],
   "GT-285": [],

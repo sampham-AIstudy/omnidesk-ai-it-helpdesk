@@ -139,6 +139,26 @@ export default function NewTicketPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [createdTicket, setCreatedTicket] = useState<{ id: number; number: string } | null>(null);
+  const [deflectionResults, setDeflectionResults] = useState<any[]>([]);
+
+  useEffect(() => {
+    const q = title.trim();
+    if (q.length < 4) {
+      setDeflectionResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      try {
+        const res = await api.get(`/kb?search=${encodeURIComponent(q)}&page_size=3`);
+        if (res.data?.items) {
+          setDeflectionResults(res.data.items.slice(0, 3));
+        }
+      } catch {
+        // fail-open
+      }
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [title]);
 
   useEffect(() => {
     if (!prefillSubject) return;
@@ -404,6 +424,40 @@ export default function NewTicketPage() {
                 placeholder="Ví dụ: Không thể kết nối SSL VPN FortiClient từ môi trường Remote WFH"
               />
               {titleError && <div className="text-xs font-bold text-rose-600 mt-1">{titleError}</div>}
+
+              {deflectionResults.length > 0 && (
+                <div style={{ marginTop: 10, padding: 12, background: 'var(--primary-soft, #eff6ff)', border: '1px solid #bfdbfe', borderRadius: 10 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#1e40af', fontWeight: 800, fontSize: 12, marginBottom: 8 }}>
+                    <BookOpen size={14} /> 💡 Bài viết Knowledge Base có thể giải quyết ngay vấn đề này:
+                  </div>
+                  <div style={{ display: 'grid', gap: 6 }}>
+                    {deflectionResults.map((kb: any) => (
+                      <a
+                        key={kb.id}
+                        href={`/employee/kb?id=${kb.id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: '7px 12px',
+                          background: '#fff',
+                          border: '1px solid #dbeafe',
+                          borderRadius: 8,
+                          textDecoration: 'none',
+                          color: 'var(--text)',
+                          fontSize: 12,
+                          fontWeight: 600,
+                        }}
+                      >
+                        <span>📄 {kb.title}</span>
+                        <span style={{ fontSize: 11, color: '#2563eb', fontWeight: 800 }}>Xem bài viết ↗</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>

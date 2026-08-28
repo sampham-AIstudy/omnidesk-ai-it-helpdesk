@@ -81,7 +81,8 @@ async def test_kb_sr_canonical_article_exists_in_sqlite():
 async def test_kb_sr_canonical_article_in_chroma_provenance():
     """Verify kb-036 is indexed in the active v3 canonical collection with 384-dim SentenceTransformer."""
     collection = get_collection()
-    assert collection.name == "helpdesk_kb_multilingual_v3_sentence_transformer"
+    from src.config import get_settings
+    assert collection.name == get_settings().chroma_collection_name
 
     res = collection.get(ids=["kb-036"], include=["documents", "metadatas"])
     assert len(res["ids"]) == 1

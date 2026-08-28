@@ -1,8 +1,8 @@
 {
   "snapshot_version": "enterprise-runtime-snapshot-v1.0",
   "harness_version": "enterprise-runtime-harness-v1.0",
-  "golden_dataset_hash": "79d8c3902ecaf1edc1c3181ca16fe89e02ad5ff1d6e48c85a30b3cbe88d6fcec",
-  "evaluation_manifest_hash": "a7003332dac2ad30b3a61b404922e2b008af0db1df906d2aeb30621fc16300c3",
+  "golden_dataset_hash": "75e256da45659e0f3d5c07b2b9a5b70edf6a4e0479dd40bdf65f24e7b6dbe186",
+  "evaluation_manifest_hash": "f9814c23dd6783a496b2f19fa0e7cd15743ee07c4c0465cd50e7f755d79ab95b",
   "production_collection_contract": {
     "version": "v3",
     "name": "helpdesk_kb_multilingual_v3_sentence_transformer",
@@ -11,7 +11,7 @@
   "fixture_kb_contract": {
     "fixture_kb_contract": "enterprise-contract-kb-v1",
     "evaluation_only": true,
-    "source_sha256": "b02015c52dd248d328045fe6da2df458bfbc721695a595d7f19fa9ac41c70b22",
+    "source_sha256": "e8e0184ce939e45f7dc40b1e6d77bdbdea762e338e5e207dcb66a0a78796f6e8",
     "document_count": 10,
     "chunk_count": 10,
     "chunk_id_digest": "7d664da47ef0f83d02d949e8aaea7ed320c2a339029eb81f0437db2f85e31f0e",

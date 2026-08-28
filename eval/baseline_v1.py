@@ -96,7 +96,14 @@ def layer_membership(case: dict[str, Any]) -> list[str]:
 
 
 def expected_route_name(case: dict[str, Any]) -> str | None:
-    return case.get("expected_route")
+    """Return only the pre-retrieval runtime route contract.
+
+    Legacy ``expected_route`` also records orchestration outcomes for some
+    generation cases.  Repurposed rows declare ``runtime_route: null`` rather
+    than asking the deterministic router to emulate guardrails or retrieval
+    intent that execute in later layers.
+    """
+    return case["runtime_route"] if "runtime_route" in case else case.get("expected_route")
 
 
 def route_result(case: dict[str, Any]) -> tuple[dict[str, Any], list[str], str]:
@@ -378,7 +385,7 @@ async def evaluate_all(
         rows.append({
             "id": case["id"], "test_type": case.get("type", ""), "layers": layer_membership(case),
             "question": case["query"],
-            "expected": {key: case.get(key) for key in ("expected_route", "should_retrieve", "should_use_memory", "should_search_web", "should_create_ticket", "should_escalate")},
+            "expected": {key: case.get(key) for key in ("expected_route", "runtime_route", "should_retrieve", "should_use_memory", "should_search_web", "should_create_ticket", "should_escalate")},
             "actual": {"routing": route, "generation_answer_present": bool(answer), "security_guardrail": guardrail},
             "route": route["route"], "retrieved_sources": [], "used_sources": checks.get("citation_ids", []),
             "tool_calls": [], "tool_results": [], "context_ids": sorted(evidence_source_ids(context)), "answer": answer,

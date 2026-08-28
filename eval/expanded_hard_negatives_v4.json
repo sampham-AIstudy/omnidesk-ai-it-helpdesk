@@ -1,0 +1,1112 @@
+[
+  {
+    "id": "HN-V4-001",
+    "category": "dev_ssh_vs_network_port",
+    "query": "ssh clone git permission denied publickey not firewall",
+    "primary_expected_source_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001",
+      "p0-01-l3-vs-l4-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-002",
+    "category": "dev_ssh_vs_network_port",
+    "query": "cách xử lý lỗi ssh clone git permission denied publickey not firewall",
+    "primary_expected_source_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001",
+      "p0-01-l3-vs-l4-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-003",
+    "category": "dev_ssh_vs_network_port",
+    "query": "hướng dẫn fix ssh clone git permission denied publickey not firewall",
+    "primary_expected_source_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001",
+      "p0-01-l3-vs-l4-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-004",
+    "category": "dev_ssh_vs_network_port",
+    "query": "khắc phục sự cố ssh clone git permission denied publickey not firewall",
+    "primary_expected_source_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001",
+      "p0-01-l3-vs-l4-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-005",
+    "category": "dev_ssh_vs_network_port",
+    "query": "tài liệu troubleshooting ssh clone git permission denied publickey not firewall",
+    "primary_expected_source_ids": [
+      "web-github-ssh-permission-denied-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001",
+      "p0-01-l3-vs-l4-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-006",
+    "category": "dev_git_proxy_vs_generic_proxy",
+    "query": "cấu hình http.proxy trong git config clone repo",
+    "primary_expected_source_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-08-dns-proxy-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-007",
+    "category": "dev_git_proxy_vs_generic_proxy",
+    "query": "cách xử lý lỗi cấu hình http.proxy trong git config clone repo",
+    "primary_expected_source_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-08-dns-proxy-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-008",
+    "category": "dev_git_proxy_vs_generic_proxy",
+    "query": "hướng dẫn fix cấu hình http.proxy trong git config clone repo",
+    "primary_expected_source_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-08-dns-proxy-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-009",
+    "category": "dev_git_proxy_vs_generic_proxy",
+    "query": "khắc phục sự cố cấu hình http.proxy trong git config clone repo",
+    "primary_expected_source_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-08-dns-proxy-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-010",
+    "category": "dev_git_proxy_vs_generic_proxy",
+    "query": "tài liệu troubleshooting cấu hình http.proxy trong git config clone repo",
+    "primary_expected_source_ids": [
+      "web-git-config-proxy-ssl-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-08-dns-proxy-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-011",
+    "category": "docker_wsl2_vs_hyperv_vm",
+    "query": "docker desktop wsl2 backend crash restart lxssmanager",
+    "primary_expected_source_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ]
+  },
+  {
+    "id": "HN-V4-012",
+    "category": "docker_wsl2_vs_hyperv_vm",
+    "query": "cách xử lý lỗi docker desktop wsl2 backend crash restart lxssmanager",
+    "primary_expected_source_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ]
+  },
+  {
+    "id": "HN-V4-013",
+    "category": "docker_wsl2_vs_hyperv_vm",
+    "query": "hướng dẫn fix docker desktop wsl2 backend crash restart lxssmanager",
+    "primary_expected_source_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ]
+  },
+  {
+    "id": "HN-V4-014",
+    "category": "docker_wsl2_vs_hyperv_vm",
+    "query": "khắc phục sự cố docker desktop wsl2 backend crash restart lxssmanager",
+    "primary_expected_source_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ]
+  },
+  {
+    "id": "HN-V4-015",
+    "category": "docker_wsl2_vs_hyperv_vm",
+    "query": "tài liệu troubleshooting docker desktop wsl2 backend crash restart lxssmanager",
+    "primary_expected_source_ids": [
+      "web-docker-desktop-wsl2-engine-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-hyperv-default-switch-ip-001"
+    ]
+  },
+  {
+    "id": "HN-V4-016",
+    "category": "npm_proxy_vs_web_browser_proxy",
+    "query": "npm config set https-proxy cafile registry error",
+    "primary_expected_source_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ]
+  },
+  {
+    "id": "HN-V4-017",
+    "category": "npm_proxy_vs_web_browser_proxy",
+    "query": "cách xử lý lỗi npm config set https-proxy cafile registry error",
+    "primary_expected_source_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ]
+  },
+  {
+    "id": "HN-V4-018",
+    "category": "npm_proxy_vs_web_browser_proxy",
+    "query": "hướng dẫn fix npm config set https-proxy cafile registry error",
+    "primary_expected_source_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ]
+  },
+  {
+    "id": "HN-V4-019",
+    "category": "npm_proxy_vs_web_browser_proxy",
+    "query": "khắc phục sự cố npm config set https-proxy cafile registry error",
+    "primary_expected_source_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ]
+  },
+  {
+    "id": "HN-V4-020",
+    "category": "npm_proxy_vs_web_browser_proxy",
+    "query": "tài liệu troubleshooting npm config set https-proxy cafile registry error",
+    "primary_expected_source_ids": [
+      "web-npm-proxy-ssl-strict-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-proxy-pac-diagnostics-001"
+    ]
+  },
+  {
+    "id": "HN-V4-021",
+    "category": "pip_trusted_host_vs_browser_cert",
+    "query": "pip install cert error trusted-host pypi",
+    "primary_expected_source_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-022",
+    "category": "pip_trusted_host_vs_browser_cert",
+    "query": "cách xử lý lỗi pip install cert error trusted-host pypi",
+    "primary_expected_source_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-023",
+    "category": "pip_trusted_host_vs_browser_cert",
+    "query": "hướng dẫn fix pip install cert error trusted-host pypi",
+    "primary_expected_source_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-024",
+    "category": "pip_trusted_host_vs_browser_cert",
+    "query": "khắc phục sự cố pip install cert error trusted-host pypi",
+    "primary_expected_source_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-025",
+    "category": "pip_trusted_host_vs_browser_cert",
+    "query": "tài liệu troubleshooting pip install cert error trusted-host pypi",
+    "primary_expected_source_ids": [
+      "web-pip-proxy-trusted-host-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-026",
+    "category": "mssql_error_26_vs_raw_tcp_1433",
+    "query": "sql server ssms error 26 locating server instance",
+    "primary_expected_source_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-02-port-connectivity-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-027",
+    "category": "mssql_error_26_vs_raw_tcp_1433",
+    "query": "cách xử lý lỗi sql server ssms error 26 locating server instance",
+    "primary_expected_source_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-02-port-connectivity-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-028",
+    "category": "mssql_error_26_vs_raw_tcp_1433",
+    "query": "hướng dẫn fix sql server ssms error 26 locating server instance",
+    "primary_expected_source_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-02-port-connectivity-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-029",
+    "category": "mssql_error_26_vs_raw_tcp_1433",
+    "query": "khắc phục sự cố sql server ssms error 26 locating server instance",
+    "primary_expected_source_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-02-port-connectivity-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-030",
+    "category": "mssql_error_26_vs_raw_tcp_1433",
+    "query": "tài liệu troubleshooting sql server ssms error 26 locating server instance",
+    "primary_expected_source_ids": [
+      "web-mssql-connectivity-error-26-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-02-port-connectivity-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-031",
+    "category": "postgres_pg_hba_vs_firewall_acl",
+    "query": "postgres fatal no pg_hba.conf entry for host dbeaver",
+    "primary_expected_source_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-032",
+    "category": "postgres_pg_hba_vs_firewall_acl",
+    "query": "cách xử lý lỗi postgres fatal no pg_hba.conf entry for host dbeaver",
+    "primary_expected_source_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-033",
+    "category": "postgres_pg_hba_vs_firewall_acl",
+    "query": "hướng dẫn fix postgres fatal no pg_hba.conf entry for host dbeaver",
+    "primary_expected_source_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-034",
+    "category": "postgres_pg_hba_vs_firewall_acl",
+    "query": "khắc phục sự cố postgres fatal no pg_hba.conf entry for host dbeaver",
+    "primary_expected_source_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-035",
+    "category": "postgres_pg_hba_vs_firewall_acl",
+    "query": "tài liệu troubleshooting postgres fatal no pg_hba.conf entry for host dbeaver",
+    "primary_expected_source_ids": [
+      "web-postgres-connection-pg-hba-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-05-firewall-acl-nat-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-036",
+    "category": "oracle_tns_12541_vs_generic_listener",
+    "query": "oracle sql developer ora-12541 tns no listener",
+    "primary_expected_source_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-037",
+    "category": "oracle_tns_12541_vs_generic_listener",
+    "query": "cách xử lý lỗi oracle sql developer ora-12541 tns no listener",
+    "primary_expected_source_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-038",
+    "category": "oracle_tns_12541_vs_generic_listener",
+    "query": "hướng dẫn fix oracle sql developer ora-12541 tns no listener",
+    "primary_expected_source_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-039",
+    "category": "oracle_tns_12541_vs_generic_listener",
+    "query": "khắc phục sự cố oracle sql developer ora-12541 tns no listener",
+    "primary_expected_source_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-040",
+    "category": "oracle_tns_12541_vs_generic_listener",
+    "query": "tài liệu troubleshooting oracle sql developer ora-12541 tns no listener",
+    "primary_expected_source_ids": [
+      "web-oracle-tns-12541-no-listener-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-041",
+    "category": "outlook_scanpst_vs_hardware_crash",
+    "query": "outlook crash liên tục lúc mở sửa file ost bằng scanpst",
+    "primary_expected_source_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-009",
+      "sr-004"
+    ]
+  },
+  {
+    "id": "HN-V4-042",
+    "category": "outlook_scanpst_vs_hardware_crash",
+    "query": "cách xử lý lỗi outlook crash liên tục lúc mở sửa file ost bằng scanpst",
+    "primary_expected_source_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-009",
+      "sr-004"
+    ]
+  },
+  {
+    "id": "HN-V4-043",
+    "category": "outlook_scanpst_vs_hardware_crash",
+    "query": "hướng dẫn fix outlook crash liên tục lúc mở sửa file ost bằng scanpst",
+    "primary_expected_source_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-009",
+      "sr-004"
+    ]
+  },
+  {
+    "id": "HN-V4-044",
+    "category": "outlook_scanpst_vs_hardware_crash",
+    "query": "khắc phục sự cố outlook crash liên tục lúc mở sửa file ost bằng scanpst",
+    "primary_expected_source_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-009",
+      "sr-004"
+    ]
+  },
+  {
+    "id": "HN-V4-045",
+    "category": "outlook_scanpst_vs_hardware_crash",
+    "query": "tài liệu troubleshooting outlook crash liên tục lúc mở sửa file ost bằng scanpst",
+    "primary_expected_source_ids": [
+      "web-outlook-ost-corruption-scanpst-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-009",
+      "sr-004"
+    ]
+  },
+  {
+    "id": "HN-V4-046",
+    "category": "teams_privacy_permission_vs_hardware_mic",
+    "query": "teams không nhận camera do privacy permissions windows",
+    "primary_expected_source_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ]
+  },
+  {
+    "id": "HN-V4-047",
+    "category": "teams_privacy_permission_vs_hardware_mic",
+    "query": "cách xử lý lỗi teams không nhận camera do privacy permissions windows",
+    "primary_expected_source_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ]
+  },
+  {
+    "id": "HN-V4-048",
+    "category": "teams_privacy_permission_vs_hardware_mic",
+    "query": "hướng dẫn fix teams không nhận camera do privacy permissions windows",
+    "primary_expected_source_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ]
+  },
+  {
+    "id": "HN-V4-049",
+    "category": "teams_privacy_permission_vs_hardware_mic",
+    "query": "khắc phục sự cố teams không nhận camera do privacy permissions windows",
+    "primary_expected_source_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ]
+  },
+  {
+    "id": "HN-V4-050",
+    "category": "teams_privacy_permission_vs_hardware_mic",
+    "query": "tài liệu troubleshooting teams không nhận camera do privacy permissions windows",
+    "primary_expected_source_ids": [
+      "web-teams-camera-mic-permissions-win-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bluetooth-le-audio-mic-desync-001"
+    ]
+  },
+  {
+    "id": "HN-V4-051",
+    "category": "onedrive_file_lock_vs_disk_storage",
+    "query": "onedrive báo file open in another program conflict",
+    "primary_expected_source_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-006"
+    ]
+  },
+  {
+    "id": "HN-V4-052",
+    "category": "onedrive_file_lock_vs_disk_storage",
+    "query": "cách xử lý lỗi onedrive báo file open in another program conflict",
+    "primary_expected_source_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-006"
+    ]
+  },
+  {
+    "id": "HN-V4-053",
+    "category": "onedrive_file_lock_vs_disk_storage",
+    "query": "hướng dẫn fix onedrive báo file open in another program conflict",
+    "primary_expected_source_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-006"
+    ]
+  },
+  {
+    "id": "HN-V4-054",
+    "category": "onedrive_file_lock_vs_disk_storage",
+    "query": "khắc phục sự cố onedrive báo file open in another program conflict",
+    "primary_expected_source_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-006"
+    ]
+  },
+  {
+    "id": "HN-V4-055",
+    "category": "onedrive_file_lock_vs_disk_storage",
+    "query": "tài liệu troubleshooting onedrive báo file open in another program conflict",
+    "primary_expected_source_ids": [
+      "web-onedrive-file-lock-sync-conflict-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-006"
+    ]
+  },
+  {
+    "id": "HN-V4-056",
+    "category": "windows_hello_pin_vs_bitlocker_pin",
+    "query": "lỗi windows hello 0x80090016 pin không dùng được xóa ngc",
+    "primary_expected_source_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ]
+  },
+  {
+    "id": "HN-V4-057",
+    "category": "windows_hello_pin_vs_bitlocker_pin",
+    "query": "cách xử lý lỗi lỗi windows hello 0x80090016 pin không dùng được xóa ngc",
+    "primary_expected_source_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ]
+  },
+  {
+    "id": "HN-V4-058",
+    "category": "windows_hello_pin_vs_bitlocker_pin",
+    "query": "hướng dẫn fix lỗi windows hello 0x80090016 pin không dùng được xóa ngc",
+    "primary_expected_source_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ]
+  },
+  {
+    "id": "HN-V4-059",
+    "category": "windows_hello_pin_vs_bitlocker_pin",
+    "query": "khắc phục sự cố lỗi windows hello 0x80090016 pin không dùng được xóa ngc",
+    "primary_expected_source_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ]
+  },
+  {
+    "id": "HN-V4-060",
+    "category": "windows_hello_pin_vs_bitlocker_pin",
+    "query": "tài liệu troubleshooting lỗi windows hello 0x80090016 pin không dùng được xóa ngc",
+    "primary_expected_source_ids": [
+      "web-windows-hello-pin-reset-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-bitlocker-tpm-recovery-loop-001"
+    ]
+  },
+  {
+    "id": "HN-V4-061",
+    "category": "credential_manager_stale_vs_ad_lockout",
+    "query": "xóa cached credentials trong credential manager sso loop",
+    "primary_expected_source_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-001"
+    ]
+  },
+  {
+    "id": "HN-V4-062",
+    "category": "credential_manager_stale_vs_ad_lockout",
+    "query": "cách xử lý lỗi xóa cached credentials trong credential manager sso loop",
+    "primary_expected_source_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-001"
+    ]
+  },
+  {
+    "id": "HN-V4-063",
+    "category": "credential_manager_stale_vs_ad_lockout",
+    "query": "hướng dẫn fix xóa cached credentials trong credential manager sso loop",
+    "primary_expected_source_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-001"
+    ]
+  },
+  {
+    "id": "HN-V4-064",
+    "category": "credential_manager_stale_vs_ad_lockout",
+    "query": "khắc phục sự cố xóa cached credentials trong credential manager sso loop",
+    "primary_expected_source_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-001"
+    ]
+  },
+  {
+    "id": "HN-V4-065",
+    "category": "credential_manager_stale_vs_ad_lockout",
+    "query": "tài liệu troubleshooting xóa cached credentials trong credential manager sso loop",
+    "primary_expected_source_ids": [
+      "web-windows-credential-manager-clear-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-001"
+    ]
+  },
+  {
+    "id": "HN-V4-066",
+    "category": "authenticator_transfer_vs_admin_reset",
+    "query": "tự chuyển microsoft authenticator sang điện thoại mới qua cloud",
+    "primary_expected_source_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-002"
+    ]
+  },
+  {
+    "id": "HN-V4-067",
+    "category": "authenticator_transfer_vs_admin_reset",
+    "query": "cách xử lý lỗi tự chuyển microsoft authenticator sang điện thoại mới qua cloud",
+    "primary_expected_source_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-002"
+    ]
+  },
+  {
+    "id": "HN-V4-068",
+    "category": "authenticator_transfer_vs_admin_reset",
+    "query": "hướng dẫn fix tự chuyển microsoft authenticator sang điện thoại mới qua cloud",
+    "primary_expected_source_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-002"
+    ]
+  },
+  {
+    "id": "HN-V4-069",
+    "category": "authenticator_transfer_vs_admin_reset",
+    "query": "khắc phục sự cố tự chuyển microsoft authenticator sang điện thoại mới qua cloud",
+    "primary_expected_source_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-002"
+    ]
+  },
+  {
+    "id": "HN-V4-070",
+    "category": "authenticator_transfer_vs_admin_reset",
+    "query": "tài liệu troubleshooting tự chuyển microsoft authenticator sang điện thoại mới qua cloud",
+    "primary_expected_source_ids": [
+      "web-entra-authenticator-device-transfer-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-002"
+    ]
+  },
+  {
+    "id": "HN-V4-071",
+    "category": "macos_smb_vs_windows_smb",
+    "query": "kết nối share folder windows smb trên macbook finder cmd k",
+    "primary_expected_source_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-072",
+    "category": "macos_smb_vs_windows_smb",
+    "query": "cách xử lý lỗi kết nối share folder windows smb trên macbook finder cmd k",
+    "primary_expected_source_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-073",
+    "category": "macos_smb_vs_windows_smb",
+    "query": "hướng dẫn fix kết nối share folder windows smb trên macbook finder cmd k",
+    "primary_expected_source_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-074",
+    "category": "macos_smb_vs_windows_smb",
+    "query": "khắc phục sự cố kết nối share folder windows smb trên macbook finder cmd k",
+    "primary_expected_source_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-075",
+    "category": "macos_smb_vs_windows_smb",
+    "query": "tài liệu troubleshooting kết nối share folder windows smb trên macbook finder cmd k",
+    "primary_expected_source_ids": [
+      "web-macos-smb-file-share-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-076",
+    "category": "linux_mount_cifs_vs_windows_explorer",
+    "query": "mount ổ đĩa windows bằng mount.cifs cifs-utils ubuntu",
+    "primary_expected_source_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-077",
+    "category": "linux_mount_cifs_vs_windows_explorer",
+    "query": "cách xử lý lỗi mount ổ đĩa windows bằng mount.cifs cifs-utils ubuntu",
+    "primary_expected_source_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-078",
+    "category": "linux_mount_cifs_vs_windows_explorer",
+    "query": "hướng dẫn fix mount ổ đĩa windows bằng mount.cifs cifs-utils ubuntu",
+    "primary_expected_source_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-079",
+    "category": "linux_mount_cifs_vs_windows_explorer",
+    "query": "khắc phục sự cố mount ổ đĩa windows bằng mount.cifs cifs-utils ubuntu",
+    "primary_expected_source_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-080",
+    "category": "linux_mount_cifs_vs_windows_explorer",
+    "query": "tài liệu troubleshooting mount ổ đĩa windows bằng mount.cifs cifs-utils ubuntu",
+    "primary_expected_source_ids": [
+      "web-linux-cifs-smb-mount-001"
+    ],
+    "hard_negative_source_ids": [
+      "kb-012"
+    ]
+  },
+  {
+    "id": "HN-V4-081",
+    "category": "macos_keychain_trust_vs_certmgr",
+    "query": "import root ca vào keychain access macos always trust",
+    "primary_expected_source_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-082",
+    "category": "macos_keychain_trust_vs_certmgr",
+    "query": "cách xử lý lỗi import root ca vào keychain access macos always trust",
+    "primary_expected_source_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-083",
+    "category": "macos_keychain_trust_vs_certmgr",
+    "query": "hướng dẫn fix import root ca vào keychain access macos always trust",
+    "primary_expected_source_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-084",
+    "category": "macos_keychain_trust_vs_certmgr",
+    "query": "khắc phục sự cố import root ca vào keychain access macos always trust",
+    "primary_expected_source_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-085",
+    "category": "macos_keychain_trust_vs_certmgr",
+    "query": "tài liệu troubleshooting import root ca vào keychain access macos always trust",
+    "primary_expected_source_ids": [
+      "web-macos-certificate-trust-001"
+    ],
+    "hard_negative_source_ids": [
+      "web-browser-err-cert-authority-001"
+    ]
+  },
+  {
+    "id": "HN-V4-086",
+    "category": "http_502_vs_tcp_refused",
+    "query": "http 502 bad gateway backend upstream server sập",
+    "primary_expected_source_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-087",
+    "category": "http_502_vs_tcp_refused",
+    "query": "cách xử lý lỗi http 502 bad gateway backend upstream server sập",
+    "primary_expected_source_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-088",
+    "category": "http_502_vs_tcp_refused",
+    "query": "hướng dẫn fix http 502 bad gateway backend upstream server sập",
+    "primary_expected_source_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-089",
+    "category": "http_502_vs_tcp_refused",
+    "query": "khắc phục sự cố http 502 bad gateway backend upstream server sập",
+    "primary_expected_source_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-090",
+    "category": "http_502_vs_tcp_refused",
+    "query": "tài liệu troubleshooting http 502 bad gateway backend upstream server sập",
+    "primary_expected_source_ids": [
+      "web-http-status-502-bad-gateway-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-04-service-listening-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-091",
+    "category": "http_504_vs_tcp_timeout",
+    "query": "http 504 gateway timeout upstream xử lý chậm",
+    "primary_expected_source_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-03-tcp-failure-semantics-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-092",
+    "category": "http_504_vs_tcp_timeout",
+    "query": "cách xử lý lỗi http 504 gateway timeout upstream xử lý chậm",
+    "primary_expected_source_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-03-tcp-failure-semantics-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-093",
+    "category": "http_504_vs_tcp_timeout",
+    "query": "hướng dẫn fix http 504 gateway timeout upstream xử lý chậm",
+    "primary_expected_source_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-03-tcp-failure-semantics-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-094",
+    "category": "http_504_vs_tcp_timeout",
+    "query": "khắc phục sự cố http 504 gateway timeout upstream xử lý chậm",
+    "primary_expected_source_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-03-tcp-failure-semantics-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-095",
+    "category": "http_504_vs_tcp_timeout",
+    "query": "tài liệu troubleshooting http 504 gateway timeout upstream xử lý chậm",
+    "primary_expected_source_ids": [
+      "web-http-status-504-timeout-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-03-tcp-failure-semantics-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-096",
+    "category": "http_401_vs_403",
+    "query": "phân biệt http 401 unauthorized và 403 forbidden",
+    "primary_expected_source_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-10-http-403-forbidden-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-097",
+    "category": "http_401_vs_403",
+    "query": "cách xử lý lỗi phân biệt http 401 unauthorized và 403 forbidden",
+    "primary_expected_source_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-10-http-403-forbidden-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-098",
+    "category": "http_401_vs_403",
+    "query": "hướng dẫn fix phân biệt http 401 unauthorized và 403 forbidden",
+    "primary_expected_source_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-10-http-403-forbidden-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-099",
+    "category": "http_401_vs_403",
+    "query": "khắc phục sự cố phân biệt http 401 unauthorized và 403 forbidden",
+    "primary_expected_source_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-10-http-403-forbidden-c001"
+    ]
+  },
+  {
+    "id": "HN-V4-100",
+    "category": "http_401_vs_403",
+    "query": "tài liệu troubleshooting phân biệt http 401 unauthorized và 403 forbidden",
+    "primary_expected_source_ids": [
+      "web-http-status-401-vs-403-001"
+    ],
+    "hard_negative_source_ids": [
+      "p0-10-http-403-forbidden-c001"
+    ]
+  }
+]

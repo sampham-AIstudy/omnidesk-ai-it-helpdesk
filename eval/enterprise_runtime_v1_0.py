@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from eval.contract_kb_fixture import build_contract_collection, contract_metadata
 from eval.enterprise_runtime_fixtures import run_controlled_sync
+from eval.evaluation_contract import sha256_text_file
 from eval.judge.semantic_judge import JudgeExecution
 from src.guardrails.input_guardrails import InputGuardrailPlugin
 from src.models.user import User, UserRole
@@ -40,7 +41,7 @@ FailureCategory = Literal[
 
 
 def sha256_file(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    return sha256_text_file(path)
 
 
 def load_json(path: Path) -> Any:

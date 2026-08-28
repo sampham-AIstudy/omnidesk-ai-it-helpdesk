@@ -1,0 +1,199 @@
+{
+  "schema_version": "1.1",
+  "benchmark": "broad_coverage_v4",
+  "scoring_contract": {
+    "raw_all_cases": "Every dataset case remains in raw reporting. A target that is absent from the collection cannot be a hit, but is not silently removed.",
+    "scorable_available": "Ranking metrics use cases with an available expected or acceptable canonical source that are not explicitly ambiguous.",
+    "coverage_gap": "An expected source that is not in the V4 shadow collection is a knowledge-coverage gap, not a ranking failure.",
+    "ambiguous": "A query whose wording no longer identifies its intended technical outcome remains in raw reporting but is excluded from primary ranking scoring."
+  },
+  "case_overrides": {
+    "COV-001": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The original kb-009 label is objectively unrelated: it is the slow-performance runbook, while this query asks about physical screen damage and replacement. The intended sr-004 service-request source is absent from V4."
+    },
+    "COV-002": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The original kb-009 label is objectively unrelated: it is the slow-performance runbook, while this query asks about physical screen damage and replacement. The intended sr-004 service-request source is absent from V4."
+    },
+    "COV-003": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The original kb-009 label is objectively unrelated: it is the slow-performance runbook, while this query asks about physical screen damage and replacement. The intended sr-004 service-request source is absent from V4."
+    },
+    "COV-004": {
+      "classification": "AMBIGUOUS",
+      "additional_classifications": ["COVERAGE_GAP"],
+      "reason": "The keyword-only wording omits the intended replacement-policy question, and its sole intended sr-004 service-request source is absent from V4 after removing the objectively unrelated kb-009 slow-performance label."
+    },
+    "COV-005": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The original kb-009 label is objectively unrelated: it is the slow-performance runbook, while this query asks about physical screen damage and replacement. The intended sr-004 service-request source is absent from V4."
+    },
+    "COV-014": {
+      "classification": "AMBIGUOUS",
+      "reason": "The keyword-only wording omits the memory-diagnostic command and can mean general performance triage rather than memory diagnostics."
+    },
+    "COV-049": {
+      "classification": "AMBIGUOUS",
+      "reason": "The keyword-only wording does not distinguish local Windows credentials from Entra/domain self-service password reset."
+    },
+    "COV-054": {
+      "classification": "AMBIGUOUS",
+      "reason": "The keyword-only wording omits Microsoft Authenticator and cloud backup, so the requested phone transfer is underspecified."
+    },
+    "COV-074": {
+      "classification": "AMBIGUOUS",
+      "reason": "The keyword-only wording omits PRT, Entra, and dsregcmd, making the intended identity state unclear."
+    },
+    "COV-099": {
+      "classification": "AMBIGUOUS",
+      "reason": "The keyword-only wording contains a permission error but omits the shared-mailbox action and resource."
+    },
+    "COV-131": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled FortiClient certificate-auth source is absent from the V4 shadow collection."
+    },
+    "COV-132": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled FortiClient certificate-auth source is absent from the V4 shadow collection."
+    },
+    "COV-133": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled FortiClient certificate-auth source is absent from the V4 shadow collection."
+    },
+    "COV-134": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled FortiClient certificate-auth source is absent from the V4 shadow collection."
+    },
+    "COV-135": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled FortiClient certificate-auth source is absent from the V4 shadow collection."
+    },
+    "COV-239": {
+      "classification": "AMBIGUOUS",
+      "reason": "The keyword-only wording omits PowerShell, script execution, and execution-policy context."
+    },
+    "COV-286": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled Ubuntu CA-certificate update source is absent from the V4 shadow collection."
+    },
+    "COV-287": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled Ubuntu CA-certificate update source is absent from the V4 shadow collection."
+    },
+    "COV-288": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled Ubuntu CA-certificate update source is absent from the V4 shadow collection."
+    },
+    "COV-289": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled Ubuntu CA-certificate update source is absent from the V4 shadow collection."
+    },
+    "COV-290": {
+      "classification": "COVERAGE_GAP",
+      "reason": "The labelled Ubuntu CA-certificate update source is absent from the V4 shadow collection."
+    }
+  },
+  "acceptable_alternatives": {
+    "COV-041": {
+      "acceptable_doc_ids": ["kb-033", "web-teams-microphone-audio-003"],
+      "rationale": "Both sources explicitly cover Teams microphone/audio troubleshooting; the latter explicitly covers Bluetooth microphone use."
+    },
+    "COV-042": {
+      "acceptable_doc_ids": ["kb-033", "web-teams-microphone-audio-003"],
+      "rationale": "Both sources explicitly cover Teams microphone/audio troubleshooting; the latter explicitly covers Bluetooth microphone use."
+    },
+    "COV-043": {
+      "acceptable_doc_ids": ["kb-033", "web-teams-microphone-audio-003"],
+      "rationale": "Both sources explicitly cover Teams microphone/audio troubleshooting; the latter explicitly covers Bluetooth microphone use."
+    },
+    "COV-044": {
+      "acceptable_doc_ids": ["kb-033", "web-teams-microphone-audio-003"],
+      "rationale": "Both sources explicitly cover Teams microphone/audio troubleshooting; the latter explicitly covers Bluetooth microphone use."
+    },
+    "COV-045": {
+      "acceptable_doc_ids": ["kb-033", "web-teams-microphone-audio-003"],
+      "rationale": "Both sources explicitly cover Teams microphone/audio troubleshooting; the latter explicitly covers Bluetooth microphone use."
+    },
+    "COV-046": {
+      "acceptable_doc_ids": ["kb-010"],
+      "rationale": "The internal password-reset runbook explicitly directs users to the SSPR portal."
+    },
+    "COV-047": {
+      "acceptable_doc_ids": ["kb-010"],
+      "rationale": "The internal password-reset runbook explicitly directs users to the SSPR portal."
+    },
+    "COV-048": {
+      "acceptable_doc_ids": ["kb-010"],
+      "rationale": "The internal password-reset runbook explicitly directs users to the SSPR portal."
+    },
+    "COV-049": {
+      "acceptable_doc_ids": ["kb-010"],
+      "rationale": "The internal password-reset runbook explicitly directs users to the SSPR portal."
+    },
+    "COV-050": {
+      "acceptable_doc_ids": ["kb-010"],
+      "rationale": "The internal password-reset runbook explicitly directs users to the SSPR portal."
+    },
+    "COV-076": {
+      "acceptable_doc_ids": ["kb-011"],
+      "rationale": "The internal file-share access runbook covers manager approval, AD group membership, NTFS permissions, and access verification."
+    },
+    "COV-077": {
+      "acceptable_doc_ids": ["kb-011"],
+      "rationale": "The internal file-share access runbook covers manager approval, AD group membership, NTFS permissions, and access verification."
+    },
+    "COV-078": {
+      "acceptable_doc_ids": ["kb-011"],
+      "rationale": "The internal file-share access runbook covers manager approval, AD group membership, NTFS permissions, and access verification."
+    },
+    "COV-079": {
+      "acceptable_doc_ids": ["kb-011"],
+      "rationale": "The internal file-share access runbook covers manager approval, AD group membership, NTFS permissions, and access verification."
+    },
+    "COV-080": {
+      "acceptable_doc_ids": ["kb-011"],
+      "rationale": "The internal file-share access runbook covers manager approval, AD group membership, NTFS permissions, and access verification."
+    },
+    "COV-096": {
+      "acceptable_doc_ids": ["kb-006", "web-m365-shared-mailboxes-006"],
+      "rationale": "Both sources cover shared-mailbox permission assignment and send-permission errors."
+    },
+    "COV-097": {
+      "acceptable_doc_ids": ["kb-006", "web-m365-shared-mailboxes-006"],
+      "rationale": "Both sources cover shared-mailbox permission assignment and send-permission errors."
+    },
+    "COV-098": {
+      "acceptable_doc_ids": ["kb-006", "web-m365-shared-mailboxes-006"],
+      "rationale": "Both sources cover shared-mailbox permission assignment and send-permission errors."
+    },
+    "COV-099": {
+      "acceptable_doc_ids": ["kb-006", "web-m365-shared-mailboxes-006"],
+      "rationale": "Both sources cover shared-mailbox permission assignment and send-permission errors."
+    },
+    "COV-100": {
+      "acceptable_doc_ids": ["kb-006", "web-m365-shared-mailboxes-006"],
+      "rationale": "Both sources cover shared-mailbox permission assignment and send-permission errors."
+    },
+    "COV-101": {
+      "acceptable_doc_ids": ["kb-033"],
+      "rationale": "The internal Teams runbook explicitly directs users to Windows microphone and camera privacy settings."
+    },
+    "COV-102": {
+      "acceptable_doc_ids": ["kb-033"],
+      "rationale": "The internal Teams runbook explicitly directs users to Windows microphone and camera privacy settings."
+    },
+    "COV-103": {
+      "acceptable_doc_ids": ["kb-033"],
+      "rationale": "The internal Teams runbook explicitly directs users to Windows microphone and camera privacy settings."
+    },
+    "COV-104": {
+      "acceptable_doc_ids": ["kb-033"],
+      "rationale": "The internal Teams runbook explicitly directs users to Windows microphone and camera privacy settings."
+    },
+    "COV-105": {
+      "acceptable_doc_ids": ["kb-033"],
+      "rationale": "The internal Teams runbook explicitly directs users to Windows microphone and camera privacy settings."
+    }
+  }
+}

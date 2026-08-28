@@ -11,6 +11,7 @@ from typing import Any
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from eval.evaluation_contract import sha256_text_file
 from eval.fixture_integrity import EvidenceMode, audit_fixture_integrity
 from src.data.knowledge_base import get_all_kb_entries
 
@@ -23,7 +24,7 @@ def sha256_bytes(value: bytes) -> str:
 
 
 def sha256_file(path: Path) -> str:
-    return sha256_bytes(path.read_bytes())
+    return sha256_text_file(path)
 
 
 def _content_hash(content: str) -> str:

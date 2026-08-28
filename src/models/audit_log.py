@@ -22,6 +22,8 @@ class AuditAction(enum.StrEnum):
     TICKET_AUTO_CLOSED = "ticket_auto_closed"
     TICKET_MANUALLY_CLOSED = "ticket_manually_closed"
     TICKET_ESCALATED = "ticket_escalated"
+    TICKET_PINNED = "ticket_pinned"
+    TICKET_UNPINNED = "ticket_unpinned"
     TICKET_ASSIGNED = "ticket_assigned"
     HITL_TRIGGERED = "hitl_triggered"
     HITL_APPROVED = "hitl_approved"
