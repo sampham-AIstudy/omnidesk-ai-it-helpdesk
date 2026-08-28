@@ -75,8 +75,8 @@ class TicketStatus(str, enum.Enum):
 
 
 ALLOWED_TICKET_TRANSITIONS: dict[TicketStatus, set[TicketStatus]] = {
-    TicketStatus.OPEN: {TicketStatus.CLASSIFYING, TicketStatus.NEEDS_CLARIFICATION, TicketStatus.PENDING_HITL, TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.REJECTED, TicketStatus.SECURITY_REVIEW, TicketStatus.CANCELLED},
-    TicketStatus.CLASSIFYING: {TicketStatus.NEEDS_CLARIFICATION, TicketStatus.PENDING_HITL, TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.REJECTED, TicketStatus.SECURITY_REVIEW, TicketStatus.CANCELLED},
+    TicketStatus.OPEN: {TicketStatus.CLASSIFYING, TicketStatus.NEEDS_CLARIFICATION, TicketStatus.PENDING_HITL, TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.RESOLVED, TicketStatus.REJECTED, TicketStatus.SECURITY_REVIEW, TicketStatus.CANCELLED},
+    TicketStatus.CLASSIFYING: {TicketStatus.NEEDS_CLARIFICATION, TicketStatus.PENDING_HITL, TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.RESOLVED, TicketStatus.REJECTED, TicketStatus.SECURITY_REVIEW, TicketStatus.CANCELLED},
     TicketStatus.NEEDS_CLARIFICATION: {TicketStatus.CLASSIFYING, TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.CANCELLED},
     TicketStatus.PENDING_HITL: {TicketStatus.IN_PROGRESS, TicketStatus.WAITING_FOR_AGENT, TicketStatus.REJECTED, TicketStatus.CLOSED, TicketStatus.CANCELLED},
     TicketStatus.IN_PROGRESS: {TicketStatus.NEEDS_CLARIFICATION, TicketStatus.WAITING_FOR_AGENT, TicketStatus.HUMAN_ACTIVE, TicketStatus.ESCALATED, TicketStatus.PENDING_CLOSURE, TicketStatus.RESOLVED, TicketStatus.CLOSED, TicketStatus.CANCELLED},
@@ -154,8 +154,6 @@ class Ticket(Base):
     priority: Mapped[TicketPriority | None] = mapped_column(FlexibleEnum(TicketPriority), nullable=True)
     urgency: Mapped[TicketUrgency | None] = mapped_column(FlexibleEnum(TicketUrgency), nullable=True)
     confidence_score: Mapped[float | None] = mapped_column(Float, nullable=True)
-    retrieval_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
-    groundedness_score: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     # AI Analysis
     suggested_solution: Mapped[str | None] = mapped_column(Text, nullable=True)

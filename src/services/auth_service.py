@@ -105,7 +105,8 @@ def has_min_role(user: User, min_role: UserRole) -> bool:
 
 
 def can_approve_hitl(user: User) -> bool:
-    return user.role in (UserRole.MANAGER, UserRole.ADMIN)
+    """KTV hoặc Admin có thể xác nhận quyết định ticket (Manager đã bị xóa)."""
+    return user.role in (UserRole.TECHNICIAN, UserRole.ADMIN)
 
 
 def can_access_company_unit(user: User, company_unit: CompanyUnit | str | None) -> bool:

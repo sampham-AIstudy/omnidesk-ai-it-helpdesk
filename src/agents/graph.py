@@ -9,10 +9,12 @@ Flow:
                └─── [if safe] ──► classify ──► rag ──► output_guardrail (Step 2)
                                                              │
                                                              ▼
-                                                        hitl_check
+                                                        risk_policy
                                                              │
-                                                             ├─── [if hitl] ──► END (pending_hitl)
-                                                             └─── [if not hitl] ──► router ──► END
+                                                             └─── router ──► END
+
+Lưu ý: HITL (pending_hitl / Manager approve) đã bị bỏ.
+Ticket rủi ro cao được route thẳng đến KTV qua router.
 """
 from __future__ import annotations
 
@@ -53,12 +55,8 @@ def after_classify(state: TicketAgentState) -> str:
     return "rag"
 
 
-def after_hitl_check(state: TicketAgentState) -> str:
-    """Sau HITL check: nếu cần HITL → dừng (DB cập nhật status pending_hitl)."""
-    if state.get("hitl_required", False):
-        logger.info(f"[Graph] → HITL_PAUSE for ticket #{state.get('ticket_number')}")
-        return "end_hitl_pending"
-    return "router"
+# after_hitl_check đã bị xóa — HITL workflow không còn dùng.
+# hitl_check node (risk_policy) luôn đi thẳng sang router.
 
 
 # ─── Build Graph ─────────────────────────────────────────────────────────────
@@ -99,16 +97,8 @@ def build_graph() -> Any:
 
     graph.add_edge("rag", "output_guardrail")
     graph.add_edge("output_guardrail", "hitl_check")
-
-    graph.add_conditional_edges(
-        "hitl_check",
-        after_hitl_check,
-        {
-            "end_hitl_pending": END,   # Pause: ticket status = pending_hitl in DB
-            "router": "router",
-        },
-    )
-
+    # HITL đã bị bỏ: hitl_check (risk_policy) luôn route thẳng sang router.
+    graph.add_edge("hitl_check", "router")
     graph.add_edge("router", END)
 
     return graph.compile()
@@ -154,7 +144,6 @@ async def process_ticket(
     logger.info(
         f"[Graph] Finished ticket #{ticket_number}: "
         f"action={final_state.get('action_taken')} "
-        f"is_blocked={final_state.get('is_blocked')} "
-        f"hitl={final_state.get('hitl_required')}"
+        f"is_blocked={final_state.get('is_blocked')}"
     )
     return final_state

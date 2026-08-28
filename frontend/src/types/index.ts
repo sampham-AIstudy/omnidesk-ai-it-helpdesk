@@ -35,9 +35,7 @@ export interface Ticket {
   category: TicketCategory | null;
   priority: TicketPriority | null;
   urgency: TicketUrgency | null;
-  confidence_score: number | null;
-  retrieval_confidence?: number | null;
-  groundedness_score?: number | null;
+  confidence_score?: number | null;
   suggested_solution: string | null;
   rag_sources: string | null;
   agent_reasoning: string | null;

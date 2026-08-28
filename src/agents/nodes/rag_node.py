@@ -18,6 +18,7 @@ from src.prompts import (
     remove_unrecognized_source_ids,
 )
 from src.services.llm import get_rag_llm
+from src.services.rag_confidence_service import extract_consensus_score, extract_retrieval_score
 from src.services.rag_service import get_collection, search_similar
 from src.services.source_provenance_service import knowledge_source_payload
 from src.services.ticket_text import user_report
@@ -164,8 +165,6 @@ async def rag_node(state: TicketAgentState) -> TicketAgentState:
             "suggested_solution": solution,
             "rag_sources": web_sources,
             "runbook_steps": [],
-            "retrieval_confidence": 0.0,
-            "groundedness_score": 0.0,
         }
 
     # Hashing embeddings are intentionally available for offline deployments,
@@ -184,12 +183,12 @@ async def rag_node(state: TicketAgentState) -> TicketAgentState:
             "suggested_solution": solution,
             "rag_sources": web_sources,
             "runbook_steps": [],
-            "retrieval_confidence": best_score,
-            "groundedness_score": best_score,
         }
 
-    retrieval_confidence = max(d.get("relevance_score", 0.0) for d in relevant_docs)
-    set_current_attributes({"helpdesk.rag.top_score": round(retrieval_confidence, 4)})
+    # Tính toán các thành phần tín hiệu truy vấn RAG đa chiều cho bước đánh giá confidence tiếp theo.
+    c_retrieval = extract_retrieval_score(relevant_docs)
+    c_consensus = extract_consensus_score(relevant_docs[0]) if relevant_docs else 0.50
+    set_current_attributes({"helpdesk.rag.top_score": round(max(d.get("relevance_score", 0.0) for d in relevant_docs), 4)})
 
     # ACL-filtered documents are passed as inert evidence data.  Their persisted
     # Chroma IDs give the model only real source identifiers to cite.
@@ -241,8 +240,6 @@ Category: {category}"""),
                 "suggested_solution": fallback_solution,
                 "rag_sources": web_sources,
                 "runbook_steps": [],
-                "retrieval_confidence": 0.0,
-                "groundedness_score": 0.0,
             }
         sources: list[dict[str, Any]] = []
         for doc in relevant_docs[:3]:
@@ -264,6 +261,14 @@ Category: {category}"""),
             model="mistral-small-latest",
             session_id=str(state.get("ticket_number", "INC-UNK")),
         )
+        logger.info(
+            f"[RAG Output] rag_context: {len(relevant_docs)} docs, "
+            f"suggested_solution: {solution[:100]}..., "
+            f"rag_sources: {len(sources)}, "
+            f"runbook_steps: {len(runbook_steps)}, "
+            f"c_retrieval: {c_retrieval}, "
+            f"c_consensus: {c_consensus}"
+        )
 
         return {
             **state,
@@ -271,20 +276,21 @@ Category: {category}"""),
             "suggested_solution": solution,
             "rag_sources": sources,
             "runbook_steps": runbook_steps,
-            "retrieval_confidence": retrieval_confidence,
-            "groundedness_score": retrieval_confidence,
+            "c_retrieval": c_retrieval,
+            "c_consensus": c_consensus,
         }
 
     except Exception as e:
         logger.error(f"[RAG] LLM synthesis error: {e}")
         # Fallback: return best matching KB solution
         fallback_solution = relevant_docs[0]["content"] if relevant_docs else "Liên hệ IT Support."
+        
         return {
             **state,
             "rag_context": relevant_docs,
             "suggested_solution": fallback_solution,
             "rag_sources": [knowledge_source_payload(d) for d in relevant_docs[:2]],
             "runbook_steps": runbook_steps,
-            "retrieval_confidence": retrieval_confidence,
-            "groundedness_score": retrieval_confidence,
+            "c_retrieval": c_retrieval,
+            "c_consensus": c_consensus,
         }

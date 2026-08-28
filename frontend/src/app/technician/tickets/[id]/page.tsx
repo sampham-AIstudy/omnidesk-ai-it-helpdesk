@@ -21,11 +21,9 @@ export default function TechnicianTicketPage() {
   const queryClient = useQueryClient();
   const { user } = useAuthStore();
   const [message, setMessage] = useState('');
-  const [hitlNote, setHitlNote] = useState('');
   const [showEscalate, setShowEscalate] = useState(false);
   const [isInternalTab, setIsInternalTab] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const isApprover = user?.role === 'manager' || user?.role === 'admin';
   const ticketKey = ['technician-ticket', id];
 
   const { data: ticket, isLoading } = useQuery({
@@ -80,11 +78,6 @@ export default function TechnicianTicketPage() {
     },
     onError: (error) => toast.error(getErrorMessage(error)),
   });
-  const decideHitl = useMutation({
-    mutationFn: async (approved: boolean) => (await api.post(`/tickets/${id}/approve`, { approved, note: hitlNote.trim() || null })).data,
-    onSuccess: () => { toast.success('Đã ghi nhận quyết định HITL'); setHitlNote(''); refresh(); },
-    onError: (error) => toast.error(getErrorMessage(error)),
-  });
   const close = useMutation({
     mutationFn: async () => (await api.patch(`/tickets/${id}/status`, { status: 'closed', note: 'Đóng bởi chuyên viên từ workspace.' })).data,
     onSuccess: () => { toast.success('Đã đóng ticket'); refresh(); },
@@ -95,7 +88,7 @@ export default function TechnicianTicketPage() {
   if (!ticket) return <EmptyState icon="inbox" title="Không tìm thấy ticket" desc="Ticket có thể đã bị xóa hoặc bạn không có quyền truy cập." />;
   const isClosed = CLOSED.includes(ticket.status);
   const hasTakenOver = ticket.assignee_id === user?.id;
-  const canReply = !isClosed && ticket.status !== 'pending_hitl' && hasTakenOver;
+  const canReply = !isClosed && hasTakenOver;
 
   return <main style={{ maxWidth: 1440, margin: '0 auto' }}>
     <Link href="/technician/queue" className="btn-ghost" style={{ width: 'fit-content', textDecoration: 'none', marginBottom: 16 }}><ArrowLeft size={15} /> Quay lại hàng đợi</Link>
@@ -123,10 +116,6 @@ export default function TechnicianTicketPage() {
       </div>
       <p style={{ margin: '16px 0 0', color: 'var(--text-secondary)', lineHeight: 1.65 }}>{ticket.description}</p>
     </header>
-    {ticket.status === 'pending_hitl' && <section className="card" style={{ padding: 18, marginBottom: 16, borderColor: 'var(--amber)' }}>
-      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}><ShieldCheck color="var(--amber)" /><div><strong>Quyết định HITL đang chờ phê duyệt</strong><div style={{ color: 'var(--text-secondary)', fontSize: 13, marginTop: 3 }}>Chuyên viên có thể xem ngữ cảnh; chỉ Manager/Admin được phê duyệt hoặc từ chối.</div></div></div>
-      {isApprover && <div style={{ display: 'flex', gap: 9, marginTop: 14, flexWrap: 'wrap' }}><input className="input" value={hitlNote} onChange={(e) => setHitlNote(e.target.value)} placeholder="Ghi chú quyết định (không bắt buộc)" style={{ flex: '1 1 280px' }} /><button className="btn-success" onClick={() => decideHitl.mutate(true)}>Phê duyệt</button><button className="btn-danger" onClick={() => decideHitl.mutate(false)}>Từ chối</button></div>}
-    </section>}
     <div className="workbench-grid">
       <section className="card tech-chat-shell">
         <header className="tech-chat-header"><div><h2>Trao đổi với người dùng</h2><p>Bạn đang thay thế AI trong cuộc hội thoại này.</p></div><span>{conversation?.items.length ?? 0} tin nhắn</span></header>
@@ -211,8 +200,6 @@ export default function TechnicianTicketPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '16px 18px' }}>
             {isClosed
               ? 'Ticket đã đóng, không thể gửi thêm tin nhắn.'
-              : ticket.status === 'pending_hitl'
-              ? 'Cần hoàn tất quyết định HITL trước khi phản hồi.'
               : ticket.assignee_id
               ? 'Ticket đang do một chuyên viên khác xử lý. Bạn chỉ có thể đọc cuộc trao đổi.'
               : 'Tiếp nhận ticket để bắt đầu phản hồi người dùng.'}

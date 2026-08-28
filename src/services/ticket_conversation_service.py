@@ -19,6 +19,12 @@ from src.models.audit_log import AuditAction
 from src.models.ticket import Ticket, TicketStatus
 from src.models.ticket_message import TicketMessage, TicketMessageSender
 from src.models.user import User, UserRole
+from src.services.rag_confidence_service import (
+    calculate_groundedness_with_reranker,
+    compute_final_rag_confidence,
+    extract_consensus_score,
+    extract_retrieval_score,
+)
 from src.observability.tracing import (
     record_ticket_evidence_overlap,
     record_ticket_stage_latency,
@@ -262,7 +268,7 @@ async def seed_agent_opening(db: AsyncSession, ticket: Ticket) -> None:
         sender_type=TicketMessageSender.AGENT,
         content="\n\n".join(opening_parts),
         sources=sources,
-        confidence_score=ticket.retrieval_confidence if sources else None,
+        confidence_score=ticket.confidence_score if sources else None,
         routing_hint=ticket.routing_target,
     )
 
@@ -913,13 +919,22 @@ async def _handle_ticket_message(
     ticket.first_response_at = ticket.first_response_at or datetime.now(UTC)
     if ticket.status == TicketStatus.OPEN:
         ticket.status = TicketStatus.IN_PROGRESS
+
+    # Tính toán C_RAG confidence score nếu lượt chat có sử dụng tài liệu RAG
+    confidence_score: float | None = None
+    if docs:
+        c_retrieval = extract_retrieval_score(docs)
+        c_consensus = extract_consensus_score(docs[0])
+        c_groundedness = calculate_groundedness_with_reranker(answer, docs)
+        confidence_score = compute_final_rag_confidence(c_retrieval, c_consensus, c_groundedness)
+
     agent_message = await add_message(
         db,
         ticket_id=ticket.id,
         sender_type=TicketMessageSender.AGENT,
         content=answer,
         sources=sources,
-        confidence_score=best_relevance,
+        confidence_score=confidence_score,
         routing_hint=ticket.routing_target,
     )
     await _capture_ai_answer_feedback(

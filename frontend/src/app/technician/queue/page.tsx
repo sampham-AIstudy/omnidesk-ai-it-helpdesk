@@ -13,12 +13,11 @@ import { Ticket, TicketStatus } from '@/types';
 import { CATEGORY_LABELS, extractTicketStructuredDescription, formatRelative, getErrorMessage } from '@/lib/utils';
 import api from '@/lib/api';
 
-type QueueFilter = 'all' | 'open' | 'classifying' | 'pending_hitl' | 'working' | 'escalated';
+type QueueFilter = 'all' | 'open' | 'classifying' | 'working' | 'escalated';
 const FILTERS: { value: QueueFilter; label: string }[] = [
   { value: 'all', label: 'Tất cả' },
   { value: 'open', label: 'Mới' },
   { value: 'classifying', label: 'AI đang đọc' },
-  { value: 'pending_hitl', label: 'Chờ HITL' },
   { value: 'working', label: 'Đang xử lý' },
   { value: 'escalated', label: 'Leo thang' },
 ];
@@ -87,7 +86,7 @@ export default function TechQueuePage() {
 
   const counts = useMemo(() => ({
     urgent: tickets.filter((ticket) => ticket.priority === 'critical' || ticket.sla_escalated).length,
-    hitl: tickets.filter((ticket) => ticket.status === 'pending_hitl').length,
+    highRisk: tickets.filter((ticket) => ticket.hitl_required === true).length,
     lowConfidence: tickets.filter((ticket) => (ticket.confidence_score ?? 1) < 0.6).length,
   }), [tickets]);
 
@@ -115,7 +114,7 @@ export default function TechQueuePage() {
       <div className="responsive-grid-2" style={{ gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 12, marginBottom: 16 }}>
         {[
           { label: 'Khẩn cấp / escalated', value: counts.urgent, color: 'var(--red)' },
-          { label: 'Chờ HITL', value: counts.hitl, color: 'var(--amber)' },
+          { label: 'Ticket rủi ro cao', value: counts.highRisk, color: 'var(--amber)' },
           { label: 'Confidence thấp', value: counts.lowConfidence, color: 'var(--violet)' },
         ].map((item) => (
           <div key={item.label} className="stat-card">

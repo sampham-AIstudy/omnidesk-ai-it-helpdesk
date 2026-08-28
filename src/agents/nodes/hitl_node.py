@@ -6,28 +6,20 @@ import logging
 
 from src.agents.nodes.policy_engine import evaluate_policy
 from src.agents.state import TicketAgentState
-from src.config import get_settings
 
 logger = logging.getLogger(__name__)
-settings = get_settings()
-
-
-def _determine_hitl(state: TicketAgentState) -> tuple[bool, str]:
-    """Baseline confidence gate from PRD FR-09, independent of risk policies."""
-    if state.get("is_production_impact", False):
-        return True, "production impact requires HITL review"
-    confidence = float(state.get("confidence_score", 0.0))
-    if confidence < settings.confidence_threshold_hitl:
-        return True, "Confidence dưới 60% requires HITL review"
-    return False, "Confidence is within the normal processing band"
 
 
 def calculate_ticket_risk_score(state: TicketAgentState) -> tuple[float, dict[str, float]]:
     """
-    Multi-Factor Risk Engine (Calibrated 0.0 -> 1.0):
+    Bộ máy Rủi ro Đa nhân tố (Calibrated 0.0 -> 1.0):
     Risk Score = (priority * 0.20) + (impact * 0.25) + (action_sensitivity * 0.30) + (uncertainty * 0.15) + (privilege * 0.10)
+
+    Thành phần uncertainty sử dụng điểm C_RAG confidence duy nhất:
+        uncertainty = 1.0 - confidence   (AI càng tự tin, rủi ro bất định càng thấp)
     """
-    confidence = state.get("confidence_score", 0.5)
+    # Dùng điểm C_RAG confidence duy nhất — None khi Chat thường (không RAG), mặc định 0.5
+    confidence = float(state.get("confidence_score") or 0.5)
     is_production = state.get("is_production_impact", False)
     is_vip = state.get("submitter_is_vip", False)
     category = state.get("category", "other")
@@ -35,26 +27,27 @@ def calculate_ticket_risk_score(state: TicketAgentState) -> tuple[float, dict[st
     urgency = state.get("urgency", "medium")
     description = (state.get("description", "") + " " + state.get("title", "")).lower()
 
-    # 1. Priority Score (0.20)
+    # 1. Priority Score (0.20) — Mức ưu tiên xử lý Ticket
     priority_map = {"low": 0.1, "medium": 0.3, "high": 0.7, "critical": 1.0}
     priority_score = priority_map.get(priority, 0.3)
 
-    # 2. System Impact Score (0.25)
+    # 2. System Impact Score (0.25) — Mức độ thiệt hại nếu không xử lý kịp thời
     impact_score = 1.0 if is_production else (0.8 if urgency == "emergency" else 0.2)
 
-    # 3. Action Sensitivity Score (0.30)
+    # 3. Action Sensitivity Score (0.30) — Mức độ nguy hiểm của hành động được yêu cầu
     action_risk_keywords = ["reset password", "admin", "mat khau", "quyen truy cap", "permission", "hardware replacement", "thay the phan cung", "database", "server"]
     has_sensitive_action = any(k in description for k in action_risk_keywords)
     cat_risk_map = {"security": 1.0, "infrastructure": 0.8, "access_permission": 0.9, "erp_sap": 0.7}
     action_score = max(cat_risk_map.get(category, 0.2), 1.0 if has_sensitive_action else 0.1)
 
-    # 4. Uncertainty Score (0.15)
+    # 4. Uncertainty Score (0.15) — Độ bất định/không chắc chắn của câu trả lời AI
+    # AI càng tự tin (confidence cao), uncertainty càng thấp → rủi ro bất định giảm.
     uncertainty_score = max(0.0, 1.0 - confidence)
 
-    # 5. Privilege Risk Score (0.10)
+    # 5. Privilege Risk Score (0.10) — Cấp bậc người gửi yêu cầu
     privilege_score = 1.0 if is_vip else 0.2
 
-    # Weighted Risk Sum
+    # Tổng hợp trọng số Risk Score
     risk_score = round(
         (priority_score * 0.20) +
         (impact_score * 0.25) +
@@ -80,8 +73,8 @@ async def hitl_check_node(state: TicketAgentState) -> TicketAgentState:
     risk_score, components = calculate_ticket_risk_score(state)
     policy_res = evaluate_policy(state, risk_score)
 
-    # No grounded KB context means the AI must invite a specialist, regardless
-    # of the classifier's confidence about the ticket category.
+    # Không có ngữ cảnh RAG → AI không có căn cứ KB để tự trả lời.
+    # Tự động chuyển cho Chuyên viên IT hỗ trợ trừ khi Policy Engine đã kích hoạt REQUIRE_HITL.
     if (
         not state.get("rag_context")
         and not state.get("is_production_impact", False)
@@ -90,7 +83,7 @@ async def hitl_check_node(state: TicketAgentState) -> TicketAgentState:
         return {
             **state,
             "hitl_required": False,
-            "hitl_reason": "No sufficiently relevant knowledge-base guidance; hand off to IT Support.",
+            "hitl_reason": "Không có tài liệu KB phù hợp — Chuyển Chuyên viên IT hỗ trợ.",
             "risk_score": risk_score,
             "action_taken": "human_handoff",
             "decision_factors_json": json.dumps({
@@ -103,17 +96,14 @@ async def hitl_check_node(state: TicketAgentState) -> TicketAgentState:
             }, ensure_ascii=False),
         }
 
-    confidence_requires_hitl, confidence_reason = _determine_hitl(state)
-    hitl_required = confidence_requires_hitl or (policy_res["decision"] == "REQUIRE_HITL")
-    if confidence_requires_hitl:
-        reason_text = f"[confidence_gate] {confidence_reason} (Risk: {risk_score:.2f})"
-    else:
-        reason_text = f"[{policy_res['policy_triggered']}] {policy_res['reason']} (Risk: {risk_score:.2f})"
+    # Quyết định HITL dựa hoàn toàn vào Policy Engine (đã bao gồm tất cả ngưỡng confidence & risk).
+    hitl_required = policy_res["decision"] == "REQUIRE_HITL"
+    reason_text = f"[{policy_res['policy_triggered']}] {policy_res['reason']} (Risk: {risk_score:.2f})"
 
     logger.info(
         f"[PolicyEngine] Ticket #{state.get('ticket_number')} "
         f"Decision: {policy_res['decision']} | Action: {policy_res['action_type']} | "
-        f"Reason: {reason_text}"
+        f"Confidence: {state.get('confidence_score')} | Risk: {risk_score:.2f}"
     )
 
     decision_factors = {
@@ -123,6 +113,7 @@ async def hitl_check_node(state: TicketAgentState) -> TicketAgentState:
         "policy_triggered": policy_res["policy_triggered"],
         "action_type": policy_res["action_type"],
         "target_status": policy_res["target_status"],
+        "confidence_score": state.get("confidence_score"),
     }
 
     return {

@@ -28,8 +28,7 @@ class AIRun(Base):
     model: Mapped[str] = mapped_column(String(100), default="mistral-small-latest", nullable=False)
 
     classification_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
-    retrieval_confidence: Mapped[float | None] = mapped_column(Float, nullable=True)
-    groundedness_score: Mapped[float | None] = mapped_column(Float, nullable=True)
+    confidence_score: Mapped[float | None] = mapped_column(Float, nullable=True)
 
     input_guardrail_result: Mapped[str] = mapped_column(String(20), default="pass", nullable=False)
     output_guardrail_result: Mapped[str] = mapped_column(String(20), default="pass", nullable=False)

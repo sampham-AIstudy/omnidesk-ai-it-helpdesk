@@ -66,12 +66,6 @@ const TECH_AGENT_NAV: NavItem[] = [
   { href: '/technician/requests', label: 'Fulfillment workbench', icon: PackageCheck },
 ];
 
-const IT_MANAGER_NAV: NavItem[] = [
-  { href: '/manager/dashboard', label: 'Control tower', icon: Gauge, group: 'Điều hành' },
-  { href: '/manager/tickets', label: 'Hàng đợi sự cố', icon: Inbox },
-  { href: '/manager/approvals', label: 'HITL approvals', icon: ClipboardCheck, group: 'Quyết định' },
-  { href: '/manager/analytics', label: 'Phân tích hiệu suất', icon: BarChart3 },
-];
 
 const SYSTEM_ADMIN_NAV: NavItem[] = [
   { href: '/admin/users', label: 'Users & RBAC', icon: Users, group: 'Quản trị hệ thống' },

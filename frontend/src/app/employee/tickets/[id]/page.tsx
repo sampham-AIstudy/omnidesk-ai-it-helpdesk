@@ -1016,10 +1016,18 @@ function ConversationMessageItem({ msg, highlighted = false }: { msg: TicketMess
             </div>
           )}
 
-          {/* AI Confidence Badge */}
-          {msg.confidence_score !== null && msg.confidence_score !== undefined && isAgent && sources.length > 0 && (
-            <div className="mt-2 text-[10px] text-slate-400 font-medium">
-              {hasWebSource ? 'Độ phù hợp của nguồn tham khảo' : 'Mức phù hợp của KB'}: {(msg.confidence_score * 100).toFixed(0)}%
+          {/* RAG Confidence Indicator — only shown when agent performed RAG retrieval */}
+          {msg.confidence_score !== null && msg.confidence_score !== undefined && isAgent && (
+            <div className="mt-2 flex items-center gap-1 select-none" title={`Điểm tin cậy RAG tổng hợp (C_retrieval, C_consensus, C_groundedness): ${(msg.confidence_score * 100).toFixed(0)}%`}>
+              <span className={`text-[10px] font-semibold ${
+                msg.confidence_score > 0.85
+                  ? 'text-emerald-500'
+                  : msg.confidence_score >= 0.40
+                    ? 'text-slate-400'
+                    : 'text-rose-400'
+              }`}>
+                Độ tin cậy RAG: {(msg.confidence_score * 100).toFixed(0)}%
+              </span>
             </div>
           )}
         </div>
