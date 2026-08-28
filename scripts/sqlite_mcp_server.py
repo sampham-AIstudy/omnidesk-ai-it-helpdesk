@@ -12,7 +12,6 @@ from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
-
 DEFAULT_DB = Path(__file__).parent.parent / "data" / "helpdesk.db"
 DATABASE_PATH = Path(os.getenv("HELPDESK_DB_PATH", str(DEFAULT_DB)))
 mcp = FastMCP("Help Desk SQLite")

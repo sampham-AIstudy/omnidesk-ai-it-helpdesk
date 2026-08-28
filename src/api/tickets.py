@@ -503,6 +503,8 @@ async def post_ticket_message(
 
     # Internal technical notes: Staff only
     if payload.is_internal:
+        if payload.corrects_answer_message_id is not None:
+            raise HTTPException(status_code=422, detail="An internal note cannot be a preference correction")
         if current_user.role == UserRole.EMPLOYEE:
             raise HTTPException(status_code=403, detail="Nhân viên không có quyền tạo ghi chú nội bộ")
 
@@ -535,13 +537,34 @@ async def post_ticket_message(
             detail="Bạn cần tiếp nhận ticket trước khi gửi phản hồi cho người dùng.",
         )
 
+    if payload.corrects_answer_message_id is not None:
+        if current_user.role == UserRole.EMPLOYEE:
+            raise HTTPException(status_code=403, detail="Only staff may submit an explicit correction")
+        from src.services.feedback_dataset_service import validate_answer_provenance
+
+        try:
+            await validate_answer_provenance(
+                db,
+                tenant_id=str(getattr(ticket.submitter.company_unit, "value", ticket.submitter.company_unit)),
+                ticket_id=ticket.id,
+                answer_message_id=str(payload.corrects_answer_message_id),
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail="Invalid correction answer_message_id for this ticket") from exc
+
     from src.services.ticket_conversation_service import handle_ticket_message, list_messages
 
+    correction_kwargs = (
+        {"corrects_answer_message_id": str(payload.corrects_answer_message_id)}
+        if payload.corrects_answer_message_id
+        else {}
+    )
     messages = await handle_ticket_message(
         db,
         ticket=ticket,
         user=current_user,
         content=payload.message,
+        **correction_kwargs,
     )
     await db.commit()
     is_staff = current_user.role in (UserRole.TECHNICIAN, UserRole.MANAGER, UserRole.ADMIN)
@@ -575,6 +598,23 @@ async def stream_ticket_message(
     if ticket.status in {TicketStatus.CLOSED, TicketStatus.RESOLVED, TicketStatus.REJECTED}:
         raise HTTPException(status_code=400, detail="Ticket đã được xử lý hoặc đã đóng. Không thể gửi thêm tin nhắn.")
 
+    if payload.is_internal:
+        raise HTTPException(status_code=422, detail="Internal notes must use the non-streaming message endpoint")
+    if payload.corrects_answer_message_id is not None:
+        if current_user.role == UserRole.EMPLOYEE:
+            raise HTTPException(status_code=403, detail="Only staff may submit an explicit correction")
+        from src.services.feedback_dataset_service import validate_answer_provenance
+
+        try:
+            await validate_answer_provenance(
+                db,
+                tenant_id=str(getattr(ticket.submitter.company_unit, "value", ticket.submitter.company_unit)),
+                ticket_id=ticket.id,
+                answer_message_id=str(payload.corrects_answer_message_id),
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail="Invalid correction answer_message_id for this ticket") from exc
+
     from src.services.ticket_conversation_service import handle_ticket_message
 
     async def events():
@@ -583,7 +623,19 @@ async def stream_ticket_message(
         async def on_token(text: str) -> None:
             await queue.put(text)
 
-        task = asyncio.create_task(handle_ticket_message(db, ticket=ticket, user=current_user, content=payload.message, on_token=on_token))
+        correction_kwargs = (
+            {"corrects_answer_message_id": str(payload.corrects_answer_message_id)}
+            if payload.corrects_answer_message_id
+            else {}
+        )
+        task = asyncio.create_task(handle_ticket_message(
+            db,
+            ticket=ticket,
+            user=current_user,
+            content=payload.message,
+            on_token=on_token,
+            **correction_kwargs,
+        ))
         try:
             while not task.done() or not queue.empty():
                 if await request.is_disconnected():
@@ -988,6 +1040,20 @@ async def reopen_ticket_api(
     if not payload.reason or not payload.reason.strip():
         raise HTTPException(status_code=400, detail="Vui lòng nhập lý do mở lại ticket")
 
+    feedback_tenant = str(getattr(ticket.submitter.company_unit, "value", ticket.submitter.company_unit))
+    if payload.answer_message_id is not None:
+        from src.services.feedback_dataset_service import validate_answer_provenance
+
+        try:
+            await validate_answer_provenance(
+                db,
+                tenant_id=feedback_tenant,
+                ticket_id=ticket.id,
+                answer_message_id=str(payload.answer_message_id),
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail="Invalid answer_message_id for this ticket") from exc
+
     from datetime import UTC, datetime
 
     from src.models.audit_log import AuditAction
@@ -1005,6 +1071,17 @@ async def reopen_ticket_api(
 
     ticket.reopened_at = datetime.now(UTC)
     await db.flush()
+
+    from src.services.feedback_dataset_service import record_ticket_outcome_event
+    await record_ticket_outcome_event(
+        db,
+        tenant_id=feedback_tenant,
+        ticket_id=ticket.id,
+        outcome="reopened",
+        actor_role="user",
+        answer_message_id=str(payload.answer_message_id) if payload.answer_message_id else None,
+        reason=payload.reason,
+    )
 
     await add_message(
         db,
@@ -1041,9 +1118,34 @@ async def submit_ticket_rating(
     if ticket.submitter_id != current_user.id and current_user.role == UserRole.EMPLOYEE:
         raise HTTPException(status_code=403, detail="Chỉ người tạo ticket mới có quyền đánh giá")
 
+    feedback_tenant = str(getattr(ticket.submitter.company_unit, "value", ticket.submitter.company_unit))
+    if payload.answer_message_id is not None:
+        from src.services.feedback_dataset_service import validate_answer_provenance
+
+        try:
+            await validate_answer_provenance(
+                db,
+                tenant_id=feedback_tenant,
+                ticket_id=ticket.id,
+                answer_message_id=str(payload.answer_message_id),
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=422, detail="Invalid answer_message_id for this ticket") from exc
+
     ticket.rating = payload.rating
     ticket.rating_feedback = payload.feedback.strip() if payload.feedback else None
     await db.flush()
+
+    from src.services.feedback_dataset_service import record_ticket_rating_event
+    await record_ticket_rating_event(
+        db,
+        tenant_id=feedback_tenant,
+        ticket_id=ticket.id,
+        rating=payload.rating,
+        comment=payload.feedback,
+        actor_role=current_user.role.value,
+        answer_message_id=str(payload.answer_message_id) if payload.answer_message_id else None,
+    )
 
     from src.models.audit_log import AuditAction
     await ticket_service.write_audit_log(

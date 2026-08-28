@@ -108,6 +108,43 @@ async def _reply_while_waiting_for_agent(
     )
 
 
+async def _capture_ai_answer_feedback(
+    db: AsyncSession,
+    *,
+    ticket: Ticket,
+    user: User,
+    query: str,
+    message: TicketMessage,
+    sources: Sequence[str | dict[str, Any]] | None = None,
+    model_provider: str = "application",
+    model_name: str = "deterministic_ticket_response",
+    prompt_version: str = "ticket_rag_v1",
+    provenance: dict[str, Any] | None = None,
+) -> None:
+    """Append exact-answer provenance without affecting the customer response."""
+    try:
+        from src.services.feedback_dataset_service import record_ai_response_event
+
+        await record_ai_response_event(
+            db,
+            tenant_id=str(getattr(user.company_unit, "value", user.company_unit)),
+            ticket_id=ticket.id,
+            conversation_id=None,
+            message_id=str(message.id),
+            query=query,
+            answer=message.content,
+            sources=[item for item in (sources or []) if isinstance(item, dict)],
+            model_provider=model_provider,
+            model_name=model_name,
+            prompt_version=prompt_version,
+            provenance={"surface": "ticket", **(provenance or {})},
+        )
+    except Exception as exc:
+        # Additive evidence must not turn an already-persisted customer reply
+        # into a failed request.
+        logger.warning("Could not record AI feedback provenance for ticket %s: %s", ticket.id, exc)
+
+
 async def add_message(
     db: AsyncSession,
     *,
@@ -120,6 +157,7 @@ async def add_message(
     routing_hint: str | None = None,
     is_internal: bool = False,
     index_for_memory: bool = True,
+    corrects_answer_message_id: str | None = None,
 ) -> TicketMessage:
     message = TicketMessage(
         ticket_id=ticket_id,
@@ -143,6 +181,28 @@ async def add_message(
             await index_message_by_id(db, message)
         except Exception as exc:
             logger.warning("Could not index message %s for memory: %s", message.id, exc)
+    # A human answer is a preference signal only when its author explicitly
+    # identifies the exact AI message it corrects. Temporal proximity is not
+    # sufficient evidence for a pair.
+    if corrects_answer_message_id and sender_type in {TicketMessageSender.TECHNICIAN, TicketMessageSender.MANAGER} and not is_internal:
+        try:
+            from src.models.ticket import Ticket
+            from src.models.user import User
+            from src.services.feedback_dataset_service import record_human_correction_event
+
+            ticket = await db.get(Ticket, ticket_id)
+            submitter = await db.get(User, ticket.submitter_id) if ticket is not None else None
+            if ticket is not None and submitter is not None:
+                await record_human_correction_event(
+                    db,
+                    tenant_id=str(getattr(submitter.company_unit, "value", submitter.company_unit)),
+                    ticket_id=ticket_id,
+                    message=message,
+                    actor_role=sender_type.value,
+                    answer_message_id=corrects_answer_message_id,
+                )
+        except Exception as exc:
+            logger.warning("Could not record filtered human correction for message %s: %s", message.id, exc)
     return message
 
 
@@ -244,6 +304,22 @@ async def escalate_to_technician(
     ticket.sla_escalated = True
     ticket.first_response_at = ticket.first_response_at or datetime.now(UTC)
     await db.flush()
+
+    try:
+        from src.models.user import User
+        from src.services.feedback_dataset_service import record_ticket_outcome_event
+        submitter = await db.get(User, ticket.submitter_id)
+        if submitter is not None:
+            await record_ticket_outcome_event(
+                db,
+                tenant_id=str(getattr(submitter.company_unit, "value", submitter.company_unit)),
+                ticket_id=ticket.id,
+                outcome="escalated",
+                actor_role="user" if actor_id else "agent",
+                reason=reason,
+            )
+    except Exception as exc:
+        logger.warning("Could not record escalation feedback event for ticket %s: %s", ticket.id, exc)
 
     await write_audit_log(
         db=db,
@@ -358,6 +434,7 @@ async def handle_ticket_message(
     ticket: Ticket,
     user: User,
     content: str,
+    corrects_answer_message_id: str | None = None,
     on_token: Callable[[str], Awaitable[None]] | None = None,
 ) -> list[TicketMessage]:
     turn_started = perf_counter()
@@ -377,6 +454,7 @@ async def handle_ticket_message(
     try:
         return await _handle_ticket_message(
             db, ticket=ticket, user=user, content=content,
+            corrects_answer_message_id=corrects_answer_message_id,
             on_token=timed_on_token if on_token else None,
             turn_started=turn_started,
         )
@@ -390,6 +468,7 @@ async def _handle_ticket_message(
     ticket: Ticket,
     user: User,
     content: str,
+    corrects_answer_message_id: str | None = None,
     on_token: Callable[[str], Awaitable[None]] | None = None,
     turn_started: float,
 ) -> list[TicketMessage]:
@@ -437,6 +516,7 @@ async def _handle_ticket_message(
             sender_type=sender_type,
             sender_id=user.id,
             content=content,
+            corrects_answer_message_id=corrects_answer_message_id,
         )
         if user.role == UserRole.TECHNICIAN:
             first_tech_join = ticket.assignee_id != user.id or ticket.status in (TicketStatus.WAITING_FOR_AGENT, TicketStatus.ESCALATED)
@@ -446,6 +526,19 @@ async def _handle_ticket_message(
             await db.flush()
 
             if first_tech_join:
+                try:
+                    from src.services.feedback_dataset_service import record_ticket_outcome_event
+
+                    await record_ticket_outcome_event(
+                        db,
+                        tenant_id=str(getattr(ticket.submitter.company_unit, "value", ticket.submitter.company_unit)),
+                        ticket_id=ticket.id,
+                        outcome="human_takeover",
+                        actor_role=sender_type.value,
+                        reason="technician accepted ticket",
+                    )
+                except Exception as exc:
+                    logger.warning("Could not record human takeover feedback for ticket %s: %s", ticket.id, exc)
                 await add_message(
                     db,
                     ticket_id=ticket.id,
@@ -483,7 +576,7 @@ async def _handle_ticket_message(
             content=content,
             index_for_memory=False,
         )
-        await add_message(
+        blocked_reply = await add_message(
             db,
             ticket_id=ticket.id,
             sender_type=TicketMessageSender.AGENT,
@@ -492,6 +585,10 @@ async def _handle_ticket_message(
                 "truy cập dữ liệu hệ thống. Ticket và yêu cầu hỗ trợ hợp lệ của bạn vẫn được giữ nguyên."
             ),
             routing_hint=ticket.routing_target,
+        )
+        await _capture_ai_answer_feedback(
+            db, ticket=ticket, user=user, query=content, message=blocked_reply,
+            provenance={"response_kind": "input_guardrail_block"},
         )
         await write_audit_log(
             db=db,
@@ -533,6 +630,10 @@ async def _handle_ticket_message(
             content=profile_reply,
             routing_hint=ticket.routing_target,
         )
+        await _capture_ai_answer_feedback(
+            db, ticket=ticket, user=user, query=content, message=reply_msg,
+            provenance={"response_kind": "profile"},
+        )
         if on_token:
             await on_token(reply_msg.content)
         await db.flush()
@@ -553,6 +654,10 @@ async def _handle_ticket_message(
     if any(k in content_lower for k in human_request_keywords):
         if ticket.status == TicketStatus.WAITING_FOR_AGENT:
             reply = await _reply_while_waiting_for_agent(db, ticket=ticket)
+            await _capture_ai_answer_feedback(
+                db, ticket=ticket, user=user, query=content, message=reply,
+                provenance={"response_kind": "waiting_for_human"},
+            )
             if on_token:
                 await on_token(reply.content)
             return await list_messages(db, ticket.id)
@@ -567,6 +672,10 @@ async def _handle_ticket_message(
     if any(k in content_lower for k in dissatisfaction_keywords):
         if ticket.status == TicketStatus.WAITING_FOR_AGENT:
             reply = await _reply_while_waiting_for_agent(db, ticket=ticket)
+            await _capture_ai_answer_feedback(
+                db, ticket=ticket, user=user, query=content, message=reply,
+                provenance={"response_kind": "waiting_for_human"},
+            )
             if on_token:
                 await on_token(reply.content)
             return await list_messages(db, ticket.id)
@@ -603,6 +712,10 @@ async def _handle_ticket_message(
             sender_type=TicketMessageSender.AGENT,
             content=reply_text,
             routing_hint=ticket.routing_target,
+        )
+        await _capture_ai_answer_feedback(
+            db, ticket=ticket, user=user, query=content, message=reply_msg,
+            provenance={"response_kind": "deterministic_route"},
         )
         if on_token:
             await on_token(reply_msg.content)
@@ -686,6 +799,10 @@ async def _handle_ticket_message(
     if missing_knowledge or unsafe_request:
         if ticket.status == TicketStatus.WAITING_FOR_AGENT:
             reply = await _reply_while_waiting_for_agent(db, ticket=ticket)
+            await _capture_ai_answer_feedback(
+                db, ticket=ticket, user=user, query=content, message=reply,
+                provenance={"response_kind": "waiting_for_human"},
+            )
             if on_token:
                 await on_token(reply.content)
             return await list_messages(db, ticket.id)
@@ -774,6 +891,10 @@ async def _handle_ticket_message(
     if _requires_real_handoff(answer):
         if ticket.status == TicketStatus.WAITING_FOR_AGENT:
             queued_reply = await _reply_while_waiting_for_agent(db, ticket=ticket)
+            await _capture_ai_answer_feedback(
+                db, ticket=ticket, user=user, query=content, message=queued_reply,
+                provenance={"response_kind": "waiting_for_human"},
+            )
             if on_token:
                 await on_token(queued_reply.content)
         else:
@@ -792,7 +913,7 @@ async def _handle_ticket_message(
     ticket.first_response_at = ticket.first_response_at or datetime.now(UTC)
     if ticket.status == TicketStatus.OPEN:
         ticket.status = TicketStatus.IN_PROGRESS
-    await add_message(
+    agent_message = await add_message(
         db,
         ticket_id=ticket.id,
         sender_type=TicketMessageSender.AGENT,
@@ -800,6 +921,17 @@ async def _handle_ticket_message(
         sources=sources,
         confidence_score=best_relevance,
         routing_hint=ticket.routing_target,
+    )
+    await _capture_ai_answer_feedback(
+        db,
+        ticket=ticket,
+        user=user,
+        query=content,
+        message=agent_message,
+        sources=sources,
+        model_provider=llm.__class__.__name__,
+        model_name=str(getattr(llm, "model_name", getattr(llm, "model", "unknown"))),
+        provenance={"retrieval_confidence": round(best_relevance, 4)},
     )
     await db.flush()
     return await list_messages(db, ticket.id)

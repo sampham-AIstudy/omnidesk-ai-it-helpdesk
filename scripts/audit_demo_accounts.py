@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import asyncio
-import os
 import sys
 from pathlib import Path
 
@@ -10,6 +9,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from sqlalchemy import select
+
 from src.database import AsyncSessionLocal, init_db
 from src.models.user import User
 

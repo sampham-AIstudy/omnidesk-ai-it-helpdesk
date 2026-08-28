@@ -15,7 +15,7 @@ import httpx
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from src.services.rag_service import scan_indirect_injection
+from src.services.rag_service import scan_indirect_injection  # noqa: E402
 
 logger = logging.getLogger('crawl_v4_pipeline')
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
@@ -54,7 +54,8 @@ def clean_text(value: str) -> str:
     value = value.replace('\u200b', ' ').replace('\xa0', ' ').replace('\x00', '')
     return re.sub(r'\s+', ' ', value).strip()
 
-from html.parser import HTMLParser
+from html.parser import HTMLParser  # noqa: E402
+
 
 class CleanHTMLParser(HTMLParser):
     def __init__(self):
@@ -104,7 +105,7 @@ def extract_clean_blocks(html: str) -> list[str]:
         clean_tags = re.sub(r'<[^>]+>', ' ', no_scripts)
         raw_blocks = clean_tags.split('\n\n')
         return [clean_text(b) for b in raw_blocks if len(clean_text(b)) >= 30]
-    
+
     blocks = []
     seen = set()
     for b in parser.blocks:
@@ -264,6 +265,10 @@ def run_crawl_pipeline(manifest_path, staging_dir):
                         'priority': item.get('priority', 'P1'),
                         'source': 'official_web_documentation',
                         'source_type': item.get('source_type', 'official_vendor_documentation'),
+                        # Preserve the manifest's authority tier.  It is a
+                        # provenance attribute, not a ranking score produced
+                        # by the crawler.
+                        'authority': item.get('authority'),
                         'source_id': key,
                         'canonical_source_id': key,
                         'source_title': page_title,

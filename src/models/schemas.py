@@ -222,16 +222,32 @@ class TicketEscalateRequest(BaseModel):
 
 class TicketReopenRequest(BaseModel):
     reason: str = Field(min_length=3, max_length=2000)
+    answer_message_id: int | None = Field(default=None, gt=0)
 
 
 class TicketRatingRequest(BaseModel):
     rating: int = Field(ge=1, le=5)
     feedback: str | None = Field(None, max_length=2000)
+    answer_message_id: int | None = Field(
+        None,
+        gt=0,
+        description="Exact visible AI answer being rated; legacy clients may omit this.",
+    )
 
 
 class TicketMessageCreate(BaseModel):
     message: str = Field(min_length=1, max_length=8000)
     is_internal: bool = False
+    corrects_answer_message_id: int | None = Field(
+        None,
+        gt=0,
+        description="Exact AI message explicitly corrected by this staff response.",
+    )
+
+
+class PreferenceCandidateReviewRequest(BaseModel):
+    status: Literal["APPROVED", "REJECTED"]
+    note: str | None = Field(default=None, max_length=2000)
 
 
 # ─── Service Request Schemas ──────────────────────────────────────────────────

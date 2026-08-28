@@ -13,22 +13,29 @@ import asyncio
 import json
 import logging
 import sys
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-from sqlalchemy import select, delete
+from sqlalchemy import select  # noqa: E402
 
-from src.database import AsyncSessionLocal, init_db
-from src.main import _seed_demo_users, _seed_knowledge_base
-from src.models.ticket import Ticket, TicketCategory, TicketPriority, TicketStatus, TicketSupportMode, TicketUrgency
-from src.models.ticket_message import TicketMessage, TicketMessageSender
-from src.models.service_request import ServiceRequest, ServiceRequestStatus
-from src.models.user import User
-from src.services.rag_service import get_collection_count
+from src.database import AsyncSessionLocal, init_db  # noqa: E402
+from src.main import _seed_demo_users, _seed_knowledge_base  # noqa: E402
+from src.models.service_request import ServiceRequest, ServiceRequestStatus  # noqa: E402
+from src.models.ticket import (  # noqa: E402
+    Ticket,
+    TicketCategory,
+    TicketPriority,
+    TicketStatus,
+    TicketSupportMode,
+    TicketUrgency,
+)
+from src.models.ticket_message import TicketMessage, TicketMessageSender  # noqa: E402
+from src.models.user import User  # noqa: E402
+from src.services.rag_service import get_collection_count  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("demo_seed")
@@ -41,7 +48,7 @@ async def seed_demo_incidents(db):
     if not employee:
         return
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     demo_tickets = [
         {
@@ -146,7 +153,7 @@ async def seed_demo_service_requests(db):
     if not employee:
         return
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     demo_requests = [
         {

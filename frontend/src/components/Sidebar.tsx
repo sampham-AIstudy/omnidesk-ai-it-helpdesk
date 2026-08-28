@@ -98,8 +98,11 @@ export default function Sidebar() {
     try {
       const saved = localStorage.getItem('omni_sidebar_collapsed');
       if (saved === 'true') {
-        setCollapsed(true);
-        document.querySelector('.main-content')?.classList.add('collapsed');
+        const restoreCollapsed = window.setTimeout(() => {
+          setCollapsed(true);
+          document.querySelector('.main-content')?.classList.add('collapsed');
+        }, 0);
+        return () => window.clearTimeout(restoreCollapsed);
       }
     } catch {}
   }, []);

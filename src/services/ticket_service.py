@@ -346,6 +346,22 @@ async def close_ticket(
     ticket.resolved_at = datetime.now(UTC)
     await db.flush()
 
+    try:
+        from src.services.feedback_dataset_service import record_ticket_outcome_event
+
+        submitter = ticket.submitter
+        if submitter is not None:
+            await record_ticket_outcome_event(
+                db,
+                tenant_id=str(getattr(submitter.company_unit, "value", submitter.company_unit)),
+                ticket_id=ticket.id,
+                outcome="closed",
+                actor_role=actor_type,
+                reason=note,
+            )
+    except Exception as exc:
+        logger.warning("Could not record close feedback event for ticket %s: %s", ticket.id, exc)
+
     # Ticket text may include PII, credentials, customer data and tenant-only
     # incidents. Knowledge publication must be a reviewed KB workflow, never
     # an automatic side effect of closing a ticket.
