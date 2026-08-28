@@ -1,13 +1,17 @@
-﻿import hashlib, json, logging, sys
+﻿import hashlib
+import json
+import logging
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
+
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 
 ROOT = Path('.').resolve()
 sys.path.insert(0, str(ROOT))
-from src.config import get_settings
-from src.services.rag_service import embed_texts
+from src.config import get_settings  # noqa: E402
+from src.services.rag_service import embed_texts  # noqa: E402
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 logger = logging.getLogger('build_v4_shadow')

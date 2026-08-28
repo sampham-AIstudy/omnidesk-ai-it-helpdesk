@@ -65,6 +65,7 @@ async def run_production_preflight() -> dict:
 
         # Reload config and services
         import importlib
+
         from src.config import get_settings
         get_settings.cache_clear()
 
@@ -107,6 +108,7 @@ async def run_production_preflight() -> dict:
 
         # Inspect database content
         from sqlalchemy import select
+
         from src.models.knowledge_base import KnowledgeBaseEntry
         from src.models.service_request import ServiceRequest
         from src.models.ticket import Ticket
@@ -168,6 +170,7 @@ async def run_production_preflight() -> dict:
         safe_print("STAGE 4: API & AUTHENTICATION ENDPOINT SMOKE")
         safe_print("=======================================================")
         from httpx import ASGITransport, AsyncClient
+
         from src.main import app
 
         transport = ASGITransport(app=app)

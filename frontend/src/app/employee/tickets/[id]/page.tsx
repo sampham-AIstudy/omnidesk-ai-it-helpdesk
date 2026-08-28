@@ -81,6 +81,9 @@ export default function RiotStyleTicketDetailPage() {
 
   const serverMessages: TicketMessage[] = conversationData?.items ?? [];
   const messages: TicketMessage[] = [...serverMessages, ...optimisticMessages];
+  const ratedAnswerMessageId = [...serverMessages]
+    .reverse()
+    .find((item) => item.sender_type === 'agent')?.id;
   const focusMessageId = searchParams.get('message');
 
   useEffect(() => {
@@ -136,7 +139,7 @@ export default function RiotStyleTicketDetailPage() {
   });
 
   const ratingMutation = useMutation({
-    mutationFn: async (payload: { rating: number; feedback?: string }) =>
+    mutationFn: async (payload: { rating: number; feedback?: string; answer_message_id?: number }) =>
       (await api.post(`/tickets/${id}/rating`, payload)).data,
     onSuccess: () => {
       toast.success('Cảm ơn bạn đã gửi đánh giá trải nghiệm!');
@@ -147,8 +150,8 @@ export default function RiotStyleTicketDetailPage() {
   });
 
   const reopenMutation = useMutation({
-    mutationFn: async (reason: string) =>
-      (await api.post(`/tickets/${id}/reopen`, { reason })).data,
+    mutationFn: async (payload: { reason: string; answer_message_id?: number }) =>
+      (await api.post(`/tickets/${id}/reopen`, payload)).data,
     onSuccess: () => {
       toast.success('Ticket đã được mở lại thành công!');
       setShowReopenModal(false);
@@ -592,7 +595,7 @@ export default function RiotStyleTicketDetailPage() {
                         type="button"
                         onClick={() => {
                           setSelectedRating(star);
-                          ratingMutation.mutate({ rating: star, feedback: ratingFeedback });
+                          ratingMutation.mutate({ rating: star, feedback: ratingFeedback, answer_message_id: ratedAnswerMessageId });
                         }}
                         className="p-2 transition-transform hover:scale-110 focus:outline-none"
                       >
@@ -619,7 +622,7 @@ export default function RiotStyleTicketDetailPage() {
                         className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       />
                       <button
-                        onClick={() => ratingMutation.mutate({ rating: selectedRating, feedback: ratingFeedback })}
+                        onClick={() => ratingMutation.mutate({ rating: selectedRating, feedback: ratingFeedback, answer_message_id: ratedAnswerMessageId })}
                         disabled={ratingMutation.isPending}
                         className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-sm transition-all"
                       >
@@ -751,7 +754,7 @@ export default function RiotStyleTicketDetailPage() {
                     toast.error('Vui lòng nhập lý do mở lại ticket');
                     return;
                   }
-                  reopenMutation.mutate(reopenReason);
+                  reopenMutation.mutate({ reason: reopenReason, answer_message_id: ratedAnswerMessageId });
                 }}
                 disabled={reopenMutation.isPending || !reopenReason.trim()}
                 className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-sm transition-all"

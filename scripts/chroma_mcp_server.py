@@ -1,6 +1,6 @@
 """ChromaDB FastMCP Server for Antigravity IDE."""
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Ensure project root is in sys.path
@@ -8,9 +8,10 @@ project_root = str(Path(__file__).parent.parent.resolve())
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-import chromadb
-from mcp.server.fastmcp import FastMCP
-from src.services.rag_service import embed_query, get_collection
+import chromadb  # noqa: E402
+from mcp.server.fastmcp import FastMCP  # noqa: E402
+
+from src.services.rag_service import embed_query, get_collection  # noqa: E402
 
 mcp = FastMCP("ChromaDB Vector Store")
 

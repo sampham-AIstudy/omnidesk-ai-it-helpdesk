@@ -33,6 +33,18 @@ env/
 *.swo
 *~
 
+# Local AI-agent configuration. Keep shared agent documentation/templates
+# explicitly tracked; active rules, MCP endpoints, and editor hooks stay local.
+AGENTS.md
+CLAUDE.md
+/.agents/local/
+/.agents/mcp_config.json
+/.agents/rules/ai-log-hook.md
+/.agents/rules/dual-agent-collaboration.md
+/.agents/rules/windows-cli.md
+/.agents/workflows/log.md
+/.github/hooks/hooks.json
+
 # Linter & Type-checker caches
 .ruff_cache/
 .mypy_cache/
@@ -108,6 +120,8 @@ data/chroma_backups/
 # with outputs/.gitkeep because the pipeline writes these paths at runtime).
 /outputs/*.json
 /outputs/*.md
+/outputs/preference_datasets/
+*.preference.jsonl
 
 # Evaluation temporary caches & intermediate experiment outputs
 eval/results/judge_cache*/

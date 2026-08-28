@@ -9,9 +9,9 @@ ROOT = Path('.').resolve()
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-import src.services.bm25_retriever as bm25
-import src.services.rag_service as rag
-from eval.v4_eval_matching import (
+import src.services.bm25_retriever as bm25  # noqa: E402
+import src.services.rag_service as rag  # noqa: E402
+from eval.v4_eval_matching import (  # noqa: E402
     doc_canonical_aliases,
     doc_matches_targets,
     targets_canonical_aliases,

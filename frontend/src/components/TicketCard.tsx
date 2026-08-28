@@ -9,7 +9,10 @@ interface Props {
   linkTo?: string;
   onApprove?: (ticket: Ticket) => void;
   onTogglePin?: (ticket: Ticket) => void;
-  onContextMenu?: (e: React.MouseEvent, ticket: Ticket) => void;
+  onContextMenu?: (
+    e: Pick<React.MouseEvent, 'clientX' | 'clientY' | 'preventDefault'>,
+    ticket: Ticket,
+  ) => void;
   compact?: boolean;
   selected?: boolean;
   onClick?: () => void;
@@ -45,7 +48,7 @@ export default function TicketCard({
           if (onContextMenu) {
             e.preventDefault();
             const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-            onContextMenu({ clientX: rect.left + 24, clientY: rect.top + 24, preventDefault: () => {} } as any, ticket);
+            onContextMenu({ clientX: rect.left + 24, clientY: rect.top + 24, preventDefault: () => {} }, ticket);
           }
         }
       }}
