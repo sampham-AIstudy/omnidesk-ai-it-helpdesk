@@ -188,6 +188,38 @@ def _active(version: Any, now: datetime) -> bool:
     )
 
 
+def applicable_policy_versions(
+    context: ResolverContext,
+    policies: Iterable[Any],
+    versions: Iterable[Any],
+    scopes: Iterable[Any],
+) -> list[tuple[Any, Any]]:
+    """Return current, effective policies whose scopes match this principal.
+
+    A populated scope row is ANDed; separate matching scope rows are ORed.
+    This shares the resolver's header, version, tenant, and scope semantics
+    with non-enforcement consumers such as the read-only policy API.
+    """
+    versions_by_id = {version.id: version for version in versions}
+    scopes_by_version: dict[str, list[Any]] = {}
+    for scope in scopes:
+        scopes_by_version.setdefault(scope.policy_version_id, []).append(scope)
+
+    applicable: list[tuple[Any, Any]] = []
+    for policy in policies:
+        if policy.status != "active" or not policy.current_version_id:
+            continue
+        version = versions_by_id.get(policy.current_version_id)
+        if version is None or not _active(version, context.timestamp):
+            continue
+        if any(
+            scope_matches(context, scope, policy_tenant_id=policy.tenant_id)
+            for scope in scopes_by_version.get(version.id, [])
+        ):
+            applicable.append((policy, version))
+    return applicable
+
+
 def _exception_matches(exc: Any, context: ResolverContext, rule: MatchedRule) -> bool:
     if exc.status != PolicyExceptionStatus.APPROVED.value or exc.tenant_id != context.tenant_id:
         return False

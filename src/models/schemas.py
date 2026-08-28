@@ -401,6 +401,30 @@ class LifecycleActionResponse(BaseModel):
     status: str
 
 
+# Read-only applicable-policy contracts omit governance internals, rule DSL,
+# exceptions, audit history, and tenant administration.
+class ApplicablePolicySummary(BaseModel):
+    policy_id: str
+    policy_key: str
+    name: str
+    category: str
+    description: str | None
+    current_version_number: int
+    effective_from: datetime
+    effective_until: datetime | None
+
+
+class ApplicablePolicyListResponse(BaseModel):
+    items: list[ApplicablePolicySummary]
+    total: int
+    page: int
+    page_size: int
+
+
+class ApplicablePolicyDetailResponse(ApplicablePolicySummary):
+    content: str
+
+
 # ─── Service Request Schemas ──────────────────────────────────────────────────
 
 class ServiceRequestCreate(BaseModel):
