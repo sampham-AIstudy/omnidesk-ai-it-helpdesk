@@ -310,8 +310,6 @@ async def _run_agent_workflow(
                 priority=final_state.get("priority", "medium"),
                 urgency=final_state.get("urgency", "medium"),
                 confidence_score=final_state.get("confidence_score", 0.5),
-                retrieval_confidence=final_state.get("retrieval_confidence"),
-                groundedness_score=final_state.get("groundedness_score"),
                 suggested_solution=final_state.get("suggested_solution"),
                 rag_sources=final_state.get("rag_sources", []),
                 agent_reasoning=final_state.get("agent_reasoning"),
@@ -349,6 +347,10 @@ async def _run_agent_workflow(
                         actor_id=None,
                         reason="AI không có hướng dẫn Knowledge Base đủ phù hợp để xử lý an toàn.",
                     )
+                elif final_state.get("target_status") == "resolved":
+                    record_business_event("ticket.auto_resolve")
+                    ticket.status = TicketStatus.RESOLVED
+                    ticket.closed_by = "ai_auto_close"
 
             await db.commit()
             logger.info(f"Agent workflow completed for ticket #{ticket_number}")
@@ -410,16 +412,11 @@ async def get_pending_hitl(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
-    """Danh sách ticket chờ HITL approval — chỉ Manager/Admin."""
-    if not auth_service.can_approve_hitl(current_user):
-        raise HTTPException(status_code=403, detail="Chỉ Manager hoặc Admin mới xem được")
-
-    company_scope = auth_service.scoped_company_unit(current_user)
-    tickets = await ticket_service.get_pending_hitl(
-        db,
-        submitter_company_unit=company_scope.value if company_scope else None,
-    )
-    return [TicketResponse.model_validate(t) for t in tickets]
+    """[DEPRECATED] HITL workflow đã bị bỏ (Manager role đã xóa).
+    Ticket rủi ro cao giờ được route thẳng đến KTV, không còn nằm ở pending_hitl.
+    Endpoint giữ lại để backward compat, luôn trả về danh sách rỗng.
+    """
+    return []
 
 
 @router.get("/resolve/{ticket_number}", response_model=TicketResponse)
@@ -863,6 +860,13 @@ async def pin_ticket_api(
 
 # ─── HITL Decision ─────────────────────────────────────────────────────────────
 
+@router.get("/pending-hitl", response_model=list[TicketResponse])
+async def get_pending_hitl_tickets():
+    """[Deprecated] HITL đã bị loại bỏ, endpoint này luôn trả về danh sách rỗng."""
+    logger.warning("Endpoint /pending-hitl is deprecated and will be removed.")
+    return []
+
+
 @router.post("/{ticket_id}/approve", response_model=TicketResponse)
 async def approve_ticket(
     ticket_id: int,
@@ -870,9 +874,13 @@ async def approve_ticket(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
-    """Manager phê duyệt hoặc từ chối ticket HITL."""
+    """[Backward compat] Xác nhận quyết định HITL cho ticket pending_hitl cũ trong DB.
+    Không còn được tạo mới bởi workflow (HITL đã bỏ), chỉ dùng để giải quyết
+    các ticket pending_hitl còn tồn đọng trong DB từ trước khi nâng cấp.
+    Quyền: Technician hoặc Admin.
+    """
     if not auth_service.can_approve_hitl(current_user):
-        raise HTTPException(status_code=403, detail="Chỉ Manager hoặc Admin mới phê duyệt được")
+        raise HTTPException(status_code=403, detail="Chỉ Technician hoặc Admin mới xác nhận được")
 
     ticket = await ticket_service.get_ticket(db, ticket_id)
     if not ticket:

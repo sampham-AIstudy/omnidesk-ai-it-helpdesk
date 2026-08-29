@@ -9,6 +9,7 @@ type ChatMessage = {
   id: string;
   sender: 'user' | 'agent';
   text: string;
+  confidence?: number | null;
 };
 
 type Conversation = {
@@ -18,6 +19,7 @@ type Conversation = {
 
 type ChatReply = {
   reply: string;
+  confidence?: number | null;
 };
 
 type AIChatWidgetProps = {
@@ -76,7 +78,12 @@ export default function AIChatWidget({ showLauncher = true, open, onOpenChange }
         setConversationId(currentId);
       }
       const response = await api.post<ChatReply>(`/chat/conversations/${currentId}/messages`, { message: text });
-      setMessages((current) => [...current, { id: `agent-${crypto.randomUUID()}`, sender: 'agent', text: response.data.reply }]);
+      setMessages((current) => [...current, {
+        id: `agent-${crypto.randomUUID()}`,
+        sender: 'agent',
+        text: response.data.reply,
+        confidence: response.data.confidence ?? null,
+      }]);
     } catch {
       setError('Không thể gửi tin nhắn. Vui lòng thử lại.');
     } finally {
@@ -115,6 +122,20 @@ export default function AIChatWidget({ showLauncher = true, open, onOpenChange }
             return <div key={message.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[86%] rounded-xl px-3 py-2 text-xs leading-5 shadow-sm ${isUser ? 'rounded-br-sm bg-blue-600 text-white' : 'rounded-bl-sm border border-slate-200 bg-white text-slate-700'}`}>
                 {message.text}
+                {/* RAG Confidence Indicator — only shown when agent performed RAG retrieval */}
+                {!isUser && message.confidence !== null && message.confidence !== undefined && (
+                  <div className="mt-1.5 select-none" title={`Điểm tin cậy RAG tổng hợp: ${(message.confidence * 100).toFixed(0)}%`}>
+                    <span className={`text-[9px] font-semibold ${
+                      message.confidence > 0.85
+                        ? 'text-emerald-500'
+                        : message.confidence >= 0.40
+                          ? 'text-slate-400'
+                          : 'text-rose-400'
+                    }`}>
+                      Độ tin cậy RAG: {(message.confidence * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                )}
               </div>
             </div>;
           })}

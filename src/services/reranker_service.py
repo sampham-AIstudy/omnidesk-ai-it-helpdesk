@@ -29,6 +29,17 @@ _cached_cross_encoder: Any = None
 _model_load_attempted: bool = False
 
 
+def get_torch_device() -> str:
+    """Tự động phát hiện GPU (CUDA), nếu không khả dụng sẽ tự động fallback về CPU."""
+    try:
+        import torch
+        if torch.cuda.is_available():
+            return "cuda"
+    except Exception:
+        pass
+    return "cpu"
+
+
 def get_cross_encoder(model_name: str | None = None) -> Any:
     """Thread-safe lazy initialization of the local CrossEncoder model.
 
@@ -48,8 +59,9 @@ def get_cross_encoder(model_name: str | None = None) -> Any:
         try:
             from sentence_transformers import CrossEncoder
 
-            _cached_cross_encoder = CrossEncoder(target_model, local_files_only=True)
-            logger.info(f"Loaded local CrossEncoder model: {target_model}")
+            device = get_torch_device()
+            _cached_cross_encoder = CrossEncoder(target_model, device=device, local_files_only=True)
+            logger.info(f"Loaded local CrossEncoder model: {target_model} on device: {device}")
         except Exception as exc:
             logger.warning(
                 f"Could not load local CrossEncoder '{target_model}' (local_files_only=True): {exc}. "

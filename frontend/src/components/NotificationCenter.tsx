@@ -13,7 +13,7 @@ interface DynamicNotification {
   title: string;
   desc: string;
   time: string;
-  type: 'escalated' | 'hitl' | 'sla';
+  type: 'escalated' | 'sla';
   ticketId: number;
   read: boolean;
 }
@@ -69,16 +69,6 @@ export default function NotificationCenter() {
           type: 'escalated',
           ticketId: t.id,
           read: readIds.has(`esc-${t.id}`),
-        });
-      } else if (t.status === 'pending_hitl') {
-        list.push({
-          id: `hitl-${t.id}`,
-          title: `⚠️ Chờ Duyệt HITL #${t.ticket_number}`,
-          desc: `${t.title} — AI đề xuất giải pháp vượt ngưỡng rủi ro, cần phê duyệt.`,
-          time: formatRelative(t.updated_at || t.created_at),
-          type: 'hitl',
-          ticketId: t.id,
-          read: readIds.has(`hitl-${t.id}`),
         });
       }
     }

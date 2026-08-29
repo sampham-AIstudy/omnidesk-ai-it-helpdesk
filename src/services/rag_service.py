@@ -357,11 +357,13 @@ def _get_embedder(backend: str | None = None) -> Any:
                 elif requested_backend == "remote_onnx":
                     _embedders[requested_backend] = _RemoteOnnxEmbedder()
                 else:
-                    logger.info("Loading embedding model (%s)...", settings.embedding_model)
+                    from src.services.reranker_service import get_torch_device
+                    target_device = get_torch_device()
+                    logger.info("Loading embedding model (%s) on device (%s)...", settings.embedding_model, target_device)
                     try:
                         _embedders[requested_backend] = HuggingFaceEmbeddings(
                             model_name=settings.embedding_model,
-                            model_kwargs={"device": "cpu", "local_files_only": not settings.embedding_allow_network_downloads},
+                            model_kwargs={"device": target_device, "local_files_only": not settings.embedding_allow_network_downloads},
                             encode_kwargs={"normalize_embeddings": True},
                         )
                     except Exception as exc:

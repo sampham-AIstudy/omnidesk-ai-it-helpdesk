@@ -59,11 +59,7 @@ export default function CommandPalette() {
       { label: 'Hàng đợi sự cố', keywords: 'queue incident', icon: Inbox, href: '/technician/queue' },
       { label: 'Yêu cầu dịch vụ cần xử lý', keywords: 'service request fulfillment', icon: ClipboardList, href: '/technician/requests' },
     ];
-    if (user?.role === 'manager') return [
-      { label: 'Bảng điều hành IT', keywords: 'dashboard control tower', icon: Gauge, href: '/manager/dashboard' },
-      { label: 'Phê duyệt cần xử lý', keywords: 'approval hitl', icon: ClipboardList, href: '/manager/approvals' },
-      { label: 'Sự cố nghiêm trọng', keywords: 'major incident', icon: Siren, href: '/manager/major-incidents' },
-    ];
+    if (user?.role === 'manager') return [];
     return [
       { label: 'Hàng đợi đánh giá AI', keywords: 'ai review', icon: Bot, href: '/admin/ai-review' },
       { label: 'Knowledge base', keywords: 'knowledge kb', icon: FileText, href: '/admin/kb' },

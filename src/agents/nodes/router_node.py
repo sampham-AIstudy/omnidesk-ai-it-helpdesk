@@ -70,8 +70,11 @@ async def router_node(state: TicketAgentState) -> TicketAgentState:
         f"(category={category}, company={company})"
     )
 
+    existing_action = state.get("action_taken")
+    action_taken = existing_action if existing_action else "routed"
+
     return {
         **state,
         "routing_target": team,
-        "action_taken": "routed",
+        "action_taken": action_taken,
     }

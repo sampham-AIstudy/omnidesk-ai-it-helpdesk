@@ -2,11 +2,10 @@
 
 import pytest
 
-from src.agents.nodes.auto_close_node import _is_auto_close_eligible
-from src.agents.nodes.hitl_node import _determine_hitl
+from src.agents.nodes.policy_engine import evaluate_policy
 
 
-def _state(confidence: float) -> dict:
+def _state(confidence: float | None) -> dict:
     return {
         "confidence_score": confidence,
         "is_production_impact": False,
@@ -14,39 +13,38 @@ def _state(confidence: float) -> dict:
         "category": "software",
         "priority": "medium",
         "urgency": "medium",
-        "suggested_solution": "Khởi động lại ứng dụng.",
+        "title": "Cần hỗ trợ phần mềm",
+        "description": "Khởi động lại ứng dụng.",
         "rag_context": [{"content": "KB"}],
     }
 
 
-@pytest.mark.parametrize("score", [0.0, 0.59])
-def test_confidence_below_sixty_requires_hitl(score: float):
-    required, reason = _determine_hitl(_state(score))
-    assert required is True
-    assert "dưới 60%" in reason
-    assert _is_auto_close_eligible(_state(score)) is False
+@pytest.mark.parametrize("score", [0.0, 0.44])
+def test_confidence_below_45_escalates(score: float):
+    res = evaluate_policy(_state(score), risk_score=0.3)
+    assert res["decision"] == "ESCALATE"
+    assert res["action_type"] == "HUMAN_HANDOFF"
 
 
-@pytest.mark.parametrize("score", [0.60, 0.74])
-def test_warning_band_does_not_force_hitl_or_auto_close(score: float):
-    required, _ = _determine_hitl(_state(score))
-    assert required is False
-    assert _is_auto_close_eligible(_state(score)) is False
+@pytest.mark.parametrize("score", [0.45, 0.84])
+def test_normal_band_auto_proceeds_when_low_risk(score: float):
+    res = evaluate_policy(_state(score), risk_score=0.3)
+    assert res["decision"] == "AUTO_PROCEED"
 
 
-@pytest.mark.parametrize("score", [0.75, 1.0])
-def test_high_confidence_still_cannot_auto_close(score: float):
-    required, _ = _determine_hitl(_state(score))
-    assert required is False
-    assert _is_auto_close_eligible(_state(score)) is False
+@pytest.mark.parametrize("score", [0.85, 1.0])
+def test_high_confidence_auto_proceeds(score: float):
+    res = evaluate_policy(_state(score), risk_score=0.3)
+    assert res["decision"] == "AUTO_PROCEED"
+    assert res["target_status"] == "resolved"
 
 
 def test_safety_rules_remain_independent_from_confidence():
     state = _state(0.99)
     state["is_production_impact"] = True
 
-    required, reason = _determine_hitl(state)
+    res = evaluate_policy(state, risk_score=0.9)
 
-    assert required is True
-    assert "production" in reason
-    assert _is_auto_close_eligible(state) is False
+    assert res["decision"] == "REQUIRE_HITL"
+    assert "Production" in res["reason"]
+

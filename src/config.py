@@ -108,6 +108,18 @@ class Settings(BaseSettings):
     reranker_model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
     reranker_top_n: int = Field(default=10, ge=2, le=50)
 
+    # Groundedness NLI Model — dùng riêng để đánh giá C_groundedness (KHÁC với reranker).
+    groundedness_model_name: str = "MoritzLaurer/multilingual-MiniLMv2-L6-mnli-xnli"
+    groundedness_model_max_length: int = Field(default=512, ge=128, le=2048)
+
+    # Trọng số RAG Confidence Score (Tổng w1 + w2 + w3 = 1.0)
+    # w1: C_retrieval    — Độ mạnh tương quan của tài liệu top-1 & uy tín nguồn
+    # w2: C_consensus    — Độ đồng thuận giữa các kênh (Dense Vector vs BM25)
+    # w3: C_groundedness — Độ trung thực/bám sát ngữ cảnh của câu trả lời (CrossEncoder)
+    rag_confidence_w1: float = Field(default=0.4, ge=0.0, le=1.0)
+    rag_confidence_w2: float = Field(default=0.2, ge=0.0, le=1.0)
+    rag_confidence_w3: float = Field(default=0.4, ge=0.0, le=1.0)
+
     # External research (only used after the internal RAG decision gate)
     web_research_enabled: bool = True
     # "auto" uses Exa semantic search, then Tavily and DDG as fallbacks.

@@ -1,7 +1,17 @@
 """
-Deterministic Safety Policy Engine.
-Executes deterministic business & security rules AFTER AI Risk Score calculation.
-Hard policy rules have absolute power to OVERRIDE LLM Risk Scores.
+Bộ máy Quy tắc An toàn Xác định (Deterministic Safety Policy Engine).
+Thực thi các quy tắc nghiệp vụ & an ninh CỨNG sau khi Risk Score AI được tính.
+Các quy tắc Hard Policy có quyền GIAO ĐÈ tuyệt đối lên điểm rủi ro LLM.
+
+Ma trận quyết định theo thứ tự ưu tiên:
+  1. Danh mục Security / Hành vi nhạy cảm / Sự cố Production → ESCALATE (Chuyển thẳng KTV)
+  2. Confidence < 0.45 → ESCALATE (Chuyển ngay Chuyên viên IT)
+  3. Confidence >= 0.85 → AUTO_PROCEED resolved (Tự động đóng Ticket)
+  4. [Dải bình thường 0.45–0.85] Risk Score >= 0.65 → ESCALATE (Rủi ro cao → KTV xử lý)
+  5. [Dải bình thường 0.45–0.85] Risk Score < 0.65 → AUTO_PROCEED pending_closure (Luồng bình thường)
+
+Lưu ý: HITL (Human-In-The-Loop với Manager phê duyệt) đã được bỏ.
+Các ticket rủi ro cao được route thẳng đến Chuyên viên IT (ESCALATE / HUMAN_HANDOFF).
 """
 from __future__ import annotations
 
@@ -15,96 +25,113 @@ logger = logging.getLogger(__name__)
 
 def evaluate_policy(state: TicketAgentState, risk_score: float) -> dict[str, Any]:
     """
-    Deterministic Safety Policy Engine Matrix:
-    1. Security Category -> REQUIRE_HITL
-    2. Sensitive Actions (Password Reset Admin / Permission / DB) -> REQUIRE_HITL
-    3. Production System Impact -> REQUIRE_HITL
-    4. Groundedness < 0.50 -> ESCALATE (HUMAN_HANDOFF)
-    5. Groundedness 0.50 - 0.75 -> NEEDS_CLARIFICATION
-    6. Overall Confidence < 0.60 -> ESCALATE
-    7. Risk Score >= 0.65 -> REQUIRE_HITL
-    8. Otherwise -> AUTO_PROCEED
+    Bộ máy Quy tắc An toàn Xác định (Ma trận Chính sách An toàn):
+    1. Security Category                 → ESCALATE (KTV bảo mật)
+    2. Hành vi nhạy cảm / Reset Pass     → ESCALATE (KTV có quyền hệ thống)
+    3. Sự cố ảnh hưởng Production        → ESCALATE (KTV hạ tầng)
+    4. Confidence C_RAG < 0.45          → ESCALATE (Chuyên viên IT)
+    5. Confidence C_RAG >= 0.85         → AUTO_PROCEED (Tự động đóng Ticket)
+    6. [0.45 <= C_RAG < 0.85] Risk >= 0.65 → ESCALATE (Rủi ro tổng hợp cao)
+    7. [0.45 <= C_RAG < 0.85] Risk < 0.65 → AUTO_PROCEED (Luồng bình thường)
     """
     category = state.get("category", "other")
     is_production = state.get("is_production_impact", False)
-    groundedness_val = state.get("groundedness_score")
-    groundedness: float = float(groundedness_val) if groundedness_val is not None else 1.0
     confidence_val = state.get("confidence_score")
-    confidence: float = float(confidence_val) if confidence_val is not None else 1.0
+    # Nếu không có C_RAG (chat thông thường, không RAG), bỏ qua các Rule confidence.
+    confidence: float | None = float(confidence_val) if confidence_val is not None else None
     description = (state.get("description", "") + " " + state.get("title", "")).lower()
 
-    # Rule 1: Security Category or Security Incident
+    # ── Rule 1: Danh mục Security / Sự cố An ninh ─────────────────────────────
+    # Route thẳng đến IT Security Team — KTV bảo mật xử lý trực tiếp.
     if category == "security":
         return {
-            "decision": "REQUIRE_HITL",
-            "action_type": "EXECUTE_HIGH_RISK",
-            "target_status": "pending_hitl",
-            "policy_triggered": "POLICY_SECURITY_CATEGORY_MANDATORY_HITL",
-            "reason": "Ticket thuộc danh mục Security bắt buộc phê duyệt bởi Quản lý",
+            "decision": "ESCALATE",
+            "action_type": "HUMAN_HANDOFF",
+            "target_status": "waiting_for_agent",
+            "policy_triggered": "POLICY_SECURITY_CATEGORY_ESCALATE",
+            "reason": "Ticket thuộc danh mục Security — Chuyển thẳng IT Security Team xử lý",
         }
 
-    # Rule 2: Sensitive Actions (Reset Password Admin, Sharepoint Permissions, Database Drop)
+    # ── Rule 2: Hành vi Nhạy cảm (Reset Password Admin, Phân quyền, Database) ─
+    # Route đến KTV có quyền hệ thống — tránh AI tự thực thi hành động nguy hiểm.
     sensitive_keywords = ["reset password", "admin", "quyen root", "sharepoint permission", "database", "drop table"]
     if any(kw in description for kw in sensitive_keywords):
         return {
-            "decision": "REQUIRE_HITL",
-            "action_type": "EXECUTE_HIGH_RISK",
-            "target_status": "pending_hitl",
-            "policy_triggered": "POLICY_SENSITIVE_ACTION_MANDATORY_HITL",
-            "reason": "Yêu cầu chứa hành vi nhạy cảm (Reset password/Phân quyền/Hạ tầng)",
+            "decision": "ESCALATE",
+            "action_type": "HUMAN_HANDOFF",
+            "target_status": "waiting_for_agent",
+            "policy_triggered": "POLICY_SENSITIVE_ACTION_ESCALATE",
+            "reason": "Yêu cầu chứa hành vi nhạy cảm (Reset password/Phân quyền/Hạ tầng) — Chuyển KTV",
         }
 
-    # Rule 3: Production Impact
+    # ── Rule 3: Sự cố ảnh hưởng hệ thống Production ───────────────────────────
     if is_production:
         return {
-            "decision": "REQUIRE_HITL",
-            "action_type": "EXECUTE_HIGH_RISK",
-            "target_status": "pending_hitl",
-            "policy_triggered": "POLICY_PRODUCTION_IMPACT_HITL",
-            "reason": "Sự cố ảnh hưởng hệ thống Production",
+            "decision": "ESCALATE",
+            "action_type": "HUMAN_HANDOFF",
+            "target_status": "waiting_for_agent",
+            "policy_triggered": "POLICY_PRODUCTION_IMPACT_ESCALATE",
+            "reason": "Sự cố ảnh hưởng hệ thống Production — Chuyển KTV hạ tầng xử lý",
         }
 
-    # Rule 4: Groundedness Low (< 0.50) -> Human Handoff
-    if groundedness < 0.50:
+    # ── Rules 4 & 5: Phân luồng theo Chỉ số C_RAG Confidence & Ngữ cảnh KB ─────
+    no_kb_context = not state.get("rag_context")
+
+    # Rule 4: C_RAG Confidence rất thấp (< 0.45) HOẶC Không tìm thấy KB phù hợp → Chuyển ngay Chuyên viên IT
+    # AI không đủ tin cậy để tự trả lời, tự động Escalate sang Chuyên viên IT hỗ trợ.
+    if (confidence is not None and confidence < 0.45) or no_kb_context:
+        reason_msg = (
+            "Không tìm thấy tài liệu Knowledge Base phù hợp — Chuyển Chuyên viên IT hỗ trợ"
+            if no_kb_context
+            else f"Độ tin cậy RAG quá thấp ({confidence:.2f} < 0.45) — Chuyển Chuyên viên IT hỗ trợ"
+        )
         return {
             "decision": "ESCALATE",
             "action_type": "HUMAN_HANDOFF",
             "target_status": "waiting_for_agent",
-            "policy_triggered": "POLICY_LOW_GROUNDEDNESS_ESCALATE",
-            "reason": "Giải pháp AI có điểm Groundedness thấp (< 0.50) — Chuyển Chuyên viên",
+            "policy_triggered": "POLICY_NO_KB_FOUND_ESCALATE" if no_kb_context else "POLICY_LOW_CONFIDENCE_ESCALATE",
+            "reason": reason_msg,
         }
 
-    # Rule 5: Groundedness Medium (0.50 - 0.75) -> Needs Clarification
-    if 0.50 <= groundedness < 0.75:
-        return {
-            "decision": "NEEDS_CLARIFICATION",
-            "action_type": "ASK_CLARIFICATION",
-            "target_status": "needs_clarification",
-            "policy_triggered": "POLICY_MEDIUM_GROUNDEDNESS_CLARIFY",
-            "reason": "Giải pháp cần người dùng làm rõ thêm thông tin",
-        }
-
-    # Rule 6: Low Confidence (< 0.60)
-    if confidence < 0.60:
+    # ── Rule 4b: KB docs tồn tại nhưng không có điểm C_RAG ────────────────────────
+    # Xảy ra khi: RAG pipeline chạy có docs nhưng output_guardrail bị lỗi / không ghi
+    # confidence_score vào state. Không thể tự động đóng ticket khi thiếu điểm tin cậy.
+    if confidence is None and not no_kb_context:
         return {
             "decision": "ESCALATE",
             "action_type": "HUMAN_HANDOFF",
             "target_status": "waiting_for_agent",
-            "policy_triggered": "POLICY_LOW_CONFIDENCE_ESCALATE",
-            "reason": "Độ tin cậy tổng thể của AI dưới 60% (PRD FR-09)",
+            "policy_triggered": "POLICY_MISSING_CONFIDENCE_SCORE_ESCALATE",
+            "reason": "Có ngữ cảnh KB nhưng thiếu điểm C_RAG — Không đủ căn cứ tự động đóng, chuyển KTV",
         }
 
-    # Rule 7: Calculated Risk Score Threshold (>= 0.65)
+    if confidence is not None:
+        # Rule 5: C_RAG Confidence cao (>= 0.85) → Trả lời tự động & Đóng Ticket
+        # Câu trả lời AI được đánh giá đủ tin cậy để tự động giải quyết Ticket.
+        if confidence >= 0.85:
+            return {
+                "decision": "AUTO_PROCEED",
+                "action_type": "AUTO_ANSWER",
+                "target_status": "resolved",
+                "policy_triggered": "POLICY_HIGH_CONFIDENCE_AUTO_CLOSE",
+                "reason": f"Độ tin cậy RAG cao ({confidence:.2f} >= 0.85) — Tự động đóng Ticket",
+            }
+
+        # Dải bình thường: 0.45 <= confidence < 0.85
+        # Trong dải này, kiểm tra thêm Risk Score tổng hợp để quyết định có cần KTV không.
+
+    # ── Rule 6: Risk Score tổng hợp cao (>= 0.65) → Chuyển KTV xử lý ──────────
+    # Áp dụng cho Dải bình thường (0.45–0.85) hoặc khi Chat thường (confidence = None).
     if risk_score >= 0.65:
         return {
-            "decision": "REQUIRE_HITL",
-            "action_type": "EXECUTE_HIGH_RISK",
-            "target_status": "pending_hitl",
-            "policy_triggered": "POLICY_HIGH_RISK_SCORE_HITL",
-            "reason": f"Điểm rủi ro tổng hợp cao ({risk_score:.2f} >= 0.65)",
+            "decision": "ESCALATE",
+            "action_type": "HUMAN_HANDOFF",
+            "target_status": "waiting_for_agent",
+            "policy_triggered": "POLICY_HIGH_RISK_SCORE_ESCALATE",
+            "reason": f"Điểm rủi ro tổng hợp cao ({risk_score:.2f} >= 0.65) — Chuyển KTV",
         }
 
-    # Default Rule: Auto Proceed
+    # ── Rule Mặc định: Cho phép luồng bình thường ─────────────────────────────
     return {
         "decision": "AUTO_PROCEED",
         "action_type": "AUTO_ANSWER",

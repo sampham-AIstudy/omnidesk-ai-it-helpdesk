@@ -90,8 +90,6 @@ def _auto_migrate_sqlite(connection):
                 "closed_at": "DATETIME",
                 "reopened_at": "DATETIME",
                 "classification_confidence": "FLOAT",
-                "retrieval_confidence": "FLOAT",
-                "groundedness_score": "FLOAT",
                 "decision_summary": "TEXT",
                 "decision_factors_json": "TEXT",
                 "duplicate_of_ticket_id": "INTEGER",
@@ -192,6 +190,11 @@ def _auto_migrate_sqlite(connection):
         if tul_cols:
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_token_usage_user_created ON token_usage_logs (user_id, created_at DESC)"))
             connection.execute(text("CREATE INDEX IF NOT EXISTS idx_token_usage_model_created ON token_usage_logs (model_name, created_at DESC)"))
+        # 6. Bảng ai_runs — thêm cột confidence_score (C_RAG tổng hợp, thay thế retrieval_confidence & groundedness_score)
+        res_ar = connection.execute(text("PRAGMA table_info(ai_runs)"))
+        ar_cols = {row[1] for row in res_ar.fetchall()}
+        if ar_cols and "confidence_score" not in ar_cols:
+            connection.execute(text("ALTER TABLE ai_runs ADD COLUMN confidence_score FLOAT"))
 
         # 6. Feedback pipeline fields introduced after the initial append-only
         # tables.  Additive only: existing tickets and event rows are never
