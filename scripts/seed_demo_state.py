@@ -1,7 +1,7 @@
 """Deterministic & Idempotent Demo Data Seed Script for Project P-236.
 
-Sets up clean demonstration state across all 4 roles:
-- Demo users (employee1, tech1, manager1, admin, etc.)
+Sets up clean demonstration state across the three current roles:
+- Demo users (employee1, tech1, admin, etc.)
 - Fulfillment group memberships for tech1
 - Sample Incidents across representative states (Open, Pending HITL, In Progress, Resolved)
 - Sample Service Requests (Pending Approval, In Progress, Fulfilled)
@@ -78,7 +78,7 @@ async def seed_demo_incidents(db):
             "support_mode": TicketSupportMode.HUMAN,
             "confidence_score": 0.52,
             "routing_target": "Security IT",
-            "suggested_solution": "Thao tác đặc quyền cao trên môi trường Production yêu cầu phê duyệt HITL từ IT Manager.",
+            "suggested_solution": "Thao tác đặc quyền cao trên môi trường Production yêu cầu phê duyệt HITL từ Admin.",
             "submitter_id": employee.id,
             "assignee_id": None,
             "created_at": now - timedelta(minutes=30),
@@ -147,7 +147,7 @@ async def seed_demo_incidents(db):
 
 
 async def seed_demo_service_requests(db):
-    """Seed representative Service Requests for employee, manager, technician demos."""
+    """Seed representative Service Requests for employee, technician, and admin demos."""
     employee = (await db.execute(select(User).where(User.username == "employee1"))).scalar_one_or_none()
     tech = (await db.execute(select(User).where(User.username == "tech1"))).scalar_one_or_none()
     if not employee:
@@ -163,7 +163,7 @@ async def seed_demo_service_requests(db):
             "category": "hardware",
             "status": ServiceRequestStatus.PENDING_APPROVAL,
             "fulfillment_group": "Workplace IT",
-            "approval_policy": "manager_approval",
+            "approval_policy": "admin_approval",
             "risk_level": "medium",
             "sla_hours": 48,
             "form_data": json.dumps({"reason": "Cấp mới cho nhân sự mới", "model": "Dell Latitude 7440", "department": "Corporate"}),

@@ -166,7 +166,7 @@ async def test_grd_10_rest_and_sse_security_parity(
 
 @pytest.mark.asyncio
 async def test_grd_11_conversation_isolation(
-    client: AsyncClient, auth_employee: str, auth_manager: str
+    client: AsyncClient, auth_employee: str, auth_technician: str
 ) -> None:
     created = await client.post(
         "/api/v1/chat/conversations",
@@ -175,17 +175,17 @@ async def test_grd_11_conversation_isolation(
     )
     conv_id = created.json()["id"]
 
-    # Manager cannot access employee's conversation -> 404
+    # A technician cannot access an employee's private conversation -> 404.
     unauthorized = await client.get(
         f"/api/v1/chat/conversations/{conv_id}",
-        headers=_headers(auth_manager),
+        headers=_headers(auth_technician),
     )
     assert unauthorized.status_code == 404
 
 
 @pytest.mark.asyncio
 async def test_grd_12_ticket_isolation(
-    client: AsyncClient, auth_employee: str, auth_manager: str
+    client: AsyncClient, auth_employee: str, auth_technician: str
 ) -> None:
     created = await client.post(
         "/api/v1/tickets",

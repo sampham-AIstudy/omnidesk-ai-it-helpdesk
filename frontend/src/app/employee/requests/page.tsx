@@ -26,7 +26,7 @@ import api from '@/lib/api';
 import { formatVietnamTime } from '@/lib/utils';
 
 const API_STATUS_TO_UI: Record<string, StatusKey> = {
-  submitted: 'SUBMITTED', pending_approval: 'MANAGER_APPROVAL', approved: 'IT_APPROVAL',
+  submitted: 'SUBMITTED', pending_approval: 'ADMIN_APPROVAL', approved: 'IT_APPROVAL',
   assigned: 'FULFILLMENT', in_progress: 'FULFILLMENT', waiting_for_user: 'PROVISIONING',
   fulfilled: 'COMPLETED', closed: 'COMPLETED', rejected: 'REJECTED', cancelled: 'REJECTED',
 };

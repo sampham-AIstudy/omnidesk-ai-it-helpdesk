@@ -10,7 +10,7 @@ import {
 
 export type StatusKey =
   | 'SUBMITTED'
-  | 'MANAGER_APPROVAL'
+  | 'ADMIN_APPROVAL'
   | 'IT_APPROVAL'
   | 'FULFILLMENT'
   | 'PROVISIONING'
@@ -60,7 +60,7 @@ export interface ServiceRequest {
 
 export const STATUS_SEQUENCE: StatusKey[] = [
   'SUBMITTED',
-  'MANAGER_APPROVAL',
+  'ADMIN_APPROVAL',
   'IT_APPROVAL',
   'FULFILLMENT',
   'PROVISIONING',
@@ -88,7 +88,7 @@ export const STATUS_META: Record<
     textClass: 'text-cyan-700',
     dotClass: 'bg-cyan-500',
   },
-  MANAGER_APPROVAL: {
+  ADMIN_APPROVAL: {
     label: 'Chờ duyệt QL',
     icon: UserCheck,
     color: '#fbbf24',
@@ -159,7 +159,7 @@ export const MOCK_REQUESTS: ServiceRequest[] = [
     id: 'REQ-2026-00821',
     title: 'Request Microsoft 365 License',
     category: 'Software',
-    status: 'MANAGER_APPROVAL',
+    status: 'ADMIN_APPROVAL',
     priority: 'P0',
     createdAt: '06/08/2026 09:14',
     requester: 'Nguyễn Văn An',
@@ -171,7 +171,7 @@ export const MOCK_REQUESTS: ServiceRequest[] = [
       {
         id: 'FL-2026-0001',
         name: 'M365 Business Basic — License #1',
-        status: 'MANAGER_APPROVAL',
+        status: 'ADMIN_APPROVAL',
         assignee: 'Lê Minh Công',
         updatedAt: '06/08/2026 11:02',
         subTasks: [
@@ -183,7 +183,7 @@ export const MOCK_REQUESTS: ServiceRequest[] = [
       {
         id: 'FL-2026-0002',
         name: 'M365 Business Basic — License #2',
-        status: 'MANAGER_APPROVAL',
+        status: 'ADMIN_APPROVAL',
         assignee: 'Lê Minh Công',
         updatedAt: '06/08/2026 11:02',
         subTasks: [
@@ -202,8 +202,8 @@ export const MOCK_REQUESTS: ServiceRequest[] = [
         note: 'Tự động sau khi gửi form trực tuyến.',
       },
       {
-        key: 'MANAGER_APPROVAL',
-        title: 'Manager Approval',
+        key: 'ADMIN_APPROVAL',
+        title: 'Admin Approval',
         subTitle: 'Duyệt Quản lý',
         note: 'Đang chờ phê duyệt của Trưởng phòng — Phạm Thị Dung.',
       },
@@ -267,8 +267,8 @@ export const MOCK_REQUESTS: ServiceRequest[] = [
         note: 'Đã gửi từ Service Catalog portal.',
       },
       {
-        key: 'MANAGER_APPROVAL',
-        title: 'Manager Approval',
+        key: 'ADMIN_APPROVAL',
+        title: 'Admin Approval',
         subTitle: 'Duyệt Quản lý',
         doneAt: '05/08/2026 15:10',
         note: 'Đã được duyệt bởi Phạm Thị Dung.',
@@ -335,8 +335,8 @@ export const MOCK_REQUESTS: ServiceRequest[] = [
         note: 'Gửi thành công.',
       },
       {
-        key: 'MANAGER_APPROVAL',
-        title: 'Manager Approval',
+        key: 'ADMIN_APPROVAL',
+        title: 'Admin Approval',
         subTitle: 'Duyệt Quản lý',
         doneAt: '01/08/2026 11:30',
         note: 'Đã duyệt.',
@@ -406,8 +406,8 @@ export const MOCK_REQUESTS: ServiceRequest[] = [
         note: 'Gửi từ portal.',
       },
       {
-        key: 'MANAGER_APPROVAL',
-        title: 'Manager Approval',
+        key: 'ADMIN_APPROVAL',
+        title: 'Admin Approval',
         subTitle: 'Duyệt Quản lý',
         doneAt: '28/07/2026 09:00',
         note: 'Đã gửi tới Ban An Ninh Thông Tin.',

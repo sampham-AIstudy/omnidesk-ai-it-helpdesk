@@ -14,13 +14,13 @@ Cả 3 thành phần đều nằm trong khoảng [0.0, 1.0], do đó C_RAG luôn
 from __future__ import annotations
 
 import logging
-import math
 import threading
 from typing import Any
 
 import numpy as np
 
 from src.config import get_settings
+
 # Bảng hệ số uy tín nguồn tài liệu dành riêng cho C_retrieval (giá trị trong [0.0, 1.0]).
 # Không dùng bảng từ rag_service vì bảng đó có giá trị > 1.0 (dùng để boost rerank),
 # còn ở đây cần nhân trực tiếp vào retrieval_base nên phải giới hạn trong [0.0, 1.0].
@@ -83,7 +83,7 @@ def _get_nli_encoder() -> Any:
                     local_files_only=True,
                 )
                 print(f"[NLI] Load từ cache local: {model_name}")
-            except (OSError, EnvironmentError):
+            except OSError:
                 logger.warning(
                     "[NLI] '%s' chưa có trong local cache. Tải từ Hugging Face Hub...",
                     model_name,
@@ -252,9 +252,9 @@ def calculate_groundedness_with_reranker(
         print(f"  Answer (chars) : {len(clean_answer)} / {_ANSWER_MAX_CHARS}")
         for i, (doc_c, _) in enumerate(pairs):
             print(f"  Doc {i+1} (chars) : {len(doc_c)} / {_DOC_MAX_CHARS}")
-        print(f"  Điểm NLI (logit thô → sau softmax):")
-        for i, (l, p) in enumerate(zip(raw_logits, probs)):
-            print(f"    Doc {i+1} logit : entail={l[0]:.3f} | neutral={l[1]:.3f} | contra={l[2]:.3f}")
+        print("  Điểm NLI (logit thô → sau softmax):")
+        for i, (logits, p) in enumerate(zip(raw_logits, probs)):
+            print(f"    Doc {i+1} logit : entail={logits[0]:.3f} | neutral={logits[1]:.3f} | contra={logits[2]:.3f}")
             print(f"    Doc {i+1} prob  : entail={p[0]:.4f} | neutral={p[1]:.4f} | contra={p[2]:.4f}")
         print(f"  Entailment max : {max_entailment:.4f}")
         print(f"  C_groundedness : {c_groundedness:.4f}")

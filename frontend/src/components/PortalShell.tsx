@@ -11,14 +11,12 @@ import type { UserRole } from '@/types';
 const HOME_BY_ROLE: Record<UserRole, string> = {
   employee: '/employee/dashboard',
   technician: '/technician/queue',
-  manager: '/manager/dashboard',
   admin: '/admin/ai-review',
 };
 
 const PORTAL_LABEL: Record<UserRole, string> = {
   employee: 'Employee Support',
   technician: 'Agent Workspace',
-  manager: 'Service Operations',
   admin: 'System Administration',
 };
 

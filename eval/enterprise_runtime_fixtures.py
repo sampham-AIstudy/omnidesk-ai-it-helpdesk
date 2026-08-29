@@ -47,7 +47,7 @@ USERS = {
     "EMPLOYEE_OTHER_A": (102, "eval-employee-other-a", UserRole.EMPLOYEE, CompanyUnit.REAL_ESTATE),
     "EMPLOYEE_B": (103, "eval-employee-b", UserRole.EMPLOYEE, CompanyUnit.AUTOMOTIVE),
     "AGENT_A": (104, "eval-agent-a", UserRole.TECHNICIAN, CompanyUnit.REAL_ESTATE),
-    "MANAGER_A": (105, "eval-manager-a", UserRole.MANAGER, CompanyUnit.REAL_ESTATE),
+    "TECHNICIAN_B": (105, "eval-technician-b", UserRole.TECHNICIAN, CompanyUnit.REAL_ESTATE),
     "ADMIN_A": (106, "eval-admin-a", UserRole.ADMIN, CompanyUnit.CORPORATE),
 }
 TICKETS = {

@@ -69,10 +69,9 @@ export const COMPANY_LABELS: Record<string, string> = {
 };
 
 export const ROLE_LABELS: Record<string, string> = {
-  employee: 'Nhân viên',
-  technician: 'Kỹ thuật viên',
-  manager: 'Quản lý',
-  admin: 'Quản trị',
+  employee: 'Người dùng',
+  technician: 'Chuyên viên',
+  admin: 'Admin',
 };
 
 export function getSLAStatus(slaDeadline: string | Date | null | undefined): 'ok' | 'warning' | 'danger' | 'none' {

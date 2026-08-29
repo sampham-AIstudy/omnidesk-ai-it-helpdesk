@@ -93,8 +93,7 @@ def require_role(*roles: UserRole):
 
 
 ROLE_HIERARCHY = {
-    UserRole.ADMIN: 4,
-    UserRole.MANAGER: 3,
+    UserRole.ADMIN: 3,
     UserRole.TECHNICIAN: 2,
     UserRole.EMPLOYEE: 1,
 }
@@ -128,10 +127,10 @@ def scoped_company_unit(user: User) -> CompanyUnit | None:
 
 
 def can_view_ticket(user: User, ticket) -> bool:
-    """Employee chỉ xem ticket của mình; tech/manager xem tất cả trong company."""
+    """Employees see their own tickets; technicians see their tenant's queue."""
     if user.role == UserRole.ADMIN:
         return True
-    if user.role in (UserRole.MANAGER, UserRole.TECHNICIAN):
+    if user.role == UserRole.TECHNICIAN:
         return can_access_company_unit(user, ticket.submitter.company_unit)
     # Employee chỉ xem ticket của mình
     return ticket.submitter_id == user.id

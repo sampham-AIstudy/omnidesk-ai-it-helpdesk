@@ -1,6 +1,6 @@
 // TypeScript types matching backend Pydantic schemas
 
-export type UserRole = 'employee' | 'technician' | 'manager' | 'admin';
+export type UserRole = 'employee' | 'technician' | 'admin';
 export type CompanyUnit = 'real_estate' | 'automotive' | 'healthcare' | 'corporate';
 
 export type TicketCategory =
@@ -81,7 +81,7 @@ export interface TicketListResponse {
   page_size: number;
 }
 
-export type TicketMessageSender = 'user' | 'agent' | 'technician' | 'manager' | 'system';
+export type TicketMessageSender = 'user' | 'agent' | 'technician' | 'system';
 
 export interface TicketMessage {
   id: number;

@@ -211,13 +211,13 @@ async def test_review_gate_export_split_and_quality_report(db, tmp_path):
         answer_message_id=generation.message_id,
     )
     candidate = (await build_preference_candidates(db, tenant_id=user.company_unit.value))[0]
-    manager = User(username="manager", email="manager@example.invalid", full_name="Manager", hashed_password="x", role=UserRole.MANAGER, company_unit=user.company_unit)
-    db.add(manager)
+    admin = User(username="admin-reviewer", email="admin-reviewer@example.invalid", full_name="Admin", hashed_password="x", role=UserRole.ADMIN, company_unit=user.company_unit)
+    db.add(admin)
     await db.flush()
-    reviewed = await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=manager, status=APPROVED)
+    reviewed = await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=admin, status=APPROVED)
     assert reviewed.review_status == APPROVED
     with pytest.raises(ValueError):
-        await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=manager, status=APPROVED)
+        await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=admin, status=APPROVED)
     output = tmp_path / "export"
     sizes = await export_approved_preference_dataset(db, tenant_id=user.company_unit.value, output_dir=output)
     assigned = deterministic_split(candidate.group_key)
@@ -246,10 +246,10 @@ async def test_training_exclusion_is_one_way_and_removed_from_export_and_readine
         answer_message_id=generation.message_id,
     )
     candidate = (await build_preference_candidates(db, tenant_id=user.company_unit.value))[0]
-    manager = User(username="exclusion-manager", email="exclusion-manager@example.invalid", full_name="Manager", hashed_password="x", role=UserRole.MANAGER, company_unit=user.company_unit)
-    db.add(manager)
+    admin = User(username="exclusion-admin", email="exclusion-admin@example.invalid", full_name="Admin", hashed_password="x", role=UserRole.ADMIN, company_unit=user.company_unit)
+    db.add(admin)
     await db.flush()
-    await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=manager, status=APPROVED)
+    await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=admin, status=APPROVED)
     excluded = await exclude_preference_candidate_from_training(
         db, candidate_id=candidate.candidate_id, reason="controlled_smoke_test", excluded_by="post_activation_hygiene",
     )

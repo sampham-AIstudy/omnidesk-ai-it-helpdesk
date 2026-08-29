@@ -7,12 +7,6 @@ const protectedPages = [
   'src/app/admin/ai-review/page.tsx',
   'src/app/admin/cmdb/page.tsx',
   'src/app/admin/integrations/page.tsx',
-  'src/app/manager/assets-rbac/page.tsx',
-  'src/app/manager/automation/page.tsx',
-  'src/app/manager/changes/page.tsx',
-  'src/app/manager/major-incidents/page.tsx',
-  'src/app/manager/problems/page.tsx',
-  'src/app/manager/sla-matrix/page.tsx',
   'src/app/technician/alerts/page.tsx',
   'src/app/technician/on-call/page.tsx',
 ];

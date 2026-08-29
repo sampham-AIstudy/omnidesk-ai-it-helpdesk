@@ -38,7 +38,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const user: User = {
         ...state.user,
         role,
-        full_name: role === 'employee' ? 'Nguyễn Minh Anh' : role === 'technician' ? 'Lê Minh Công' : role === 'manager' ? 'Phạm Thị Dung' : 'Trần Gia Huy',
+        full_name: role === 'employee' ? 'Nguyễn Minh Anh' : role === 'technician' ? 'Lê Minh Công' : 'Trần Gia Huy',
       };
       if (typeof window !== 'undefined') localStorage.setItem('user', JSON.stringify(user));
       return { user, token: state.token ?? `demo-${role}`, hydrated: true };

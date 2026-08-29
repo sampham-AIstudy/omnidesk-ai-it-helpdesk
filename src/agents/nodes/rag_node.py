@@ -284,7 +284,7 @@ Category: {category}"""),
         logger.error(f"[RAG] LLM synthesis error: {e}")
         # Fallback: return best matching KB solution
         fallback_solution = relevant_docs[0]["content"] if relevant_docs else "Liên hệ IT Support."
-        
+
         return {
             **state,
             "rag_context": relevant_docs,

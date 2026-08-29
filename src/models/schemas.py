@@ -4,7 +4,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from src.models.audit_log import AuditAction
 from src.models.service_request import ServiceRequestStatus
@@ -213,7 +213,7 @@ class TicketStatusUpdate(BaseModel):
 
 class TicketEscalateRequest(BaseModel):
     reason: str = Field(default="Chuyên viên kỹ thuật yêu cầu leo thang xử lý lên cấp Quản lý.", min_length=3, max_length=500)
-    escalate_to: str = Field(default="manager", max_length=50)
+    escalate_to: str = Field(default="technician", max_length=50)
     bump_priority: bool = False
     handover_notes: str | None = Field(default=None, max_length=2000)
 
@@ -279,6 +279,13 @@ class PolicyVersionCreateRequest(BaseModel):
     effective_until: datetime | None = None
     scopes: list[dict] = Field(min_length=1, max_length=100)
     supersedes_version_id: str | None = Field(default=None, max_length=36)
+
+    @field_validator("scopes")
+    @classmethod
+    def reject_retired_manager_scope(cls, scopes: list[dict]) -> list[dict]:
+        if any(str(scope.get("role", "")).casefold() == "manager" for scope in scopes):
+            raise ValueError("manager is a retired role; use technician or admin")
+        return scopes
 
 
 class PolicyExceptionCreateRequest(BaseModel):

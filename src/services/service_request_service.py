@@ -26,22 +26,22 @@ class ServiceRequestAuthorizationError(Exception):
 
 SERVICE_POLICIES: dict[str, dict[str, Any]] = {
     "Đặt lại mật khẩu": {"group": "Identity & Access", "approval": [], "sla": 1, "risk": "low"},
-    "Xin laptop mới": {"group": "Workplace IT", "approval": ["manager"], "sla": 24, "risk": "low"},
-    "Xin máy in": {"group": "Workplace IT", "approval": ["manager"], "sla": 24, "risk": "low"},
-    "Xin thiết bị ngoại vi": {"group": "Workplace IT", "approval": ["manager"], "sla": 16, "risk": "low"},
-    "Xin quyền VPN": {"group": "Network & Security", "approval": ["manager"], "sla": 4, "risk": "medium"},
+    "Xin laptop mới": {"group": "Workplace IT", "approval": ["admin"], "sla": 24, "risk": "low"},
+    "Xin máy in": {"group": "Workplace IT", "approval": ["admin"], "sla": 24, "risk": "low"},
+    "Xin thiết bị ngoại vi": {"group": "Workplace IT", "approval": ["admin"], "sla": 16, "risk": "low"},
+    "Xin quyền VPN": {"group": "Network & Security", "approval": ["admin"], "sla": 4, "risk": "medium"},
     "Xin quyền Git repo": {"group": "Platform Engineering", "approval": ["repository_owner"], "sla": 2, "risk": "medium"},
-    "Xin DB access": {"group": "Data Platform", "approval": ["manager", "data_owner"], "sla": 8, "risk": "high"},
-    "Xin Microsoft 365 license": {"group": "Cloud Productivity", "approval": ["manager"], "sla": 8, "risk": "low"},
+    "Xin DB access": {"group": "Data Platform", "approval": ["admin", "data_owner"], "sla": 8, "risk": "high"},
+    "Xin Microsoft 365 license": {"group": "Cloud Productivity", "approval": ["admin"], "sla": 8, "risk": "low"},
     "Yêu cầu cài đặt phần mềm được phê duyệt": {"group": "Workplace IT", "approval": [], "sla": 8, "risk": "low"},
     "Xin antivirus": {"group": "Endpoint Security", "approval": [], "sla": 8, "risk": "low"},
     "Mở khóa tài khoản": {"group": "Identity & Access", "approval": [], "sla": 1, "risk": "low"},
-    "Xin email alias": {"group": "Cloud Productivity", "approval": ["manager"], "sla": 8, "risk": "low"},
+    "Xin email alias": {"group": "Cloud Productivity", "approval": ["admin"], "sla": 8, "risk": "low"},
     "Cập nhật tên hiển thị / email": {"group": "Identity & Access", "approval": ["hr_record"], "sla": 8, "risk": "low"},
     "Xin IP tĩnh": {"group": "Network Operations", "approval": [], "sla": 16, "risk": "low"},
-    "Xin truy cập mạng nội bộ": {"group": "Network & Security", "approval": ["manager"], "sla": 8, "risk": "medium"},
+    "Xin truy cập mạng nội bộ": {"group": "Network & Security", "approval": ["admin"], "sla": 8, "risk": "medium"},
     "Đăng ký Wi-Fi cho thiết bị mới": {"group": "Network Operations", "approval": [], "sla": 4, "risk": "low"},
-    "Đăng ký mượn thiết bị tạm thời": {"group": "Workplace IT", "approval": ["manager"], "sla": 8, "risk": "low"},
+    "Đăng ký mượn thiết bị tạm thời": {"group": "Workplace IT", "approval": ["admin"], "sla": 8, "risk": "low"},
     "Xin chuyển máy / bàn làm việc": {"group": "Workplace IT", "approval": [], "sla": 16, "risk": "low"},
     "Yêu cầu hỗ trợ thiết bị phòng họp": {"group": "Workplace IT", "approval": [], "sla": 4, "risk": "low"},
 }
@@ -181,7 +181,7 @@ async def list_technician_queue(
 async def list_pending_service_request_approvals(
     db: AsyncSession, approver: User, *, limit: int = 100
 ) -> list[ServiceRequest]:
-    """Manager/admin approval queue with the same central tenant boundary as other workflows."""
+    """Administrator approval queue with the same central tenant boundary."""
     query = (
         select(ServiceRequest)
         .join(User, ServiceRequest.submitter_id == User.id)
@@ -337,10 +337,10 @@ async def approve_service_request(
         )
     )
     if getattr(result, "rowcount", 0) != 1:
-        raise ServiceRequestConflictError("Service Request was already decided by another manager.")
+        raise ServiceRequestConflictError("Service Request was already decided by another administrator.")
     await db.refresh(request)
     await write_service_request_audit(
-        db, request=request, actor_id=approver.id, actor_type="manager",
+        db, request=request, actor_id=approver.id, actor_type="admin",
         action=AuditAction.SERVICE_REQUEST_APPROVED,
         description="Service Request approved for fulfillment",
         metadata={"old_status": ServiceRequestStatus.PENDING_APPROVAL.value, "new_status": request.status.value},
@@ -368,10 +368,10 @@ async def reject_service_request(
         )
     )
     if getattr(result, "rowcount", 0) != 1:
-        raise ServiceRequestConflictError("Service Request was already decided by another manager.")
+        raise ServiceRequestConflictError("Service Request was already decided by another administrator.")
     await db.refresh(request)
     await write_service_request_audit(
-        db, request=request, actor_id=approver.id, actor_type="manager",
+        db, request=request, actor_id=approver.id, actor_type="admin",
         action=AuditAction.SERVICE_REQUEST_REJECTED,
         description="Service Request rejected",
         metadata={

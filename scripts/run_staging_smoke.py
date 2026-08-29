@@ -228,34 +228,31 @@ async def run_staging_smoke() -> dict:
         smoke_results["stages"]["technician_workflows"] = "PASS"
 
         safe_print("\n=======================================================")
-        safe_print("STAGE 7: MANAGER APPROVAL SMOKE")
+        safe_print("STAGE 7: ADMIN APPROVAL SMOKE")
         safe_print("=======================================================")
-        # 7.1 Manager Login
-        mgr_login = await client.post("/api/v1/auth/login", json={"username": "manager1", "password": "demo123"})
-        assert mgr_login.status_code == 200
-        mgr_token = mgr_login.json()["access_token"]
-        headers_mgr = {"Authorization": f"Bearer {mgr_token}"}
+        # 7.1 Admin Login
+        admin_login = await client.post("/api/v1/auth/login", json={"username": "admin", "password": "admin123"})
+        assert admin_login.status_code == 200
+        admin_token = admin_login.json()["access_token"]
+        headers_admin = {"Authorization": f"Bearer {admin_token}"}
 
         # 7.2 Service Request Approval
         approve_resp = await client.post(
             f"/api/v1/service-requests/{sr_num}/approve",
             json={"comment": "Phê duyệt cấp bản quyền phục vụ công việc."},
-            headers=headers_mgr,
+            headers=headers_admin,
         )
         assert approve_resp.status_code == 200, f"Approval failed: {approve_resp.text}"
         approved_sr = approve_resp.json()
         assert approved_sr["status"] in ("approved", "assigned", "in_progress", "submitted")
-        safe_print(f"Manager approval: Request {sr_num} approved successfully, status={approved_sr['status']}.")
-        smoke_results["stages"]["manager_workflows"] = "PASS"
+        safe_print(f"Admin approval: Request {sr_num} approved successfully, status={approved_sr['status']}.")
+        smoke_results["stages"]["admin_approval_workflows"] = "PASS"
 
         safe_print("\n=======================================================")
         safe_print("STAGE 8: ADMIN USER LIFECYCLE & KB SMOKE")
         safe_print("=======================================================")
         # 8.1 Admin Login
-        admin_login = await client.post("/api/v1/auth/login", json={"username": "admin", "password": "admin123"})
-        assert admin_login.status_code == 200
-        admin_token = admin_login.json()["access_token"]
-        headers_admin = {"Authorization": f"Bearer {admin_token}"}
+        # Reuse the authenticated admin principal from the approval smoke.
 
         # 8.2 Create New User via Admin API
         new_username = f"smoke_emp_{datetime.now(UTC).strftime('%M%S')}"

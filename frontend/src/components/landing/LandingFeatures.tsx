@@ -115,7 +115,7 @@ export default function LandingFeatures() {
                 Giám Sát SLA & Phân Quyền 3 Vai Trò (Role-Based Access)
               </h3>
               <p className="text-slate-600 text-sm leading-relaxed">
-                Phân quyền chuyên biệt cho **Employee** (Tạo ticket & chat AI), **Technician** (Hàng đợi xử lý & tiếp nhận ticket), và **Manager/Admin** (Báo cáo SLA, cấu hình AI).
+                Phân quyền cho **User** (Tạo ticket & chat AI), **Chuyên viên** (hàng đợi xử lý, tiếp nhận ticket và theo dõi SLA), và **Admin** (cấu hình và governance).
               </p>
             </div>
 
@@ -129,8 +129,8 @@ export default function LandingFeatures() {
                 <div className="text-[11px] text-blue-600 mt-0.5">Xử Lý & Leo Thang SLA</div>
               </div>
               <div className="p-4 rounded-2xl bg-purple-50 text-center border border-purple-200/60">
-                <div className="text-lg font-bold text-purple-700">Manager</div>
-                <div className="text-[11px] text-purple-600 mt-0.5">Duyệt HITL & Báo Cáo</div>
+                <div className="text-lg font-bold text-purple-700">Admin</div>
+                <div className="text-[11px] text-purple-600 mt-0.5">Quản trị & Governance</div>
               </div>
             </div>
           </div>

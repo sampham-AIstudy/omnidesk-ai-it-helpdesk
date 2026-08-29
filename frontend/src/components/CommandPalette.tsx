@@ -59,7 +59,6 @@ export default function CommandPalette() {
       { label: 'Hàng đợi sự cố', keywords: 'queue incident', icon: Inbox, href: '/technician/queue' },
       { label: 'Yêu cầu dịch vụ cần xử lý', keywords: 'service request fulfillment', icon: ClipboardList, href: '/technician/requests' },
     ];
-    if (user?.role === 'manager') return [];
     return [
       { label: 'Hàng đợi đánh giá AI', keywords: 'ai review', icon: Bot, href: '/admin/ai-review' },
       { label: 'Knowledge base', keywords: 'knowledge kb', icon: FileText, href: '/admin/kb' },

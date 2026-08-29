@@ -25,7 +25,7 @@ export interface EscalationStep {
   delay: string;
   delayMin: number;
   on: 'NO_ACK' | 'ACK_NO_FIX' | 'AUTO';
-  to: 'PRIMARY' | 'SECONDARY' | 'MANAGER' | 'TEAM';
+  to: 'PRIMARY' | 'SECONDARY' | 'TEAM';
 }
 
 export interface OnCallTeam {
@@ -98,12 +98,12 @@ export const ON_CALL_TEAMS: OnCallTeam[] = [
       },
       {
         level: 3,
-        target: 'IT Manager',
-        targetPerson: 'Phạm Thị Dung',
+        target: 'Network response team',
+        targetPerson: 'Network on-call rotation',
         delay: '10 MIN',
         delayMin: 10,
         on: 'NO_ACK',
-        to: 'MANAGER',
+        to: 'TEAM',
       },
     ],
   },
@@ -144,12 +144,12 @@ export const ON_CALL_TEAMS: OnCallTeam[] = [
       },
       {
         level: 3,
-        target: 'IT Director',
-        targetPerson: 'Phạm Thị Dung',
+        target: 'Cloud response team',
+        targetPerson: 'Cloud on-call rotation',
         delay: '20 MIN',
         delayMin: 20,
         on: 'NO_ACK',
-        to: 'MANAGER',
+        to: 'TEAM',
       },
     ],
   },
@@ -203,7 +203,7 @@ export const ON_CALL_TEAMS: OnCallTeam[] = [
         delay: '15 MIN',
         delayMin: 15,
         on: 'NO_ACK',
-        to: 'MANAGER',
+        to: 'TEAM',
       },
     ],
   },

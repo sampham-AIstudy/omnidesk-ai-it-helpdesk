@@ -23,7 +23,7 @@ async def api_client(tmp_path):
         await connection.run_sync(Base.metadata.create_all)
     maker = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
     async with maker() as session:
-        for username, role, password in (("employee", UserRole.EMPLOYEE, "demo123"), ("tech", UserRole.TECHNICIAN, "demo123"), ("manager", UserRole.MANAGER, "demo123"), ("admin", UserRole.ADMIN, "admin123")):
+        for username, role, password in (("employee", UserRole.EMPLOYEE, "demo123"), ("tech", UserRole.TECHNICIAN, "demo123"), ("admin", UserRole.ADMIN, "admin123")):
             session.add(User(username=username, email=f"{username}@example.test", full_name=username, hashed_password=hash_password(password), role=role, company_unit=CompanyUnit.CORPORATE))
         await session.commit()
 
@@ -78,7 +78,6 @@ async def login(client, username: str, password: str = "demo123") -> dict[str, s
 async def test_policy_admin_rbac_all_management_routes(api_client):
     admin = await login(api_client, "admin", "admin123")
     employee = await login(api_client, "employee")
-    manager = await login(api_client, "manager")
     technician = await login(api_client, "tech")
     payload = {"policy_key": "RBAC-POLICY", "tenant_id": "automotive", "global_policy": False, "name": "RBAC", "category": "security"}
     mutations = [
@@ -94,7 +93,7 @@ async def test_policy_admin_rbac_all_management_routes(api_client):
         ("post", "/api/v1/admin/policies/missing/exceptions/missing/revoke", None),
     ]
     reads = ["/api/v1/admin/policies", "/api/v1/admin/policies/missing", "/api/v1/admin/policies/missing/versions", "/api/v1/admin/policies/missing/versions/1", "/api/v1/admin/policies/missing/exceptions", "/api/v1/admin/policies/missing/audit"]
-    for headers in (employee, technician, manager):
+    for headers in (employee, technician):
         for method, path, body in mutations:
             response = await getattr(api_client, method)(path, json=body, headers=headers)
             assert response.status_code == 403

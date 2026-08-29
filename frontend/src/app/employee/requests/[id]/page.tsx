@@ -30,7 +30,7 @@ import { formatVietnamTime } from '@/lib/utils';
 
 const API_STATUS_TO_UI = {
   submitted: 'SUBMITTED',
-  pending_approval: 'MANAGER_APPROVAL',
+  pending_approval: 'ADMIN_APPROVAL',
   approved: 'IT_APPROVAL',
   assigned: 'FULFILLMENT',
   in_progress: 'FULFILLMENT',
@@ -73,7 +73,7 @@ export default function ServiceRequestDetailPage() {
         items: [{ id: `FL-${data.request_number}`, name: data.service_name, status: uiStatus, assignee: data.fulfillment_group, updatedAt: formatVietnamTime(data.updated_at) }],
         timeline: [
           { key: 'SUBMITTED', title: 'Submitted', subTitle: 'Đã gửi yêu cầu', doneAt: formatVietnamTime(data.created_at) },
-          { key: 'MANAGER_APPROVAL', title: 'Approval', subTitle: 'Phê duyệt theo chính sách', note: data.approval_policy === '[]' ? 'Không yêu cầu phê duyệt.' : 'Đang chờ approval policy.' },
+          { key: 'ADMIN_APPROVAL', title: 'Approval', subTitle: 'Phê duyệt theo chính sách', note: data.approval_policy === '[]' ? 'Không yêu cầu phê duyệt.' : 'Đang chờ approval policy.' },
           { key: 'IT_APPROVAL', title: 'Routing', subTitle: 'Định tuyến fulfillment', note: `Nhóm xử lý: ${data.fulfillment_group}.` },
           { key: 'FULFILLMENT', title: 'Fulfillment', subTitle: 'Cấp phát dịch vụ' },
           { key: 'PROVISIONING', title: 'Provisioning', subTitle: 'Cấu hình / bàn giao' },

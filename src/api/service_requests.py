@@ -70,8 +70,8 @@ def _technician_allowed(user: User) -> bool:
 
 
 def _approval_allowed(user: User) -> bool:
-    """Service Request approval is a manager/admin business decision, not Incident HITL."""
-    return user.role in {UserRole.MANAGER, UserRole.ADMIN}
+    """Service-request approval remains an administrative governance decision."""
+    return user.role == UserRole.ADMIN
 
 
 async def _ensure_request_access(request, current_user: User, db: AsyncSession) -> None:
@@ -91,7 +91,7 @@ async def pending_approval_queue(
     current_user: User = Depends(get_current_active_user),
 ):
     if not _approval_allowed(current_user):
-        raise HTTPException(status_code=403, detail="Manager approval access is required.")
+        raise HTTPException(status_code=403, detail="Administrator approval access is required.")
     items = await list_pending_service_request_approvals(db, current_user, limit=limit)
     return ServiceRequestApprovalQueueResponse(
         items=[ServiceRequestDetailResponse.model_validate(await serialize_service_request(db, item)) for item in items]
@@ -154,7 +154,7 @@ async def approve_request(
     current_user: User = Depends(get_current_active_user),
 ):
     if not _approval_allowed(current_user):
-        raise HTTPException(status_code=403, detail="Manager approval access is required.")
+        raise HTTPException(status_code=403, detail="Administrator approval access is required.")
     request = await get_service_request(db, request_number)
     if not request:
         raise HTTPException(status_code=404, detail="Service Request not found.")
@@ -174,7 +174,7 @@ async def reject_request(
     current_user: User = Depends(get_current_active_user),
 ):
     if not _approval_allowed(current_user):
-        raise HTTPException(status_code=403, detail="Manager approval access is required.")
+        raise HTTPException(status_code=403, detail="Administrator approval access is required.")
     request = await get_service_request(db, request_number)
     if not request:
         raise HTTPException(status_code=404, detail="Service Request not found.")

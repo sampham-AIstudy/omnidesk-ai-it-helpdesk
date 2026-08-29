@@ -20,7 +20,7 @@ def disable_non_workflow_side_effects(monkeypatch: pytest.MonkeyPatch) -> None:
 async def _create() -> tuple[int, int, int]:
     async with AsyncSessionLocal() as db:
         employee = (await db.execute(select(User).where(User.username == "employee1"))).scalar_one()
-        manager = (await db.execute(select(User).where(User.username == "manager1"))).scalar_one()
+        manager = (await db.execute(select(User).where(User.username == "tech1"))).scalar_one()
         ticket = await ticket_service.create_ticket(
             db, title="Baseline workflow ticket", description="Laptop does not power on.", submitter_id=employee.id
         )

@@ -478,8 +478,8 @@ async def review_preference_candidate(
 ) -> PreferenceCandidate:
     if status not in {APPROVED, REJECTED}:
         raise ValueError("Review status must be APPROVED or REJECTED")
-    if reviewer.role not in {UserRole.ADMIN, UserRole.MANAGER}:
-        raise PermissionError("Only an administrator or manager may review a preference candidate")
+    if reviewer.role != UserRole.ADMIN:
+        raise PermissionError("Only an administrator may review a preference candidate")
     candidate = await db.get(PreferenceCandidate, candidate_id)
     if candidate is None:
         raise LookupError("Preference candidate not found")

@@ -97,7 +97,7 @@ export default function NotificationCenter() {
     setOpen(false);
 
     // Get current user role from localStorage
-    let role = 'manager';
+    let role = 'technician';
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       if (user?.role) role = user.role;
@@ -105,7 +105,7 @@ export default function NotificationCenter() {
       // fallback
     }
 
-    const routePrefix = role === 'admin' ? '/manager' : `/${role}`;
+    const routePrefix = `/${role}`;
     router.push(`${routePrefix}/tickets/${n.ticketId}`);
   };
 

@@ -179,14 +179,14 @@ async def test_e2e_escalation_waits_for_human_without_fake_acceptance(client: As
 
 @pytest.mark.asyncio
 async def test_e2e_takeover_requires_role_and_persists_assignment_and_audit(
-    client: AsyncClient, auth_employee: str, auth_manager: str,
+    client: AsyncClient, auth_employee: str, auth_technician: str,
 ) -> None:
     ticket_id, _ = await create_incident(client, auth_employee, prefix="E2E takeover")
     await client.post(f"/api/v1/tickets/{ticket_id}/request-technician", headers=headers(auth_employee))
 
     forbidden = await client.post(f"/api/v1/tickets/{ticket_id}/takeover", headers=headers(auth_employee))
     assert forbidden.status_code == 403
-    accepted = await client.post(f"/api/v1/tickets/{ticket_id}/takeover", headers=headers(auth_manager))
+    accepted = await client.post(f"/api/v1/tickets/{ticket_id}/takeover", headers=headers(auth_technician))
     assert accepted.status_code == 200, accepted.text
 
     ticket = await ticket_row(ticket_id)
@@ -203,19 +203,19 @@ async def test_e2e_takeover_requires_role_and_persists_assignment_and_audit(
 
 @pytest.mark.asyncio
 async def test_e2e_status_close_reopen_and_rating_follow_db_state_machine(
-    client: AsyncClient, auth_employee: str, auth_manager: str,
+    client: AsyncClient, auth_employee: str, auth_technician: str,
 ) -> None:
     ticket_id, _ = await create_incident(client, auth_employee, prefix="E2E close")
     moved = await client.patch(
-        f"/api/v1/tickets/{ticket_id}/status", json={"status": "in_progress", "note": "work started"}, headers=headers(auth_manager),
+        f"/api/v1/tickets/{ticket_id}/status", json={"status": "in_progress", "note": "work started"}, headers=headers(auth_technician),
     )
     assert moved.status_code == 200, moved.text
-    closed = await client.post(f"/api/v1/tickets/{ticket_id}/close", headers=headers(auth_manager))
+    closed = await client.post(f"/api/v1/tickets/{ticket_id}/close", headers=headers(auth_technician))
     assert closed.status_code == 200, closed.text
     assert (await ticket_row(ticket_id)).status == TicketStatus.CLOSED
 
     invalid = await client.patch(
-        f"/api/v1/tickets/{ticket_id}/status", json={"status": "in_progress"}, headers=headers(auth_manager),
+        f"/api/v1/tickets/{ticket_id}/status", json={"status": "in_progress"}, headers=headers(auth_technician),
     )
     assert invalid.status_code == 400
     rated = await client.post(
@@ -324,13 +324,13 @@ async def test_e2e_cross_user_cross_tenant_and_fake_role_do_not_bypass_rbac(clie
 
 
 @pytest.mark.asyncio
-async def test_e2e_concurrent_takeover_leaves_one_persisted_state(client: AsyncClient, auth_employee: str, auth_manager: str) -> None:
+async def test_e2e_concurrent_takeover_leaves_one_persisted_state(client: AsyncClient, auth_employee: str, auth_technician: str) -> None:
     ticket_id, _ = await create_incident(client, auth_employee, prefix="E2E concurrent takeover")
     await client.post(f"/api/v1/tickets/{ticket_id}/request-technician", headers=headers(auth_employee))
     technician = await login(client, "tech1")
 
     manager_response, technician_response = await asyncio.gather(
-        client.post(f"/api/v1/tickets/{ticket_id}/takeover", headers=headers(auth_manager)),
+        client.post(f"/api/v1/tickets/{ticket_id}/takeover", headers=headers(auth_technician)),
         client.post(f"/api/v1/tickets/{ticket_id}/takeover", headers=headers(technician)),
     )
     assert manager_response.status_code in {200, 409}

@@ -42,12 +42,6 @@ def require_admin(current_user: User = Depends(get_current_active_user)) -> User
     return current_user
 
 
-def require_manager_or_admin(current_user: User = Depends(get_current_active_user)) -> User:
-    if not auth_service.has_min_role(current_user, UserRole.MANAGER):
-        raise HTTPException(status_code=403, detail="Cần quyền Manager trở lên")
-    return current_user
-
-
 def _kb_visibility_clause(user: User):
     """Match vector-retrieval ACL rules before returning a raw KB article."""
     # System admins manage lifecycle and incident response across tenants, but
@@ -105,7 +99,7 @@ async def list_preference_candidates(
     date_to: datetime | None = Query(default=None),
     source_type: str | None = Query(default=None, max_length=80),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_manager_or_admin),
+    current_user: User = Depends(require_admin),
 ):
     requested_tenant = tenant or str(getattr(current_user.company_unit, "value", current_user.company_unit))
     if tenant is None and auth_service.scoped_company_unit(current_user) is None:
@@ -137,7 +131,7 @@ async def review_preference_candidate_api(
     candidate_id: str,
     payload: PreferenceCandidateReviewRequest,
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_manager_or_admin),
+    current_user: User = Depends(require_admin),
 ):
     candidate = await db.get(PreferenceCandidate, candidate_id)
     if candidate is None:
@@ -169,7 +163,7 @@ async def review_preference_candidate_api(
 @router.get("/users", response_model=list[UserResponse])
 async def list_users(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_manager_or_admin),
+    current_user: User = Depends(require_admin),
 ):
     query = select(User).order_by(User.created_at.desc())
     company_scope = auth_service.scoped_company_unit(current_user)
@@ -561,7 +555,7 @@ async def delete_kb_entry(
 
 
 @router.get("/kb/stats")
-async def kb_stats(_user: User = Depends(require_manager_or_admin)):
+async def kb_stats(_user: User = Depends(require_admin)):
     return {
         "chroma_documents": get_collection_count(),
         "status": "healthy",
@@ -571,7 +565,7 @@ async def kb_stats(_user: User = Depends(require_manager_or_admin)):
 @router.get("/ai-metrics")
 async def get_ai_metrics(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_manager_or_admin),
+    current_user: User = Depends(require_admin),
 ):
     """AI Observability & Performance Analytics Endpoint."""
     from sqlalchemy import func

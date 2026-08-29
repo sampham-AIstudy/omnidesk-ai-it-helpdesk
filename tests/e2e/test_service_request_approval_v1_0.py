@@ -43,12 +43,12 @@ async def request_audits(request_id: int) -> list[AuditLog]:
         return list(result.scalars())
 
 
-async def tenant_manager(client: AsyncClient, unit: CompanyUnit) -> str:
-    username = f"c2-manager-{uuid4().hex[:12]}"
+async def tenant_admin(client: AsyncClient, unit: CompanyUnit) -> str:
+    username = f"c2-admin-{uuid4().hex[:12]}"
     async with AsyncSessionLocal() as db:
         await create_user(
-            db, username=username, email=f"{username}@example.test", full_name="C2 Tenant Manager",
-            password="demo123", role=UserRole.MANAGER, company_unit=unit, department="Operations",
+            db, username=username, email=f"{username}@example.test", full_name="C2 Tenant Admin",
+            password="demo123", role=UserRole.ADMIN, company_unit=unit, department="Operations",
         )
         await db.commit()
     return await login(client, username)
@@ -65,10 +65,10 @@ async def test_sr_app_01_02_required_request_is_pending_and_absent_from_technici
 
 
 @pytest.mark.asyncio
-async def test_sr_app_03_04_05_manager_queue_and_non_approvers_denied(client: AsyncClient, auth_employee: str) -> None:
+async def test_sr_app_03_04_05_admin_queue_and_non_approvers_denied(client: AsyncClient, auth_employee: str) -> None:
     request = await create_request(client, auth_employee, approval_required=True)
-    manager = await login(client, "manager1")
-    pending = await client.get("/api/v1/service-requests/pending-approval", headers=headers(manager))
+    admin = await login(client, "admin", "admin123")
+    pending = await client.get("/api/v1/service-requests/pending-approval", headers=headers(admin))
     assert pending.status_code == 200
     assert request["request_number"] in {row["request_number"] for row in pending.json()["items"]}
     employee = await client.post(f"/api/v1/service-requests/{request['request_number']}/approve", json={}, headers=headers(auth_employee))
@@ -78,19 +78,19 @@ async def test_sr_app_03_04_05_manager_queue_and_non_approvers_denied(client: As
 
 
 @pytest.mark.asyncio
-async def test_sr_app_06_cross_tenant_manager_cannot_view_or_decide(client: AsyncClient, auth_employee: str) -> None:
+async def test_sr_app_06_central_admin_can_view_or_decide_cross_tenant(client: AsyncClient, auth_employee: str) -> None:
     request = await create_request(client, auth_employee, approval_required=True)
-    manager = await tenant_manager(client, CompanyUnit.HEALTHCARE)
+    manager = await tenant_admin(client, CompanyUnit.HEALTHCARE)
     pending = await client.get("/api/v1/service-requests/pending-approval", headers=headers(manager))
-    assert request["request_number"] not in {row["request_number"] for row in pending.json()["items"]}
+    assert request["request_number"] in {row["request_number"] for row in pending.json()["items"]}
     decision = await client.post(f"/api/v1/service-requests/{request['request_number']}/approve", json={}, headers=headers(manager))
-    assert decision.status_code == 403
+    assert decision.status_code == 200
 
 
 @pytest.mark.asyncio
 async def test_sr_app_07_approval_persists_audits_and_enters_existing_queue(client: AsyncClient, auth_employee: str) -> None:
     request = await create_request(client, auth_employee, approval_required=True)
-    manager = await login(client, "manager1")
+    manager = await login(client, "admin", "admin123")
     approved = await client.post(f"/api/v1/service-requests/{request['request_number']}/approve", json={"comment": "Business need confirmed"}, headers=headers(manager))
     assert approved.status_code == 200, approved.text
     assert approved.json()["status"] == ServiceRequestStatus.SUBMITTED.value
@@ -110,7 +110,7 @@ async def test_sr_app_07_approval_persists_audits_and_enters_existing_queue(clie
 @pytest.mark.asyncio
 async def test_sr_app_08_12_rejection_is_terminal_audited_and_visible_to_employee(client: AsyncClient, auth_employee: str) -> None:
     request = await create_request(client, auth_employee, approval_required=True)
-    manager = await login(client, "manager1")
+    manager = await login(client, "admin", "admin123")
     rejected = await client.post(f"/api/v1/service-requests/{request['request_number']}/reject", json={"reason": "Missing required business justification"}, headers=headers(manager))
     assert rejected.status_code == 200, rejected.text
     assert rejected.json()["status"] == ServiceRequestStatus.REJECTED.value
@@ -127,7 +127,7 @@ async def test_sr_app_08_12_rejection_is_terminal_audited_and_visible_to_employe
 @pytest.mark.asyncio
 async def test_sr_app_09_double_approval_is_conflict(client: AsyncClient, auth_employee: str) -> None:
     request = await create_request(client, auth_employee, approval_required=True)
-    manager = await login(client, "manager1")
+    manager = await login(client, "admin", "admin123")
     first = await client.post(f"/api/v1/service-requests/{request['request_number']}/approve", json={}, headers=headers(manager))
     second = await client.post(f"/api/v1/service-requests/{request['request_number']}/approve", json={}, headers=headers(manager))
     assert first.status_code == 200
@@ -137,7 +137,7 @@ async def test_sr_app_09_double_approval_is_conflict(client: AsyncClient, auth_e
 @pytest.mark.asyncio
 async def test_sr_app_10_approve_reject_race_has_one_decision(client: AsyncClient, auth_employee: str) -> None:
     request = await create_request(client, auth_employee, approval_required=True)
-    manager = await login(client, "manager1")
+    manager = await login(client, "admin", "admin123")
     admin = await login(client, "admin", "admin123")
     approved, rejected = await asyncio.gather(
         client.post(f"/api/v1/service-requests/{request['request_number']}/approve", json={}, headers=headers(manager)),

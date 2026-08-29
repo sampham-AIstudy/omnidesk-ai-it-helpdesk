@@ -9,7 +9,7 @@ import api from '@/lib/api';
 
 type UserUpdate = Pick<User, 'full_name' | 'email' | 'phone' | 'role' | 'company_unit' | 'department' | 'is_vip'> & { is_active?: boolean };
 type FulfillmentMembership = { technician_id: number; fulfillment_groups: string[] };
-const roles = ['employee', 'technician', 'manager', 'admin'] as const;
+const roles = ['employee', 'technician', 'admin'] as const;
 const units = ['real_estate', 'automotive', 'healthcare', 'corporate'] as const;
 const errorMessage = (error: unknown) => (error as { response?: { data?: { detail?: string } } }).response?.data?.detail ?? 'Unable to save changes. No server state was changed.';
 

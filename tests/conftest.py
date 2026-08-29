@@ -56,12 +56,10 @@ async def auth_employee(client):
 
 
 @pytest_asyncio.fixture
-async def auth_manager(client):
-    """Fixture: đăng nhập manager, trả về token."""
-    resp = await client.post("/api/v1/auth/login", json={"username": "manager1", "password": "demo123"})
-    if resp.status_code != 200:
-        return None
-    return resp.json()["access_token"]
+async def auth_technician(client):
+    """Login the operational Technician fixture."""
+    resp = await client.post("/api/v1/auth/login", json={"username": "tech1", "password": "demo123"})
+    return resp.json()["access_token"] if resp.status_code == 200 else None
 
 
 @pytest_asyncio.fixture

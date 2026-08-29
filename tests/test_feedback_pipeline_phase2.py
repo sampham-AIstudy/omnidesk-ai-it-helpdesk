@@ -87,16 +87,16 @@ async def test_explicit_correction_is_high_tier_and_manifest_is_stable(db, tmp_p
     await record_ticket_outcome_event(db, tenant_id=user.company_unit.value, ticket_id=ticket.id, outcome="reopened", actor_role="employee", answer_message_id=generation.message_id, reason="Still failing")
     candidate = (await build_preference_candidates(db, tenant_id=user.company_unit.value))[0]
     assert candidate.quality_tier == "HIGH"
-    manager = User(username="p2-manager", email="p2-manager@example.invalid", full_name="Manager", hashed_password="x", role=UserRole.MANAGER, company_unit=user.company_unit)
+    manager = User(username="p2-admin", email="p2-admin@example.invalid", full_name="Admin", hashed_password="x", role=UserRole.ADMIN, company_unit=user.company_unit)
     employee = User(username="p2-employee", email="p2-employee@example.invalid", full_name="Employee", hashed_password="x", role=UserRole.EMPLOYEE, company_unit=user.company_unit)
     db.add_all([manager, employee])
     await db.flush()
     with pytest.raises(PermissionError):
         await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=employee, status=APPROVED)
-    other_manager = User(username="p2-other-manager", email="p2-other-manager@example.invalid", full_name="Other", hashed_password="x", role=UserRole.MANAGER, company_unit=CompanyUnit.AUTOMOTIVE)
+    other_manager = User(username="p2-other-tech", email="p2-other-tech@example.invalid", full_name="Other", hashed_password="x", role=UserRole.TECHNICIAN, company_unit=CompanyUnit.AUTOMOTIVE)
     db.add(other_manager)
     await db.flush()
-    with pytest.raises(PermissionError, match="tenant"):
+    with pytest.raises(PermissionError, match="administrator"):
         await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=other_manager, status=APPROVED)
     await review_preference_candidate(db, candidate_id=candidate.candidate_id, reviewer=manager, status=APPROVED)
     first, second = tmp_path / "first", tmp_path / "second"

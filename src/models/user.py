@@ -14,7 +14,6 @@ from src.models.ticket import FlexibleEnum
 class UserRole(enum.StrEnum):
     EMPLOYEE = "employee"          # Nhân viên gửi ticket
     TECHNICIAN = "technician"      # Kỹ thuật viên xử lý
-    MANAGER = "manager"            # Quản lý phê duyệt HITL
     ADMIN = "admin"                # Quản trị hệ thống
 
 

@@ -291,14 +291,14 @@ async def apply_hitl_decision(
     db: AsyncSession,
     ticket_id: int,
     approved: bool,
-    manager_id: int,
+    approver_id: int,
     note: str | None,
 ) -> Ticket | None:
     ticket = await get_ticket(db, ticket_id)
     if not ticket:
         return None
 
-    ticket.hitl_approved_by_id = manager_id
+    ticket.hitl_approved_by_id = approver_id
     ticket.hitl_note = note
     ticket.hitl_decided_at = datetime.now(UTC)
 
@@ -315,10 +315,10 @@ async def apply_hitl_decision(
     await write_audit_log(
         db=db,
         ticket_id=ticket_id,
-        actor_id=manager_id,
+        actor_id=approver_id,
         actor_type="user",
         action=action,
-        description=f"Manager {'phê duyệt' if approved else 'từ chối'} HITL. Note: {note or 'N/A'}",
+        description=f"Staff {'phê duyệt' if approved else 'từ chối'} HITL. Note: {note or 'N/A'}",
     )
     return ticket
 
@@ -385,7 +385,7 @@ async def escalate_ticket(
     ticket_id: int,
     reason: str,
     actor: User | None = None,
-    escalate_to: str = "manager",
+    escalate_to: str = "technician",
     bump_priority: bool = False,
     handover_notes: str | None = None,
 ) -> Ticket | None:

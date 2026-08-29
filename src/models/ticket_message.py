@@ -20,7 +20,6 @@ class TicketMessageSender(str, enum.Enum):
     USER = "user"
     AGENT = "agent"
     TECHNICIAN = "technician"
-    MANAGER = "manager"
     SYSTEM = "system"
 
 

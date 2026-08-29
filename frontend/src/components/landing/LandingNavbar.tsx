@@ -52,7 +52,7 @@ export default function LandingNavbar() {
     if (!user) return '/login';
     if (user.role === 'employee') return '/employee/dashboard';
     if (user.role === 'technician') return '/technician/queue';
-    return '/manager/dashboard';
+    return '/login';
   };
 
   return (
@@ -162,5 +162,4 @@ export default function LandingNavbar() {
     </>
   );
 }
-
 

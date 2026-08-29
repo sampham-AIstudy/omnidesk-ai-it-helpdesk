@@ -19,12 +19,6 @@ from src.models.audit_log import AuditAction
 from src.models.ticket import Ticket, TicketStatus
 from src.models.ticket_message import TicketMessage, TicketMessageSender
 from src.models.user import User, UserRole
-from src.services.rag_confidence_service import (
-    calculate_groundedness_with_reranker,
-    compute_final_rag_confidence,
-    extract_consensus_score,
-    extract_retrieval_score,
-)
 from src.observability.tracing import (
     record_ticket_evidence_overlap,
     record_ticket_stage_latency,
@@ -45,6 +39,12 @@ from src.services.context_query_service import (
 from src.services.knowledge_gap_telemetry import record_retrieval_outcome
 from src.services.llm import get_rag_llm
 from src.services.profile_chat_service import _fold, self_profile_reply
+from src.services.rag_confidence_service import (
+    calculate_groundedness_with_reranker,
+    compute_final_rag_confidence,
+    extract_consensus_score,
+    extract_retrieval_score,
+)
 from src.services.rag_service import get_collection, search_similar
 from src.services.recent_conversation_context import (
     exclude_recent_history_from_episodic,
@@ -190,7 +190,7 @@ async def add_message(
     # A human answer is a preference signal only when its author explicitly
     # identifies the exact AI message it corrects. Temporal proximity is not
     # sufficient evidence for a pair.
-    if corrects_answer_message_id and sender_type in {TicketMessageSender.TECHNICIAN, TicketMessageSender.MANAGER} and not is_internal:
+    if corrects_answer_message_id and sender_type == TicketMessageSender.TECHNICIAN and not is_internal:
         try:
             from src.models.ticket import Ticket
             from src.models.user import User
@@ -488,13 +488,7 @@ async def _handle_ticket_message(
     ):
         return await list_messages(db, ticket.id)
 
-    sender_type = (
-        TicketMessageSender.USER
-        if user.role == UserRole.EMPLOYEE
-        else TicketMessageSender.MANAGER
-        if user.role in (UserRole.MANAGER, UserRole.ADMIN)
-        else TicketMessageSender.TECHNICIAN
-    )
+    sender_type = TicketMessageSender.USER if user.role == UserRole.EMPLOYEE else TicketMessageSender.TECHNICIAN
 
     # 1. Load recent history before processing to enable context resolution
     recent_history = await load_ticket_recent_history(
@@ -514,7 +508,7 @@ async def _handle_ticket_message(
     record_ticket_stage_latency("context_resolution", (perf_counter() - context_started) * 1000)
     resolved_query = resolution.resolved_query
 
-    # 3. Technician / Manager Message Handling
+    # 3. Staff message handling
     if user.role != UserRole.EMPLOYEE:
         current_message = await add_message(
             db,

@@ -130,9 +130,7 @@ export default function Sidebar() {
       ? END_USER_NAV.filter((item) => item.href !== '/employee/profile')
       : user?.role === 'technician'
       ? TECH_AGENT_NAV
-      : user?.role === 'admin'
-      ? SYSTEM_ADMIN_NAV
-      : IT_MANAGER_NAV;
+      : SYSTEM_ADMIN_NAV;
 
   const quickMatches = useMemo(() => {
     const query = quickQuery.trim().toLocaleLowerCase('vi-VN');
@@ -201,7 +199,7 @@ export default function Sidebar() {
           <div className="sidebar-brand-copy">
             <div>OmniDesk.AI</div>
             <div>
-              {user?.role === 'admin' ? 'Super Admin Console' : user?.role === 'manager' ? 'IT Manager Tower' : user?.role === 'technician' ? 'IT Agent Workbench' : 'End-User Portal'}
+              {user?.role === 'admin' ? 'Super Admin Console' : user?.role === 'technician' ? 'IT Agent Workbench' : 'End-User Portal'}
             </div>
           </div>
         </div>
@@ -275,7 +273,7 @@ export default function Sidebar() {
         {user && (
           <div className="sidebar-footer">
             <Link
-              href={user.role === 'employee' ? '/employee/profile' : user.role === 'technician' ? '/technician/queue' : user.role === 'manager' ? '/manager/dashboard' : '/admin/ai-review'}
+              href={user.role === 'employee' ? '/employee/profile' : user.role === 'technician' ? '/technician/queue' : '/admin/ai-review'}
               className="sidebar-user-card"
               style={{ display: 'flex', gap: 10, alignItems: 'center', padding: 8, borderRadius: 12, marginBottom: 8, color: 'inherit', textDecoration: 'none' }}
               title={collapsed ? `${user.full_name} (${ROLE_LABELS[user.role]})` : 'Mở hồ sơ cá nhân'}

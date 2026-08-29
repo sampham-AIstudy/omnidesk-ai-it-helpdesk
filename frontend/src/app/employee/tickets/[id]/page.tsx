@@ -267,7 +267,7 @@ export default function RiotStyleTicketDetailPage() {
   const isClosedOrResolved = ['closed', 'resolved', 'rejected', 'pending_closure'].includes(ticket.status);
   const isWaitingAgent = ticket.status === 'waiting_for_agent' || ticket.status === 'escalated';
   const isHumanActive = ticket.status === 'human_active' || (ticket.assignee_id && !isClosedOrResolved);
-  const isTechnician = user?.role === 'technician' || user?.role === 'manager' || user?.role === 'admin';
+  const isTechnician = user?.role === 'technician' || user?.role === 'admin';
 
   return (
     <div className="ticket-detail max-w-6xl mx-auto space-y-6 pb-12">

@@ -38,17 +38,17 @@ export default function EscalateModal({ ticket, onClose, onSuccess }: EscalateMo
       (
         await api.post(`/tickets/${ticket.id}/escalate`, {
           reason: finalReason,
-          escalate_to: 'manager',
+          escalate_to: 'technician',
           bump_priority: bumpPriority,
           handover_notes: handoverNotes.trim() || null,
         })
       ).data,
     onSuccess: () => {
-      toast.success('Sự cố đã được leo thang lên cấp Quản lý');
+      toast.success('Sự cố đã được leo thang đến nhóm Kỹ thuật viên');
       queryClient.invalidateQueries({ queryKey: ['ticket', ticket.id] });
       queryClient.invalidateQueries({ queryKey: ['ticket', String(ticket.id)] });
       queryClient.invalidateQueries({ queryKey: ['ticket-messages', String(ticket.id)] });
-      queryClient.invalidateQueries({ queryKey: ['manager-tickets-queue'] });
+      queryClient.invalidateQueries({ queryKey: ['technician-tickets-queue'] });
       queryClient.invalidateQueries({ queryKey: ['tech-queue'] });
       onSuccess?.();
       onClose();
@@ -77,7 +77,7 @@ export default function EscalateModal({ ticket, onClose, onSuccess }: EscalateMo
             </div>
             <div>
               <h2 id="escalate-title" style={{ margin: 0, fontSize: 17, fontWeight: 800 }}>
-                Leo thang sự cố lên Quản lý
+                Leo thang sự cố đến Kỹ thuật viên
               </h2>
               <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>
                 {ticket.ticket_number} · {ticket.title}
@@ -107,7 +107,7 @@ export default function EscalateModal({ ticket, onClose, onSuccess }: EscalateMo
           <AlertTriangle size={18} color="#d97706" style={{ flexShrink: 0, marginTop: 1 }} />
           <div>
             Sự cố sẽ được chuyển sang trạng thái <strong>LEO THANG (ESCALATED)</strong> và gửi thông báo trực tiếp
-            đến Quản lý IT phụ trách đơn vị.
+            đến nhóm Kỹ thuật viên phụ trách đơn vị.
           </div>
         </div>
 
@@ -155,7 +155,7 @@ export default function EscalateModal({ ticket, onClose, onSuccess }: EscalateMo
 
           <div>
             <label style={{ display: 'block', fontSize: 12, fontWeight: 700, marginBottom: 6, color: 'var(--text)' }}>
-              Ghi chú bàn giao kỹ thuật cho Quản lý
+              Ghi chú bàn giao kỹ thuật cho nhóm xử lý
             </label>
             <textarea
               rows={3}
@@ -193,7 +193,7 @@ export default function EscalateModal({ ticket, onClose, onSuccess }: EscalateMo
                 <Zap size={14} /> Nâng mức độ ưu tiên lên KHẨN CẤP (Critical P1)
               </div>
               <p style={{ margin: '3px 0 0', fontSize: 11, color: 'var(--text-secondary)' }}>
-                Tự động kích hoạt còi cảnh báo đỏ trên Control Tower và rút ngắn SLA để Quản lý xử lý ngay lập tức.
+                Tự động kích hoạt còi cảnh báo đỏ trên Control Tower và rút ngắn SLA để nhóm Kỹ thuật viên xử lý ngay lập tức.
               </p>
             </div>
           </div>

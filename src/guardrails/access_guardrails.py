@@ -31,14 +31,6 @@ ROLE_PERMISSIONS: dict[str, list[str]] = {
         "route_ticket_low_risk",
         "propose_resolution",
     ],
-    "manager": [
-        "search_kb",
-        "get_ticket",
-        "update_ticket",
-        "add_ticket_comment",
-        "route_ticket",
-        "approve_hitl",
-    ],
     "admin": [
         "search_kb",
         "get_ticket",

@@ -28,7 +28,6 @@ async def api_client(tmp_path):
         specs = [
             ("employee", UserRole.EMPLOYEE, CompanyUnit.AUTOMOTIVE, "sales", True),
             ("technician", UserRole.TECHNICIAN, CompanyUnit.AUTOMOTIVE, "ops", True),
-            ("manager", UserRole.MANAGER, CompanyUnit.AUTOMOTIVE, "management", True),
             ("admin", UserRole.ADMIN, CompanyUnit.AUTOMOTIVE, "governance", True),
             ("wrong_department", UserRole.EMPLOYEE, CompanyUnit.AUTOMOTIVE, "finance", True),
             ("other_employee", UserRole.EMPLOYEE, CompanyUnit.AUTOMOTIVE, "sales", True),
@@ -86,7 +85,7 @@ async def test_auth_and_all_active_roles_can_read_matching_policy(api_client):
         await add_policy(session, "ROLE-VISIBLE", scopes=[{"tenant_id": "automotive"}])
     assert (await client.get("/api/v1/policies")).status_code == 401
     assert (await client.post("/api/v1/auth/login", json={"username": "inactive", "password": "demo123"})).status_code == 401
-    for username in ("employee", "technician", "manager", "admin"):
+    for username in ("employee", "technician", "admin"):
         response = await client.get("/api/v1/policies", headers=await headers(client, username))
         assert response.status_code == 200
         assert [item["policy_key"] for item in response.json()["items"]] == ["ROLE-VISIBLE"]

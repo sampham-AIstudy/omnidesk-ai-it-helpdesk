@@ -8,7 +8,6 @@ import { isAxiosError } from 'axios';
 import {
   UserRound,
   Wrench,
-  ShieldCheck,
   Users,
   Lock,
   Eye,
@@ -22,7 +21,7 @@ import {
 import { useAuthStore } from '@/lib/authStore';
 import api from '@/lib/api';
 
-type RoleTab = 'employee' | 'technician' | 'manager' | 'admin';
+type RoleTab = 'employee' | 'technician' | 'admin';
 
 interface DemoAccount {
   username: string;
@@ -39,9 +38,6 @@ const ACCOUNTS: Record<RoleTab, DemoAccount[]> = {
   technician: [
     { username: 'tech1', password: 'demo123', name: 'Lê Minh Công', hint: 'IT Support Level 1 & 2' },
   ],
-  manager: [
-    { username: 'manager1', password: 'demo123', name: 'Phạm Thị Dung', hint: 'Trưởng Phòng IT / Team Lead' },
-  ],
   admin: [
     { username: 'admin', password: 'admin123', name: 'System Admin', hint: 'Quản Trị Hệ Thống / Super Admin' },
   ],
@@ -50,8 +46,7 @@ const ACCOUNTS: Record<RoleTab, DemoAccount[]> = {
 const ROLE_META: Record<RoleTab, { keyLabel: string; label: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
   employee: { keyLabel: 'ROLE 01 — END-USER', label: 'End-User', icon: UserRound },
   technician: { keyLabel: 'ROLE 02 — IT AGENT', label: 'IT Agent', icon: Wrench },
-  manager: { keyLabel: 'ROLE 03 — IT MANAGER', label: 'IT Manager', icon: ShieldCheck },
-  admin: { keyLabel: 'ROLE 04 — SYSTEM ADMIN', label: 'System Admin', icon: Users },
+  admin: { keyLabel: 'ROLE 03 — SYSTEM ADMIN', label: 'System Admin', icon: Users },
 };
 
 const ROLE_CARDS = [
@@ -68,15 +63,9 @@ const ROLE_CARDS = [
     text: 'Xử lý Queue ticket, xem IT Asset Widget, viết phản hồi công khai / ghi chú nội bộ.',
   },
   {
-    icon: ShieldCheck,
-    title: 'IT Manager',
-    tag: 'ROLE 03',
-    text: 'Điều phối ticket, xem Wallboard TV, cấu hình Workflow Automation & Ma trận SLA.',
-  },
-  {
     icon: Users,
     title: 'System Admin',
-    tag: 'ROLE 04',
+    tag: 'ROLE 03',
     text: 'Quản trị tối cao, phân quyền RBAC, quản lý CMDB & tích hợp SSO/Bot.',
   },
 ];
@@ -100,7 +89,7 @@ export default function LoginPage() {
     if (role === 'employee') router.push('/employee/dashboard');
     else if (role === 'technician') router.push('/technician/queue');
     else if (role === 'admin') router.push('/admin/users');
-    else router.push('/manager/dashboard');
+    else router.push('/login');
   };
 
   useEffect(() => {
@@ -172,7 +161,7 @@ export default function LoginPage() {
                 Enterprise IT Help Desk Architecture
               </span>
               <span className="border border-blue-300 text-blue-800 bg-blue-100/90 rounded-full px-3 py-1 font-mono text-[11px] tracking-wider font-bold">
-                4 Distinct Roles
+                3 Distinct Roles
               </span>
             </div>
 
@@ -190,13 +179,13 @@ export default function LoginPage() {
           <h1 className="text-4xl xl:text-5xl font-bold leading-tight text-slate-900 max-w-xl mt-8 tracking-tight">
             Hệ Thống Help Desk Phân Quyền{' '}
             <span className="bg-gradient-to-r from-blue-700 via-blue-600 to-cyan-600 bg-clip-text text-transparent">
-              4 Vai Trò Chuẩn ITSM
+              3 Vai Trò Chuẩn ITSM
             </span>
           </h1>
 
           {/* Subtitle */}
           <p className="mt-4 text-slate-700 leading-relaxed max-w-lg text-base font-medium">
-            Một hệ thống hỗ trợ tập trung cho 4 nhóm vai trò doanh nghiệp — từ tiếp nhận yêu cầu, xử lý kỹ thuật đến giám sát vận hành và quản trị toàn hệ thống.
+            Một hệ thống hỗ trợ tập trung cho ba vai trò: người dùng, chuyên viên và quản trị hệ thống.
           </p>
 
           {/* Role Grid */}
@@ -278,7 +267,7 @@ export default function LoginPage() {
           {isDemoLoginEnabled && (
             <>
               {/* Role Tabs */}
-              <div className="mt-6 grid grid-cols-4 gap-2">
+              <div className="mt-6 grid grid-cols-3 gap-2">
                 {(Object.keys(ROLE_META) as RoleTab[]).map((role) => {
                   const Icon = ROLE_META[role].icon;
                   const isActive = activeTab === role;

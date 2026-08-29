@@ -80,11 +80,11 @@ async def test_me_invalid_token(client):
 
 
 @pytest.mark.asyncio
-async def test_manager_has_correct_role(client):
-    """Manager login → role = manager."""
-    resp = await client.post("/api/v1/auth/login", json={
-        "username": "manager1",
-        "password": "demo123"
-    })
-    assert resp.status_code == 200
-    assert resp.json()["user"]["role"] == "manager"
+async def test_only_three_seeded_product_roles_are_available(client):
+    """The login surface exposes only employee, technician, and admin roles."""
+    for username, password, expected_role in (("employee1", "demo123", "employee"), ("tech1", "demo123", "technician"), ("admin", "admin123", "admin")):
+        response = await client.post("/api/v1/auth/login", json={"username": username, "password": password})
+        assert response.status_code == 200
+        assert response.json()["user"]["role"] == expected_role
+    legacy = await client.post("/api/v1/auth/login", json={"username": "manager1", "password": "demo123"})
+    assert legacy.status_code == 401

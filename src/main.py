@@ -71,16 +71,6 @@ async def _seed_demo_users(db):
             "is_vip": False,
         },
         {
-            "username": "manager1",
-            "email": "manager1@corp.example.com",
-            "full_name": "Phạm Thị Dung",
-            "password": "demo123",
-            "role": UserRole.MANAGER,
-            "company_unit": CompanyUnit.CORPORATE,
-            "department": "IT Management",
-            "is_vip": False,
-        },
-        {
             "username": "admin",
             "email": "admin@corp.example.com",
             "full_name": "System Admin",

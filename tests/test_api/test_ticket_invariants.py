@@ -123,11 +123,11 @@ async def test_waiting_ticket_always_gets_a_fallback_agent_reply(
 async def test_technician_takeover_api(
     client: AsyncClient,
     auth_employee: str,
-    auth_manager: str,
+    auth_technician: str,
 ):
     """Test explicit technician takeover (POST /tickets/{id}/takeover)."""
     emp_headers = {"Authorization": f"Bearer {auth_employee}"}
-    mgr_headers = {"Authorization": f"Bearer {auth_manager}"}
+    mgr_headers = {"Authorization": f"Bearer {auth_technician}"}
 
     create_res = await client.post(
         "/api/v1/tickets",
@@ -137,7 +137,7 @@ async def test_technician_takeover_api(
     assert create_res.status_code == 201
     ticket_id = create_res.json()["ticket_id"]
 
-    # Technician / Manager claims takeover
+    # Technician claims takeover
     takeover_res = await client.post(
         f"/api/v1/tickets/{ticket_id}/takeover",
         headers=mgr_headers,

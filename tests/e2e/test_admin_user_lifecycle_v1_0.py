@@ -63,7 +63,7 @@ async def test_admin_update_is_typed_persisted_and_audited(client: AsyncClient, 
 @pytest.mark.asyncio
 async def test_non_admin_roles_cannot_mutate_users(client: AsyncClient, auth_admin: str, auth_employee: str) -> None:
     user = await create_managed_user(client, auth_admin)
-    tokens = [auth_employee, await login(client, "tech1"), await login(client, "manager1")]
+    tokens = [auth_employee, await login(client, "tech1")]
     for token in tokens:
         response = await client.patch(f"/api/v1/admin/users/{user['id']}", json={"department": "Denied"}, headers=headers(token))
         assert response.status_code == 403

@@ -41,7 +41,7 @@ async def test_catalog_is_authoritative_for_request_routing(client, auth_employe
         "service_name": "Xin quyền VPN",
         "category": "access",
         "fulfillment_group": "Network & Security",
-        "approval_roles": ["manager"],
+        "approval_roles": ["admin"],
         "risk_level": "medium",
         "sla_hours": 4,
     }

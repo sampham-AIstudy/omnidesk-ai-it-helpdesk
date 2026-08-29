@@ -123,7 +123,7 @@ export default function TechnicianTicketPage() {
           {(conversation?.items ?? []).map((item: TicketMessage) => (
             <article key={item.id} className={`tech-message tech-message--${item.sender_type}`}>
               <div className="tech-message__meta">
-                {item.is_internal ? '🔒 Ghi chú nội bộ' : item.sender_type === 'technician' ? 'Bạn · Chuyên viên' : item.sender_type === 'manager' ? 'Quản lý IT' : item.sender_type === 'agent' ? 'AI Agent' : item.sender_type === 'user' ? 'Người dùng' : 'Hệ thống'}
+                {item.is_internal ? '🔒 Ghi chú nội bộ' : item.sender_type === 'technician' ? 'Bạn · Chuyên viên' : item.sender_type === 'agent' ? 'AI Agent' : item.sender_type === 'user' ? 'Người dùng' : 'Hệ thống'}
               </div>
               <div className={`tech-message__bubble ${item.is_internal ? 'message-internal-note' : ''}`}>
                 {item.sender_type === 'agent' ? <AISolutionViewer content={item.content} /> : item.content}

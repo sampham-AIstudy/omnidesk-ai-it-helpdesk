@@ -20,8 +20,8 @@ router = APIRouter(prefix="/analytics", tags=["Analytics"])
 
 
 def _require_analytics_role(current_user: User) -> None:
-    if current_user.role not in {UserRole.MANAGER, UserRole.ADMIN}:
-        raise HTTPException(status_code=403, detail="Manager or administrator access is required")
+    if current_user.role not in {UserRole.TECHNICIAN, UserRole.ADMIN}:
+        raise HTTPException(status_code=403, detail="Technician or administrator access is required")
 
 
 def _ticket_scope_clause(current_user: User):
@@ -44,7 +44,7 @@ async def get_dashboard(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
-    """Dashboard tổng quan cho Manager/Admin."""
+    """Tenant-scoped operational dashboard for Technician/Admin."""
     _require_analytics_role(current_user)
 
     # Classification metrics
@@ -146,7 +146,7 @@ async def get_audit_logs(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
 ):
-    """Audit log — Manager/Admin/Technician xem được."""
+    """Ticket audit log for authenticated callers within their ticket scope."""
     if current_user.role == UserRole.EMPLOYEE:
         # Employee chỉ xem audit log của ticket mình
         if not ticket_id:
