@@ -1031,7 +1031,7 @@
           "web-windows-wifi-005",
           "kb-001",
           "web-m365-compromised-mailbox-003",
-          "kb-028"
+          "mem-kgl-847"
         ],
         "hard_negative_at_1": false,
         "hard_negative_in_top3": false,
@@ -1604,7 +1604,7 @@
           "connection_symptom": "refused",
           "vpn_stage": "unknown",
           "network_area": "generic",
-          "predicted_topic": "network.connection_refused"
+          "predicted_topic": "database.client_connectivity"
         },
         "primary_expected_source_ids": [
           "p0-04-service-listening-c001"
@@ -3378,14 +3378,14 @@
     "metrics": {
       "overall": {
         "cases": 50,
-        "hit_rate_at_1": 0.88,
-        "hit_rate_at_3": 1.0,
-        "hit_rate_at_5": 1.0,
-        "recall_at_1": 0.88,
-        "recall_at_3": 1.0,
-        "recall_at_5": 1.0,
-        "mrr_at_5": 0.9266666666666665,
-        "ndcg_at_5": 0.9452371901428583,
+        "hit_rate_at_1": 0.86,
+        "hit_rate_at_3": 0.98,
+        "hit_rate_at_5": 0.98,
+        "recall_at_1": 0.86,
+        "recall_at_3": 0.98,
+        "recall_at_5": 0.98,
+        "mrr_at_5": 0.9066666666666666,
+        "ndcg_at_5": 0.9252371901428583,
         "hard_negative_at_1_rate": 0.0,
         "hard_negative_in_top3_rate": 0.04,
         "intent_confusion_rate": 0.0
@@ -3449,14 +3449,14 @@
         },
         "timeout_vs_refused": {
           "cases": 10,
-          "hit_rate_at_1": 0.9,
-          "hit_rate_at_3": 1.0,
-          "hit_rate_at_5": 1.0,
-          "recall_at_1": 0.9,
-          "recall_at_3": 1.0,
-          "recall_at_5": 1.0,
-          "mrr_at_5": 0.95,
-          "ndcg_at_5": 0.9630929753571458,
+          "hit_rate_at_1": 0.8,
+          "hit_rate_at_3": 0.9,
+          "hit_rate_at_5": 0.9,
+          "recall_at_1": 0.8,
+          "recall_at_3": 0.9,
+          "recall_at_5": 0.9,
+          "mrr_at_5": 0.85,
+          "ndcg_at_5": 0.8630929753571458,
           "hard_negative_at_1_rate": 0.0,
           "hard_negative_in_top3_rate": 0.0,
           "intent_confusion_rate": 0.0
@@ -5372,7 +5372,7 @@
           "connection_symptom": "refused",
           "vpn_stage": "unknown",
           "network_area": "generic",
-          "predicted_topic": "network.connection_refused"
+          "predicted_topic": "database.client_connectivity"
         },
         "primary_expected_source_ids": [
           "p0-04-service-listening-c001"
@@ -5387,59 +5387,40 @@
         "hard_negative_topics": [
           "network.firewall_acl_nat"
         ],
-        "primary_rank": 1,
+        "primary_rank": null,
         "retrieved_ids": [
-          "p0-04-service-listening-c001",
-          "p0-09-tcp-port-403-c001",
-          "web-windows-rdp-troubleshoot-008",
           "p0-10-http-403-forbidden-c001",
+          "web-windows-rdp-troubleshoot-008",
+          "p0-01-forticlient-ssl-vpn-c001",
+          "mem-kgl-830",
           "p0-03-tcp-failure-semantics-c001"
         ],
         "hard_negative_at_1": false,
         "hard_negative_in_top3": false,
         "intent_confusion": false,
         "rank1": {
-          "doc_id": "p0-04-service-listening-c001",
-          "topic": "network.service_not_listening",
-          "title": "Service-not-listening diagnostics",
+          "doc_id": "p0-10-http-403-forbidden-c001",
+          "topic": "http.status_403",
+          "title": "HTTP 403 Forbidden is an application authorization response",
           "source": "official_web_documentation",
           "authority_factor": 1.0,
-          "semantic_score": 0.5637139081954956,
-          "dense_rank": 2,
-          "lexical_rank": 2,
-          "fusion_score": 0.04790322580645161,
+          "semantic_score": 0.486303448677063,
+          "dense_rank": 5,
+          "lexical_rank": 12,
+          "fusion_score": 0.03205128205128205,
           "relevance_score": 0.75,
-          "dense_rrf": 0.016129032258064516,
-          "lexical_rrf": 0.016129032258064516,
+          "dense_rrf": 0.015384615384615385,
+          "lexical_rrf": 0.013888888888888888,
           "exact_contribution": 0.0,
-          "rrf_score": 0.03548387096774193,
-          "topic_compatibility": 1.35,
-          "topic_compatibility_reason": "refused_service_listener_intent",
-          "topic_adjusted_score": 0.04790322580645161,
-          "final_score": 0.04790322580645161
+          "rrf_score": 0.03205128205128205,
+          "topic_compatibility": 1.0,
+          "topic_compatibility_reason": "topic_neutral",
+          "topic_adjusted_score": 0.03205128205128205,
+          "final_score": 0.03205128205128205
         },
-        "expected_retrieved": {
-          "doc_id": "p0-04-service-listening-c001",
-          "topic": "network.service_not_listening",
-          "title": "Service-not-listening diagnostics",
-          "source": "official_web_documentation",
-          "authority_factor": 1.0,
-          "semantic_score": 0.5637139081954956,
-          "dense_rank": 2,
-          "lexical_rank": 2,
-          "fusion_score": 0.04790322580645161,
-          "relevance_score": 0.75,
-          "dense_rrf": 0.016129032258064516,
-          "lexical_rrf": 0.016129032258064516,
-          "exact_contribution": 0.0,
-          "rrf_score": 0.03548387096774193,
-          "topic_compatibility": 1.35,
-          "topic_compatibility_reason": "refused_service_listener_intent",
-          "topic_adjusted_score": 0.04790322580645161,
-          "final_score": 0.04790322580645161
-        },
+        "expected_retrieved": null,
         "hard_negative_retrieved": [],
-        "failure_cause": null
+        "failure_cause": "QUERY_UNDERSTANDING"
       },
       {
         "id": "HN-C09",
