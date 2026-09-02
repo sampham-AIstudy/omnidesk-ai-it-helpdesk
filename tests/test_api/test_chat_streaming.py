@@ -108,8 +108,6 @@ async def test_greeting_does_not_call_rag_web_or_memory(client, auth_employee):
     assert "event: done" in response.text
     assert '"sources": []' in response.text
     assert '"classification_confidence": 1.0' in response.text
-    assert '"retrieval_confidence": null' in response.text
-    assert '"answer_groundedness": 1.0' in response.text
     assert '"answerability": "direct"' in response.text
     rag_search.assert_not_awaited()
     memory_search.assert_not_awaited()

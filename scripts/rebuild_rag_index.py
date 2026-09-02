@@ -21,8 +21,14 @@ logger = logging.getLogger("rag_index_rebuild")
 
 
 def internal_kb_documents() -> list[dict]:
+    from src.data.service_request_kb import SERVICE_REQUEST_KB_ENTRY
     documents = []
-    for item in get_all_kb_entries():
+    seen_ids = set()
+    all_entries = list(get_all_kb_entries()) + [SERVICE_REQUEST_KB_ENTRY]
+    for item in all_entries:
+        if item["id"] in seen_ids:
+            continue
+        seen_ids.add(item["id"])
         tags = item.get("tags", "")
         content = f"{item['title']}. Từ khóa: {tags}. {item['content']}"
         if item.get("solution"):

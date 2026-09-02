@@ -109,7 +109,10 @@ def is_context_dependent(query: str) -> bool:
     query_lower = query.lower().strip()
     if len(query_lower.split()) <= 3:
         return True
-    vague_markers = ["vẫn", "như cũ", "như lúc nãy", "cái đó", "nó bị", "lại bị", "lỗi đó", "không được"]
+    vague_markers = [
+        "vẫn", "như cũ", "như lúc nãy", "cái đó", "nó bị", "lại bị", "lỗi đó", "không được",
+        "còn cách nào", "khác không", "còn không", "thế nào nữa", "thêm không", "ngoài ra", "còn gì",
+    ]
     return any(marker in query_lower for marker in vague_markers)
 
 

@@ -77,4 +77,5 @@ SERVICE_REQUEST_KB_ENTRY: dict[str, object] = {
     "category": "service_request",
     "tags": "service request,yêu cầu dịch vụ,quy trình,phê duyệt,pending_approval,submitted,assigned,in_progress,waiting_for_user,fulfilled,rejected,kỹ thuật viên,fulfillment group,catalog,incident khác service request,ai duyệt,khi nào hoàn tất",
     "applicable_to_all": True,
+    "source": "internal_curated_kb",
 }

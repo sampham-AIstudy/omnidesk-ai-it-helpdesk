@@ -44,7 +44,7 @@ def test_safety_rules_remain_independent_from_confidence():
     state["is_production_impact"] = True
 
     res = evaluate_policy(state, risk_score=0.9)
-
-    assert res["decision"] == "REQUIRE_HITL"
+    assert res["decision"] == "ESCALATE"
+    assert res["action_type"] == "HUMAN_HANDOFF"
     assert "Production" in res["reason"]
 

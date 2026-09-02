@@ -137,17 +137,10 @@ def extract_retrieval_score(docs: list[dict[str, Any]]) -> float:
     # → tích không bao giờ vượt 1.0, nên min(1.0, ...) là dư thừa; chỉ giữ max(0.0, ...) để phòng thủ.
     c_retrieval = round(max(0.0, retrieval_base * auth_factor), 3)
 
-    print("===== DEBUG C_RETRIEVAL =====")
-    print(f"  Số tài liệu truyền vào  : {len(docs)}")
-    print(f"  s_top1 (relevance_score) : {s_top1:.4f}")
-    print(f"  s_top2 (relevance_score) : {s_top2:.4f}")
-    print(f"  margin (top1 - top2)     : {margin:.4f}")
-    print(f"  margin_component (x2)    : {margin_component:.4f}")
-    print(f"  source_type              : {source_type}")
-    print(f"  auth_factor              : {auth_factor:.4f}")
-    print(f"  retrieval_base           : {retrieval_base:.4f}")
-    print(f"  C_retrieval (kết quả)    : {c_retrieval:.4f}")
-    print("=============================")
+    logger.debug(
+        "[C_Retrieval] docs=%d, s_top1=%.4f, s_top2=%.4f, margin=%.4f, source=%s, auth=%.4f -> C_retrieval=%.4f",
+        len(docs), s_top1, s_top2, margin, source_type, auth_factor, c_retrieval,
+    )
 
     return c_retrieval
 
@@ -246,19 +239,10 @@ def calculate_groundedness_with_reranker(
         max_entailment = float(entailment_probs.max())
         c_groundedness = round(max(0.0, min(1.0, max_entailment)), 3)
 
-        print("===== DEBUG C_GROUNDEDNESS (NLI) =====")
-        print(f"  Model          : {getattr(encoder, 'model_name_or_path', 'NLI model')}")
-        print(f"  Số cặp đánh giá: {len(pairs)}")
-        print(f"  Answer (chars) : {len(clean_answer)} / {_ANSWER_MAX_CHARS}")
-        for i, (doc_c, _) in enumerate(pairs):
-            print(f"  Doc {i+1} (chars) : {len(doc_c)} / {_DOC_MAX_CHARS}")
-        print("  Điểm NLI (logit thô → sau softmax):")
-        for i, (logits, p) in enumerate(zip(raw_logits, probs)):
-            print(f"    Doc {i+1} logit : entail={logits[0]:.3f} | neutral={logits[1]:.3f} | contra={logits[2]:.3f}")
-            print(f"    Doc {i+1} prob  : entail={p[0]:.4f} | neutral={p[1]:.4f} | contra={p[2]:.4f}")
-        print(f"  Entailment max : {max_entailment:.4f}")
-        print(f"  C_groundedness : {c_groundedness:.4f}")
-        print("======================================")
+        logger.debug(
+            "[C_Groundedness] model=%s, pairs=%d, answer_len=%d, max_entailment=%.4f -> C_groundedness=%.4f",
+            getattr(encoder, "model_name_or_path", "NLI model"), len(pairs), len(clean_answer), max_entailment, c_groundedness,
+        )
 
         return c_groundedness
 
@@ -295,10 +279,8 @@ def compute_final_rag_confidence(
     w3 = settings.rag_confidence_w3
 
     c_rag = w1 * c_retrieval + w2 * c_consensus + w3 * c_groundedness
-    print("===== BÁO CÁO ĐIỂM RAG =====")
-    print("Điểm C_retrieval: ", c_retrieval)
-    print("Điểm C_consensus: ", c_consensus)
-    print("Điểm C_groundedness: ", c_groundedness)
-    print("Điểm C_RAG: ", c_rag)
-    print("============================")
+    logger.debug(
+        "[C_RAG Summary] C_retrieval=%.4f, C_consensus=%.4f, C_groundedness=%.4f -> C_RAG=%.4f",
+        c_retrieval, c_consensus, c_groundedness, c_rag,
+    )
     return round(max(0.0, min(1.0, c_rag)), 3)

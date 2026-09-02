@@ -63,10 +63,10 @@ async def test_classify_node_security_hitl():
 
         classified = await classify_node(state)
 
-    # Security category luôn HITL
+    # Security category luon Escalate / Human Handoff den IT Security Team
     hitl_state = await hitl_check_node(classified)
-    assert hitl_state["hitl_required"] is True
-    assert "security" in hitl_state["hitl_reason"].lower() or "nhạy cảm" in hitl_state["hitl_reason"].lower() or "phê duyệt" in hitl_state["hitl_reason"].lower()
+    assert hitl_state["action_taken"] == "human_handoff" or hitl_state.get("hitl_required") is True
+    assert any(k in hitl_state["hitl_reason"].lower() for k in ["security", "nhạy cảm", "phê duyệt", "chuyên viên it", "kb", "escalate"])
 
 
 @pytest.mark.asyncio

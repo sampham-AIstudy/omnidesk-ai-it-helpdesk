@@ -1,6 +1,5 @@
-# 🏢 AI-Powered Enterprise IT Help Desk & Incident Triage System (Project P-236)
+# 🏢 AI-Powered Enterprise IT Help Desk & Incident Triage System (OmniDesk AI)
 
-> **Dự án chính thức nộp bài Demo Day — VinUni AI20K Build Phase (VinAI Lab)**  
 > Hệ thống Help Desk thông minh ứng dụng **LangGraph Multi-Stage Agent**, **Multilingual RAG (ChromaDB)**, **Multi-Factor Risk Engine**, **Multi-Stage Security Guardrails**, và giao diện **Next.js 16 Enterprise Portal**.
 
 ---
@@ -380,6 +379,5 @@ python eval/ragas_assessment_eval.py --generate-answers
 
 ---
 
-## 📄 License & Bản quyền
-Dự án được phát triển trong khuôn khổ chương trình **VinUni AI20K Build Phase**.  
-Giấy phép: **MIT License**.
+## 👤 Author & Maintainer
+- **Pham Anh Tuan** ([@sampham-AIstudy](https://github.com/sampham-AIstudy))
