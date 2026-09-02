@@ -13,13 +13,14 @@ export function PriorityBadge({ priority }: { priority: TicketPriority }) {
   return <span className={`badge badge-${priority}`}>{PRIORITY_LABELS[priority] ?? priority}</span>;
 }
 
-export function ConfidenceBadge({ score }: { score: number | null }) {
-  const presentation = getConfidencePresentation(score);
-  if (score === null) {
+export function ConfidenceBadge({ score }: { score?: number | null }) {
+  const normalizedScore = score ?? null;
+  const presentation = getConfidencePresentation(normalizedScore);
+  if (normalizedScore === null) {
     return <span className="muted" style={{ fontSize: 12 }}>{presentation.label}</span>;
   }
 
-  const pct = Math.round(score * 100);
+  const pct = Math.round(normalizedScore * 100);
 
   return (
     <div style={{ minWidth: 128 }} title={presentation.description}>

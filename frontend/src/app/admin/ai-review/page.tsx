@@ -1,8 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Check, ShieldCheck, X } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import { Check, ShieldCheck, X, AlertCircle } from 'lucide-react';
 
 import { EmptyState, PageHeader, Spinner } from '@/components/ui';
 import api from '@/lib/api';
@@ -16,6 +16,7 @@ type PreferenceCandidate = {
 
 export default function AIHumanReviewQueuePage() {
   const queryClient = useQueryClient();
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const { data, isLoading } = useQuery({
     queryKey: ['preference-candidates', 'PENDING_REVIEW'],
     queryFn: async () => (await api.get('/admin/preference-candidates', { params: { status: 'PENDING_REVIEW' } })).data as { items: PreferenceCandidate[] },
@@ -23,12 +24,18 @@ export default function AIHumanReviewQueuePage() {
   const review = useMutation({
     mutationFn: async ({ candidateId, status }: { candidateId: string; status: 'APPROVED' | 'REJECTED' }) =>
       (await api.post(`/admin/preference-candidates/${candidateId}/review`, { status })).data,
-    onSuccess: () => { toast.success('Review decision saved.'); queryClient.invalidateQueries({ queryKey: ['preference-candidates'] }); },
-    onError: (error) => toast.error(getErrorMessage(error)),
+    onSuccess: () => { setFeedback({ type: 'success', message: 'Review decision saved.' }); queryClient.invalidateQueries({ queryKey: ['preference-candidates'] }); },
+    onError: (error) => setFeedback({ type: 'error', message: getErrorMessage(error) }),
   });
   const candidates = data?.items ?? [];
   return <div className="space-y-6">
     <PageHeader title="Preference Review Queue" subtitle="Filtered data with exact answer provenance." />
+    {feedback && (
+      <div className={`flex items-center gap-2 rounded-2xl border p-4 text-sm ${feedback.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-950' : 'border-rose-200 bg-rose-50 text-rose-950'}`}>
+        <AlertCircle size={16} />
+        {feedback.message}
+      </div>
+    )}
     <section className="flex gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-950"><ShieldCheck className="mt-0.5 shrink-0 text-emerald-700" size={18} />Only approved pairs can be exported offline. This page never trains or changes a model.</section>
     {isLoading ? <div className="flex justify-center p-10"><Spinner /></div> : candidates.length === 0 ? <EmptyState title="No pending preference pairs" desc="Feedback without adequate evidence does not become a preference pair." /> : candidates.map((item) => <article key={item.candidate_id} className="glass-card-light space-y-4 rounded-3xl border border-slate-200 p-5">
       <div className="flex flex-wrap items-center justify-between gap-2"><div className="text-xs text-slate-500">Tenant: {item.tenant_id} · Score: {item.quality_score.toFixed(2)}</div><span className={`rounded-full px-3 py-1 text-xs font-bold ${item.quality_tier === 'HIGH' ? 'bg-emerald-100 text-emerald-800' : item.quality_tier === 'MEDIUM' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>{item.quality_tier}</span></div>
