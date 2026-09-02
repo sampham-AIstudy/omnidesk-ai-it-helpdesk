@@ -380,4 +380,4 @@ python eval/ragas_assessment_eval.py --generate-answers
 ---
 
 ## 👤 Author & Maintainer
-- **Pham Anh Tuan** ([@sampham-AIstudy](https://github.com/sampham-AIstudy))
+- **Phạm Văn Sâm (Pham Van Sam)** ([@sampham-AIstudy](https://github.com/sampham-AIstudy))
