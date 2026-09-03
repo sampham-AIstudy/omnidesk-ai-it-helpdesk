@@ -5,7 +5,7 @@
     "manifest_sha256": "f9814c23dd6783a496b2f19fa0e7cd15743ee07c4c0465cd50e7f755d79ab95b",
     "source_mapping_sha256": "27d10a143bc0e4c581588fba729b2fef2144ca43002c05fe495b63568637cb59",
     "kb_fixture_sha256": "610ed1661e076400bd866e2ff83e34443d744054129289e33089964c97684499",
-    "ticket_fixture_sha256": "1c47fc247ff46356ca2139d46c8703be86f4ecdeb71837f9cb9ff2a77aaa627c",
+    "ticket_fixture_sha256": "903c00a59b7b6fe1ef96a23009e7d2843eb3945af40787ad970f3d5b7e31b3f1",
     "builder_version": "stable-id-builder-v1.2",
     "git_commit": "f7768ab6df1dfbf6404d75ed058dad1eaaae3ec9",
     "fixture_integrity": {

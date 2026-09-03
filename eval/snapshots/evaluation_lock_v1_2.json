@@ -19,7 +19,7 @@
   },
   "ticket_fixture": {
     "path": "tests/conftest.py",
-    "sha256": "1c47fc247ff46356ca2139d46c8703be86f4ecdeb71837f9cb9ff2a77aaa627c"
+    "sha256": "903c00a59b7b6fe1ef96a23009e7d2843eb3945af40787ad970f3d5b7e31b3f1"
   },
   "routing_contract_ids": [
     "GT-001", "GT-002", "GT-003", "GT-004", "GT-005", "GT-006", "GT-007",

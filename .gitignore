@@ -60,7 +60,8 @@ ehthumbs.db
 $RECYCLE.BIN/
 
 # Data (never commit large data)
-/data/
+/data/*
+!/data/p0_shadow_v3_sources.json
 /frontend/data/
 *.db
 *.db-journal
