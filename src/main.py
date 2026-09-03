@@ -143,7 +143,8 @@ async def _seed_knowledge_base(db):
         index_document,
     )
     seen_ids = set()
-    entries = [entry for entry in get_all_kb_entries() if not (entry["id"] in seen_ids or seen_ids.add(entry["id"]))]
+    raw_entries = [*get_all_kb_entries(), SERVICE_REQUEST_KB_ENTRY]
+    entries = [entry for entry in raw_entries if not (entry["id"] in seen_ids or seen_ids.add(entry["id"]))]
     indexed_ids = get_indexed_document_ids([entry["id"] for entry in entries])
     logger.info("Syncing %d KB entries; %d already indexed", len(entries), len(indexed_ids))
 
