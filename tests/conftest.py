@@ -7,6 +7,7 @@ from httpx import ASGITransport, AsyncClient
 
 from src._test_environment import TEST_RUN_ID
 from src.data.knowledge_base import get_all_kb_entries
+from src.data.service_request_kb import SERVICE_REQUEST_KB_ENTRY
 from src.database import AsyncSessionLocal, Base, engine
 from src.main import _seed_demo_users, _seed_knowledge_base, app
 
@@ -30,7 +31,7 @@ async def prepare_database():
 
     async with AsyncSessionLocal() as db:
         await _seed_demo_users(db)
-        indexed_ids = {entry["id"] for entry in get_all_kb_entries()}
+        indexed_ids = {entry["id"] for entry in get_all_kb_entries()} | {SERVICE_REQUEST_KB_ENTRY["id"]}
         with patch(
             "src.services.rag_service.get_indexed_document_ids",
             return_value=indexed_ids,

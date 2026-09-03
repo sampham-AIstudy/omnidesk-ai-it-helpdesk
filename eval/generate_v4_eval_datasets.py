@@ -13,7 +13,7 @@ domains_and_queries = [
     ("workplace_endpoint", "printer_scanner", "máy in báo offline sửa bằng cách đổi cổng wsd sang standard tcp ip port 9100", ["web-printer-wsd-to-tcp-ip-port-001"]),
     ("workplace_endpoint", "printer_scanner", "xóa hàng đợi máy in bị kẹt net stop spooler xóa file trong spool printers", ["web-printer-clear-spooler-corrupt-job-001"]),
     ("workplace_endpoint", "audio_webcam", "tai nghe bluetooth bị rè mất tiếng khi bật mic trong cuộc gọi teams", ["web-bluetooth-le-audio-mic-desync-001"]),
-    
+
     # Domain 2: Identity & Access Management (Families 09-15)
     ("identity_access", "password_sspr", "quên mật khẩu windows tự reset mật khẩu bằng sspr mysignins", ["web-sspr-security-questions-reset-001"]),
     ("identity_access", "mfa_authenticator", "đổi điện thoại mới muốn chuyển microsoft authenticator backup cloud", ["web-entra-authenticator-device-transfer-001"]),
@@ -22,7 +22,7 @@ domains_and_queries = [
     ("identity_access", "enterprise_sso_login", "lỗi the trust relationship between this workstation and domain failed", ["web-windows-domain-trust-relationship-001"]),
     ("identity_access", "enterprise_sso_login", "kiểm tra trạng thái primary refresh token prt bằng lệnh dsregcmd status", ["web-entra-cached-credentials-stale-001"]),
     ("identity_access", "folder_file_permissions", "xin quyền truy cập folder chia sẻ phòng kế toán trên file server", ["kb-012", "sr-007"]),
-    
+
     # Domain 3: Cloud Productivity & SaaS (Families 16-22)
     ("cloud_productivity", "outlook_sync_ost", "sửa file ost bị lỗi hỏng bằng công cụ scanpst exe inbox repair tool", ["web-outlook-ost-corruption-scanpst-001"]),
     ("cloud_productivity", "outlook_sync_ost", "tìm kiếm trong outlook không ra kết quả rebuild search index", ["web-outlook-search-indexing-fix-001"]),
@@ -34,7 +34,7 @@ domains_and_queries = [
     ("cloud_productivity", "office_licensing_activation", "sửa lỗi office báo unlicensed product xóa licensing token", ["web-m365-office-licensing-token-001"]),
     ("cloud_productivity", "teams_meeting_collab", "xóa cache teams trên windows 11 reset app trong installed apps", ["web-teams-clear-client-cache-win-001"]),
     ("cloud_productivity", "onedrive_sync_conflict", "reset lại onedrive khi bị treo processing changes", ["web-onedrive-reset-client-win-001"]),
-    
+
     # Domain 4: Network & Remote Access (Families 23-29)
     ("network_remote", "vpn_forticlient", "lỗi vpn forticlient dừng ở 48% certificate auth mismatch", ["p0-06-vpn-forticlient-ssl-vpn-c001"]),
     ("network_remote", "vpn_forticlient", "vpn forticlient đã connected nhưng không vào được ip server nội bộ", ["p0-06-vpn-connected-internal-unreachable-c001"]),
@@ -44,7 +44,7 @@ domains_and_queries = [
     ("network_remote", "rdp_remote_desktop", "sửa lỗi remote desktop error 0x204 mở port 3389 inbound firewall", ["web-rdp-error-0x204-firewall-001"]),
     ("network_remote", "rdp_remote_desktop", "kỹ thuật viên remote support session shadowing bằng lệnh mstsc shadow", ["web-windows-rdp-session-shadowing-001"]),
     ("network_remote", "network", "bật log ghi nhận dropped packets trong windows defender firewall pfirewall log", ["web-windows-firewall-log-dropped-packets-001"]),
-    
+
     # Domain 5: Developer Tooling (Families 37-43)
     ("developer_tooling", "dev_git_repo_access", "cấu hình git credential manager gcm lưu token đăng nhập github gitlab", ["web-git-credential-manager-setup-001"]),
     ("developer_tooling", "dev_git_proxy_ssl", "cấu hình http proxy và http sslcainfo cho git clone trong mạng cty", ["web-git-config-proxy-ssl-001"]),
@@ -60,14 +60,14 @@ domains_and_queries = [
     ("developer_tooling", "dev_git_repo_access", "cập nhật git submodule update init recursive bị lỗi xác thực", ["web-git-submodule-authentication-001"]),
     ("developer_tooling", "dev_git_repo_access", "cấu hình git lfs tải dataset weights dung lượng lớn qua proxy", ["web-git-lfs-bandwidth-proxy-001"]),
     ("developer_tooling", "software", "sửa lỗi file cannot be loaded execution policy powershell remotesigned", ["web-powershell-execution-policy-it-001"]),
-    
+
     # Domain 6: Enterprise Systems & Database (Families 30-36)
     ("database_infra", "database_client_access", "sửa lỗi sql server error 26 locating server instance port 1433", ["web-mssql-connectivity-error-26-001"]),
     ("database_infra", "database_client_access", "bật tcp ip protocol port 1433 trong sql server configuration manager", ["web-mssql-enable-tcp-port-1433-001"]),
     ("database_infra", "database_client_access", "sửa lỗi fatal no pg_hba.conf entry for host dbeaver postgres", ["web-postgres-connection-pg-hba-001"]),
     ("database_infra", "database_client_access", "cấu hình sslmode verify-full và sslrootcert trong postgresql libpq", ["web-postgres-ssl-client-mode-001"]),
     ("database_infra", "database_client_access", "sửa lỗi oracle sql developer ora-12541 tns no listener lsnrctl status", ["web-oracle-tns-12541-no-listener-001"]),
-    
+
     # Domain 7: Cross-Platform (macOS & Linux)
     ("cross_platform", "wifi_office_connection", "kết nối wifi wpa2 enterprise 802.1x trên macbook trust certificate", ["web-macos-wifi-enterprise-8021x-001"]),
     ("cross_platform", "browser_enterprise_web", "cài đặt chứng chỉ root ca vào keychain access trên macos always trust", ["web-macos-certificate-trust-001"]),
@@ -75,7 +75,7 @@ domains_and_queries = [
     ("cross_platform", "wifi_office_connection", "kết nối wifi cty peap mschapv2 trên ubuntu linux nmcli", ["web-ubuntu-wifi-wpa2-enterprise-001"]),
     ("cross_platform", "browser_enterprise_web", "cài đặt root ca vào usr local share ca-certificates update-ca-certificates ubuntu", ["web-ubuntu-ca-certificates-update-001"]),
     ("cross_platform", "folder_file_permissions", "mount ổ đĩa chia sẻ windows trên linux bằng lệnh mount.cifs cifs-utils", ["web-linux-cifs-smb-mount-001"]),
-    
+
     # Domain 8: Security & Browser Protocols
     ("security_browser", "browser_enterprise_web", "sửa lỗi net err_cert_authority_invalid trên edge devtools security", ["web-browser-err-cert-authority-001"]),
     ("security_browser", "browser_enterprise_web", "nguyên nhân lỗi err_ssl_protocol_error do proxy intercept tls 1.3", ["web-browser-err-ssl-protocol-001"]),
@@ -162,27 +162,27 @@ hard_negatives = [
     ("HN-CD-003", "docker_wsl2_vs_hyperv_vm", "docker desktop wsl2 backend crash restart lxssmanager", "web-docker-desktop-wsl2-engine-001", ["web-hyperv-default-switch-ip-001"]),
     ("HN-CD-004", "npm_proxy_vs_web_browser_proxy", "npm config set https-proxy cafile registry error", "web-npm-proxy-ssl-strict-001", ["web-browser-proxy-pac-diagnostics-001"]),
     ("HN-CD-005", "pip_trusted_host_vs_browser_cert", "pip install cert error trusted-host pypi", "web-pip-proxy-trusted-host-001", ["web-browser-err-cert-authority-001"]),
-    
+
     # 2. Database Connectivity vs Generic Network Port
     ("HN-CD-006", "mssql_error_26_vs_raw_tcp_1433", "sql server ssms error 26 locating server instance", "web-mssql-connectivity-error-26-001", ["p0-02-port-connectivity-c001"]),
     ("HN-CD-007", "postgres_pg_hba_vs_firewall_acl", "postgres fatal no pg_hba.conf entry for host dbeaver", "web-postgres-connection-pg-hba-001", ["p0-05-firewall-acl-nat-c001"]),
     ("HN-CD-008", "oracle_tns_12541_vs_generic_listener", "oracle sql developer ora-12541 tns no listener", "web-oracle-tns-12541-no-listener-001", ["p0-04-service-listening-c001"]),
-    
+
     # 3. Cloud Productivity vs Endpoint Damage
     ("HN-CD-009", "outlook_scanpst_vs_hardware_crash", "outlook crash liên tục lúc mở sửa file ost bằng scanpst", "web-outlook-ost-corruption-scanpst-001", ["kb-009", "sr-004"]),
     ("HN-CD-010", "teams_privacy_permission_vs_hardware_mic", "teams không nhận camera do privacy permissions windows", "web-teams-camera-mic-permissions-win-001", ["web-bluetooth-le-audio-mic-desync-001"]),
     ("HN-CD-011", "onedrive_file_lock_vs_disk_storage", "onedrive báo file open in another program conflict", "web-onedrive-file-lock-sync-conflict-001", ["kb-006"]),
-    
+
     # 4. Identity & Windows Hello vs BitLocker PIN
     ("HN-CD-012", "windows_hello_pin_vs_bitlocker_pin", "lỗi windows hello 0x80090016 pin không dùng được xóa ngc", "web-windows-hello-pin-reset-001", ["web-bitlocker-tpm-recovery-loop-001"]),
     ("HN-CD-013", "credential_manager_stale_vs_ad_lockout", "xóa cached credentials trong credential manager sso loop", "web-windows-credential-manager-clear-001", ["kb-001"]),
     ("HN-CD-014", "authenticator_transfer_vs_admin_reset", "tự chuyển microsoft authenticator sang điện thoại mới qua cloud", "web-entra-authenticator-device-transfer-001", ["kb-002"]),
-    
+
     # 5. Cross-platform Wi-Fi / SMB vs Windows Local Shares
     ("HN-CD-015", "macos_smb_vs_windows_smb", "kết nối share folder windows smb trên macbook finder cmd k", "web-macos-smb-file-share-001", ["kb-012"]),
     ("HN-CD-016", "linux_mount_cifs_vs_windows_explorer", "mount ổ đĩa windows bằng mount.cifs cifs-utils ubuntu", "web-linux-cifs-smb-mount-001", ["kb-012"]),
     ("HN-CD-017", "macos_keychain_trust_vs_certmgr", "import root ca vào keychain access macos always trust", "web-macos-certificate-trust-001", ["web-browser-err-cert-authority-001"]),
-    
+
     # 6. HTTP Status vs Transport Network
     ("HN-CD-018", "http_502_vs_tcp_refused", "http 502 bad gateway backend upstream server sập", "web-http-status-502-bad-gateway-001", ["p0-04-service-listening-c001"]),
     ("HN-CD-019", "http_504_vs_tcp_timeout", "http 504 gateway timeout upstream xử lý chậm", "web-http-status-504-timeout-001", ["p0-03-tcp-failure-semantics-c001"]),

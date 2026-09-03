@@ -370,9 +370,22 @@ def _get_embedder(backend: str | None = None) -> Any:
                             encode_kwargs={"normalize_embeddings": True},
                         )
                     except Exception as exc:
-                        raise EmbeddingInitializationError(
-                            f"Configured sentence-transformer is unavailable: {settings.embedding_model}"
-                        ) from exc
+                        if not settings.embedding_allow_network_downloads:
+                            try:
+                                logger.info("Local cache missed for %s; attempting download from Hugging Face Hub...", settings.embedding_model)
+                                _embedders[requested_backend] = HuggingFaceEmbeddings(
+                                    model_name=settings.embedding_model,
+                                    model_kwargs={"device": target_device, "local_files_only": False},
+                                    encode_kwargs={"normalize_embeddings": True},
+                                )
+                            except Exception:
+                                raise EmbeddingInitializationError(
+                                    f"Configured sentence-transformer is unavailable: {settings.embedding_model}"
+                                ) from exc
+                        else:
+                            raise EmbeddingInitializationError(
+                                f"Configured sentence-transformer is unavailable: {settings.embedding_model}"
+                            ) from exc
     return _embedders[requested_backend]
 
 
